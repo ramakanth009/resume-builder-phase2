@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Paper, Typography, Button, Stepper, Step, StepLabel, Snackbar } from '@mui/material';
+import { 
+  Container, 
+  Box, 
+  Paper, 
+  Typography, 
+  Button, 
+  Stepper, 
+  Step, 
+  StepLabel, 
+  Snackbar,
+  ButtonGroup
+} from '@mui/material';
 import Alert from '@mui/material/Alert';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { useNavigate } from 'react-router-dom';
@@ -113,6 +124,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
   loader: {
     marginLeft: '0.5rem',
   },
+  stepLabel: {
+    cursor: 'pointer',
+  },
+  editControlsContainer: {
+    display: 'flex',
+    gap: '1rem',
+    marginBottom: '1rem',
+  },
+  editButton: {
+    textTransform: 'none',
+    fontWeight: 600,
+  },
 }));
 
 // Step labels for the stepper
@@ -134,6 +157,7 @@ const ResumeBuilder = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
+  const [originalGeneratedResume, setOriginalGeneratedResume] = useState(null); // Store original data
   const [isEditing, setIsEditing] = useState(true); // Start in editing mode
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -204,6 +228,11 @@ const ResumeBuilder = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  // New handler for clicking on step labels
+  const handleStepClick = (stepIndex) => {
+    setActiveStep(stepIndex);
   };
 
   // Generic Handlers
@@ -297,6 +326,8 @@ const ResumeBuilder = () => {
       
       // Store the generated resume data
       setGeneratedResume(response.resume);
+      // Store the original copy for reverting changes later
+      setOriginalGeneratedResume(JSON.parse(JSON.stringify(response.resume)));
       setIsEditing(false); // Switch to view mode after generation
       
     } catch (error) {
@@ -321,6 +352,21 @@ const ResumeBuilder = () => {
   // Toggle between editing and viewing mode
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
+  };
+
+  // New function to revert changes to the original generated data
+  const revertChanges = () => {
+    if (originalGeneratedResume) {
+      // Reset to original data
+      setGeneratedResume(JSON.parse(JSON.stringify(originalGeneratedResume)));
+      setIsEditing(false);
+      
+      setSnackbar({
+        open: true,
+        message: 'Changes reverted to original generated resume',
+        severity: 'info',
+      });
+    }
   };
 
   // Render current step content
@@ -398,11 +444,19 @@ const ResumeBuilder = () => {
             </Button>
           </Typography>
           
-          {/* Stepper Navigation */}
+          {/* Stepper Navigation with clickable labels */}
           <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label) => (
+            {steps.map((label, index) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel 
+                  className={classes.stepLabel} 
+                  onClick={() => handleStepClick(index)}
+                  StepIconProps={{
+                    style: { cursor: 'pointer' }
+                  }}
+                >
+                  <span style={{ cursor: 'pointer' }}>{label}</span>
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -438,16 +492,28 @@ const ResumeBuilder = () => {
             <Typography variant="h5">
               Resume Preview
             </Typography>
-            {!isEditing && (
-              <Button 
-                variant="outlined" 
-                onClick={toggleEditMode}
-                style={{ textTransform: 'none' }}
-              >
-                I want to edit
-              </Button>
-            )}
           </Box>
+          
+          {/* Edit controls now positioned on the left */}
+          {!isEditing && generatedResume && (
+            <Box className={classes.editControlsContainer}>
+              <ButtonGroup variant="outlined" size="medium">
+                <Button 
+                  onClick={toggleEditMode}
+                  className={classes.editButton}
+                >
+                  I want to edit
+                </Button>
+                <Button 
+                  onClick={revertChanges}
+                  className={classes.editButton}
+                  color="secondary"
+                >
+                  Revert Changes
+                </Button>
+              </ButtonGroup>
+            </Box>
+          )}
           
           <ResumePreview 
             userData={resumeData}

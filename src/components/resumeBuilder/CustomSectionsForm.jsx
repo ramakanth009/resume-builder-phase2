@@ -62,7 +62,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#3182ce',
     borderRadius: '8px',
     textTransform: 'none',
-    marginTop: '1rem',
+    height: '56px', // Match input field height
     '&:hover': {
       backgroundColor: '#bee3f8',
     },
@@ -81,6 +81,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   divider: {
     margin: '1.5rem 0',
+  },
+  inputContainer: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '1rem',
+    width: '100%',
+  },
+  inputField: {
+    flex: 1,
   }
 }));
 
@@ -204,23 +213,23 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
         Add custom sections to highlight additional skills, achievements, or information relevant to your resume.
       </Typography>
       
-      {/* Add new custom section */}
-      <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+      {/* Add new custom section - better aligned horizontally */}
+      <Box className={classes.inputContainer}>
         <TextField
+          className={classes.inputField}
           label="New Section Name"
           value={sectionName}
           onChange={(e) => setSectionName(e.target.value)}
           variant="outlined"
           fullWidth
-          className={classes.textField}
           placeholder="e.g., Languages, Hobbies, Publications"
           onKeyDown={(e) => handleKeyDown(e, handleAddCustomSection)}
         />
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddCustomSection}
           className={classes.addButton}
+          onClick={handleAddCustomSection}
+          startIcon={<AddIcon />}
         >
           Add
         </Button>
@@ -290,26 +299,27 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
                 ))}
               </Box>
               
-              {/* Add new item to selected section */}
-              <TextField
-                label={`Add to ${selectedSection.replace('_', ' ')}`}
-                value={itemText}
-                onChange={(e) => setItemText(e.target.value)}
-                variant="outlined"
-                fullWidth
-                className={classes.textField}
-                placeholder="Enter text for this section"
-                onKeyDown={(e) => handleKeyDown(e, handleAddItem)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleAddItem} edge="end" color="primary">
-                        <AddIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              {/* Add new item to selected section - consistent with the style above */}
+              <Box className={classes.inputContainer}>
+                <TextField
+                  className={classes.inputField}
+                  label={`Add to ${selectedSection.replace('_', ' ')}`}
+                  value={itemText}
+                  onChange={(e) => setItemText(e.target.value)}
+                  variant="outlined"
+                  fullWidth
+                  placeholder="Enter text for this section"
+                  onKeyDown={(e) => handleKeyDown(e, handleAddItem)}
+                />
+                <Button
+                  variant="contained"
+                  className={classes.addButton}
+                  onClick={handleAddItem}
+                  startIcon={<AddIcon />}
+                >
+                  Add
+                </Button>
+              </Box>
             </Paper>
           )}
         </>
