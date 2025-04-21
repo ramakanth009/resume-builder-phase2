@@ -1,0 +1,103 @@
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { loginUser, registerUser } from '../utils/api';
+
+// Create the authentication context
+const AuthContext = createContext(null);
+
+// AuthProvider component to wrap the app and provide auth state
+export const AuthProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  
+  // Check for existing user session on app load
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setCurrentUser(JSON.parse(userData));
+      } catch (err) {
+        // If user data is invalid, clear localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    
+    setLoading(false);
+  }, []);
+  
+  // Login function
+  const login = async (email, password) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await loginUser({ email, password });
+      
+      // Store token and user data in localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
+      // Update current user state
+      setCurrentUser(response.user);
+      return response;
+    } catch (err) {
+      setError(err.message || 'Failed to login');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Register function
+  const register = async (name, email, password) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await registerUser({ name, email, password });
+      return response;
+    } catch (err) {
+      setError(err.message || 'Failed to register');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Logout function
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setCurrentUser(null);
+  };
+  
+  // Value to be provided by the context
+  const value = {
+    currentUser,
+    loading,
+    error,
+    login,
+    register,
+    logout
+  };
+  
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Custom hook to use the auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === null) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export default AuthContext;

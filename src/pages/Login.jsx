@@ -13,6 +13,7 @@ import {
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import illustration from '../assets/resume-illustration.svg';
+import { useAuth } from '../contexts/AuthContext';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -117,6 +118,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const Login = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { login, error: authError, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -124,7 +126,6 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -166,49 +167,25 @@ const Login = () => {
     
     if (!validateForm()) return;
     
-    setLoading(true);
-    
     try {
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      await login(formData.email, formData.password);
+      
+      setSnackbar({
+        open: true,
+        message: 'Login successful! Redirecting to resume builder...',
+        severity: 'success',
       });
       
-      const data = await response.json();
-      
-      if (response.ok) {
-        // Store token in localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        setSnackbar({
-          open: true,
-          message: 'Login successful! Redirecting to resume builder...',
-          severity: 'success',
-        });
-        
-        // Redirect to resume builder page
-        setTimeout(() => {
-          navigate('/resume-builder');
-        }, 1000);
-      } else {
-        setSnackbar({
-          open: true,
-          message: data.message || 'Login failed. Please check your credentials.',
-          severity: 'error',
-        });
-      }
+      // Redirect to resume builder page
+      setTimeout(() => {
+        navigate('/resume-builder');
+      }, 1000);
     } catch (error) {
       setSnackbar({
         open: true,
-        message: 'An error occurred. Please try again later.',
+        message: error.message || 'Login failed. Please check your credentials.',
         severity: 'error',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -277,9 +254,9 @@ const Login = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                disabled={loading}
+                disabled={authLoading}
               >
-                {loading ? (
+                {authLoading ? (
                   <>
                     Logging In
                     <CircularProgress size={20} className={classes.loader} />

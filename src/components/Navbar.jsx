@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
@@ -107,10 +108,7 @@ const Navbar = ({ currentPage }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:768px)');
-  
-  // Get user from localStorage
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  const { currentUser, logout } = useAuth();
   
   // States for mobile menu and user menu
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
@@ -141,15 +139,16 @@ const Navbar = ({ currentPage }) => {
   
   // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    logout();
     navigate('/login');
     handleUserMenuClose();
   };
   
   // Get first letter of user's name for avatar
   const getInitial = () => {
-    return user && user.name ? user.name.charAt(0).toUpperCase() : 'U';
+    return currentUser && currentUser.name 
+      ? currentUser.name.charAt(0).toUpperCase() 
+      : 'U';
   };
   
   return (
@@ -168,7 +167,7 @@ const Navbar = ({ currentPage }) => {
           {!isSmallScreen && (
             <Box className={classes.navButtons}>
               {/* Navigation Links - Shown only when user is logged in */}
-              {user && (
+              {currentUser && (
                 <>
                   <Button 
                     className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
@@ -182,7 +181,7 @@ const Navbar = ({ currentPage }) => {
               )}
               
               {/* Login/Register Buttons - Shown when user is not logged in */}
-              {!user && (
+              {!currentUser && (
                 <>
                   <Button 
                     className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
@@ -200,7 +199,7 @@ const Navbar = ({ currentPage }) => {
               )}
               
               {/* User Button - Shown when user is logged in */}
-              {user && (
+              {currentUser && (
                 <Button 
                   className={classes.userButton}
                   onClick={handleUserMenuOpen}
@@ -210,7 +209,7 @@ const Navbar = ({ currentPage }) => {
                     </Avatar>
                   }
                 >
-                  {user.name.split(' ')[0]} {/* Display only first name */}
+                  {currentUser.name.split(' ')[0]} {/* Display only first name */}
                 </Button>
               )}
             </Box>
@@ -234,7 +233,7 @@ const Navbar = ({ currentPage }) => {
                 onClose={handleMobileMenuClose}
                 keepMounted
               >
-                {!user ? (
+                {!currentUser ? (
                   // Menu items for logged out users
                   <>
                     <MenuItem onClick={() => navigateTo('/login')}>
