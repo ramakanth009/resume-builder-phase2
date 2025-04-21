@@ -182,7 +182,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       </Box>
       
       {/* Target Role */}
-      {data.target_role && (
+      {data.target_role && data.target_role.trim() !== '' && (
         <Box className={classes.resumeSection}>
           <Typography variant="body1" fontWeight="medium">
             Target Role: {data.target_role}
@@ -191,7 +191,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       )}
       
       {/* Summary Section */}
-      {data.summary && (
+      {data.summary && data.summary.trim() !== '' && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Professional Summary
@@ -203,7 +203,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       )}
       
       {/* Education Section */}
-      {data.education && (
+      {data.education && (data.education.degree || data.education.institution || data.education.specialization) && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Education
@@ -225,13 +225,13 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       )}
       
       {/* Skills Section */}
-      {data.skills && data.skills.length > 0 && data.skills.some(skill => skill) && (
+      {data.skills && data.skills.length > 0 && data.skills.some(skill => skill && skill.trim() !== '') && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Skills
           </Typography>
           <Box className={classes.resumeSkills}>
-            {data.skills.filter(Boolean).map((skill, index) => (
+            {data.skills.filter(skill => skill && skill.trim() !== '').map((skill, index) => (
               <Chip
                 key={index}
                 label={skill}
@@ -244,75 +244,89 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       )}
       
       {/* Projects Section */}
-      {data.Academic_projects && data.Academic_projects.length > 0 && data.Academic_projects.some(p => p.name) && (
+      {data.Academic_projects && data.Academic_projects.length > 0 && 
+        data.Academic_projects.some(p => p.name && p.name.trim() !== '') && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Academic Projects
           </Typography>
-          {data.Academic_projects.filter(p => p.name).map((project, index) => (
-            <Box key={index} className={classes.resumeItem}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {project.name || "Project Name"}
-              </Typography>
-              {project.skills_used && (
-                <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                  Skills: {project.skills_used}
+          {data.Academic_projects
+            .filter(p => p.name && p.name.trim() !== '')
+            .map((project, index) => (
+              <Box key={index} className={classes.resumeItem}>
+                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                  {project.name || "Project Name"}
                 </Typography>
-              )}
-              {project.description && (
-                <Typography variant="body2">
-                  {project.description}
-                </Typography>
-              )}
-            </Box>
+                {project.skills_used && project.skills_used.trim() !== '' && (
+                  <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                    Skills: {project.skills_used}
+                  </Typography>
+                )}
+                {project.description && project.description.trim() !== '' && (
+                  <Typography variant="body2">
+                    {project.description}
+                  </Typography>
+                )}
+              </Box>
           ))}
         </Box>
       )}
       
       {/* Work Experience Section */}
-      {data.work_experience && data.work_experience.length > 0 && data.work_experience.some(exp => exp.position || exp.company_name) && (
+      {data.work_experience && data.work_experience.length > 0 && 
+        data.work_experience.some(exp => (exp.position && exp.position.trim() !== '') || 
+                                         (exp.company_name && exp.company_name.trim() !== '')) && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Work Experience
           </Typography>
-          {data.work_experience.filter(exp => exp.position || exp.company_name).map((experience, index) => (
-            <Box key={index} className={classes.resumeItem}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {experience.position || "Position"} {experience.company_name ? `| ${experience.company_name}` : ""}
-              </Typography>
-              {experience.duration && (
-                <Typography variant="body2" className={classes.resumeDate}>
-                  {experience.duration}
+          {data.work_experience
+            .filter(exp => (exp.position && exp.position.trim() !== '') || 
+                           (exp.company_name && exp.company_name.trim() !== ''))
+            .map((experience, index) => (
+              <Box key={index} className={classes.resumeItem}>
+                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                  {experience.position || "Position"} {experience.company_name ? `| ${experience.company_name}` : ""}
                 </Typography>
-              )}
-              {experience.description && (
-                <Typography variant="body2">
-                  {experience.description}
-                </Typography>
-              )}
-              {experience.responsibilities && experience.responsibilities.length > 0 && (
-                <Box component="ul" className={classes.resumeBullets}>
-                  {experience.responsibilities.map((responsibility, idx) => (
-                    <li key={idx} className={classes.resumeBullet}>{responsibility}</li>
-                  ))}
-                </Box>
-              )}
-            </Box>
+                {experience.duration && experience.duration.trim() !== '' && (
+                  <Typography variant="body2" className={classes.resumeDate}>
+                    {experience.duration}
+                  </Typography>
+                )}
+                {experience.description && experience.description.trim() !== '' && (
+                  <Typography variant="body2">
+                    {experience.description}
+                  </Typography>
+                )}
+                {experience.responsibilities && experience.responsibilities.length > 0 && 
+                  experience.responsibilities.some(r => r && r.trim() !== '') && (
+                  <Box component="ul" className={classes.resumeBullets}>
+                    {experience.responsibilities
+                      .filter(r => r && r.trim() !== '')
+                      .map((responsibility, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>{responsibility}</li>
+                    ))}
+                  </Box>
+                )}
+              </Box>
           ))}
         </Box>
       )}
       
       {/* Certifications Section */}
-      {data.certifications && data.certifications.length > 0 && data.certifications.some(Boolean) && (
+      {data.certifications && data.certifications.length > 0 && 
+        data.certifications.some(cert => cert && cert.trim() !== '') && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Certifications
           </Typography>
           <Box component="ul" className={classes.resumeBullets}>
-            {data.certifications.filter(Boolean).map((cert, index) => (
-              <li key={index} className={classes.resumeBullet}>
-                {cert}
-              </li>
+            {data.certifications
+              .filter(cert => cert && cert.trim() !== '')
+              .map((cert, index) => (
+                <li key={index} className={classes.resumeBullet}>
+                  {cert}
+                </li>
             ))}
           </Box>
         </Box>
@@ -320,27 +334,37 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       
       {/* Custom Sections */}
       {data.customSections && Object.keys(data.customSections).length > 0 && (
-        Object.entries(data.customSections).map(([sectionName, content]) => (
-          <Box key={sectionName} className={classes.resumeSection}>
-            <Typography variant="h6" className={classes.resumeSectionTitle}>
-              {sectionName.replace(/_/g, ' ')}
-            </Typography>
-            
-            {Array.isArray(content) ? (
-              <Box component="ul" className={classes.resumeBullets}>
-                {content.map((item, index) => (
-                  <li key={index} className={classes.resumeBullet}>
-                    {item}
-                  </li>
-                ))}
-              </Box>
-            ) : (
-              <Typography variant="body2">
-                {content}
+        Object.entries(data.customSections)
+          .filter(([_, content]) => {
+            // Check if content is non-empty
+            if (Array.isArray(content)) {
+              return content.length > 0 && content.some(item => item && item.trim() !== '');
+            }
+            return content && typeof content === 'string' && content.trim() !== '';
+          })
+          .map(([sectionName, content]) => (
+            <Box key={sectionName} className={classes.resumeSection}>
+              <Typography variant="h6" className={classes.resumeSectionTitle}>
+                {sectionName.replace(/_/g, ' ')}
               </Typography>
-            )}
-          </Box>
-        ))
+              
+              {Array.isArray(content) ? (
+                <Box component="ul" className={classes.resumeBullets}>
+                  {content
+                    .filter(item => item && item.trim() !== '')
+                    .map((item, index) => (
+                      <li key={index} className={classes.resumeBullet}>
+                        {item}
+                      </li>
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2">
+                  {content}
+                </Typography>
+              )}
+            </Box>
+          ))
       )}
       
       {/* Generated Resume Notice */}
