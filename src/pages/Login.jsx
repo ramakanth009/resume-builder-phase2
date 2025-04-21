@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { 
   Container, 
-  Grid, 
+  Box, 
   Typography, 
   TextField, 
   Button, 
@@ -87,6 +87,30 @@ const useStyles = makeStylesWithTheme((theme) => ({
   loader: {
     marginLeft: '10px',
     color: 'white',
+  },
+  contentBox: {
+    display: 'flex',
+    flexDirection: {
+      xs: 'column',
+      md: 'row'
+    },
+    gap: '2rem',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: {
+      xs: '100%',
+      md: '450px'
+    },
+  },
+  infoContainer: {
+    width: '100%',
+    maxWidth: {
+      xs: '100%',
+      md: '450px'
+    },
   }
 }));
 
@@ -201,17 +225,18 @@ const Login = () => {
 
   return (
     <Container className={classes.root} maxWidth="lg">
-      <Grid container spacing={4} justifyContent="center" alignItems="center">
-        <Grid item xs={12}>
-          <Typography variant="h3" align="center" className={classes.title} gutterBottom>
-            Student Resume Builder
-          </Typography>
-          <Typography variant="h6" align="center" className={classes.subtitle}>
-            Welcome back! Log in to your account
-          </Typography>
-        </Grid>
-        
-        <Grid item xs={12} md={6}>
+      <Box mb={4}>
+        <Typography variant="h3" align="center" className={classes.title} gutterBottom>
+          Student Resume Builder
+        </Typography>
+        <Typography variant="h6" align="center" className={classes.subtitle}>
+          Welcome back! Log in to your account
+        </Typography>
+      </Box>
+      
+      <Box className={classes.contentBox}>
+        {/* Left side - Login Form */}
+        <Box className={classes.formContainer}>
           <Paper className={classes.paper} elevation={0}>
             <Typography variant="h5" gutterBottom className={classes.title}>
               Log in to your account
@@ -265,7 +290,7 @@ const Login = () => {
               </Button>
             </form>
             
-            <div className={classes.registerLink}>
+            <Box className={classes.registerLink}>
               <Typography className={classes.registerText} variant="body2" display="inline">
                 Don't have an account?
               </Typography>
@@ -275,11 +300,12 @@ const Login = () => {
               >
                 Sign up
               </Button>
-            </div>
+            </Box>
           </Paper>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} md={6}>
+        {/* Right side - Info and Illustration */}
+        <Box className={classes.infoContainer}>
           <Paper className={classes.infoBox} elevation={0}>
             <img src={illustration} alt="Resume Building" className={classes.illustration} />
             <Typography variant="h5" gutterBottom align="center" className={classes.title}>
@@ -289,8 +315,8 @@ const Login = () => {
               Sign in to continue building your future with our professional resume tools.
             </Typography>
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       
       <Snackbar 
         open={snackbar.open} 

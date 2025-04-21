@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import {
   Container,
-  Grid,
+  Box,
   Paper,
   Typography,
   TextField,
   Button,
   Tabs,
   Tab,
-  Box,
   IconButton,
   Divider,
   Chip,
@@ -32,12 +31,13 @@ const useStyles = makeStylesWithTheme((theme) => ({
     height: '100%',
   },
   formColumn: {
-    [theme.breakpoints.up('md')]: {
-      borderRight: '1px solid #e2e8f0',
-    },
     padding: '1rem',
     height: '100%',
     overflowY: 'auto',
+    borderRight: {
+      xs: 'none',
+      md: '1px solid #e2e8f0'
+    },
   },
   previewColumn: {
     padding: '1rem',
@@ -222,9 +222,23 @@ const useStyles = makeStylesWithTheme((theme) => ({
   loader: {
     marginLeft: '0.5rem',
   },
+  mainContainer: {
+    display: 'flex',
+    flexDirection: {
+      xs: 'column',
+      md: 'row'
+    },
+  },
+  columnBox: {
+    flex: 1,
+    width: {
+      xs: '100%',
+      md: '50%'
+    },
+  }
 }));
 
-// TabPanel component for the form tabs
+// Utility Components
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -249,10 +263,17 @@ const ResumeBuilder = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   
-  // State for active tab
+  // State Definitions
   const [activeTab, setActiveTab] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [newSkill, setNewSkill] = useState('');
+  const [newCertification, setNewCertification] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
   
-  // Resume data state
   const [resumeData, setResumeData] = useState({
     header: {
       name: '',
@@ -275,85 +296,58 @@ const ResumeBuilder = () => {
     work_experience: [],
     target_role: '',
   });
-  
-  // UI states
-  const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
-  
-  // Form handling states
-  const [newSkill, setNewSkill] = useState('');
-  const [newCertification, setNewCertification] = useState('');
-  
-  // Handle tab change
+
+  // Effects
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  // Event Handlers
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name.includes('.')) {
+      const [section, field] = name.split('.');
+      setResumeData(prev => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [field]: value,
+        },
+      }));
+    } else {
+      setResumeData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-  
-  // Handle input change for basic fields
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Handle nested objects using dot notation (e.g., "header.name")
-    if (name.includes('.')) {
-      const [section, field] = name.split('.');
-      setResumeData({
-        ...resumeData,
-        [section]: {
-          ...resumeData[section],
-          [field]: value,
-        },
-      });
-    } else {
-      setResumeData({
-        ...resumeData,
-        [name]: value,
-      });
-    }
-  };
-  
-  // Handle adding a new skill
+
+  // Skill Handlers
   const handleAddSkill = () => {
     if (newSkill.trim() !== '' && !resumeData.skills.includes(newSkill.trim())) {
-      setResumeData({
-        ...resumeData,
-        skills: [...resumeData.skills, newSkill.trim()],
-      });
+      setResumeData(prev => ({
+        ...prev,
+        skills: [...prev.skills, newSkill.trim()],
+      }));
       setNewSkill('');
     }
   };
-  
-  // Handle removing a skill
+
   const handleRemoveSkill = (skillToRemove) => {
-    setResumeData({
-      ...resumeData,
-      skills: resumeData.skills.filter(skill => skill !== skillToRemove),
-    });
+    setResumeData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill !== skillToRemove),
+    }));
   };
-  
-  // Handle adding a new certification
-  const handleAddCertification = () => {
-    if (newCertification.trim() !== '' && !resumeData.certifications.includes(newCertification.trim())) {
-      setResumeData({
-        ...resumeData,
-        certifications: [...resumeData.certifications, newCertification.trim()],
-      });
-      setNewCertification('');
-    }
-  };
-  
-  // Handle removing a certification
-  const handleRemoveCertification = (certToRemove) => {
-    setResumeData({
-      ...resumeData,
-      certifications: resumeData.certifications.filter(cert => cert !== certToRemove),
-    });
-  };
-  
-  // Handle adding a new project
+
+  // Project Handlers
   const handleAddProject = () => {
     setResumeData({
       ...resumeData,
@@ -367,8 +361,7 @@ const ResumeBuilder = () => {
       ],
     });
   };
-  
-  // Handle updating a project
+
   const handleProjectChange = (index, field, value) => {
     const updatedProjects = [...resumeData.Academic_projects];
     updatedProjects[index] = {
@@ -381,16 +374,15 @@ const ResumeBuilder = () => {
       Academic_projects: updatedProjects,
     });
   };
-  
-  // Handle removing a project
+
   const handleRemoveProject = (index) => {
     setResumeData({
       ...resumeData,
       Academic_projects: resumeData.Academic_projects.filter((_, i) => i !== index),
     });
   };
-  
-  // Handle adding work experience
+
+  // Experience Handlers
   const handleAddWorkExperience = () => {
     setResumeData({
       ...resumeData,
@@ -405,8 +397,7 @@ const ResumeBuilder = () => {
       ],
     });
   };
-  
-  // Handle updating work experience
+
   const handleWorkExperienceChange = (index, field, value) => {
     const updatedWorkExperience = [...resumeData.work_experience];
     updatedWorkExperience[index] = {
@@ -419,16 +410,33 @@ const ResumeBuilder = () => {
       work_experience: updatedWorkExperience,
     });
   };
-  
-  // Handle removing work experience
+
   const handleRemoveWorkExperience = (index) => {
     setResumeData({
       ...resumeData,
       work_experience: resumeData.work_experience.filter((_, i) => i !== index),
     });
   };
-  
-  // Handle form submission to generate resume
+
+  // Certification Handlers
+  const handleAddCertification = () => {
+    if (newCertification.trim() !== '' && !resumeData.certifications.includes(newCertification.trim())) {
+      setResumeData({
+        ...resumeData,
+        certifications: [...resumeData.certifications, newCertification.trim()],
+      });
+      setNewCertification('');
+    }
+  };
+
+  const handleRemoveCertification = (certToRemove) => {
+    setResumeData({
+      ...resumeData,
+      certifications: resumeData.certifications.filter(cert => cert !== certToRemove),
+    });
+  };
+
+  // API Handlers
   const handleGenerateResume = async () => {
     setLoading(true);
     
@@ -481,30 +489,19 @@ const ResumeBuilder = () => {
       setLoading(false);
     }
   };
-  
-  // Handle snackbar close
+
   const handleCloseSnackbar = () => {
     setSnackbar({
       ...snackbar,
       open: false,
     });
   };
-  
-  // Check if user is authenticated
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    }
-    
-    // You could also load user's saved resume data here
-  }, [navigate]);
-  
+
   return (
     <Container className={classes.root} maxWidth="xl">
-      <Grid container className={classes.container}>
+      <Box className={classes.mainContainer}>
         {/* Left Column - Form Inputs */}
-        <Grid item xs={12} md={6} className={classes.formColumn}>
+        <Box className={`${classes.columnBox} ${classes.formColumn}`}>
           <Typography variant="h5" className={classes.sectionTitle}>
             Build Your Resume
             <Button
@@ -566,7 +563,7 @@ const ResumeBuilder = () => {
           
           {/* Personal Information */}
           <TabPanel value={activeTab} index={0}>
-            <div className={classes.form}>
+            <Box className={classes.form}>
               <TextField
                 label="Full Name"
                 name="header.name"
@@ -649,62 +646,13 @@ const ResumeBuilder = () => {
                 placeholder="A brief summary of your professional background and career goals..."
                 className={classes.textField}
               />
-            </div>
-          </TabPanel>
-          
-          {/* Education */}
-          <TabPanel value={activeTab} index={1}>
-            <div className={classes.form}>
-              <TextField
-                label="Degree"
-                name="education.degree"
-                value={resumeData.education.degree}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-                className={classes.textField}
-                placeholder="e.g., Bachelor of Science"
-              />
-              
-              <TextField
-                label="Specialization"
-                name="education.specialization"
-                value={resumeData.education.specialization}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-                className={classes.textField}
-                placeholder="e.g., Computer Science"
-              />
-              
-              <TextField
-                label="Institution"
-                name="education.institution"
-                value={resumeData.education.institution}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-                className={classes.textField}
-                placeholder="e.g., Stanford University"
-              />
-              
-              <TextField
-                label="Graduation Year"
-                name="education.graduation_year"
-                value={resumeData.education.graduation_year}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-                className={classes.textField}
-                placeholder="e.g., 2023"
-              />
-            </div>
+            </Box>
           </TabPanel>
           
           {/* Skills */}
           <TabPanel value={activeTab} index={2}>
-            <div className={classes.form}>
-              <div className={classes.chipContainer}>
+            <Box className={classes.form}>
+              <Box className={classes.chipContainer}>
                 {resumeData.skills.map((skill, index) => (
                   <Chip
                     key={index}
@@ -713,9 +661,9 @@ const ResumeBuilder = () => {
                     onDelete={() => handleRemoveSkill(skill)}
                   />
                 ))}
-              </div>
+              </Box>
               
-              <div className={classes.formRow}>
+              <Box className={classes.formRow}>
                 <TextField
                   label="Add Skill"
                   value={newSkill}
@@ -732,7 +680,7 @@ const ResumeBuilder = () => {
                 >
                   Add
                 </Button>
-              </div>
+              </Box>
               
               <Divider style={{ margin: '2rem 0 1rem' }} />
               
@@ -740,7 +688,7 @@ const ResumeBuilder = () => {
                 Certifications
               </Typography>
               
-              <div className={classes.chipContainer}>
+              <Box className={classes.chipContainer}>
                 {resumeData.certifications.map((cert, index) => (
                     <Chip
                     key={index}
@@ -749,9 +697,9 @@ const ResumeBuilder = () => {
                     onDelete={() => handleRemoveCertification(cert)}
                   />
                 ))}
-              </div>
+              </Box>
               
-              <div className={classes.formRow}>
+              <Box className={classes.formRow}>
                 <TextField
                   label="Add Certification"
                   value={newCertification}
@@ -768,16 +716,16 @@ const ResumeBuilder = () => {
                 >
                   Add
                 </Button>
-              </div>
-            </div>
+              </Box>
+            </Box>
           </TabPanel>
           
           {/* Projects */}
           <TabPanel value={activeTab} index={3}>
-            <div className={classes.form}>
+            <Box className={classes.form}>
               {resumeData.Academic_projects.map((project, index) => (
                 <Paper key={index} className={classes.paper}>
-                  <div className={classes.sectionTitle}>
+                  <Box className={classes.sectionTitle}>
                     <Typography variant="h6">Project {index + 1}</Typography>
                     <IconButton
                       className={classes.deleteButton}
@@ -785,7 +733,7 @@ const ResumeBuilder = () => {
                     >
                       <DeleteIcon />
                     </IconButton>
-                  </div>
+                  </Box>
                   
                   <TextField
                     label="Project Name"
@@ -829,15 +777,15 @@ const ResumeBuilder = () => {
               >
                 Add Project
               </Button>
-            </div>
+            </Box>
           </TabPanel>
           
           {/* Work Experience */}
           <TabPanel value={activeTab} index={4}>
-            <div className={classes.form}>
+            <Box className={classes.form}>
               {resumeData.work_experience.map((experience, index) => (
                 <Paper key={index} className={classes.paper}>
-                  <div className={classes.sectionTitle}>
+                  <Box className={classes.sectionTitle}>
                     <Typography variant="h6">Experience {index + 1}</Typography>
                     <IconButton
                       className={classes.deleteButton}
@@ -845,7 +793,7 @@ const ResumeBuilder = () => {
                     >
                       <DeleteIcon />
                     </IconButton>
-                  </div>
+                  </Box>
                   
                   <TextField
                     label="Position"
@@ -898,179 +846,59 @@ const ResumeBuilder = () => {
               >
                 Add Work Experience
               </Button>
-            </div>
+            </Box>
           </TabPanel>
-        </Grid>
-        
-        {/* Right Column - Live Preview */}
-        <Grid item xs={12} md={6} className={classes.previewColumn}>
-          <Typography variant="h5" className={classes.sectionTitle}>
-            Resume Preview
-          </Typography>
+        </Box>
           
-          <div className={classes.resumeContainer}>
-            {/* Header Section */}
-            <div className={classes.resumeHeader}>
-              <Typography variant="h4" className={classes.resumeName}>
-                {resumeData.header.name || 'Your Name'}
-              </Typography>
+          {/* Education */}
+          <TabPanel value={activeTab} index={1}>
+            <Box className={classes.form}>
+              <TextField
+                label="Degree"
+                name="education.degree"
+                value={resumeData.education.degree}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                className={classes.textField}
+                placeholder="e.g., Bachelor of Science"
+              />
               
-              <div className={classes.resumeContact}>
-                {resumeData.header.email && (
-                  <Typography variant="body2">
-                    {resumeData.header.email}
-                  </Typography>
-                )}
-                
-                {resumeData.header.phone && (
-                  <Typography variant="body2">
-                    {resumeData.header.phone}
-                  </Typography>
-                )}
-                
-                {resumeData.header.github && (
-                  <Typography variant="body2">
-                    GitHub: {resumeData.header.github.replace('https://', '')}
-                  </Typography>
-                )}
-                
-                {resumeData.header.linkedin && (
-                  <Typography variant="body2">
-                    LinkedIn: {resumeData.header.linkedin.replace('https://', '')}
-                  </Typography>
-                )}
-                
-                {resumeData.header.portfolio && (
-                  <Typography variant="body2">
-                    Portfolio: {resumeData.header.portfolio.replace('https://', '')}
-                  </Typography>
-                )}
-              </div>
-            </div>
-            
-            {/* Summary Section */}
-            {resumeData.summary && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Professional Summary
-                </Typography>
-                <Typography variant="body2" className={classes.resumeSummary}>
-                  {resumeData.summary}
-                </Typography>
-              </div>
-            )}
-            
-            {/* Education Section */}
-            {resumeData.education.institution && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Education
-                </Typography>
-                <div className={classes.resumeEducation}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                    {resumeData.education.degree} {resumeData.education.specialization && `in ${resumeData.education.specialization}`}
-                  </Typography>
-                  <Typography variant="body2">
-                    {resumeData.education.institution}
-                  </Typography>
-                  {resumeData.education.graduation_year && (
-                    <Typography variant="body2" className={classes.resumeDate}>
-                      Graduated: {resumeData.education.graduation_year}
-                    </Typography>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Skills Section */}
-            {resumeData.skills.length > 0 && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Skills
-                </Typography>
-                <div className={classes.resumeSkills}>
-                  {resumeData.skills.map((skill, index) => (
-                    <Chip
-                      key={index}
-                      label={skill}
-                      className={classes.resumeSkillChip}
-                      size="small"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Projects Section */}
-            {resumeData.Academic_projects.length > 0 && resumeData.Academic_projects[0].name && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Projects
-                </Typography>
-                {resumeData.Academic_projects.map((project, index) => (
-                  <div key={index} className={classes.resumeItem}>
-                    <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                      {project.name}
-                    </Typography>
-                    {project.skills_used && (
-                      <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                        <strong>Skills:</strong> {project.skills_used}
-                      </Typography>
-                    )}
-                    {project.description && (
-                      <Typography variant="body2">
-                        {project.description}
-                      </Typography>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Work Experience Section */}
-            {resumeData.work_experience.length > 0 && resumeData.work_experience[0].position && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Work Experience
-                </Typography>
-                {resumeData.work_experience.map((experience, index) => (
-                  <div key={index} className={classes.resumeItem}>
-                    <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                      {experience.position} at {experience.company_name}
-                    </Typography>
-                    {experience.duration && (
-                      <Typography variant="body2" className={classes.resumeDate}>
-                        {experience.duration}
-                      </Typography>
-                    )}
-                    {experience.description && (
-                      <Typography variant="body2">
-                        {experience.description}
-                      </Typography>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Certifications Section */}
-            {resumeData.certifications.length > 0 && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Certifications
-                </Typography>
-                <ul className={classes.resumeBullets}>
-                  {resumeData.certifications.map((cert, index) => (
-                    <li key={index} className={classes.resumeBullet}>
-                      {cert}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </Grid>
-      </Grid>
+              <TextField
+                label="Specialization"
+                name="education.specialization"
+                value={resumeData.education.specialization}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                className={classes.textField}
+                placeholder="e.g., Computer Science"
+              />
+              
+              <TextField
+                label="Institution"
+                name="education.institution"
+                value={resumeData.education.institution}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                className={classes.textField}
+                placeholder="e.g., Stanford University"
+              />
+              
+              <TextField
+                label="Graduation Year"
+                name="education.graduation_year"
+                value={resumeData.education.graduation_year}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                className={classes.textField}
+                placeholder="e.g., 2023"
+              />
+            </Box>
+          </TabPanel>
+      </Box>
       
       <Snackbar
         open={snackbar.open}

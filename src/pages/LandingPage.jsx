@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { 
   Container, 
-  Grid, 
+  Box, 
   Typography, 
   TextField, 
   Button, 
@@ -92,6 +92,30 @@ const useStyles = makeStylesWithTheme((theme) => ({
   loader: {
     marginLeft: '10px',
     color: 'white',
+  },
+  contentBox: {
+    display: 'flex',
+    flexDirection: {
+      xs: 'column',
+      md: 'row'
+    },
+    gap: '2rem',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: {
+      xs: '100%',
+      md: '450px'
+    },
+  },
+  infoContainer: {
+    width: '100%',
+    maxWidth: {
+      xs: '100%',
+      md: '450px'
+    },
   }
 }));
 
@@ -206,17 +230,18 @@ const LandingPage = () => {
 
   return (
     <Container className={classes.root} maxWidth="lg">
-      <Grid container spacing={4} justifyContent="center" alignItems="center">
-        <Grid item xs={12}>
-          <Typography variant="h3" align="center" className={classes.title} gutterBottom>
-            Student Resume Builder
-          </Typography>
-          <Typography variant="h6" align="center" className={classes.subtitle}>
-            Create a professional resume in minutes, completely free!
-          </Typography>
-        </Grid>
-        
-        <Grid item xs={12} md={6}>
+      <Box mb={4}>
+        <Typography variant="h3" align="center" className={classes.title} gutterBottom>
+          Student Resume Builder
+        </Typography>
+        <Typography variant="h6" align="center" className={classes.subtitle}>
+          Create a professional resume in minutes, completely free!
+        </Typography>
+      </Box>
+      
+      <Box className={classes.contentBox}>
+        {/* Left side - Registration Form */}
+        <Box className={classes.formContainer}>
           <Paper className={classes.paper} elevation={0}>
             <Typography variant="h5" gutterBottom className={classes.title}>
               Create your account
@@ -282,7 +307,7 @@ const LandingPage = () => {
               </Button>
             </form>
             
-            <div className={classes.loginLink}>
+            <Box className={classes.loginLink}>
               <Typography className={classes.loginText} variant="body2" display="inline">
                 Already have an account?
               </Typography>
@@ -292,11 +317,12 @@ const LandingPage = () => {
               >
                 Log in
               </Button>
-            </div>
+            </Box>
           </Paper>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} md={6}>
+        {/* Right side - Info and Illustration */}
+        <Box className={classes.infoContainer}>
           <Paper className={classes.infoBox} elevation={0}>
             <img src={illustration} alt="Resume Building" className={classes.illustration} />
             <Typography variant="h5" gutterBottom align="center" className={classes.title}>
@@ -318,8 +344,8 @@ const LandingPage = () => {
               ✓ Professionally designed templates
             </Typography>
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       
       <Snackbar 
         open={snackbar.open} 
