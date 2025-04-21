@@ -129,6 +129,7 @@ const LandingPage = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -151,6 +152,10 @@ const LandingPage = () => {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -274,6 +279,19 @@ const LandingPage = () => {
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
+              />
+              
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Confirm Password"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
               />
               
               <Button

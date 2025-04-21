@@ -46,6 +46,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     // Return the data
     return data;
   } catch (error) {
+    console.error(`API Error (${endpoint}):`, error);
     // Re-throw the error to be handled by the calling function
     throw error;
   }
@@ -57,10 +58,15 @@ export const apiRequest = async (endpoint, options = {}) => {
  * @returns {Promise} - Registration response
  */
 export const registerUser = async (userData) => {
-  return apiRequest('/auth/register', {
-    method: 'POST',
-    body: userData,
-  });
+  try {
+    const response = await apiRequest('/auth/register', {
+      method: 'POST',
+      body: userData,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Registration failed');
+  }
 };
 
 /**
@@ -69,22 +75,69 @@ export const registerUser = async (userData) => {
  * @returns {Promise} - Login response with token
  */
 export const loginUser = async (credentials) => {
-  return apiRequest('/auth/login', {
-    method: 'POST',
-    body: credentials,
-  });
+  try {
+    const response = await apiRequest('/auth/login', {
+      method: 'POST',
+      body: credentials,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Login failed');
+  }
 };
 
 /**
- * Generate resume
+ * Generate resume with validation for required fields
  * @param {Object} resumeData - Resume data to generate
  * @returns {Promise} - Generated resume
  */
 export const generateResume = async (resumeData) => {
-  return apiRequest('/generate_resume', {
-    method: 'POST',
-    body: resumeData,
+  // Validate required fields based on backend expectations
+  const requiredFields = [
+    'name', 'email', 'phone', 'target_role',
+    'degree', 'specialization', 'institution', 'graduation_year',
+    'skills', 'Academic_projects', 'certifications'
+  ];
+  
+  // Check that each required field exists in resumeData
+  const formattedData = {
+    ...resumeData,
+    // Extract fields from header object if they exist
+    name: resumeData.header?.name,
+    email: resumeData.header?.email,
+    phone: resumeData.header?.phone,
+    github: resumeData.header?.github,
+    linkedin: resumeData.header?.linkedin,
+    portfolio: resumeData.header?.portfolio,
+    // Extract fields from education object if they exist
+    degree: resumeData.education?.degree,
+    specialization: resumeData.education?.specialization,
+    institution: resumeData.education?.institution,
+    graduation_year: resumeData.education?.graduation_year,
+  };
+  
+  // Check for missing fields
+  const missingFields = requiredFields.filter(field => {
+    const value = formattedData[field];
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    return !value || value.trim() === '';
   });
+  
+  if (missingFields.length > 0) {
+    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+  }
+  
+  try {
+    const response = await apiRequest('/generate_resume', {
+      method: 'POST',
+      body: formattedData,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to generate resume');
+  }
 };
 
 /**
@@ -92,7 +145,11 @@ export const generateResume = async (resumeData) => {
  * @returns {Promise} - List of resumes
  */
 export const getUserResumes = async () => {
-  return apiRequest('/user/resumes');
+  try {
+    return await apiRequest('/user/resumes');
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch resumes');
+  }
 };
 
 /**
@@ -101,7 +158,11 @@ export const getUserResumes = async () => {
  * @returns {Promise} - Resume data
  */
 export const getResumeById = async (resumeId) => {
-  return apiRequest(`/resumes/${resumeId}`);
+  try {
+    return await apiRequest(`/resumes/${resumeId}`);
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch resume');
+  }
 };
 
 /**
@@ -110,9 +171,13 @@ export const getResumeById = async (resumeId) => {
  * @returns {Promise} - Delete response
  */
 export const deleteResume = async (resumeId) => {
-  return apiRequest(`/resumes/${resumeId}`, {
-    method: 'DELETE',
-  });
+  try {
+    return await apiRequest(`/resumes/${resumeId}`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    throw new Error(error.message || 'Failed to delete resume');
+  }
 };
 
 export default {

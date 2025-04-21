@@ -36,14 +36,19 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await loginUser({ email, password });
       
-      // Store token and user data in localStorage
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      
-      // Update current user state
-      setCurrentUser(response.user);
-      return response;
+      if (response.status === 'success' && response.token) {
+        // Store token and user data in localStorage
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        
+        // Update current user state
+        setCurrentUser(response.user);
+        return response;
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.message || 'Failed to login');
       throw err;
     } finally {
@@ -58,8 +63,14 @@ export const AuthProvider = ({ children }) => {
     
     try {
       const response = await registerUser({ name, email, password });
-      return response;
+      
+      if (response.status === 'success') {
+        return response;
+      } else {
+        throw new Error(response.message || 'Registration failed');
+      }
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err.message || 'Failed to register');
       throw err;
     } finally {
@@ -86,7 +97,7 @@ export const AuthProvider = ({ children }) => {
   
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading ? children : <div>Loading...</div>}
     </AuthContext.Provider>
   );
 };
