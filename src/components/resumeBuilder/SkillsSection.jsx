@@ -64,7 +64,9 @@ const SkillsSection = ({ resumeData, setResumeData }) => {
   const handleKeyDown = (e, action) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      action();
+      if (e.target.value.trim() !== '') {
+        action();
+      }
     }
   };
 
