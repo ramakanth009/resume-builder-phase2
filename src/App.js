@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import ResumeBuilder from './pages/ResumeBuilder';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -48,29 +49,31 @@ function App() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
-          <NavbarWrapper />
-          <Routes>
-            {/* Landing page (Registration) is the root route */}
-            <Route path="/" element={<LandingPage />} />
-            
-            {/* Login page */}
-            <Route path="/login" element={<Login />} />
-            
-            {/* Protected route for resume builder */}
-            <Route 
-              path="/resume-builder" 
-              element={
-                <ProtectedRoute>
-                  <ResumeBuilder />
-                </ProtectedRoute>
-              } 
-            />
-            
-            {/* Redirect any unknown routes to the landing page */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
+        <AuthProvider>
+          <Router>
+            <NavbarWrapper />
+            <Routes>
+              {/* Landing page (Registration) is the root route */}
+              <Route path="/" element={<LandingPage />} />
+              
+              {/* Login page */}
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected route for resume builder */}
+              <Route 
+                path="/resume-builder" 
+                element={
+                  <ProtectedRoute>
+                    <ResumeBuilder />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Redirect any unknown routes to the landing page */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </AuthProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   );

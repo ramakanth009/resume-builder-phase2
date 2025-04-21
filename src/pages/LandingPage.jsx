@@ -13,6 +13,7 @@ import {
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import illustration from '../assets/resume-illustration.svg';
+import { useAuth } from '../contexts/AuthContext';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -122,6 +123,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const LandingPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { register, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -178,38 +180,23 @@ const LandingPage = () => {
     setLoading(true);
     
     try {
-      const response = await fetch('/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      // Use the register function from AuthContext
+      await register(formData.name, formData.email, formData.password);
+      
+      setSnackbar({
+        open: true,
+        message: 'Registration successful! Redirecting to login...',
+        severity: 'success',
       });
       
-      const data = await response.json();
-      
-      if (response.ok) {
-        setSnackbar({
-          open: true,
-          message: 'Registration successful! Redirecting to login...',
-          severity: 'success',
-        });
-        
-        // Redirect to login after a short delay
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
-      } else {
-        setSnackbar({
-          open: true,
-          message: data.message || 'Registration failed. Please try again.',
-          severity: 'error',
-        });
-      }
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
     } catch (error) {
       setSnackbar({
         open: true,
-        message: 'An error occurred. Please try again later.',
+        message: error.message || 'Registration failed. Please try again.',
         severity: 'error',
       });
     } finally {
@@ -294,9 +281,9 @@ const LandingPage = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                disabled={loading}
+                disabled={loading || authLoading}
               >
-                {loading ? (
+                {loading || authLoading ? (
                   <>
                     Creating Account
                     <CircularProgress size={20} className={classes.loader} />
