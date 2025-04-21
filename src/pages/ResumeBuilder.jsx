@@ -742,7 +742,7 @@ const ResumeBuilder = () => {
               
               <div className={classes.chipContainer}>
                 {resumeData.certifications.map((cert, index) => (
-                  <Chip
+                    <Chip
                     key={index}
                     label={cert}
                     className={classes.chip}
@@ -778,63 +778,7 @@ const ResumeBuilder = () => {
               {resumeData.Academic_projects.map((project, index) => (
                 <Paper key={index} className={classes.paper}>
                   <div className={classes.sectionTitle}>
-                    <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Work Experience
-                </Typography>
-                {resumeData.work_experience.map((experience, index) => (
-                  <div key={index} className={classes.resumeItem}>
-                    <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                      {experience.position} at {experience.company_name}
-                    </Typography>
-                    {experience.duration && (
-                      <Typography variant="body2" className={classes.resumeDate}>
-                        {experience.duration}
-                      </Typography>
-                    )}
-                    {experience.description && (
-                      <Typography variant="body2">
-                        {experience.description}
-                      </Typography>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Certifications Section */}
-            {resumeData.certifications.length > 0 && (
-              <div className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Certifications
-                </Typography>
-                <ul className={classes.resumeBullets}>
-                  {resumeData.certifications.map((cert, index) => (
-                    <li key={index} className={classes.resumeBullet}>
-                      {cert}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </Grid>
-      </Grid>
-      
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
-  );
-};
-
-export default ResumeBuilder;>Project {index + 1}</Typography>
+                    <Typography variant="h6">Project {index + 1}</Typography>
                     <IconButton
                       className={classes.deleteButton}
                       onClick={() => handleRemoveProject(index)}
@@ -1086,4 +1030,60 @@ export default ResumeBuilder;>Project {index + 1}</Typography>
             {/* Work Experience Section */}
             {resumeData.work_experience.length > 0 && resumeData.work_experience[0].position && (
               <div className={classes.resumeSection}>
-                <Typography variant="h6"
+                <Typography variant="h6" className={classes.resumeSectionTitle}>
+                  Work Experience
+                </Typography>
+                {resumeData.work_experience.map((experience, index) => (
+                  <div key={index} className={classes.resumeItem}>
+                    <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                      {experience.position} at {experience.company_name}
+                    </Typography>
+                    {experience.duration && (
+                      <Typography variant="body2" className={classes.resumeDate}>
+                        {experience.duration}
+                      </Typography>
+                    )}
+                    {experience.description && (
+                      <Typography variant="body2">
+                        {experience.description}
+                      </Typography>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Certifications Section */}
+            {resumeData.certifications.length > 0 && (
+              <div className={classes.resumeSection}>
+                <Typography variant="h6" className={classes.resumeSectionTitle}>
+                  Certifications
+                </Typography>
+                <ul className={classes.resumeBullets}>
+                  {resumeData.certifications.map((cert, index) => (
+                    <li key={index} className={classes.resumeBullet}>
+                      {cert}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </Grid>
+      </Grid>
+      
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Container>
+  );
+};
+
+export default ResumeBuilder;
