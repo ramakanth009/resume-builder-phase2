@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import makeStylesWithTheme from '../styles/makeStylesAdapter';
-import {
-  Container,
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  Tabs,
-  Tab,
-  IconButton,
-  Divider,
-  Chip,
-  CircularProgress,
-  Snackbar
-} from '@mui/material';
+import { Container, Box, Paper, Typography, Button, Stepper, Step, StepLabel, Snackbar } from '@mui/material';
 import Alert from '@mui/material/Alert';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
+import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
+
+// Section Components
+import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
+import EducationSection from '../components/resumeBuilder/EducationSection';
+import SkillsSection from '../components/resumeBuilder/SkillsSection';
+import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
+import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
+import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
+import ResumePreview from '../components/resumeBuilder/ResumePreview';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -61,59 +53,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  tabRoot: {
-    minWidth: 'auto',
-    marginRight: '1rem',
-    textTransform: 'none',
-    fontWeight: 600,
-    fontSize: '0.875rem',
-  },
-  tabsRoot: {
-    marginBottom: '1.5rem',
-    borderBottom: '1px solid #e2e8f0',
-  },
-  tabSelected: {
-    color: '#3182ce',
-  },
-  tabIndicator: {
-    backgroundColor: '#3182ce',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  formRow: {
-    display: 'flex',
-    gap: '1rem',
-    flexWrap: 'wrap',
-  },
-  fieldGroup: {
-    marginBottom: '1.5rem',
-  },
-  formSubtitle: {
-    fontWeight: 500,
-    marginBottom: '0.75rem',
-    marginTop: '1rem',
-    color: '#4a5568',
-  },
-  textField: {
-    marginBottom: '1rem',
-  },
-  addButton: {
-    marginTop: '1rem',
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    borderRadius: '8px',
-    textTransform: 'none',
-    '&:hover': {
-      backgroundColor: '#bee3f8',
-    },
-  },
-  deleteButton: {
-    color: '#e53e3e',
-    padding: '0.25rem',
-  },
   saveButton: {
     backgroundColor: '#3182ce',
     color: 'white',
@@ -125,104 +64,37 @@ const useStyles = makeStylesWithTheme((theme) => ({
       backgroundColor: '#2b6cb0',
     },
   },
-  chipContainer: {
+  navigationButtons: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '0.5rem',
-    marginBottom: '1rem',
+    justifyContent: 'space-between',
+    marginTop: '2rem',
   },
-  chip: {
-    backgroundColor: '#e6fffa',
-    color: '#319795',
-    borderRadius: '16px',
-  },
-  
-  // Resume Preview Styles
-  resumeContainer: {
-    padding: '2rem',
-    border: '1px solid #e2e8f0',
+  buttonNext: {
+    backgroundColor: '#3182ce',
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
     borderRadius: '8px',
-    backgroundColor: 'white',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-    minHeight: '842px', // A4 height scaled down
-    width: '100%',
-    margin: '0 auto',
+    '&:hover': {
+      backgroundColor: '#2b6cb0',
+    },
   },
-  resumeHeader: {
-    marginBottom: '1.5rem',
-  },
-  resumeName: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '0.5rem',
-    color: '#2d3748',
-  },
-  resumeContact: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '1rem',
-    marginBottom: '0.5rem',
-    fontSize: '0.875rem',
-    color: '#4a5568',
-  },
-  resumeSection: {
-    marginBottom: '1.5rem',
-  },
-  resumeSectionTitle: {
-    fontSize: '1.125rem',
-    fontWeight: 600,
-    marginBottom: '0.75rem',
-    color: '#2d3748',
-    borderBottom: '1px solid #e2e8f0',
-    paddingBottom: '0.5rem',
-  },
-  resumeSummary: {
-    color: '#4a5568',
-    marginBottom: '1.5rem',
-  },
-  resumeEducation: {
-    marginBottom: '1rem',
-  },
-  resumeSubtitle: {
-    fontWeight: 600,
-    marginBottom: '0.25rem',
-    color: '#2d3748',
-  },
-  resumeDate: {
-    fontSize: '0.875rem',
+  buttonBack: {
     color: '#718096',
-    fontStyle: 'italic',
+    borderColor: '#e2e8f0',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: '#f7fafc',
+    },
   },
-  resumeSkills: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '0.5rem',
-  },
-  resumeSkillChip: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    fontSize: '0.75rem',
-    height: '24px',
-  },
-  resumeItem: {
-    marginBottom: '1rem',
-  },
-  resumeItemSubtitle: {
-    fontSize: '0.875rem',
-    color: '#4a5568',
-    marginBottom: '0.25rem',
-  },
-  resumeBullets: {
-    paddingLeft: '1.25rem',
-    margin: '0.5rem 0',
-  },
-  resumeBullet: {
-    fontSize: '0.875rem',
-    color: '#4a5568',
-    marginBottom: '0.25rem',
-  },
-  loader: {
-    marginLeft: '0.5rem',
+  stepper: {
+    marginBottom: '2rem',
+    padding: '1rem',
+    backgroundColor: 'transparent',
   },
   mainContainer: {
     display: 'flex',
@@ -237,29 +109,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
       xs: '100%',
       md: '50%'
     },
-  }
+  },
+  loader: {
+    marginLeft: '0.5rem',
+  },
 }));
 
-// Utility Components
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
+// Step labels for the stepper
+const steps = [
+  'Personal Info',
+  'Education',
+  'Skills',
+  'Projects',
+  'Experience',
+  'Custom Sections'
+];
 
 const ResumeBuilder = () => {
   const classes = useStyles();
@@ -267,17 +131,17 @@ const ResumeBuilder = () => {
   const { currentUser } = useAuth();
   
   // State Declarations
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [newSkill, setNewSkill] = useState('');
-  const [newCertification, setNewCertification] = useState('');
   const [generatedResume, setGeneratedResume] = useState(null);
+  const [isEditing, setIsEditing] = useState(true); // Start in editing mode
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
   
+  // Initialize resumeData with user information if available
   const [resumeData, setResumeData] = useState({
     header: {
       name: currentUser?.name || '',
@@ -294,21 +158,33 @@ const ResumeBuilder = () => {
       institution: '',
       graduation_year: '',
     },
-    skills: [],
-    Academic_projects: [],
-    certifications: [],
-    work_experience: [],
+    skills: [''],
+    Academic_projects: [{
+      name: '',
+      skills_used: '',
+      description: '',
+    }],
+    certifications: [''],
+    work_experience: [{
+      position: '',
+      company_name: '',
+      duration: '',
+      description: '',
+    }],
     target_role: '',
+    customSections: {}
   });
 
   // Effects
   useEffect(() => {
+    // Redirect to login if not authenticated
     if (!currentUser) {
       navigate('/login');
     }
   }, [currentUser, navigate]);
 
   useEffect(() => {
+    // Update user information if available
     if (currentUser) {
       setResumeData(prev => ({
         ...prev,
@@ -321,154 +197,50 @@ const ResumeBuilder = () => {
     }
   }, [currentUser]);
 
+  // Navigation Handlers
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
   // Generic Handlers
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [section, field] = name.split('.');
+  const handleInputChange = (section, field, value) => {
+    if (field.includes('.')) {
+      const [mainField, subField] = field.split('.');
       setResumeData(prev => ({
         ...prev,
         [section]: {
           ...prev[section],
-          [field]: value,
-        },
+          [mainField]: {
+            ...prev[section][mainField],
+            [subField]: value
+          }
+        }
       }));
     } else {
       setResumeData(prev => ({
         ...prev,
-        [name]: value,
+        [section]: {
+          ...prev[section],
+          [field]: value
+        }
       }));
     }
   };
 
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
-
-  const handleKeyDown = (e, action) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      action();
-    }
-  };
-
-  // Skills Handlers
-  const handleAddSkill = () => {
-    if (newSkill.trim() !== '' && !resumeData.skills.includes(newSkill.trim())) {
-      setResumeData(prev => ({
-        ...prev,
-        skills: [...prev.skills, newSkill.trim()],
-      }));
-      setNewSkill('');
-    }
-  };
-
-  const handleRemoveSkill = (skillToRemove) => {
-    setResumeData(prev => ({
-      ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove),
-    }));
-  };
-
-  // Project Handlers
-  const handleAddProject = () => {
-    setResumeData({
-      ...resumeData,
-      Academic_projects: [
-        ...resumeData.Academic_projects,
-        {
-          name: '',
-          skills_used: '',
-          description: '',
-        },
-      ],
-    });
-  };
-
-  const handleProjectChange = (index, field, value) => {
-    const updatedProjects = [...resumeData.Academic_projects];
-    updatedProjects[index] = {
-      ...updatedProjects[index],
-      [field]: value,
-    };
-    
-    setResumeData({
-      ...resumeData,
-      Academic_projects: updatedProjects,
-    });
-  };
-
-  const handleRemoveProject = (index) => {
-    setResumeData({
-      ...resumeData,
-      Academic_projects: resumeData.Academic_projects.filter((_, i) => i !== index),
-    });
-  };
-
-  // Experience Handlers
-  const handleAddWorkExperience = () => {
-    setResumeData({
-      ...resumeData,
-      work_experience: [
-        ...resumeData.work_experience,
-        {
-          position: '',
-          company_name: '',
-          duration: '',
-          description: '',
-        },
-      ],
-    });
-  };
-
-  const handleWorkExperienceChange = (index, field, value) => {
-    const updatedWorkExperience = [...resumeData.work_experience];
-    updatedWorkExperience[index] = {
-      ...updatedWorkExperience[index],
-      [field]: value,
-    };
-    
-    setResumeData({
-      ...resumeData,
-      work_experience: updatedWorkExperience,
-    });
-  };
-
-  const handleRemoveWorkExperience = (index) => {
-    setResumeData({
-      ...resumeData,
-      work_experience: resumeData.work_experience.filter((_, i) => i !== index),
-    });
-  };
-
-  // Certification Handlers
-  const handleAddCertification = () => {
-    if (newCertification.trim() !== '' && !resumeData.certifications.includes(newCertification.trim())) {
-      setResumeData({
-        ...resumeData,
-        certifications: [...resumeData.certifications, newCertification.trim()],
-      });
-      setNewCertification('');
-    }
-  };
-
-  const handleRemoveCertification = (certToRemove) => {
-    setResumeData({
-      ...resumeData,
-      certifications: resumeData.certifications.filter(cert => cert !== certToRemove),
-    });
-  };
-
-  // Validation function for resume data
+  // Form Validation
   const validateResumeData = () => {
-    // Check required fields
+    // Basic validation for required fields
     if (!resumeData.header.name || !resumeData.header.email || !resumeData.header.phone) {
       setSnackbar({
         open: true,
         message: 'Please fill in all personal information fields',
         severity: 'error',
       });
-      setActiveTab(0); // Switch to personal info tab
+      setActiveStep(0); // Switch to personal info step
       return false;
     }
     
@@ -478,27 +250,27 @@ const ResumeBuilder = () => {
         message: 'Please fill in education information',
         severity: 'error',
       });
-      setActiveTab(1); // Switch to education tab
+      setActiveStep(1); // Switch to education step
       return false;
     }
     
-    if (resumeData.skills.length === 0) {
+    if (resumeData.skills.length === 0 || !resumeData.skills[0]) {
       setSnackbar({
         open: true,
         message: 'Please add at least one skill',
         severity: 'error',
       });
-      setActiveTab(2); // Switch to skills tab
+      setActiveStep(2); // Switch to skills step
       return false;
     }
     
-    if (resumeData.Academic_projects.length === 0) {
+    if (resumeData.Academic_projects.length === 0 || !resumeData.Academic_projects[0].name) {
       setSnackbar({
         open: true,
         message: 'Please add at least one project',
         severity: 'error',
       });
-      setActiveTab(3); // Switch to projects tab
+      setActiveStep(3); // Switch to projects step
       return false;
     }
     
@@ -525,6 +297,7 @@ const ResumeBuilder = () => {
       
       // Store the generated resume data
       setGeneratedResume(response.resume);
+      setIsEditing(false); // Switch to view mode after generation
       
     } catch (error) {
       console.error('Error generating resume:', error);
@@ -545,549 +318,60 @@ const ResumeBuilder = () => {
     });
   };
 
-  // UI Components
-  const renderPersonalInfo = () => (
-    <TabPanel value={activeTab} index={0}>
-      <Box className={classes.form}>
-        <TextField
-          label="Full Name"
-          name="header.name"
-          value={resumeData.header.name}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          required
-        />
-        
-        <TextField
-          label="Email"
-          name="header.email"
-          value={resumeData.header.email}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          required
-        />
-        
-        <TextField
-          label="Phone"
-          name="header.phone"
-          value={resumeData.header.phone}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          required
-          placeholder="e.g., +1 123 456 7890"
-        />
-        
-        <TextField
-          label="GitHub URL"
-          name="header.github"
-          value={resumeData.header.github}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., https://github.com/yourusername"
-        />
-        
-        <TextField
-          label="LinkedIn URL"
-          name="header.linkedin"
-          value={resumeData.header.linkedin}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., https://linkedin.com/in/yourusername"
-        />
-        
-        <TextField
-          label="Portfolio URL"
-          name="header.portfolio"
-          value={resumeData.header.portfolio}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., https://yourportfolio.com"
-        />
-        
-        <TextField
-          label="Target Role"
-          name="target_role"
-          value={resumeData.target_role}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          required
-          placeholder="e.g., Front-end Developer, Data Scientist"
-        />
-        
-        <TextField
-          label="Professional Summary"
-          name="summary"
-          value={resumeData.summary}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={4}
-          placeholder="A brief summary of your professional background and career goals..."
-          className={classes.textField}
-          helperText="If left empty, a professional summary will be generated automatically"
-        />
-      </Box>
-    </TabPanel>
-  );
+  // Toggle between editing and viewing mode
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
 
-  const renderEducation = () => (
-    <TabPanel value={activeTab} index={1}>
-      <Box className={classes.form}>
-        <TextField
-          label="Degree"
-          name="education.degree"
-          value={resumeData.education.degree}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., Bachelor of Science"
-          required
-        />
-        
-        <TextField
-          label="Specialization"
-          name="education.specialization"
-          value={resumeData.education.specialization}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., Computer Science"
-          required
-        />
-        
-        <TextField
-          label="Institution"
-          name="education.institution"
-          value={resumeData.education.institution}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., Stanford University"
-          required
-        />
-        
-        <TextField
-          label="Graduation Year"
-          name="education.graduation_year"
-          value={resumeData.education.graduation_year}
-          onChange={handleInputChange}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="e.g., 2023"
-          required
-        />
-      </Box>
-    </TabPanel>
-  );
-
-  const renderSkills = () => (
-    <TabPanel value={activeTab} index={2}>
-      <Box className={classes.form}>
-        <Box className={classes.chipContainer}>
-          {resumeData.skills.map((skill, index) => (
-            <Chip
-              key={index}
-              label={skill}
-              className={classes.textField}
-              placeholder="Describe the project, your role, and accomplishments"
-            />
-          ))}
-        </Box>
-        
-        <Box className={classes.formRow}>
-          <TextField
-            label="Add Skill"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder="e.g., React.js"
-            onKeyDown={(e) => handleKeyDown(e, handleAddSkill)}
+  // Render current step content
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <PersonalInfoSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
           />
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAddSkill}
-            className={classes.addButton}
-          >
-            Add
-          </Button>
-        </Box>
-        
-        <Divider style={{ margin: '2rem 0 1rem' }} />
-        
-        <Typography variant="h6" className={classes.formSubtitle}>
-          Certifications
-        </Typography>
-        
-        <Box className={classes.chipContainer}>
-          {resumeData.certifications.map((cert, index) => (
-              <Chip
-              key={index}
-              label={cert}
-              className={classes.chip}
-              onDelete={() => handleRemoveCertification(cert)}
-            />
-          ))}
-        </Box>
-        
-        <Box className={classes.formRow}>
-          <TextField
-            label="Add Certification"
-            value={newCertification}
-            onChange={(e) => setNewCertification(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder="e.g., AWS Certified Developer"
-            onKeyDown={(e) => handleKeyDown(e, handleAddCertification)}
+        );
+      case 1:
+        return (
+          <EducationSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
           />
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAddCertification}
-            className={classes.addButton}
-          >
-            Add
-          </Button>
-        </Box>
-      </Box>
-    </TabPanel>
-  );
-
-  const renderProjects = () => (
-    <TabPanel value={activeTab} index={3}>
-      <Box className={classes.form}>
-        {resumeData.Academic_projects.map((project, index) => (
-          <Paper key={index} className={classes.paper}>
-            <Box className={classes.sectionTitle}>
-              <Typography variant="h6">Project {index + 1}</Typography>
-              <IconButton
-                className={classes.deleteButton}
-                onClick={() => handleRemoveProject(index)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-            
-            <TextField
-              label="Project Name"
-              value={project.name}
-              onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
-              variant="outlined"
-              fullWidth
-              className={classes.textField}
-              required
-            />
-            
-            <TextField
-              label="Skills Used"
-              value={project.skills_used}
-              onChange={(e) => handleProjectChange(index, 'skills_used', e.target.value)}
-              variant="outlined"
-              fullWidth
-              className={classes.textField}
-              placeholder="e.g., React, Node.js, MongoDB"
-              required
-            />
-            
-            <TextField
-              label="Description"
-              value={project.description}
-              onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-              variant="outlined"
-              fullWidth
-              multiline
-              rows={3}
-              className={classes.textField}
-              placeholder="Describe the project, your role, and accomplishments"
-              required
-            />
-          </Paper>
-        ))}
-        
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddProject}
-          className={classes.addButton}
-          fullWidth
-        >
-          Add Project
-        </Button>
-      </Box>
-    </TabPanel>
-  );
-
-  const renderWorkExperience = () => (
-    <TabPanel value={activeTab} index={4}>
-      <Box className={classes.form}>
-        {resumeData.work_experience.map((experience, index) => (
-          <Paper key={index} className={classes.paper}>
-            <Box className={classes.sectionTitle}>
-              <Typography variant="h6">Experience {index + 1}</Typography>
-              <IconButton
-                className={classes.deleteButton}
-                onClick={() => handleRemoveWorkExperience(index)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-            
-            <TextField
-              label="Position"
-              value={experience.position}
-              onChange={(e) => handleWorkExperienceChange(index, 'position', e.target.value)}
-              variant="outlined"
-              fullWidth
-              className={classes.textField}
-              required
-            />
-            
-            <TextField
-              label="Company Name"
-              value={experience.company_name}
-              onChange={(e) => handleWorkExperienceChange(index, 'company_name', e.target.value)}
-              variant="outlined"
-              fullWidth
-              className={classes.textField}
-              required
-            />
-            
-            <TextField
-              label="Duration"
-              value={experience.duration}
-              onChange={(e) => handleWorkExperienceChange(index, 'duration', e.target.value)}
-              variant="outlined"
-              fullWidth
-              className={classes.textField}
-              placeholder="e.g., June 2021 - Present"
-              required
-              helperText="Format: Month YYYY - Month YYYY or Month YYYY - Present"
-            />
-            
-            <TextField
-              label="Description"
-              value={experience.description}
-              onChange={(e) => handleWorkExperienceChange(index, 'description', e.target.value)}
-              variant="outlined"
-              fullWidth
-              multiline
-              rows={3}
-              className={classes.textField}
-              placeholder="Describe your responsibilities and achievements"
-              required
-            />
-          </Paper>
-        ))}
-        
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddWorkExperience}
-          className={classes.addButton}
-          fullWidth
-        >
-          Add Work Experience
-        </Button>
-      </Box>
-    </TabPanel>
-  );
-
-  const renderResumePreview = () => (
-    <Box className={classes.resumeContainer}>
-      {/* Header Section */}
-      <Box className={classes.resumeHeader}>
-        <Typography variant="h4" className={classes.resumeName}>
-          {resumeData.header.name || "Your Name"}
-        </Typography>
-        
-        <Box className={classes.resumeContact}>
-          {resumeData.header.email && (
-            <Typography variant="body2">
-              {resumeData.header.email}
-            </Typography>
-          )}
-          
-          {resumeData.header.phone && (
-            <Typography variant="body2">
-              {resumeData.header.phone}
-            </Typography>
-          )}
-          
-          {resumeData.header.github && (
-            <Typography variant="body2">
-              GitHub: {resumeData.header.github.replace('https://', '')}
-            </Typography>
-          )}
-          
-          {resumeData.header.linkedin && (
-            <Typography variant="body2">
-              LinkedIn: {resumeData.header.linkedin.replace('https://', '')}
-            </Typography>
-          )}
-          
-          {resumeData.header.portfolio && (
-            <Typography variant="body2">
-              Portfolio: {resumeData.header.portfolio.replace('https://', '')}
-            </Typography>
-          )}
-        </Box>
-      </Box>
-      
-      {/* Summary Section */}
-      {resumeData.summary && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Professional Summary
-          </Typography>
-          <Typography variant="body2" className={classes.resumeSummary}>
-            {resumeData.summary}
-          </Typography>
-        </Box>
-      )}
-      
-      {/* Education Section */}
-      {resumeData.education.institution && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Education
-          </Typography>
-          <Box className={classes.resumeEducation}>
-            <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-              {resumeData.education.degree} in {resumeData.education.specialization}
-            </Typography>
-            <Typography variant="body2">
-              {resumeData.education.institution}
-            </Typography>
-            {resumeData.education.graduation_year && (
-              <Typography variant="body2" className={classes.resumeDate}>
-                Graduated: {resumeData.education.graduation_year}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      )}
-      
-      {/* Skills Section */}
-      {resumeData.skills.length > 0 && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Skills
-          </Typography>
-          <Box className={classes.resumeSkills}>
-            {resumeData.skills.map((skill, index) => (
-              <Chip
-                key={index}
-                label={skill}
-                size="small"
-                className={classes.resumeSkillChip}
-              />
-            ))}
-          </Box>
-        </Box>
-      )}
-      
-      {/* Projects Section */}
-      {resumeData.Academic_projects.length > 0 && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Academic Projects
-          </Typography>
-          {resumeData.Academic_projects.map((project, index) => (
-            <Box key={index} className={classes.resumeItem}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {project.name || "Project Name"}
-              </Typography>
-              {project.skills_used && (
-                <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                  Skills: {project.skills_used}
-                </Typography>
-              )}
-              {project.description && (
-                <Typography variant="body2">
-                  {project.description}
-                </Typography>
-              )}
-            </Box>
-          ))}
-        </Box>
-      )}
-      
-      {/* Work Experience Section */}
-      {resumeData.work_experience.length > 0 && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Work Experience
-          </Typography>
-          {resumeData.work_experience.map((experience, index) => (
-            <Box key={index} className={classes.resumeItem}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {experience.position || "Position"} | {experience.company_name || "Company"}
-              </Typography>
-              {experience.duration && (
-                <Typography variant="body2" className={classes.resumeDate}>
-                  {experience.duration}
-                </Typography>
-              )}
-              {experience.description && (
-                <Typography variant="body2">
-                  {experience.description}
-                </Typography>
-              )}
-            </Box>
-          ))}
-        </Box>
-      )}
-      
-      {/* Certifications Section */}
-      {resumeData.certifications.length > 0 && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Certifications
-          </Typography>
-          <ul className={classes.resumeBullets}>
-            {resumeData.certifications.map((cert, index) => (
-              <li key={index} className={classes.resumeBullet}>
-                {cert}
-              </li>
-            ))}
-          </ul>
-        </Box>
-      )}
-      
-      {/* Display AI Generated Resume */}
-      {generatedResume && (
-        <Box mt={4}>
-          <Divider />
-          <Typography variant="h6" align="center" gutterBottom sx={{ mt: 2 }}>
-            AI Enhanced Resume Generated
-          </Typography>
-          <Typography variant="body2" color="textSecondary" align="center">
-            Your resume has been professionally enhanced by our AI system.
-          </Typography>
-        </Box>
-      )}
-    </Box>
-  );
+        );
+      case 2:
+        return (
+          <SkillsSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      case 3:
+        return (
+          <ProjectsSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      case 4:
+        return (
+          <ExperienceSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      case 5:
+        return (
+          <CustomSectionsForm 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      default:
+        return 'Unknown step';
+    }
+  };
 
   return (
     <Container className={classes.root} maxWidth="xl">
@@ -1099,73 +383,94 @@ const ResumeBuilder = () => {
             <Button
               variant="contained"
               className={classes.saveButton}
-              startIcon={<SaveIcon />}
               onClick={handleGenerateResume}
               disabled={loading}
             >
               Generate Resume
-              {loading && <CircularProgress size={20} className={classes.loader} />}
+              {loading && (
+                <span className={classes.loader}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <style>{`.spinner{transform-origin:center;animation:spinner_animation .75s infinite linear}@keyframes spinner_animation{100%{transform:rotate(360deg)}}`}</style>
+                    <circle className="spinner" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
+                  </svg>
+                </span>
+              )}
             </Button>
           </Typography>
           
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            className={classes.tabsRoot}
-            TabIndicatorProps={{
-              className: classes.tabIndicator,
-            }}
-          >
-            <Tab 
-              label="Personal Info" 
-              classes={{ 
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-            />
-            <Tab 
-              label="Education" 
-              classes={{ 
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-            />
-            <Tab 
-              label="Skills" 
-              classes={{ 
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-            />
-            <Tab 
-              label="Projects" 
-              classes={{ 
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-            />
-            <Tab 
-              label="Experience" 
-              classes={{ 
-                root: classes.tabRoot,
-                selected: classes.tabSelected,
-              }}
-            />
-          </Tabs>
+          {/* Stepper Navigation */}
+          <Stepper activeStep={activeStep} className={classes.stepper}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-          {renderPersonalInfo()}
-          {renderEducation()}
-          {renderSkills()}
-          {renderProjects()}
-          {renderWorkExperience()}
+          {/* Current Step Content */}
+          <Paper className={classes.paper} elevation={0}>
+            {getStepContent(activeStep)}
+            
+            {/* Navigation Buttons */}
+            <Box className={classes.navigationButtons}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                variant="outlined"
+                className={classes.buttonBack}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                className={classes.buttonNext}
+              >
+                {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+              </Button>
+            </Box>
+          </Paper>
         </Box>
 
         {/* Preview Column */}
         <Box className={`${classes.columnBox} ${classes.previewColumn}`}>
-          <Typography variant="h5" className={classes.sectionTitle}>
-            Resume Preview
-          </Typography>
-          {renderResumePreview()}
+          <Box className={classes.sectionTitle} style={{ justifyContent: 'space-between' }}>
+            <Typography variant="h5">
+              Resume Preview
+            </Typography>
+            {!isEditing && (
+              <Button 
+                variant="outlined" 
+                onClick={toggleEditMode}
+                style={{ textTransform: 'none' }}
+              >
+                I want to edit
+              </Button>
+            )}
+          </Box>
+          
+          <ResumePreview 
+            userData={resumeData}
+            generatedData={generatedResume}
+            isEditing={isEditing}
+            onEdit={(field, value) => {
+              // Allow editing the generated resume directly
+              if (generatedResume && !isEditing) {
+                const updatedData = { ...generatedResume };
+                // Handle nested fields
+                if (field.includes('.')) {
+                  const [section, subfield] = field.split('.');
+                  updatedData[section] = {
+                    ...updatedData[section],
+                    [subfield]: value
+                  };
+                } else {
+                  updatedData[field] = value;
+                }
+                setGeneratedResume(updatedData);
+              }
+            }}
+          />
         </Box>
       </Box>
 
