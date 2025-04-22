@@ -78,17 +78,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Enhanced Logout function with API call
-  const logout = async () => {
+  // Fixed Logout function with simplified implementation
+  const logout = () => {
     setLoading(true);
     try {
-      // Call the logout API (which handles clearing localStorage)
-      await logoutUser();
+      // Clear localStorage directly
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
       // Update state
       setCurrentUser(null);
     } catch (err) {
       console.error('Logout error:', err);
-      // If API call fails, still clear local storage and state
+      // If there's an error, still clear local storage and state
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setCurrentUser(null);

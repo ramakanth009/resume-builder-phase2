@@ -181,33 +181,18 @@ export const deleteResume = async (resumeId) => {
 };
 
 /**
- * User logout - invalidates the token on the server
+ * User logout - clears token and user data from localStorage
  * @returns {Promise} - Logout response
  */
 export const logoutUser = async () => {
   try {
-    const token = localStorage.getItem('token');
-    
-    // If no token exists, just return success
-    if (!token) {
-      return { status: 'success', message: 'Already logged out' };
-    }
-    
-    // Make the call to logout endpoint
-    const response = await apiRequest('/auth/logout', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    
-    // Clear localStorage regardless of response
+    // Clear localStorage without making an API call
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
-    return response;
+    return { status: 'success', message: 'Logged out successfully' };
   } catch (error) {
-    // Still clear localStorage even if API call fails
+    // Still clear localStorage even if there's an error
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
