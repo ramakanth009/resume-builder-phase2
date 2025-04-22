@@ -186,21 +186,26 @@ export const deleteResume = async (resumeId) => {
  */
 export const logoutUser = async () => {
   try {
-    // Clear localStorage without making an API call
+    // Call the backend logout API to blacklist the token
+    await apiRequest('/auth/logout', {
+      method: 'POST',
+    });
+    
+    // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
     return { status: 'success', message: 'Logged out successfully' };
   } catch (error) {
-    // Still clear localStorage even if there's an error
+    // Still clear localStorage even if there's an error with the API call
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
-    // Log error but don't throw it to prevent navigation issues
     console.error('Logout error:', error);
     return { status: 'success', message: 'Logged out locally' };
   }
 };
+
 
 export default {
   apiRequest,

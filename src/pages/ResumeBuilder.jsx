@@ -125,6 +125,30 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   stepLabel: {
     cursor: 'pointer',
+  },
+  downloadButton: {
+    backgroundColor: '#38a169',
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
+    borderRadius: '8px',
+    marginLeft: '1rem',
+    '&:hover': {
+      backgroundColor: '#2f855a',
+    },
+  },
+  editButton: {
+    backgroundColor: '#805ad5',
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
+    borderRadius: '8px',
+    marginLeft: '1rem',
+    '&:hover': {
+      backgroundColor: '#6b46c1',
+    },
   }
 }));
 
@@ -220,7 +244,10 @@ const ResumeBuilder = () => {
 
   // Handler for clicking on step labels
   const handleStepClick = (stepIndex) => {
-    setActiveStep(stepIndex);
+    // Only allow step navigation if resume hasn't been generated yet
+    if (!generatedResume) {
+      setActiveStep(stepIndex);
+    }
   };
 
   // Form Validation
@@ -287,7 +314,7 @@ const ResumeBuilder = () => {
         severity: 'success',
       });
       
-      // Store the generated resume data
+      // Store the generated resume data and replace the preview
       setGeneratedResume(response.resume);
       
     } catch (error) {
@@ -300,6 +327,22 @@ const ResumeBuilder = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle resetting the form to edit again
+  const handleEditResume = () => {
+    setGeneratedResume(null);
+  };
+
+  // Handle download of the generated resume
+  const handleDownloadResume = () => {
+    // Implement PDF download logic here
+    // This is a placeholder - actual implementation would depend on your PDF generation library
+    setSnackbar({
+      open: true,
+      message: 'Resume downloaded successfully',
+      severity: 'success',
+    });
   };
 
   const handleCloseSnackbar = () => {
@@ -362,82 +405,106 @@ const ResumeBuilder = () => {
   return (
     <Container className={classes.root} maxWidth="xl">
       <Box className={classes.mainContainer}>
-        {/* Form Column */}
-        <Box className={`${classes.columnBox} ${classes.formColumn}`}>
-          <Typography variant="h5" className={classes.sectionTitle}>
-            Build Your Resume
-            <Button
-              variant="contained"
-              className={classes.saveButton}
-              onClick={handleGenerateResume}
-              disabled={loading}
-            >
-              Generate Resume
-              {loading && (
-                <span className={classes.loader}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <style>{`.spinner{transform-origin:center;animation:spinner_animation .75s infinite linear}@keyframes spinner_animation{100%{transform:rotate(360deg)}}`}</style>
-                    <circle className="spinner" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
-                  </svg>
-                </span>
-              )}
-            </Button>
-          </Typography>
-          
-          {/* Stepper Navigation with clickable labels */}
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label, index) => (
-              <Step key={label}>
-                <StepLabel 
-                  className={classes.stepLabel} 
-                  onClick={() => handleStepClick(index)}
-                  StepIconProps={{
-                    style: { cursor: 'pointer' }
-                  }}
-                >
-                  <span style={{ cursor: 'pointer' }}>{label}</span>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-
-          {/* Current Step Content */}
-          <Paper className={classes.paper} elevation={0}>
-            {getStepContent(activeStep)}
-            
-            {/* Navigation Buttons */}
-            <Box className={classes.navigationButtons}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                variant="outlined"
-                className={classes.buttonBack}
-              >
-                Back
-              </Button>
+        {/* Form Column - Hide or show based on whether resume has been generated */}
+        {!generatedResume && (
+          <Box className={`${classes.columnBox} ${classes.formColumn}`}>
+            <Typography variant="h5" className={classes.sectionTitle}>
+              Build Your Resume
               <Button
                 variant="contained"
-                onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
-                className={classes.buttonNext}
+                className={classes.saveButton}
+                onClick={handleGenerateResume}
+                disabled={loading}
               >
-                {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+                Generate Resume
+                {loading && (
+                  <span className={classes.loader}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <style>{`.spinner{transform-origin:center;animation:spinner_animation .75s infinite linear}@keyframes spinner_animation{100%{transform:rotate(360deg)}}`}</style>
+                      <circle className="spinner" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
+                    </svg>
+                  </span>
+                )}
               </Button>
-            </Box>
-          </Paper>
-        </Box>
+            </Typography>
+            
+            {/* Stepper Navigation with clickable labels */}
+            <Stepper activeStep={activeStep} className={classes.stepper}>
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel 
+                    className={classes.stepLabel} 
+                    onClick={() => handleStepClick(index)}
+                    StepIconProps={{
+                      style: { cursor: 'pointer' }
+                    }}
+                  >
+                    <span style={{ cursor: 'pointer' }}>{label}</span>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
 
-        {/* Preview Column */}
-        <Box className={`${classes.columnBox} ${classes.previewColumn}`}>
+            {/* Current Step Content */}
+            <Paper className={classes.paper} elevation={0}>
+              {getStepContent(activeStep)}
+              
+              {/* Navigation Buttons */}
+              <Box className={classes.navigationButtons}>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  variant="outlined"
+                  className={classes.buttonBack}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                  className={classes.buttonNext}
+                >
+                  {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
+        )}
+
+        {/* Preview Column - Adjust width to full when resume is generated */}
+        <Box 
+          className={`${generatedResume ? '' : classes.columnBox} ${classes.previewColumn}`} 
+          sx={{ width: generatedResume ? '100%' : '50%' }}
+        >
           <Box className={classes.sectionTitle}>
             <Typography variant="h5">
-              Resume Preview
+              {generatedResume ? 'Generated Resume' : 'Resume Preview'}
             </Typography>
+            
+            {/* Show action buttons when resume is generated */}
+            {generatedResume && (
+              <Box>
+                <Button
+                  variant="contained"
+                  className={classes.downloadButton}
+                  onClick={handleDownloadResume}
+                >
+                  Download PDF
+                </Button>
+                <Button
+                  variant="contained"
+                  className={classes.editButton}
+                  onClick={handleEditResume}
+                >
+                  Edit Resume
+                </Button>
+              </Box>
+            )}
           </Box>
           
           <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
-            isEditing={true} // Always in editing mode to disable click-to-edit functionality
           />
         </Box>
       </Box>

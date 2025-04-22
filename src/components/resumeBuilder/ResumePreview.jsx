@@ -101,11 +101,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-const ResumePreview = ({ userData, generatedData, isEditing }) => {
+const ResumePreview = ({ userData, generatedData }) => {
   const classes = useStyles();
   
-  // Use generated data if available and not in editing mode, otherwise use user data
-  const data = (!isEditing && generatedData) ? generatedData : userData;
+  // Use generated data if available, otherwise use user data
+  const data = generatedData || userData;
   
   // Helper function to render links
   const renderLink = (text, url, type) => {
@@ -370,7 +370,7 @@ const ResumePreview = ({ userData, generatedData, isEditing }) => {
       )}
       
       {/* Generated Resume Notice */}
-      {!isEditing && generatedData && (
+      {generatedData && (
         <Box className={classes.generatedNotice}>
           <Divider sx={{ mb: 2 }} />
           <Typography variant="body2" color="textSecondary">

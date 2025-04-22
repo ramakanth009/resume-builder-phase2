@@ -162,32 +162,33 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!validateForm()) return;
+  
+  // Prevent handler from running if already loading
+  if (authLoading) return;
+  
+  try {
+    await login(formData.email, formData.password);
     
-    if (!validateForm()) return;
+    setSnackbar({
+      open: true,
+      message: 'Login successful! Redirecting to resume builder...',
+      severity: 'success',
+    });
     
-    try {
-      await login(formData.email, formData.password);
-      
-      setSnackbar({
-        open: true,
-        message: 'Login successful! Redirecting to resume builder...',
-        severity: 'success',
-      });
-      
-      // Redirect to resume builder page
-      setTimeout(() => {
-        navigate('/resume-builder');
-      }, 1000);
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: error.message || 'Login failed. Please check your credentials.',
-        severity: 'error',
-      });
-    }
-  };
+    // Navigate immediately instead of using setTimeout
+    navigate('/resume-builder');
+  } catch (error) {
+    setSnackbar({
+      open: true,
+      message: error.message || 'Login failed. Please check your credentials.',
+      severity: 'error',
+    });
+  }
+};
 
   const handleCloseSnackbar = () => {
     setSnackbar({

@@ -79,25 +79,27 @@ export const AuthProvider = ({ children }) => {
   };
   
   // Fixed Logout function with simplified implementation
-  const logout = () => {
-    setLoading(true);
-    try {
-      // Clear localStorage directly
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      // Update state
-      setCurrentUser(null);
-    } catch (err) {
-      console.error('Logout error:', err);
-      // If there's an error, still clear local storage and state
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setCurrentUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+const logout = async () => {
+  setLoading(true);
+  setError('');
+  
+  try {
+    // Call the logoutUser function to make API request and clear localStorage
+    await logoutUser();
+    
+    // Update state
+    setCurrentUser(null);
+  } catch (err) {
+    console.error('Logout error:', err);
+    
+    // Even if there's an error, make sure the user is logged out locally
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setCurrentUser(null);
+  } finally {
+    setLoading(false);
+  }
+};
   
   // Value to be provided by the context
   const value = {
