@@ -104,18 +104,48 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const ResumePreview = ({ userData, generatedData }) => {
   const classes = useStyles();
   
-  React.useEffect(() => {
-    // Add this console log to debug the data structure
-    if (generatedData) {
-      console.log('Generated Resume Data:', generatedData);
-      console.log('Education:', generatedData.education);
-      console.log('Work Experience:', generatedData.work_experience);
-      console.log('Academic Projects:', generatedData.Academic_projects);
-    }
-  }, [generatedData]);
-  
   // Use generated data if available, otherwise use user data
   const data = generatedData || userData;
+  
+  // Helper function to check if education data exists
+  const hasEducationData = () => {
+    if (Array.isArray(data.education)) {
+      return data.education.length > 0 && data.education.some(edu => 
+        (edu.degree && edu.degree.trim() !== '') || 
+        (edu.institution && edu.institution.trim() !== '') ||
+        (edu.specialization && edu.specialization.trim() !== '')
+      );
+    }
+    
+    return data.education && (
+      (data.education.degree && data.education.degree.trim() !== '') || 
+      (data.education.institution && data.education.institution.trim() !== '') ||
+      (data.education.specialization && data.education.specialization.trim() !== '')
+    );
+  };
+  
+  // Helper function to check if projects data exists
+  const hasProjectsData = () => {
+    return data.projects && data.projects.length > 0 && 
+      data.projects.some(p => p.name && p.name.trim() !== '');
+  };
+  
+  // Helper function to check if work experience data exists
+  const hasWorkExperienceData = () => {
+    const userWorkExp = data.work_experience && data.work_experience.length > 0 && 
+      data.work_experience.some(exp => 
+        (exp.position && exp.position.trim() !== '') || 
+        (exp.company_name && exp.company_name.trim() !== '')
+      );
+      
+    const generatedWorkExp = data.workExperience && data.workExperience.length > 0 && 
+      data.workExperience.some(exp => 
+        (exp.position && exp.position.trim() !== '') || 
+        (exp.companyName && exp.companyName.trim() !== '')
+      );
+      
+    return userWorkExp || generatedWorkExp;
+  };
   
   // Helper function to render links
   const renderLink = (text, url, type) => {
@@ -209,26 +239,47 @@ const ResumePreview = ({ userData, generatedData }) => {
         </Box>
       )}
       
-      {/* Education Section */}
-      {data.education && (data.education.degree || data.education.institution || data.education.specialization) && (
+      {/* Education Section - Only show if data exists */}
+      {hasEducationData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Education
           </Typography>
-          <Box className={classes.resumeEducation}>
-            <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-              {data.education.degree || ''} 
-              {data.education.specialization ? ` in ${data.education.specialization}` : ''}
-            </Typography>
-            <Typography variant="body2">
-              {data.education.institution || ''}
-            </Typography>
-            {data.education.graduation_year && (
-              <Typography variant="body2" className={classes.resumeDate}>
-                Graduated: {data.education.graduation_year}
+          {Array.isArray(data.education) ? (
+            // Handle education as array (from generatedData)
+            data.education.map((edu, index) => (
+              <Box key={index} className={classes.resumeEducation}>
+                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                  {edu.degree || ''} 
+                  {edu.specialization ? ` in ${edu.specialization}` : ''}
+                </Typography>
+                <Typography variant="body2">
+                  {edu.institution || ''}
+                </Typography>
+                {(edu.graduation_year || edu.graduationYear) && (
+                  <Typography variant="body2" className={classes.resumeDate}>
+                    Graduated: {edu.graduation_year || edu.graduationYear}
+                  </Typography>
+                )}
+              </Box>
+            ))
+          ) : (
+            // Handle education as object (from userData)
+            <Box className={classes.resumeEducation}>
+              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                {data.education.degree || ''} 
+                {data.education.specialization ? ` in ${data.education.specialization}` : ''}
               </Typography>
-            )}
-          </Box>
+              <Typography variant="body2">
+                {data.education.institution || ''}
+              </Typography>
+              {data.education.graduation_year && (
+                <Typography variant="body2" className={classes.resumeDate}>
+                  Graduated: {data.education.graduation_year}
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
       )}
       
@@ -251,77 +302,129 @@ const ResumePreview = ({ userData, generatedData }) => {
         </Box>
       )}
       
-      {/* Projects Section */}
-      {data.Academic_projects && data.Academic_projects.length > 0 && 
-        data.Academic_projects.some(p => p.name && p.name.trim() !== '') && (
+      {/* Projects Section - Only show if data exists */}
+      {hasProjectsData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Projects
           </Typography>
-          {data.Academic_projects
-            .filter(p => p.name && p.name.trim() !== '')
-            .map((project, index) => (
-              <Box key={index} className={classes.resumeItem}>
-                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {project.name || "Project Name"}
-                </Typography>
-                {project.skills_used && project.skills_used.trim() !== '' && (
-                  <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                    Skills: {project.skills_used}
+          
+          {/* Handle projects from generated data */}
+          {data.projects && data.projects.length > 0 &&
+            data.projects
+              .filter(p => p.name && p.name.trim() !== '')
+              .map((project, index) => (
+                <Box key={`generated-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {project.name || "Project Name"}
                   </Typography>
-                )}
-                {project.description && project.description.trim() !== '' && (
-                  <Typography variant="body2">
-                    {project.description}
-                  </Typography>
-                )}
-              </Box>
-          ))}
+                  
+                  {/* For generated data - handle responsibilities array */}
+                  {project.responsibilities && project.responsibilities.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {project.responsibilities.map((responsibility, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>
+                          {responsibility}
+                        </li>
+                      ))}
+                    </Box>
+                  )}
+                  
+                  {/* For technologies array if present */}
+                  {project.technologies && project.technologies.length > 0 && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                      Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
+                    </Typography>
+                  )}
+                  
+                  {/* For description field if present */}
+                  {project.description && project.description.trim() !== '' && (
+                    <Typography variant="body2">
+                      {project.description}
+                    </Typography>
+                  )}
+                </Box>
+            ))}
         </Box>
       )}
       
-      {/* Work Experience Section */}
-      {data.work_experience && data.work_experience.length > 0 && 
-        data.work_experience.some(exp => (exp.position && exp.position.trim() !== '') || 
-                                         (exp.company_name && exp.company_name.trim() !== '')) && (
+      {/* Work Experience Section - Only show if data exists */}
+      {hasWorkExperienceData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Work Experience
           </Typography>
-          {data.work_experience
-            .filter(exp => (exp.position && exp.position.trim() !== '') || 
-                           (exp.company_name && exp.company_name.trim() !== ''))
-            .map((experience, index) => (
-              <Box key={index} className={classes.resumeItem}>
-                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {experience.position || "Position"} 
-                  {experience.company_name ? 
-                    ` | ${experience.company_name}` : ""}
-                </Typography>
-                {experience.duration && experience.duration.trim() !== '' && (
-                  <Typography variant="body2" className={classes.resumeDate}>
-                    {experience.duration}
+          
+          {/* Handle work_experience from user data */}
+          {data.work_experience && data.work_experience.length > 0 &&
+            data.work_experience
+              .filter(exp => (exp.position && exp.position.trim() !== '') || 
+                            (exp.company_name && exp.company_name.trim() !== ''))
+              .map((experience, index) => (
+                <Box key={`work-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {experience.position || "Position"} 
+                    {experience.company_name ? 
+                      ` | ${experience.company_name}` : ""}
                   </Typography>
-                )}
-                {experience.description && experience.description.trim() !== '' && (
-                  <Typography variant="body2">
-                    {experience.description}
+                  {experience.duration && experience.duration.trim() !== '' && (
+                    <Typography variant="body2" className={classes.resumeDate}>
+                      {experience.duration}
+                    </Typography>
+                  )}
+                  {experience.description && experience.description.trim() !== '' && (
+                    <Typography variant="body2">
+                      {experience.description}
+                    </Typography>
+                  )}
+                  {experience.responsibilities && experience.responsibilities.length > 0 && 
+                    experience.responsibilities.some(r => r && r.trim() !== '') && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {experience.responsibilities
+                        .filter(r => r && r.trim() !== '')
+                        .map((responsibility, idx) => (
+                          <li key={idx} className={classes.resumeBullet}>
+                            {responsibility}
+                          </li>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+            ))}
+          
+          {/* Handle workExperience from generated data */}
+          {data.workExperience && data.workExperience.length > 0 &&
+            data.workExperience
+              .filter(exp => (exp.position && exp.position.trim() !== '') || 
+                            (exp.companyName && exp.companyName.trim() !== ''))
+              .map((experience, index) => (
+                <Box key={`workExp-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {experience.position || "Position"} 
+                    {experience.companyName ? 
+                      ` | ${experience.companyName}` : ""}
                   </Typography>
-                )}
-                {experience.responsibilities && experience.responsibilities.length > 0 && 
-                  experience.responsibilities.some(r => r && r.trim() !== '') && (
-                  <Box component="ul" className={classes.resumeBullets}>
-                    {experience.responsibilities
-                      .filter(r => r && r.trim() !== '')
-                      .map((responsibility, idx) => (
+                  {experience.duration && experience.duration.trim() !== '' && (
+                    <Typography variant="body2" className={classes.resumeDate}>
+                      {experience.duration}
+                    </Typography>
+                  )}
+                  {experience.description && experience.description.trim() !== '' && (
+                    <Typography variant="body2">
+                      {experience.description}
+                    </Typography>
+                  )}
+                  {experience.responsibilities && experience.responsibilities.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {experience.responsibilities.map((responsibility, idx) => (
                         <li key={idx} className={classes.resumeBullet}>
                           {responsibility}
                         </li>
-                    ))}
-                  </Box>
-                )}
-              </Box>
-          ))}
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+            ))}
         </Box>
       )}
       
