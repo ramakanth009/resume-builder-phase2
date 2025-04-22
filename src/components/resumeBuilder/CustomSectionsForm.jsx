@@ -8,11 +8,10 @@ import {
   Paper,
   IconButton,
   Divider,
-  InputAdornment,
-  MenuItem,
   FormControl,
   InputLabel,
-  Select
+  Select,
+  MenuItem
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -90,6 +89,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   inputField: {
     flex: 1,
+  },
+  sectionsList: {
+    marginTop: '1rem',
+    marginBottom: '1rem',
   }
 }));
 
@@ -203,6 +206,73 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
     }
   };
 
+  // This function renders all created sections
+  const renderAllSections = () => {
+    if (existingSections.length === 0) {
+      return (
+        <Typography variant="body2" color="textSecondary" align="center" sx={{ my: 3 }}>
+          No custom sections added yet. Add a section to get started.
+        </Typography>
+      );
+    }
+
+    return existingSections.map(section => (
+      <Paper key={section} className={classes.paper}>
+        <Box className={classes.sectionTitle}>
+          <Typography variant="h6">
+            {section.replace('_', ' ')}
+          </Typography>
+          <IconButton
+            color="error"
+            onClick={() => handleRemoveSection(section)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+        
+        {/* Items in the current section */}
+        <Box className={classes.chipContainer}>
+          {(resumeData.customSections[section] || []).map((item, index) => (
+            <Chip
+              key={index}
+              label={item}
+              onDelete={() => handleRemoveItem(section, index)}
+              className={classes.chip}
+            />
+          ))}
+        </Box>
+        
+        {/* Add new item to this section */}
+        <Box className={classes.inputContainer}>
+          <TextField
+            className={classes.inputField}
+            label={`Add to ${section.replace('_', ' ')}`}
+            value={section === selectedSection ? itemText : ''}
+            onChange={(e) => {
+              setSelectedSection(section);
+              setItemText(e.target.value);
+            }}
+            variant="outlined"
+            fullWidth
+            placeholder="Enter text for this section"
+            onKeyDown={(e) => handleKeyDown(e, handleAddItem)}
+          />
+          <Button
+            variant="contained"
+            className={classes.addButton}
+            onClick={() => {
+              setSelectedSection(section);
+              handleAddItem();
+            }}
+            startIcon={<AddIcon />}
+          >
+            Add
+          </Button>
+        </Box>
+      </Paper>
+    ));
+  };
+
   return (
     <Box className={classes.form}>
       <Typography variant="h6" className={classes.formSubtitle}>
@@ -254,82 +324,10 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
       
       <Divider className={classes.divider} />
       
-      {/* Select section to edit */}
-      {existingSections.length > 0 && (
-        <>
-          <FormControl fullWidth variant="outlined" className={classes.textField}>
-            <InputLabel>Edit Section</InputLabel>
-            <Select
-              value={selectedSection}
-              onChange={(e) => setSelectedSection(e.target.value)}
-              label="Edit Section"
-            >
-              {existingSections.map((section) => (
-                <MenuItem key={section} value={section}>
-                  {section.replace('_', ' ')}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          
-          {/* Current section items */}
-          {selectedSection && (
-            <Paper className={classes.paper}>
-              <Box className={classes.sectionTitle}>
-                <Typography variant="h6">
-                  {selectedSection.replace('_', ' ')}
-                </Typography>
-                <IconButton
-                  color="error"
-                  onClick={() => handleRemoveSection(selectedSection)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-              
-              {/* Items in the current section */}
-              <Box className={classes.chipContainer}>
-                {(resumeData.customSections[selectedSection] || []).map((item, index) => (
-                  <Chip
-                    key={index}
-                    label={item}
-                    onDelete={() => handleRemoveItem(selectedSection, index)}
-                    className={classes.chip}
-                  />
-                ))}
-              </Box>
-              
-              {/* Add new item to selected section - consistent with the style above */}
-              <Box className={classes.inputContainer}>
-                <TextField
-                  className={classes.inputField}
-                  label={`Add to ${selectedSection.replace('_', ' ')}`}
-                  value={itemText}
-                  onChange={(e) => setItemText(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Enter text for this section"
-                  onKeyDown={(e) => handleKeyDown(e, handleAddItem)}
-                />
-                <Button
-                  variant="contained"
-                  className={classes.addButton}
-                  onClick={handleAddItem}
-                  startIcon={<AddIcon />}
-                >
-                  Add
-                </Button>
-              </Box>
-            </Paper>
-          )}
-        </>
-      )}
-      
-      {existingSections.length === 0 && (
-        <Typography variant="body2" color="textSecondary" align="center" sx={{ my: 3 }}>
-          No custom sections added yet. Add a section to get started.
-        </Typography>
-      )}
+      {/* All sections rendered persistently */}
+      <Box className={classes.sectionsList}>
+        {renderAllSections()}
+      </Box>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { 
   Container, 
@@ -9,62 +9,32 @@ import {
   Paper, 
   Snackbar,
   CircularProgress,
-  Fade,
-  IconButton
+  Grid
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import illustration from '../assets/resume-illustration.svg';
 import { useAuth } from '../contexts/AuthContext';
-import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
     minHeight: '100vh',
     padding: '2rem 0',
-    background: 'linear-gradient(135deg, #f9f9f9 0%, #f5f7fa 100%)',
-    position: 'relative',
-    overflow: 'hidden',
+    background: '#f5f7fa',
   },
   paper: {
     padding: '2rem',
-    borderRadius: '16px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    position: 'relative',
-    zIndex: 2,
-    overflow: 'hidden',
-    '&:hover': {
-      transform: 'translateY(-5px)',
-      boxShadow: '0 15px 35px rgba(0,0,0,0.12)',
-    },
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '5px',
-      background: 'linear-gradient(90deg, #3182ce 0%, #4fd1c5 100%)',
-    },
+    borderRadius: '10px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
   },
   title: {
     fontWeight: 700,
     marginBottom: '0.5rem',
     color: '#2d3748',
-    position: 'relative',
-    display: 'inline-block',
-  },
-  titleHighlight: {
-    position: 'relative',
-    zIndex: 1,
-    '&::after': {
-      content: 'none', // Remove the underline effect
-    },
   },
   subtitle: {
     marginBottom: '2rem',
@@ -74,214 +44,75 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1.5rem',
-  },
-  textFieldWrapper: {
-    position: 'relative',
+    flex: 1, // Take available space
   },
   textField: {
     '& .MuiOutlinedInput-root': {
-      borderRadius: '12px',
-      transition: 'all 0.3s ease',
-      paddingLeft: '3rem', // Make space for the icon
-    },
-    '& .MuiOutlinedInput-root.Mui-focused': {
-      borderColor: '#3182ce',
-      boxShadow: '0 0 0 3px rgba(49, 130, 206, 0.1)',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderWidth: '1.5px',
-      transition: 'border-color 0.3s ease',
+      borderRadius: '8px',
     },
   },
   button: {
-    padding: '0.85rem',
-    borderRadius: '12px',
+    padding: '0.75rem',
+    borderRadius: '8px',
     fontWeight: 600,
     textTransform: 'none',
     fontSize: '1rem',
-    marginTop: '1.5rem',
-    background: 'linear-gradient(90deg, #3182ce 0%, #4299e1 100%)',
+    marginTop: '1rem',
+    backgroundColor: '#3182ce',
     color: 'white',
-    boxShadow: '0 4px 12px rgba(66, 153, 225, 0.25)',
-    transition: 'all 0.3s ease',
     '&:hover': {
-      background: 'linear-gradient(90deg, #2b6cb0 0%, #3182ce 100%)',
-      boxShadow: '0 6px 16px rgba(66, 153, 225, 0.35)',
-      transform: 'translateY(-2px)',
+      backgroundColor: '#2b6cb0',
     },
-    '&:active': {
-      transform: 'translateY(0)',
-    }
   },
-  inputIcon: {
-    position: 'absolute',
-    left: '12px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    color: '#718096',
-    zIndex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '24px', // Fixed width for better alignment
-    height: '24px', // Fixed height for better alignment
+  illustration: {
+    width: '100%',
+    height: 'auto',
+    maxWidth: '300px',
+    display: 'block',
+    margin: '0 auto',
   },
-  passwordVisibilityToggle: {
-    position: 'absolute',
-    right: '12px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    color: '#718096',
-    zIndex: 1,
+  infoBox: {
+    padding: '2rem',
     display: 'flex',
-    alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
-    width: '24px', // Fixed width for better alignment
-    height: '24px', // Fixed height for better alignment
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: '#f0f5ff',
+    borderRadius: '10px',
+    height: '100%',
+  },
+  registerLink: {
+    textAlign: 'center',
+    marginTop: 'auto', // Push to bottom
+    paddingTop: '1.5rem',
+  },
+  registerText: {
+    color: '#718096',
+  },
+  registerButton: {
+    color: '#3182ce',
+    fontWeight: 600,
+    textTransform: 'none',
+    padding: '0 4px',
   },
   loader: {
     marginLeft: '10px',
     color: 'white',
   },
-  contentBox: {
+  gridContainer: {
+    height: '100%',
+  },
+  formWrapper: {
     display: 'flex',
-    flexDirection: {
-      xs: 'column',
-      md: 'row'
-    },
-    gap: '2.5rem',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    position: 'relative',
-    zIndex: 1,
+    flexDirection: 'column',
+    flex: 1,
+    height: '500px', // Fixed minimum height
   },
-  formContainer: {
-    width: '100%',
-    maxWidth: {
-      xs: '100%',
-      md: '450px'
-    },
-  },
-  infoContainer: {
-    width: '100%',
-    maxWidth: {
-      xs: '100%',
-      md: '450px'
-    },
-  },
-  featurePoint: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1rem',
-    position: 'relative',
-    paddingLeft: '2rem',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      left: '0',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: '24px',
-      height: '24px',
-      borderRadius: '50%',
-      backgroundColor: 'rgba(49, 130, 206, 0.1)',
-    },
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      left: '8px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: '8px',
-      height: '8px',
-      borderRadius: '50%',
-      backgroundColor: '#3182ce',
-    },
-  },
-  decorCircle1: {
-    position: 'absolute',
-    top: '15%',
-    right: '10%',
-    width: '300px',
-    height: '300px',
-    borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(66, 153, 225, 0.05) 0%, rgba(66, 153, 225, 0) 70%)',
-    zIndex: 0,
-  },
-  decorCircle2: {
-    position: 'absolute',
-    bottom: '10%',
-    left: '5%',
-    width: '250px',
-    height: '250px',
-    borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(79, 209, 197, 0.05) 0%, rgba(79, 209, 197, 0) 70%)',
-    zIndex: 0,
-  },
-  welcomeAnimation: {
-    opacity: 0,
-    animation: '$fadeIn 0.8s forwards',
-  },
-  '@keyframes fadeIn': {
-    from: {
-      opacity: 0,
-      transform: 'translateY(20px)',
-    },
-    to: {
-      opacity: 1,
-      transform: 'translateY(0)',
-    },
-  },
-  formAnimation: {
-    opacity: 0,
-    animation: '$fadeInDelay 0.8s forwards 0.3s',
-  },
-  '@keyframes fadeInDelay': {
-    from: {
-      opacity: 0,
-      transform: 'translateY(20px)',
-    },
-    to: {
-      opacity: 1,
-      transform: 'translateY(0)',
-    },
-  },
-  illustrationContainer: {
-    position: 'relative',
-    marginTop: '2rem',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      width: '80%',
-      height: '15px',
-      bottom: '-15px',
-      left: '10%',
-      borderRadius: '50%',
-      backgroundColor: 'rgba(0, 0, 0, 0.05)',
-      filter: 'blur(8px)',
-      animation: '$shadowPulse 6s ease-in-out infinite',
-    },
-  },
-  '@keyframes shadowPulse': {
-    '0%': {
-      transform: 'scaleX(1)',
-      opacity: 0.4,
-    },
-    '50%': {
-      transform: 'scaleX(0.85)',
-      opacity: 0.2,
-    },
-    '100%': {
-      transform: 'scaleX(1)',
-      opacity: 0.4,
-    },
-  },
-  featureTitle: {
-    fontWeight: 600,
-    color: '#2d3748',
-    marginBottom: '1.5rem',
-    marginTop: '1.5rem',
-  },
+  contentContainer: {
+    margin: '0 auto',
+    maxWidth: '1200px',
+  }
 }));
 
 const Login = () => {
@@ -300,16 +131,6 @@ const Login = () => {
     message: '',
     severity: 'success',
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [animationComplete, setAnimationComplete] = useState(false);
-
-  // Set animation complete after delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationComplete(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -379,42 +200,32 @@ const Login = () => {
     navigate('/');
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
-    <Container className={classes.root} maxWidth="xl">
-      <Box className={classes.decorCircle1} />
-      <Box className={classes.decorCircle2} />
-      
-      <Fade in={true} timeout={800} style={{ transitionDelay: '100ms' }}>
-        <Box mb={4} className={classes.welcomeAnimation}>
+    <Box className={classes.root}>
+      <Container maxWidth="lg">
+        <Box mb={4}>
           <Typography variant="h3" align="center" className={classes.title} gutterBottom>
-            Welcome to <span className={classes.titleHighlight}>Resume Builder</span>
+            Student Resume Builder
           </Typography>
           <Typography variant="h6" align="center" className={classes.subtitle}>
-            Log in to continue building your professional journey
+            Welcome back! Log in to your account
           </Typography>
         </Box>
-      </Fade>
-      
-      <Box className={classes.contentBox}>
-        {/* Left side - Login Form */}
-        <Box className={classes.formContainer}>
-          <Fade in={true} timeout={800} style={{ transitionDelay: '300ms' }}>
-            <Paper className={classes.paper} elevation={0}>
-              <Box className={classes.formAnimation}>
-                <Typography variant="h5" gutterBottom className={classes.title}>
-                  Log in to your account
-                </Typography>
-                <Typography variant="body2" gutterBottom className={classes.subtitle}>
-                  Continue building and managing your professional resumes
-                </Typography>
-                
-                <form className={classes.form} onSubmit={handleSubmit}>
-                  <Box className={classes.textFieldWrapper}>
-                    <EmailIcon className={classes.inputIcon} />
+        
+        <Box className={classes.contentContainer}>
+          <Grid container spacing={4} className={classes.gridContainer}>
+            {/* Left side - Login Form */}
+            <Grid item xs={12} md={6}>
+              <Paper className={classes.paper} elevation={0}>
+                <Box className={classes.formWrapper}>
+                  <Typography variant="h5" gutterBottom className={classes.title}>
+                    Log in to your account
+                  </Typography>
+                  <Typography variant="body2" gutterBottom className={classes.subtitle}>
+                    Continue building and managing your professional resumes
+                  </Typography>
+                  
+                  <form className={classes.form} onSubmit={handleSubmit}>
                     <TextField
                       className={classes.textField}
                       variant="outlined"
@@ -426,99 +237,82 @@ const Login = () => {
                       onChange={handleChange}
                       error={!!errors.email}
                       helperText={errors.email}
-                      placeholder="your.email@example.com"
                     />
-                  </Box>
-                  
-                  <Box className={classes.textFieldWrapper}>
-                    <LockIcon className={classes.inputIcon} />
+                    
                     <TextField
                       className={classes.textField}
                       variant="outlined"
                       fullWidth
                       label="Password"
                       name="password"
-                      type={showPassword ? "text" : "password"}
+                      type="password"
                       value={formData.password}
                       onChange={handleChange}
                       error={!!errors.password}
                       helperText={errors.password}
-                      placeholder="Enter your password"
                     />
-                    <IconButton 
-                      className={classes.passwordVisibilityToggle}
-                      onClick={togglePasswordVisibility}
-                      tabIndex={-1}
+                    
+                    <Button
+                      className={classes.button}
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      disabled={authLoading}
                     >
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </Box>
-                  
-                  <Button
-                    className={classes.button}
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={authLoading}
-                    endIcon={<ArrowForwardIcon />}
-                  >
-                    {authLoading ? (
-                      <>
-                        Logging In
-                        <CircularProgress size={20} className={classes.loader} />
-                      </>
-                    ) : (
-                      'Log In to Resume Builder'
-                    )}
-                  </Button>
-                </form>
-                
-                <Box className={classes.registerLink}>
-                  <Typography className={classes.registerText} variant="body2" display="inline">
-                    Don't have an account?
-                  </Typography>
-                  <Button
-                    className={classes.registerButton}
-                    onClick={navigateToRegister}
-                  >
-                    Sign up
-                  </Button>
+                      {authLoading ? (
+                        <>
+                          Logging In
+                          <CircularProgress size={20} className={classes.loader} />
+                        </>
+                      ) : (
+                        'Log In'
+                      )}
+                    </Button>
+                    
+                    <Box sx={{ flexGrow: 1 }} /> {/* Spacer to push content to bottom */}
+                    
+                    <Box className={classes.registerLink}>
+                      <Typography className={classes.registerText} variant="body2" display="inline">
+                        Don't have an account?
+                      </Typography>
+                      <Button
+                        className={classes.registerButton}
+                        onClick={navigateToRegister}
+                      >
+                        Sign up
+                      </Button>
+                    </Box>
+                  </form>
                 </Box>
-              </Box>
-            </Paper>
-          </Fade>
-        </Box>
-        
-        {/* Right side - Info and Illustration */}
-        <Box className={classes.infoContainer}>
-          <Fade in={true} timeout={800} style={{ transitionDelay: '500ms' }}>
-            <Paper className={classes.infoBox} elevation={0}>
-              <Box className={classes.illustrationContainer}>
+              </Paper>
+            </Grid>
+            
+            {/* Right side - Info and Illustration */}
+            <Grid item xs={12} md={6}>
+              <Paper className={classes.infoBox} elevation={0}>
                 <img src={illustration} alt="Resume Building" className={classes.illustration} />
-              </Box>
-              
-              <Typography variant="h5" gutterBottom align="center" className={classes.featureTitle}>
-                Your Professional Journey Starts Here
-              </Typography>
-              
-              <Box sx={{ my: 2 }}>
-                <Typography variant="body1" className={classes.featurePoint}>
-                  Build ATS-optimized resumes in minutes
+                <Typography variant="h5" gutterBottom align="center" className={classes.title} sx={{ mt: 3 }}>
+                  Build Your Professional Resume
                 </Typography>
-                <Typography variant="body1" className={classes.featurePoint}>
-                  Multiple templates to showcase your skills
+                <Typography variant="body1" paragraph align="center">
+                  Sign in to continue building your future with our professional resume tools.
                 </Typography>
-                <Typography variant="body1" className={classes.featurePoint}>
-                  Easy editing with real-time preview
-                </Typography>
-                <Typography variant="body1" className={classes.featurePoint}>
-                  Secure cloud storage for all your versions
-                </Typography>
-              </Box>
-            </Paper>
-          </Fade>
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="body2" paragraph>
+                    • Create ATS-friendly resumes
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    • Access multiple resume templates
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    • Save and manage your resume history
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
         </Box>
-      </Box>
+      </Container>
       
       <Snackbar 
         open={snackbar.open} 
@@ -526,17 +320,11 @@ const Login = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} 
-          sx={{ 
-            borderRadius: '10px', 
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            padding: '0.75rem 1rem',
-          }}
-        >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
   );
 };
 

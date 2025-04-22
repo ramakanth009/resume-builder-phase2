@@ -93,21 +93,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
       textDecoration: 'underline',
     },
   },
-  editableContent: {
-    border: '1px solid transparent',
-    padding: '0.25rem',
-    borderRadius: '4px',
-    transition: 'all 0.2s ease',
-    '&:hover': {
-      border: '1px dashed #e2e8f0',
-      backgroundColor: '#f7fafc',
-      cursor: 'pointer',
-    },
-  },
-  editingMode: {
-    border: '1px dashed #3182ce',
-    backgroundColor: '#ebf8ff',
-  },
   generatedNotice: {
     marginTop: '2rem',
     textAlign: 'center',
@@ -116,7 +101,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
+const ResumePreview = ({ userData, generatedData, isEditing }) => {
   const classes = useStyles();
   
   // Use generated data if available and not in editing mode, otherwise use user data
@@ -152,34 +137,12 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
     );
   };
 
-  // Helper function to render editable content
-  const renderEditable = (content, fieldPath) => {
-    if (isEditing) {
-      return <span>{content}</span>;
-    }
-    
-    return (
-      <span
-        className={classes.editableContent}
-        onClick={() => {
-          const newValue = prompt('Edit this content:', content);
-          if (newValue !== null && newValue !== content) {
-            onEdit(fieldPath, newValue);
-          }
-        }}
-        title="Click to edit"
-      >
-        {content}
-      </span>
-    );
-  };
-
   return (
     <Box className={classes.resumeContainer}>
       {/* Header Section */}
       <Box className={classes.resumeHeader}>
         <Typography variant="h4" className={classes.resumeName}>
-          {renderEditable(data.header.name || "Your Name", "header.name")}
+          {data.header.name || "Your Name"}
         </Typography>
         
         <Box className={classes.resumeContact}>
@@ -191,7 +154,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
           
           {data.header.phone && (
             <Typography variant="body2">
-              Phone: {renderEditable(data.header.phone, "header.phone")}
+              Phone: {data.header.phone}
             </Typography>
           )}
           
@@ -219,7 +182,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
       {data.target_role && data.target_role.trim() !== '' && (
         <Box className={classes.resumeSection}>
           <Typography variant="body1" fontWeight="medium">
-            Target Role: {renderEditable(data.target_role, "target_role")}
+            Target Role: {data.target_role}
           </Typography>
         </Box>
       )}
@@ -231,7 +194,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
             Professional Summary
           </Typography>
           <Typography variant="body2" className={classes.resumeSummary}>
-            {renderEditable(data.summary, "summary")}
+            {data.summary}
           </Typography>
         </Box>
       )}
@@ -244,15 +207,15 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
           </Typography>
           <Box className={classes.resumeEducation}>
             <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-              {renderEditable(data.education.degree || '', "education.degree")} 
-              {data.education.specialization ? ` in ${renderEditable(data.education.specialization, "education.specialization")}` : ''}
+              {data.education.degree || ''} 
+              {data.education.specialization ? ` in ${data.education.specialization}` : ''}
             </Typography>
             <Typography variant="body2">
-              {renderEditable(data.education.institution || '', "education.institution")}
+              {data.education.institution || ''}
             </Typography>
             {data.education.graduation_year && (
               <Typography variant="body2" className={classes.resumeDate}>
-                Graduated: {renderEditable(data.education.graduation_year, "education.graduation_year")}
+                Graduated: {data.education.graduation_year}
               </Typography>
             )}
           </Box>
@@ -269,7 +232,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
             {data.skills.filter(skill => skill && skill.trim() !== '').map((skill, index) => (
               <Chip
                 key={index}
-                label={isEditing ? skill : renderEditable(skill, `skills[${index}]`)}
+                label={skill}
                 size="small"
                 className={classes.resumeSkillChip}
               />
@@ -290,16 +253,16 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
             .map((project, index) => (
               <Box key={index} className={classes.resumeItem}>
                 <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {renderEditable(project.name || "Project Name", `Academic_projects[${index}].name`)}
+                  {project.name || "Project Name"}
                 </Typography>
                 {project.skills_used && project.skills_used.trim() !== '' && (
                   <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                    Skills: {renderEditable(project.skills_used, `Academic_projects[${index}].skills_used`)}
+                    Skills: {project.skills_used}
                   </Typography>
                 )}
                 {project.description && project.description.trim() !== '' && (
                   <Typography variant="body2">
-                    {renderEditable(project.description, `Academic_projects[${index}].description`)}
+                    {project.description}
                   </Typography>
                 )}
               </Box>
@@ -321,18 +284,18 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
             .map((experience, index) => (
               <Box key={index} className={classes.resumeItem}>
                 <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {renderEditable(experience.position || "Position", `work_experience[${index}].position`)} 
+                  {experience.position || "Position"} 
                   {experience.company_name ? 
-                    ` | ${renderEditable(experience.company_name, `work_experience[${index}].company_name`)}` : ""}
+                    ` | ${experience.company_name}` : ""}
                 </Typography>
                 {experience.duration && experience.duration.trim() !== '' && (
                   <Typography variant="body2" className={classes.resumeDate}>
-                    {renderEditable(experience.duration, `work_experience[${index}].duration`)}
+                    {experience.duration}
                   </Typography>
                 )}
                 {experience.description && experience.description.trim() !== '' && (
                   <Typography variant="body2">
-                    {renderEditable(experience.description, `work_experience[${index}].description`)}
+                    {experience.description}
                   </Typography>
                 )}
                 {experience.responsibilities && experience.responsibilities.length > 0 && 
@@ -342,7 +305,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
                       .filter(r => r && r.trim() !== '')
                       .map((responsibility, idx) => (
                         <li key={idx} className={classes.resumeBullet}>
-                          {renderEditable(responsibility, `work_experience[${index}].responsibilities[${idx}]`)}
+                          {responsibility}
                         </li>
                     ))}
                   </Box>
@@ -364,7 +327,7 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
               .filter(cert => cert && cert.trim() !== '')
               .map((cert, index) => (
                 <li key={index} className={classes.resumeBullet}>
-                  {renderEditable(cert, `certifications[${index}]`)}
+                  {cert}
                 </li>
             ))}
           </Box>
@@ -393,13 +356,13 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
                     .filter(item => item && item.trim() !== '')
                     .map((item, index) => (
                       <li key={index} className={classes.resumeBullet}>
-                        {renderEditable(item, `customSections.${sectionName}[${index}]`)}
+                        {item}
                       </li>
                   ))}
                 </Box>
               ) : (
                 <Typography variant="body2">
-                  {renderEditable(content, `customSections.${sectionName}`)}
+                  {content}
                 </Typography>
               )}
             </Box>
@@ -412,9 +375,6 @@ const ResumePreview = ({ userData, generatedData, isEditing, onEdit }) => {
           <Divider sx={{ mb: 2 }} />
           <Typography variant="body2" color="textSecondary">
             AI-enhanced resume generated successfully
-          </Typography>
-          <Typography variant="caption" color="textSecondary">
-            Click on any text to edit it directly
           </Typography>
         </Box>
       )}

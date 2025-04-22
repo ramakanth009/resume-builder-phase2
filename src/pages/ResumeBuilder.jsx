@@ -8,8 +8,7 @@ import {
   Stepper, 
   Step, 
   StepLabel, 
-  Snackbar,
-  ButtonGroup
+  Snackbar
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
@@ -126,16 +125,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   stepLabel: {
     cursor: 'pointer',
-  },
-  editControlsContainer: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1rem',
-  },
-  editButton: {
-    textTransform: 'none',
-    fontWeight: 600,
-  },
+  }
 }));
 
 // Step labels for the stepper
@@ -157,8 +147,6 @@ const ResumeBuilder = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
-  const [originalGeneratedResume, setOriginalGeneratedResume] = useState(null); // Store original data
-  const [isEditing, setIsEditing] = useState(true); // Start in editing mode
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -230,34 +218,9 @@ const ResumeBuilder = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // New handler for clicking on step labels
+  // Handler for clicking on step labels
   const handleStepClick = (stepIndex) => {
     setActiveStep(stepIndex);
-  };
-
-  // Generic Handlers
-  const handleInputChange = (section, field, value) => {
-    if (field.includes('.')) {
-      const [mainField, subField] = field.split('.');
-      setResumeData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [mainField]: {
-            ...prev[section][mainField],
-            [subField]: value
-          }
-        }
-      }));
-    } else {
-      setResumeData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [field]: value
-        }
-      }));
-    }
   };
 
   // Form Validation
@@ -326,9 +289,6 @@ const ResumeBuilder = () => {
       
       // Store the generated resume data
       setGeneratedResume(response.resume);
-      // Store the original copy for reverting changes later
-      setOriginalGeneratedResume(JSON.parse(JSON.stringify(response.resume)));
-      setIsEditing(false); // Switch to view mode after generation
       
     } catch (error) {
       console.error('Error generating resume:', error);
@@ -347,26 +307,6 @@ const ResumeBuilder = () => {
       ...snackbar,
       open: false,
     });
-  };
-
-  // Toggle between editing and viewing mode
-  const toggleEditMode = () => {
-    setIsEditing(!isEditing);
-  };
-
-  // New function to revert changes to the original generated data
-  const revertChanges = () => {
-    if (originalGeneratedResume) {
-      // Reset to original data
-      setGeneratedResume(JSON.parse(JSON.stringify(originalGeneratedResume)));
-      setIsEditing(false);
-      
-      setSnackbar({
-        open: true,
-        message: 'Changes reverted to original generated resume',
-        severity: 'info',
-      });
-    }
   };
 
   // Render current step content
@@ -488,54 +428,16 @@ const ResumeBuilder = () => {
 
         {/* Preview Column */}
         <Box className={`${classes.columnBox} ${classes.previewColumn}`}>
-          <Box className={classes.sectionTitle} style={{ justifyContent: 'space-between' }}>
+          <Box className={classes.sectionTitle}>
             <Typography variant="h5">
               Resume Preview
             </Typography>
           </Box>
           
-          {/* Edit controls now positioned on the left */}
-          {!isEditing && generatedResume && (
-            <Box className={classes.editControlsContainer}>
-              <ButtonGroup variant="outlined" size="medium">
-                <Button 
-                  onClick={toggleEditMode}
-                  className={classes.editButton}
-                >
-                  I want to edit
-                </Button>
-                <Button 
-                  onClick={revertChanges}
-                  className={classes.editButton}
-                  color="secondary"
-                >
-                  Revert Changes
-                </Button>
-              </ButtonGroup>
-            </Box>
-          )}
-          
           <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
-            isEditing={isEditing}
-            onEdit={(field, value) => {
-              // Allow editing the generated resume directly
-              if (generatedResume && !isEditing) {
-                const updatedData = { ...generatedResume };
-                // Handle nested fields
-                if (field.includes('.')) {
-                  const [section, subfield] = field.split('.');
-                  updatedData[section] = {
-                    ...updatedData[section],
-                    [subfield]: value
-                  };
-                } else {
-                  updatedData[field] = value;
-                }
-                setGeneratedResume(updatedData);
-              }
-            }}
+            isEditing={true} // Always in editing mode to disable click-to-edit functionality
           />
         </Box>
       </Box>
