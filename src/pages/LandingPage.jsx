@@ -8,12 +8,16 @@ import {
   Button, 
   Paper, 
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import illustration from '../assets/resume-illustration.svg';
 import { useAuth } from '../contexts/AuthContext';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -62,6 +66,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     width: '100%',
     height: 'auto',
     maxWidth: '400px',
+    maxHeight: '390px', // Added this line to limit height
     display: 'block',
     margin: '0 auto',
   },
@@ -138,6 +143,11 @@ const LandingPage = () => {
     open: false,
     message: '',
     severity: 'success',
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
   });
 
   const validateForm = () => {
@@ -220,6 +230,13 @@ const LandingPage = () => {
     navigate('/login');
   };
 
+  const handleTogglePasswordVisibility = (field) => () => {
+    setShowPassword(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box mb={4}>
@@ -274,11 +291,23 @@ const LandingPage = () => {
                 fullWidth
                 label="Password"
                 name="password"
-                type="password"
+                type={showPassword.password ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility('password')}
+                        edge="end"
+                      >
+                        {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               
               <TextField
@@ -287,11 +316,23 @@ const LandingPage = () => {
                 fullWidth
                 label="Confirm Password"
                 name="confirmPassword"
-                type="password"
+                type={showPassword.confirmPassword ? 'text' : 'password'}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility('confirmPassword')}
+                        edge="end"
+                      >
+                        {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               
               <Button

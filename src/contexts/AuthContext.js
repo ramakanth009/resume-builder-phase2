@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { loginUser, registerUser } from '../utils/api';
+import { loginUser, registerUser, logoutUser } from '../utils/api';
 
 // Create the authentication context
 const AuthContext = createContext(null);
@@ -78,11 +78,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setCurrentUser(null);
+  // Enhanced Logout function with API call
+  const logout = async () => {
+    setLoading(true);
+    try {
+      // Call the logout API (which handles clearing localStorage)
+      await logoutUser();
+      // Update state
+      setCurrentUser(null);
+    } catch (err) {
+      console.error('Logout error:', err);
+      // If API call fails, still clear local storage and state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setCurrentUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
   
   // Value to be provided by the context

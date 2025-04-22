@@ -180,6 +180,43 @@ export const deleteResume = async (resumeId) => {
   }
 };
 
+/**
+ * User logout - invalidates the token on the server
+ * @returns {Promise} - Logout response
+ */
+export const logoutUser = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    // If no token exists, just return success
+    if (!token) {
+      return { status: 'success', message: 'Already logged out' };
+    }
+    
+    // Make the call to logout endpoint
+    const response = await apiRequest('/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    // Clear localStorage regardless of response
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    return response;
+  } catch (error) {
+    // Still clear localStorage even if API call fails
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Log error but don't throw it to prevent navigation issues
+    console.error('Logout error:', error);
+    return { status: 'success', message: 'Logged out locally' };
+  }
+};
+
 export default {
   apiRequest,
   registerUser,
@@ -188,4 +225,5 @@ export default {
   getUserResumes,
   getResumeById,
   deleteResume,
+  logoutUser
 };
