@@ -15,6 +15,7 @@ import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
+import { adaptGeneratedResume } from '../utils/resumeAdapter';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -314,8 +315,11 @@ const ResumeBuilder = () => {
         severity: 'success',
       });
       
-      // Store the generated resume data and replace the preview
-      setGeneratedResume(response.resume);
+      // Transform the generated resume data to match frontend structure
+      const adaptedResume = adaptGeneratedResume(response.resume);
+      
+      // Store the adapted resume data and replace the preview
+      setGeneratedResume(adaptedResume);
       
     } catch (error) {
       console.error('Error generating resume:', error);

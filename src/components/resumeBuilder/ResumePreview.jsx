@@ -104,6 +104,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const ResumePreview = ({ userData, generatedData }) => {
   const classes = useStyles();
   
+  React.useEffect(() => {
+    // Add this console log to debug the data structure
+    if (generatedData) {
+      console.log('Generated Resume Data:', generatedData);
+      console.log('Education:', generatedData.education);
+      console.log('Work Experience:', generatedData.work_experience);
+      console.log('Academic Projects:', generatedData.Academic_projects);
+    }
+  }, [generatedData]);
+  
   // Use generated data if available, otherwise use user data
   const data = generatedData || userData;
   
@@ -246,7 +256,7 @@ const ResumePreview = ({ userData, generatedData }) => {
         data.Academic_projects.some(p => p.name && p.name.trim() !== '') && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Academic Projects
+            Projects
           </Typography>
           {data.Academic_projects
             .filter(p => p.name && p.name.trim() !== '')
