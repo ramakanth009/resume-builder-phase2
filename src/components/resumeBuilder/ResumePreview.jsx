@@ -12,46 +12,62 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minHeight: '842px', // A4 height scaled down
     width: '100%',
     margin: '0 auto',
+    position: 'relative',
+    overflow: 'hidden', // Prevents text overflow
+    fontFamily: 'Helvetica, Arial, sans-serif', // Consistent font family for PDF generation
   },
   resumeHeader: {
     marginBottom: '1.5rem',
+    textAlign: 'center', // Center align header for better PDF appearance
   },
   resumeName: {
-    fontSize: '1.5rem',
+    fontSize: '1.8rem',
     fontWeight: 700,
-    marginBottom: '0.5rem',
-    color: '#2d3748',
+    marginBottom: '0.75rem',
+    color: '#1a202c',
+    textAlign: 'center', // Ensure name is centered as requested
   },
   resumeContact: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '1rem',
-    marginBottom: '0.5rem',
-    fontSize: '0.875rem',
+    justifyContent: 'center', // Center-align contact info
+    gap: '0.75rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
     color: '#4a5568',
+    lineHeight: 1.5,
+    maxWidth: '100%', // Ensures proper wrapping
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word', // Handles long emails and URLs
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
   },
   resumeSection: {
     marginBottom: '1.5rem',
   },
   resumeSectionTitle: {
-    fontSize: '1.125rem',
+    fontSize: '1.25rem',
     fontWeight: 600,
     marginBottom: '0.75rem',
-    color: '#2d3748',
-    borderBottom: '1px solid #e2e8f0',
+    color: '#1a202c',
+    borderBottom: '2px solid #e2e8f0', // Slightly thicker border
     paddingBottom: '0.5rem',
   },
   resumeSummary: {
     color: '#4a5568',
     marginBottom: '1.5rem',
+    lineHeight: 1.6, // Better readability
   },
   resumeEducation: {
-    marginBottom: '1rem',
+    marginBottom: '1.25rem',
   },
   resumeSubtitle: {
     fontWeight: 600,
     marginBottom: '0.25rem',
     color: '#2d3748',
+    fontSize: '1.05rem', // Slightly larger for better visual hierarchy
   },
   resumeDate: {
     fontSize: '0.875rem',
@@ -62,33 +78,40 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     gap: '0.5rem',
+    margin: '0.5rem 0', // Adding some margin
   },
   resumeSkillChip: {
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     fontSize: '0.75rem',
     height: '24px',
+    fontWeight: 500, // Slightly bolder
   },
   resumeItem: {
-    marginBottom: '1rem',
+    marginBottom: '1.25rem',
   },
   resumeItemSubtitle: {
-    fontSize: '0.875rem',
+    fontSize: '0.925rem',
     color: '#4a5568',
     marginBottom: '0.25rem',
   },
   resumeBullets: {
     paddingLeft: '1.25rem',
     margin: '0.5rem 0',
+    listStylePosition: 'outside', // Ensures bullets align properly
   },
   resumeBullet: {
     fontSize: '0.875rem',
     color: '#4a5568',
-    marginBottom: '0.25rem',
+    marginBottom: '0.375rem',
+    lineHeight: 1.5, // Better readability
+    paddingLeft: '0.25rem', // Ensure proper bullet alignment
   },
   contactLink: {
     color: '#3182ce',
     textDecoration: 'none',
+    wordBreak: 'break-word', // Ensures links wrap properly
+    overflowWrap: 'break-word',
     '&:hover': {
       textDecoration: 'underline',
     },
@@ -106,8 +129,8 @@ const ResumePreview = ({ userData, generatedData }) => {
   
   // Use generated data if available, otherwise use user data
   const data = generatedData || userData;
-  
-  // Helper function to check if education data exists
+
+  // Helper functions
   const hasEducationData = () => {
     if (Array.isArray(data.education)) {
       return data.education.length > 0 && data.education.some(edu => 
@@ -123,14 +146,17 @@ const ResumePreview = ({ userData, generatedData }) => {
       (data.education.specialization && data.education.specialization.trim() !== '')
     );
   };
-  
-  // Helper function to check if projects data exists
+
   const hasProjectsData = () => {
-    return data.projects && data.projects.length > 0 && 
+    const academicProjects = data.Academic_projects && data.Academic_projects.length > 0 && 
+      data.Academic_projects.some(p => p.name && p.name.trim() !== '');
+      
+    const generatedProjects = data.projects && data.projects.length > 0 && 
       data.projects.some(p => p.name && p.name.trim() !== '');
+      
+    return academicProjects || generatedProjects;
   };
-  
-  // Helper function to check if work experience data exists
+
   const hasWorkExperienceData = () => {
     const userWorkExp = data.work_experience && data.work_experience.length > 0 && 
       data.work_experience.some(exp => 
@@ -146,31 +172,29 @@ const ResumePreview = ({ userData, generatedData }) => {
       
     return userWorkExp || generatedWorkExp;
   };
-  
-  // Helper function to render links
+
   const renderLink = (text, url, type) => {
     if (!url) return null;
     
     let displayText = text || url;
     let href = url;
-    
-    // Email handling
+
     if (type === 'email') {
       href = `mailto:${url}`;
       displayText = url;
     }
-    
-    // Make sure URLs have http or https
+
     if (type !== 'email' && href && !href.startsWith('http')) {
       href = `https://${href}`;
     }
-    
+
     return (
       <Link 
         href={href} 
         target="_blank" 
         rel="noopener noreferrer"
         className={classes.contactLink}
+        sx={{ wordBreak: 'break-word' }}
       >
         {displayText}
       </Link>
@@ -178,40 +202,40 @@ const ResumePreview = ({ userData, generatedData }) => {
   };
 
   return (
-    <Box className={classes.resumeContainer}>
+    <Box className={`${classes.resumeContainer} resume-container`}>
       {/* Header Section */}
       <Box className={classes.resumeHeader}>
-        <Typography variant="h4" className={classes.resumeName}>
+        <Typography variant="h4" className={`${classes.resumeName} resume-name`}>
           {data.header.name || "Your Name"}
         </Typography>
         
         <Box className={classes.resumeContact}>
           {data.header.email && (
-            <Typography variant="body2">
+            <Typography variant="body2" className={classes.resumeContactItem}>
               Email: {renderLink(null, data.header.email, 'email')}
             </Typography>
           )}
           
           {data.header.phone && (
-            <Typography variant="body2">
+            <Typography variant="body2" className={classes.resumeContactItem}>
               Phone: {data.header.phone}
             </Typography>
           )}
           
           {data.header.github && (
-            <Typography variant="body2">
+            <Typography variant="body2" className={classes.resumeContactItem}>
               GitHub: {renderLink(data.header.github.replace('https://', ''), data.header.github, 'github')}
             </Typography>
           )}
           
           {data.header.linkedin && (
-            <Typography variant="body2">
+            <Typography variant="body2" className={classes.resumeContactItem}>
               LinkedIn: {renderLink(data.header.linkedin.replace('https://', ''), data.header.linkedin, 'linkedin')}
             </Typography>
           )}
           
           {data.header.portfolio && (
-            <Typography variant="body2">
+            <Typography variant="body2" className={classes.resumeContactItem}>
               Portfolio: {renderLink(data.header.portfolio.replace('https://', ''), data.header.portfolio, 'portfolio')}
             </Typography>
           )}
@@ -220,7 +244,7 @@ const ResumePreview = ({ userData, generatedData }) => {
       
       {/* Target Role */}
       {data.target_role && data.target_role.trim() !== '' && (
-        <Box className={classes.resumeSection}>
+        <Box className={classes.resumeSection} textAlign="center">
           <Typography variant="body1" fontWeight="medium">
             Target Role: {data.target_role}
           </Typography>
@@ -239,51 +263,7 @@ const ResumePreview = ({ userData, generatedData }) => {
         </Box>
       )}
       
-      {/* Education Section - Only show if data exists */}
-      {hasEducationData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Education
-          </Typography>
-          {Array.isArray(data.education) ? (
-            // Handle education as array (from generatedData)
-            data.education.map((edu, index) => (
-              <Box key={index} className={classes.resumeEducation}>
-                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {edu.degree || ''} 
-                  {edu.specialization ? ` in ${edu.specialization}` : ''}
-                </Typography>
-                <Typography variant="body2">
-                  {edu.institution || ''}
-                </Typography>
-                {(edu.graduation_year || edu.graduationYear) && (
-                  <Typography variant="body2" className={classes.resumeDate}>
-                    Graduated: {edu.graduation_year || edu.graduationYear}
-                  </Typography>
-                )}
-              </Box>
-            ))
-          ) : (
-            // Handle education as object (from userData)
-            <Box className={classes.resumeEducation}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {data.education.degree || ''} 
-                {data.education.specialization ? ` in ${data.education.specialization}` : ''}
-              </Typography>
-              <Typography variant="body2">
-                {data.education.institution || ''}
-              </Typography>
-              {data.education.graduation_year && (
-                <Typography variant="body2" className={classes.resumeDate}>
-                  Graduated: {data.education.graduation_year}
-                </Typography>
-              )}
-            </Box>
-          )}
-        </Box>
-      )}
-      
-      {/* Skills Section */}
+      {/* Skills Section - Moving up for better visibility */}
       {data.skills && data.skills.length > 0 && data.skills.some(skill => skill && skill.trim() !== '') && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
@@ -302,60 +282,55 @@ const ResumePreview = ({ userData, generatedData }) => {
         </Box>
       )}
       
-      {/* Projects Section - Only show if data exists */}
-      {hasProjectsData() && (
+      {/* Education Section */}
+      {hasEducationData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Projects
+            Education
           </Typography>
-          
-          {/* Handle projects from generated data */}
-          {data.projects && data.projects.length > 0 &&
-            data.projects
-              .filter(p => p.name && p.name.trim() !== '')
-              .map((project, index) => (
-                <Box key={`generated-${index}`} className={classes.resumeItem}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                    {project.name || "Project Name"}
+          {Array.isArray(data.education) ? (
+            data.education.map((edu, index) => (
+              <Box key={index} className={classes.resumeEducation}>
+                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                  {edu.degree || ''} 
+                  {edu.specialization ? ` in ${edu.specialization}` : ''}
+                </Typography>
+                <Typography variant="body2">
+                  {edu.institution || ''}
+                </Typography>
+                {(edu.graduation_year || edu.graduationYear) && (
+                  <Typography variant="body2" className={classes.resumeDate}>
+                    Graduated: {edu.graduation_year || edu.graduationYear}
                   </Typography>
-                  
-                  {/* For generated data - handle responsibilities array */}
-                  {project.responsibilities && project.responsibilities.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets}>
-                      {project.responsibilities.map((responsibility, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
-                          {responsibility}
-                        </li>
-                      ))}
-                    </Box>
-                  )}
-                  
-                  {/* For technologies array if present */}
-                  {project.technologies && project.technologies.length > 0 && (
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                      Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
-                    </Typography>
-                  )}
-                  
-                  {/* For description field if present */}
-                  {project.description && project.description.trim() !== '' && (
-                    <Typography variant="body2">
-                      {project.description}
-                    </Typography>
-                  )}
-                </Box>
-            ))}
+                )}
+              </Box>
+            ))
+          ) : (
+            <Box className={classes.resumeEducation}>
+              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                {data.education.degree || ''} 
+                {data.education.specialization ? ` in ${data.education.specialization}` : ''}
+              </Typography>
+              <Typography variant="body2">
+                {data.education.institution || ''}
+              </Typography>
+              {data.education.graduation_year && (
+                <Typography variant="body2" className={classes.resumeDate}>
+                  Graduated: {data.education.graduation_year}
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
       )}
-      
-      {/* Work Experience Section - Only show if data exists */}
+
+      {/* Work Experience Section */}
       {hasWorkExperienceData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Work Experience
           </Typography>
           
-          {/* Handle work_experience from user data */}
           {data.work_experience && data.work_experience.length > 0 &&
             data.work_experience
               .filter(exp => (exp.position && exp.position.trim() !== '') || 
@@ -392,7 +367,6 @@ const ResumePreview = ({ userData, generatedData }) => {
                 </Box>
             ))}
           
-          {/* Handle workExperience from generated data */}
           {data.workExperience && data.workExperience.length > 0 &&
             data.workExperience
               .filter(exp => (exp.position && exp.position.trim() !== '') || 
@@ -428,6 +402,69 @@ const ResumePreview = ({ userData, generatedData }) => {
         </Box>
       )}
       
+      {/* Projects Section */}
+      {hasProjectsData() && (
+        <Box className={classes.resumeSection}>
+          <Typography variant="h6" className={classes.resumeSectionTitle}>
+            Projects
+          </Typography>
+          
+          {data.Academic_projects && data.Academic_projects.length > 0 &&
+            data.Academic_projects
+              .filter(p => p.name && p.name.trim() !== '')
+              .map((project, index) => (
+                <Box key={`academic-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {project.name || "Project Name"}
+                  </Typography>
+                  {project.skills_used && project.skills_used.trim() !== '' && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                      Skills: {project.skills_used}
+                    </Typography>
+                  )}
+                  {project.description && project.description.trim() !== '' && (
+                    <Typography variant="body2">
+                      {project.description}
+                    </Typography>
+                  )}
+                </Box>
+            ))}
+            
+          {data.projects && data.projects.length > 0 &&
+            data.projects
+              .filter(p => p.name && p.name.trim() !== '')
+              .map((project, index) => (
+                <Box key={`generated-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {project.name || "Project Name"}
+                  </Typography>
+                  
+                  {project.responsibilities && project.responsibilities.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {project.responsibilities.map((responsibility, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>
+                          {responsibility}
+                        </li>
+                      ))}
+                    </Box>
+                  )}
+                  
+                  {project.technologies && project.technologies.length > 0 && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                      Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
+                    </Typography>
+                  )}
+                  
+                  {project.description && project.description.trim() !== '' && (
+                    <Typography variant="body2">
+                      {project.description}
+                    </Typography>
+                  )}
+                </Box>
+            ))}
+        </Box>
+      )}
+      
       {/* Certifications Section */}
       {data.certifications && data.certifications.length > 0 && 
         data.certifications.some(cert => cert && cert.trim() !== '') && (
@@ -451,7 +488,6 @@ const ResumePreview = ({ userData, generatedData }) => {
       {data.customSections && Object.keys(data.customSections).length > 0 && (
         Object.entries(data.customSections)
           .filter(([_, content]) => {
-            // Check if content is non-empty
             if (Array.isArray(content)) {
               return content.length > 0 && content.some(item => item && item.trim() !== '');
             }

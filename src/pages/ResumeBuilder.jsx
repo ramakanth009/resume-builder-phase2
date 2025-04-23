@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
+import { generateATSOptimizedPDF } from '../utils/pdfUtils';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -340,13 +341,27 @@ const ResumeBuilder = () => {
 
   // Handle download of the generated resume
   const handleDownloadResume = () => {
-    // Implement PDF download logic here
-    // This is a placeholder - actual implementation would depend on your PDF generation library
-    setSnackbar({
-      open: true,
-      message: 'Resume downloaded successfully',
-      severity: 'success',
-    });
+    try {
+      // Format filename with user's name if available
+      const userName = generatedResume?.header?.name || 'resume';
+      const fileName = userName.toLowerCase().replace(/\s+/g, '_');
+      
+      // Use our PDF generation utility
+      generateATSOptimizedPDF(generatedResume, fileName);
+      
+      setSnackbar({
+        open: true,
+        message: 'Resume downloaded successfully',
+        severity: 'success',
+      });
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to download resume. Please try again.',
+        severity: 'error',
+      });
+    }
   };
 
   const handleCloseSnackbar = () => {
