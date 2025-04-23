@@ -1,7 +1,10 @@
-// utils/enhancedPdfUtils.js
-// This file exports the enhanced PDF generation utility
+// src/utils/enhancedPdfUtils.js
+import { generateResumePDF, generateATSOptimizedPDF } from './enhanced-pdf-utils';
 
-import { generateVisualResumePDF } from './enhanced-pdf-utils';
+// Export the enhanced versions
+export const generateVisualResumePDF = generateResumePDF;
 
-export { generateVisualResumePDF };
-export default generateVisualResumePDF;
+export default {
+  generateVisualResumePDF,
+  generateATSOptimizedPDF
+};

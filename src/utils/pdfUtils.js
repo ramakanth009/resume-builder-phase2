@@ -26,11 +26,35 @@ export const generateResumePDF = async (fileName = 'resume') => {
     clone.style.padding = '20mm 15mm'; // Proper margins for A4
     clone.style.boxSizing = 'border-box';
     
-    // Ensure links don't overflow
+    // Enhance links for better PDF export
     const links = clone.querySelectorAll('a');
     links.forEach(link => {
+      // Style links to be visibly clickable
+      link.style.color = '#3182ce'; // Blue color for links
+      link.style.textDecoration = 'none';
+      link.style.fontWeight = '500';
       link.style.wordBreak = 'break-word';
       link.style.overflowWrap = 'break-word';
+      
+      // Set target attribute for opening in new tab
+      link.setAttribute('target', '_blank');
+      
+      // Get the URL from the href
+      const url = link.getAttribute('href');
+      
+      // If this is a GitHub, LinkedIn, or Portfolio link, replace the inner text
+      if (url) {
+        if (url.includes('github.com')) {
+          link.innerText = 'GitHub';
+        } else if (url.includes('linkedin.com')) {
+          link.innerText = 'LinkedIn';
+        } else if (
+          !url.includes('mailto:') && 
+          (url.includes('.com') || url.includes('.dev') || url.includes('.io') || url.includes('.net'))
+        ) {
+          link.innerText = 'Portfolio';
+        }
+      }
     });
     
     // Center align the name at the top
@@ -109,7 +133,7 @@ export const generateResumePDF = async (fileName = 'resume') => {
 };
 
 /**
- * Generates an ATS-optimized text-based PDF with improved formatting
+ * Generates an ATS-optimized text-based PDF with improved formatting and hyperlinks
  * @param {Object} resumeData - Resume data object
  * @param {string} fileName - Name for the downloaded file
  * @returns {Promise} - Promise that resolves when PDF is generated and downloaded
@@ -124,7 +148,7 @@ export const generateATSOptimizedPDF = (resumeData, fileName = 'resume') => {
     });
     
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight(); // Add this line
+    const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 15; // 15mm margins
     const contentWidth = pageWidth - (margin * 2);
     
@@ -138,18 +162,13 @@ export const generateATSOptimizedPDF = (resumeData, fileName = 'resume') => {
     pdf.text(resumeData.header.name || 'Resume', pageWidth / 2, yPos, { align: 'center' });
     yPos += lineHeight * 1.5;
     
-    // Add contact information (with proper wrapping for long text)
+    // Add contact information with proper formatting
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'normal');
     
     const contactInfo = [];
     if (resumeData.header.email) contactInfo.push(`Email: ${resumeData.header.email}`);
     if (resumeData.header.phone) contactInfo.push(`Phone: ${resumeData.header.phone}`);
-    
-    // Add LinkedIn and GitHub on a new line if they exist
-    const socialLinks = [];
-    if (resumeData.header.linkedin) socialLinks.push(`LinkedIn: ${resumeData.header.linkedin}`);
-    if (resumeData.header.github) socialLinks.push(`GitHub: ${resumeData.header.github}`);
     
     // Place contact info centered
     if (contactInfo.length > 0) {
@@ -159,12 +178,72 @@ export const generateATSOptimizedPDF = (resumeData, fileName = 'resume') => {
       yPos += splitContact.length * lineHeight;
     }
     
-    // Place social links on next line if they exist
+    // Add social links with clickable text
+    const socialLinks = [];
+    
+    if (resumeData.header.github) {
+      // Calculate position for GitHub link
+      const githubText = "GitHub";
+      const githubX = pageWidth / 2 - pdf.getTextWidth("GitHub | LinkedIn | Portfolio") / 2;
+      socialLinks.push({ text: githubText, url: resumeData.header.github, x: githubX });
+    }
+    
+    if (resumeData.header.linkedin) {
+      // Calculate position for LinkedIn link
+      const linkedinText = "LinkedIn";
+      const linkedinX = pageWidth / 2 - pdf.getTextWidth("LinkedIn | Portfolio") / 2 + 
+                       (resumeData.header.github ? pdf.getTextWidth("GitHub | ") : 0);
+      socialLinks.push({ text: linkedinText, url: resumeData.header.linkedin, x: linkedinX });
+    }
+    
+    if (resumeData.header.portfolio) {
+      // Calculate position for Portfolio link
+      const portfolioText = "Portfolio";
+      const portfolioX = pageWidth / 2 + 
+                        (resumeData.header.github && resumeData.header.linkedin ? 
+                         pdf.getTextWidth("GitHub | LinkedIn | ") / 2 - pdf.getTextWidth("Portfolio") / 2 : 
+                         (resumeData.header.github || resumeData.header.linkedin ? 
+                          pdf.getTextWidth("GitHub | ") / 2 : -pdf.getTextWidth("Portfolio") / 2));
+      socialLinks.push({ text: portfolioText, url: resumeData.header.portfolio, x: portfolioX });
+    }
+    
+    // Place social links centered
     if (socialLinks.length > 0) {
-      const socialText = socialLinks.join(' | ');
-      const splitSocial = pdf.splitTextToSize(socialText, contentWidth);
-      pdf.text(splitSocial, pageWidth / 2, yPos, { align: 'center' });
-      yPos += splitSocial.length * lineHeight + lineHeight * 0.5;
+      // Get the full text first to calculate center position
+      const socialTextsOnly = socialLinks.map(link => link.text);
+      const delimitedText = socialTextsOnly.join(" | ");
+      const textWidth = pdf.getTextWidth(delimitedText);
+      const startX = pageWidth / 2 - textWidth / 2;
+      
+      let currentX = startX;
+      
+      // Draw each link separately with proper color and linking
+      for (let i = 0; i < socialLinks.length; i++) {
+        const link = socialLinks[i];
+        
+        // Set blue color for links
+        pdf.setTextColor(49, 130, 206); // #3182ce blue
+        
+        // Add the link text with clickable URL
+        pdf.textWithLink(link.text, currentX, yPos, {
+          url: link.url
+        });
+        
+        currentX += pdf.getTextWidth(link.text);
+        
+        // Add delimiter if not the last item
+        if (i < socialLinks.length - 1) {
+          pdf.setTextColor(0); // Reset to black
+          const delimiter = " | ";
+          pdf.text(delimiter, currentX, yPos);
+          currentX += pdf.getTextWidth(delimiter);
+        }
+      }
+      
+      // Reset text color
+      pdf.setTextColor(0);
+      
+      yPos += lineHeight * 1.5; // Extra spacing after links
     }
     
     // Add summary if available
@@ -272,8 +351,12 @@ export const generateATSOptimizedPDF = (resumeData, fileName = 'resume') => {
           yPos = margin + 5;
         }
         
+        // Create degree text with specialization if available
         const degree = edu.degree || '';
-        const splitDegree = pdf.splitTextToSize(degree, contentWidth);
+        const specialization = edu.specialization ? ` in ${edu.specialization}` : '';
+        const degreeText = `${degree}${specialization}`;
+        
+        const splitDegree = pdf.splitTextToSize(degreeText, contentWidth);
         pdf.text(splitDegree, margin, yPos);
         yPos += splitDegree.length * lineHeight * 0.85;
         
@@ -471,4 +554,4 @@ function addSection(pdf, title, yPos, margin) {
 export default {
   generateResumePDF,
   generateATSOptimizedPDF
-};
+};  
