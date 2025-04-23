@@ -8,9 +8,7 @@ import {
   Stepper, 
   Step, 
   StepLabel, 
-  Snackbar,
-  Menu,
-  MenuItem
+  Snackbar
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
@@ -18,9 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
-import { generateATSOptimizedPDF, generateVisualResumePDF } from '../utils/pdfUtils';
-import DownloadIcon from '@mui/icons-material/Download';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { generateATSOptimizedPDF } from '../utils/pdfUtils';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -137,8 +133,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: 'white',
     textTransform: 'none',
     fontWeight: 600,
-    padding: '0.5rem 1rem',
+    padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    marginLeft: '1rem',
     '&:hover': {
       backgroundColor: '#2f855a',
     },
@@ -154,9 +151,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
-  },
-  dropdownIcon: {
-    marginLeft: '0.25rem',
   }
 }));
 
@@ -184,10 +178,6 @@ const ResumeBuilder = () => {
     message: '',
     severity: 'success',
   });
-  
-  // State for dropdown menu
-  const [downloadMenuAnchor, setDownloadMenuAnchor] = useState(null);
-  const isDownloadMenuOpen = Boolean(downloadMenuAnchor);
   
   // Initialize resumeData with user information if available
   const [resumeData, setResumeData] = useState({
@@ -260,15 +250,6 @@ const ResumeBuilder = () => {
     if (!generatedResume) {
       setActiveStep(stepIndex);
     }
-  };
-
-  // Dropdown menu handlers
-  const handleOpenDownloadMenu = (event) => {
-    setDownloadMenuAnchor(event.currentTarget);
-  };
-
-  const handleCloseDownloadMenu = () => {
-    setDownloadMenuAnchor(null);
   };
 
   // Form Validation
@@ -358,58 +339,29 @@ const ResumeBuilder = () => {
     setGeneratedResume(null);
   };
 
-  // Handle download of the generated resume with visual fidelity
-  const handleDownloadVisualResume = () => {
+  // Handle download of the generated resume
+  const handleDownloadResume = () => {
     try {
       // Format filename with user's name if available
       const userName = generatedResume?.header?.name || 'resume';
       const fileName = userName.toLowerCase().replace(/\s+/g, '_');
       
-      // Use our enhanced PDF generation utility that preserves visual appearance
-      generateVisualResumePDF(fileName);
+      // Use our PDF generation utility
+      generateATSOptimizedPDF(generatedResume, fileName);
       
       setSnackbar({
         open: true,
-        message: 'Visual resume downloaded successfully with all formatting preserved',
+        message: 'Resume downloaded successfully',
         severity: 'success',
       });
     } catch (error) {
-      console.error('Error downloading visual resume:', error);
+      console.error('Error downloading resume:', error);
       setSnackbar({
         open: true,
         message: 'Failed to download resume. Please try again.',
         severity: 'error',
       });
     }
-    
-    handleCloseDownloadMenu();
-  };
-
-  // Handle download of ATS-optimized resume (text-based)
-  const handleDownloadATSResume = () => {
-    try {
-      // Format filename with user's name if available
-      const userName = generatedResume?.header?.name || 'resume';
-      const fileName = `${userName.toLowerCase().replace(/\s+/g, '_')}_ats`;
-      
-      // Use our PDF generation utility for ATS optimization
-      generateATSOptimizedPDF(generatedResume, fileName);
-      
-      setSnackbar({
-        open: true,
-        message: 'ATS-optimized resume downloaded successfully',
-        severity: 'success',
-      });
-    } catch (error) {
-      console.error('Error downloading ATS resume:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to download ATS resume. Please try again.',
-        severity: 'error',
-      });
-    }
-    
-    handleCloseDownloadMenu();
   };
 
   const handleCloseSnackbar = () => {
@@ -551,31 +503,13 @@ const ResumeBuilder = () => {
             {/* Show action buttons when resume is generated */}
             {generatedResume && (
               <Box>
-                {/* Download button with dropdown menu */}
                 <Button
                   variant="contained"
                   className={classes.downloadButton}
-                  onClick={handleOpenDownloadMenu}
-                  startIcon={<DownloadIcon />}
-                  endIcon={<ArrowDropDownIcon className={classes.dropdownIcon} />}
+                  onClick={handleDownloadResume}
                 >
                   Download PDF
                 </Button>
-                
-                {/* Dropdown menu for different PDF export options */}
-                <Menu
-                  anchorEl={downloadMenuAnchor}
-                  open={isDownloadMenuOpen}
-                  onClose={handleCloseDownloadMenu}
-                >
-                  <MenuItem onClick={handleDownloadVisualResume}>
-                    Download Visual PDF (Preserve Exact Appearance)
-                  </MenuItem>
-                  <MenuItem onClick={handleDownloadATSResume}>
-                    Download ATS-Optimized PDF (Text-Based)
-                  </MenuItem>
-                </Menu>
-                
                 <Button
                   variant="contained"
                   className={classes.editButton}
