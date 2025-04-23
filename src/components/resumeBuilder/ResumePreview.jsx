@@ -173,18 +173,28 @@ const ResumePreview = ({ userData, generatedData }) => {
     return userWorkExp || generatedWorkExp;
   };
 
-  const renderLink = (text, url, type) => {
+  const renderLink = (label, url, type) => {
     if (!url) return null;
     
-    let displayText = text || url;
     let href = url;
 
     if (type === 'email') {
       href = `mailto:${url}`;
-      displayText = url;
+      // For email, we still want to display the email address
+      return (
+        <Link 
+          href={href} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={classes.contactLink}
+          sx={{ wordBreak: 'break-word' }}
+        >
+          {url}
+        </Link>
+      );
     }
 
-    if (type !== 'email' && href && !href.startsWith('http')) {
+    if (href && !href.startsWith('http')) {
       href = `https://${href}`;
     }
 
@@ -194,9 +204,8 @@ const ResumePreview = ({ userData, generatedData }) => {
         target="_blank" 
         rel="noopener noreferrer"
         className={classes.contactLink}
-        sx={{ wordBreak: 'break-word' }}
       >
-        {displayText}
+        {label}
       </Link>
     );
   };
@@ -224,19 +233,19 @@ const ResumePreview = ({ userData, generatedData }) => {
           
           {data.header.github && (
             <Typography variant="body2" className={classes.resumeContactItem}>
-              GitHub: {renderLink(data.header.github.replace('https://', ''), data.header.github, 'github')}
+              {renderLink("GitHub", data.header.github, 'github')}
             </Typography>
           )}
           
           {data.header.linkedin && (
             <Typography variant="body2" className={classes.resumeContactItem}>
-              LinkedIn: {renderLink(data.header.linkedin.replace('https://', ''), data.header.linkedin, 'linkedin')}
+              {renderLink("LinkedIn", data.header.linkedin, 'linkedin')}
             </Typography>
           )}
           
           {data.header.portfolio && (
             <Typography variant="body2" className={classes.resumeContactItem}>
-              Portfolio: {renderLink(data.header.portfolio.replace('https://', ''), data.header.portfolio, 'portfolio')}
+              {renderLink("Portfolio", data.header.portfolio, 'portfolio')}
             </Typography>
           )}
         </Box>
