@@ -18,8 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
-import { generateATSOptimizedPDF } from '../utils/pdfUtils';
-import { generateVisualResumePDF } from '../utils/enhancedPdfUtils';
+import { generateATSOptimizedPDF, generateVisualResumePDF } from '../utils/pdfUtils';
 import DownloadIcon from '@mui/icons-material/Download';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
