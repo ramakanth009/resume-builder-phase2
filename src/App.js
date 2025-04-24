@@ -1,21 +1,48 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import './App.css';
-
-// Pages
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import ResumeBuilder from './pages/ResumeBuilder';
-
-// Contexts
+import Navbar from './components/Navbar';
+import Loading from './components/Loading';
 import { AuthProvider } from './contexts/AuthContext';
 
-// Layouts
-import AuthLayout from './layouts/AuthLayout';
-import PublicLayout from './layouts/PublicLayout';
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('token') !== null;
+  const [loading, setLoading] = React.useState(true);
+  
+  React.useEffect(() => {
+    // Simulate checking authentication
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (loading) {
+    return <Loading message="Checking authentication..." />;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
+
+// NavbarWrapper to get current route for highlighting active tab
+const NavbarWrapper = () => {
+  const location = useLocation();
+  const currentPage = location.pathname.split('/')[1] || 'home';
+  
+  return <Navbar currentPage={currentPage} />;
+};
 
 function App() {
   return (
@@ -24,25 +51,25 @@ function App() {
         <CssBaseline />
         <AuthProvider>
           <Router>
+            <NavbarWrapper />
             <Routes>
-              {/* Public routes - no navbar, redirect if authenticated */}
-              <Route element={<PublicLayout />}>
-                {/* Landing page (Registration) is the root route */}
-                <Route path="/" element={<LandingPage />} />
-                
-                {/* Login page */}
-                <Route path="/login" element={<Login />} />
-              </Route>
+              {/* Landing page (Registration) is the root route */}
+              <Route path="/" element={<LandingPage />} />
               
-              {/* Protected routes - with navbar, require authentication */}
-              <Route element={<AuthLayout />}>
-                {/* Resume builder route */}
-                <Route path="/resume-builder" element={<ResumeBuilder />} />
-                
-                {/* Add more authenticated routes here */}
-              </Route>
+              {/* Login page */}
+              <Route path="/login" element={<Login />} />
               
-              {/* Fallback for any unknown routes */}
+              {/* Protected route for resume builder */}
+              <Route 
+                path="/resume-builder" 
+                element={
+                  <ProtectedRoute>
+                    <ResumeBuilder />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Redirect any unknown routes to the landing page */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Router>

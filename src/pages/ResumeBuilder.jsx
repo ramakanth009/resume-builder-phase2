@@ -26,8 +26,7 @@ import SkillsSection from '../components/resumeBuilder/SkillsSection';
 import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
-import DynamicResumePreview from '../components/resumeBuilder/DynamicResumePreview';
-import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
+import ResumePreview from '../components/resumeBuilder/ResumePreview';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -154,9 +153,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
-  },
-  templateSelectorWrapper: {
-    marginBottom: '1.5rem',
   }
 }));
 
@@ -167,8 +163,7 @@ const steps = [
   'Skills',
   'Projects',
   'Experience',
-  'Custom Sections',
-  'Templates' // Added templates step
+  'Custom Sections'
 ];
 
 const ResumeBuilder = () => {
@@ -181,7 +176,6 @@ const ResumeBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState('classic');
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -221,6 +215,28 @@ const ResumeBuilder = () => {
     target_role: '',
     customSections: {}
   });
+
+  // Effects
+  useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!currentUser) {
+      navigate('/login');
+    }
+  }, [currentUser, navigate]);
+
+  useEffect(() => {
+    // Update user information if available
+    if (currentUser) {
+      setResumeData(prev => ({
+        ...prev,
+        header: {
+          ...prev.header,
+          name: currentUser.name || prev.header.name,
+          email: currentUser.email || prev.header.email,
+        },
+      }));
+    }
+  }, [currentUser]);
 
   // Navigation Handlers
   const handleNext = () => {
@@ -334,8 +350,8 @@ const ResumeBuilder = () => {
       const userName = generatedResume?.header?.name || 'resume';
       const fileName = userName.toLowerCase().replace(/\s+/g, '_');
       
-      // Use the template-aware PDF generator
-      await generateResumePDF(generatedResume, fileName, selectedTemplate);
+      // Use the new react-pdf based PDF generator
+      await generateResumePDF(generatedResume, fileName);
       
       setSnackbar({
         open: true,
@@ -404,13 +420,6 @@ const ResumeBuilder = () => {
           <CustomSectionsForm 
             resumeData={resumeData} 
             setResumeData={setResumeData} 
-          />
-        );
-      case 6:
-        return (
-          <TemplateSelector 
-            selectedTemplate={selectedTemplate}
-            setSelectedTemplate={setSelectedTemplate}
           />
         );
       default:
@@ -519,21 +528,9 @@ const ResumeBuilder = () => {
             )}
           </Box>
           
-          {/* Template selection when resume is generated */}
-          {generatedResume && (
-            <Box className={classes.templateSelectorWrapper}>
-              <TemplateSelector 
-                selectedTemplate={selectedTemplate}
-                setSelectedTemplate={setSelectedTemplate}
-              />
-            </Box>
-          )}
-          
-          {/* Dynamic Resume Preview based on template */}
-          <DynamicResumePreview 
+          <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
-            selectedTemplate={selectedTemplate}
           />
         </Box>
       </Box>
