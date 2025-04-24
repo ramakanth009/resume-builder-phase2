@@ -11,11 +11,14 @@ import {
   Avatar,
   Box,
   Container,
-  useMediaQuery
+  useMediaQuery,
+  Slide,
+  useScrollTrigger
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import TemplateIcon from '@mui/icons-material/Dashboard';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -23,6 +26,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
     backgroundColor: '#ffffff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+    position: 'fixed',
+    top: 0,
+    width: '100%',
+    zIndex: 1000,
   },
   toolbar: {
     display: 'flex',
@@ -73,6 +80,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
       borderRadius: '3px',
     },
   },
+  templateButton: {
+    textTransform: 'none',
+    fontWeight: 600,
+    marginLeft: '1rem',
+    color: '#805ad5',
+    '&:hover': {
+      backgroundColor: 'transparent',
+      color: '#6b46c1',
+    },
+  },
   userButton: {
     textTransform: 'none',
     marginLeft: '1.5rem',
@@ -102,9 +119,28 @@ const useStyles = makeStylesWithTheme((theme) => ({
       color: '#c53030',
     },
   },
+  contentOffset: {
+    minHeight: '64px', // Match the height of your AppBar
+  },
 }));
 
-const Navbar = ({ currentPage }) => {
+// Hide on scroll functionality
+function HideOnScroll(props) {
+  const { children } = props;
+  // Note: this trigger is reversed - we want to show on scroll down
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 200, // Show after scrolling more than 200px
+  });
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+const Navbar = ({ currentPage, onTemplateClick }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:768px)');
@@ -150,132 +186,159 @@ const Navbar = ({ currentPage }) => {
       ? currentUser.name.charAt(0).toUpperCase() 
       : 'U';
   };
+
+  // Handle template button click
+  const handleTemplateClick = () => {
+    if (onTemplateClick) {
+      onTemplateClick();
+    }
+  };
   
   return (
-    <AppBar position="static" className={classes.appBar} elevation={0}>
-      <Container maxWidth="xl">
-        <Toolbar className={classes.toolbar} disableGutters>
-          {/* Logo */}
-          <Box className={classes.logo} onClick={() => navigateTo('/')}>
-            <DescriptionIcon className={classes.logoIcon} />
-            <Typography variant="h6" className={classes.logoText}>
-              ResumeBuilder
-            </Typography>
-          </Box>
-          
-          {/* Desktop Navigation */}
-          {!isSmallScreen && (
-            <Box className={classes.navButtons}>
-              {/* Navigation Links - Shown only when user is logged in */}
-              {currentUser && (
-                <>
-                  <Button 
-                    className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
-                    onClick={() => navigateTo('/resume-builder')}
-                  >
-                    Create Resume
-                  </Button>
-                  
-                  {/* Add more navigation buttons here as needed */}
-                </>
-              )}
-              
-              {/* Login/Register Buttons - Shown when user is not logged in */}
-              {!currentUser && (
-                <>
-                  <Button 
-                    className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
-                    onClick={() => navigateTo('/login')}
-                  >
-                    Log In
-                  </Button>
-                  <Button 
-                    className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
-                    onClick={() => navigateTo('/')}
-                  >
-                    Sign Up
-                  </Button>
-                </>
-              )}
-              
-              {/* User Button - Shown when user is logged in */}
-              {currentUser && (
-                <Button 
-                  className={classes.userButton}
-                  onClick={handleUserMenuOpen}
-                  startIcon={
-                    <Avatar className={classes.avatar}>
-                      {getInitial()}
-                    </Avatar>
-                  }
-                >
-                  {currentUser.name.split(' ')[0]} {/* Display only first name */}
-                </Button>
-              )}
+    <>
+      <AppBar position="fixed" className={classes.appBar} elevation={2}>
+        <Container maxWidth="xl">
+          <Toolbar className={classes.toolbar} disableGutters>
+            {/* Logo */}
+            <Box className={classes.logo} onClick={() => navigateTo('/')}>
+              <DescriptionIcon className={classes.logoIcon} />
+              <Typography variant="h6" className={classes.logoText}>
+                ResumeBuilder
+              </Typography>
             </Box>
-          )}
-          
-          {/* Mobile Navigation */}
-          {isSmallScreen && (
-            <>
-              <IconButton
-                edge="end"
-                className={classes.mobileMenuButton}
-                onClick={handleMobileMenuOpen}
-              >
-                <MenuIcon />
-              </IconButton>
-              
-              {/* Mobile Menu */}
-              <Menu
-                anchorEl={mobileMenuAnchor}
-                open={Boolean(mobileMenuAnchor)}
-                onClose={handleMobileMenuClose}
-                keepMounted
-              >
-                {!currentUser ? (
-                  // Menu items for logged out users
+            
+            {/* Desktop Navigation */}
+            {!isSmallScreen && (
+              <Box className={classes.navButtons}>
+                {/* Navigation Links - Shown only when user is logged in */}
+                {currentUser && (
                   <>
-                    <MenuItem onClick={() => navigateTo('/login')}>
-                      Log In
-                    </MenuItem>
-                    <MenuItem onClick={() => navigateTo('/')}>
-                      Sign Up
-                    </MenuItem>
-                  </>
-                ) : (
-                  // Menu items for logged in users
-                  <>
-                    <MenuItem onClick={() => navigateTo('/resume-builder')}>
+                    <Button 
+                      className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
+                      onClick={() => navigateTo('/resume-builder')}
+                    >
                       Create Resume
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>
-                      Logout
-                    </MenuItem>
+                    </Button>
+                    
+                    {/* Template selector button */}
+                    {currentPage === 'resume-builder' && (
+                      <Button
+                        className={classes.templateButton}
+                        onClick={handleTemplateClick}
+                        startIcon={<TemplateIcon />}
+                      >
+                        Choose Template
+                      </Button>
+                    )}
+                    
+                    {/* Add more navigation buttons here as needed */}
                   </>
                 )}
-              </Menu>
-            </>
-          )}
-          
-          {/* User Menu */}
-          <Menu
-            anchorEl={userMenuAnchor}
-            open={Boolean(userMenuAnchor)}
-            onClose={handleUserMenuClose}
-            keepMounted
-          >
-            <MenuItem>
-              <AccountCircleIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
-              My Profile
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              Logout
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </Container>
-    </AppBar>
+                
+                {/* Login/Register Buttons - Shown when user is not logged in */}
+                {!currentUser && (
+                  <>
+                    <Button 
+                      className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
+                      onClick={() => navigateTo('/login')}
+                    >
+                      Log In
+                    </Button>
+                    <Button 
+                      className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
+                      onClick={() => navigateTo('/')}
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
+                
+                {/* User Button - Shown when user is logged in */}
+                {currentUser && (
+                  <Button 
+                    className={classes.userButton}
+                    onClick={handleUserMenuOpen}
+                    startIcon={
+                      <Avatar className={classes.avatar}>
+                        {getInitial()}
+                      </Avatar>
+                    }
+                  >
+                    {currentUser.name.split(' ')[0]} {/* Display only first name */}
+                  </Button>
+                )}
+              </Box>
+            )}
+            
+            {/* Mobile Navigation */}
+            {isSmallScreen && (
+              <>
+                <IconButton
+                  edge="end"
+                  className={classes.mobileMenuButton}
+                  onClick={handleMobileMenuOpen}
+                >
+                  <MenuIcon />
+                </IconButton>
+                
+                {/* Mobile Menu */}
+                <Menu
+                  anchorEl={mobileMenuAnchor}
+                  open={Boolean(mobileMenuAnchor)}
+                  onClose={handleMobileMenuClose}
+                  keepMounted
+                >
+                  {!currentUser ? (
+                    // Menu items for logged out users
+                    <>
+                      <MenuItem onClick={() => navigateTo('/login')}>
+                        Log In
+                      </MenuItem>
+                      <MenuItem onClick={() => navigateTo('/')}>
+                        Sign Up
+                      </MenuItem>
+                    </>
+                  ) : (
+                    // Menu items for logged in users
+                    <>
+                      <MenuItem onClick={() => navigateTo('/resume-builder')}>
+                        Create Resume
+                      </MenuItem>
+                      {currentPage === 'resume-builder' && (
+                        <MenuItem onClick={handleTemplateClick}>
+                          Choose Template
+                        </MenuItem>
+                      )}
+                      <MenuItem onClick={handleLogout}>
+                        Logout
+                      </MenuItem>
+                    </>
+                  )}
+                </Menu>
+              </>
+            )}
+            
+            {/* User Menu */}
+            <Menu
+              anchorEl={userMenuAnchor}
+              open={Boolean(userMenuAnchor)}
+              onClose={handleUserMenuClose}
+              keepMounted
+            >
+              <MenuItem>
+                <AccountCircleIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                My Profile
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                Logout
+              </MenuItem>
+            </Menu>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      {/* Add spacing to prevent content from being hidden under the fixed navbar */}
+      <div className={classes.contentOffset} />
+    </>
   );
 };
 

@@ -9,39 +9,36 @@ import Login from './pages/Login';
 import ResumeBuilder from './pages/ResumeBuilder';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token') !== null;
-  const [loading, setLoading] = React.useState(true);
-  
-  React.useEffect(() => {
-    // Simulate checking authentication
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, []);
+  const { currentUser, loading } = useAuth(); // Use auth context directly
   
   if (loading) {
     return <Loading message="Checking authentication..." />;
   }
   
-  if (!isAuthenticated) {
+  if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
   
   return children;
 };
 
-// NavbarWrapper to get current route for highlighting active tab
+// NavbarWrapper to conditionally render navbar
 const NavbarWrapper = () => {
   const location = useLocation();
-  const currentPage = location.pathname.split('/')[1] || 'home';
+  const { currentUser } = useAuth();
+  const currentPath = location.pathname;
   
-  return <Navbar currentPage={currentPage} />;
+  // Only show navbar when user is authenticated and not on auth pages
+  const shouldShowNavbar = currentUser && currentPath !== '/' && currentPath !== '/login';
+  
+  // If we should show navbar, determine which tab should be active
+  const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
+  
+  return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
 
 function App() {
