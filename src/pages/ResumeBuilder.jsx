@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
-import { generateATSOptimizedPDF } from '../utils/pdfUtils';
+import { generateEnhancedPDF, generateHybridPDF } from '../utils/pdfUtils';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -339,30 +339,29 @@ const ResumeBuilder = () => {
     setGeneratedResume(null);
   };
 
-  // Handle download of the generated resume
   const handleDownloadResume = () => {
-    try {
-      // Format filename with user's name if available
-      const userName = generatedResume?.header?.name || 'resume';
-      const fileName = userName.toLowerCase().replace(/\s+/g, '_');
-      
-      // Use our PDF generation utility
-      generateATSOptimizedPDF(generatedResume, fileName);
-      
-      setSnackbar({
-        open: true,
-        message: 'Resume downloaded successfully',
-        severity: 'success',
-      });
-    } catch (error) {
-      console.error('Error downloading resume:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to download resume. Please try again.',
-        severity: 'error',
-      });
-    }
-  };
+  try {
+    const userName = generatedResume?.header?.name || 'resume';
+    const fileName = userName.toLowerCase().replace(/\s+/g, '_');
+    
+    // Use the enhanced method (or hybrid for perfect visual match)
+    generateEnhancedPDF(generatedResume, fileName);
+    // or: generateHybridPDF(generatedResume, fileName);
+    
+    setSnackbar({
+      open: true,
+      message: 'Resume downloaded successfully',
+      severity: 'success',
+    });
+  } catch (error) {
+    console.error('Error downloading resume:', error);
+    setSnackbar({
+      open: true,
+      message: 'Failed to download resume. Please try again.',
+      severity: 'error',
+    });
+  }
+};
 
   const handleCloseSnackbar = () => {
     setSnackbar({
