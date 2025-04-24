@@ -8,7 +8,8 @@ import {
   Stepper, 
   Step, 
   StepLabel, 
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
@@ -16,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
-import { generateEnhancedPDF, generateHybridPDF } from '../utils/pdfUtils';
+import { generateResumePDF } from '../utils/pdfUtils';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -124,6 +125,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   loader: {
     marginLeft: '0.5rem',
+    color: 'white',
   },
   stepLabel: {
     cursor: 'pointer',
@@ -172,6 +174,7 @@ const ResumeBuilder = () => {
   // State Declarations
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -339,29 +342,33 @@ const ResumeBuilder = () => {
     setGeneratedResume(null);
   };
 
-  const handleDownloadResume = () => {
-  try {
-    const userName = generatedResume?.header?.name || 'resume';
-    const fileName = userName.toLowerCase().replace(/\s+/g, '_');
-    
-    // Use the enhanced method (or hybrid for perfect visual match)
-    generateEnhancedPDF(generatedResume, fileName);
-    // or: generateHybridPDF(generatedResume, fileName);
-    
-    setSnackbar({
-      open: true,
-      message: 'Resume downloaded successfully',
-      severity: 'success',
-    });
-  } catch (error) {
-    console.error('Error downloading resume:', error);
-    setSnackbar({
-      open: true,
-      message: 'Failed to download resume. Please try again.',
-      severity: 'error',
-    });
-  }
-};
+  // Handle downloading the resume as PDF
+  const handleDownloadResume = async () => {
+    try {
+      setDownloadingPdf(true);
+      
+      const userName = generatedResume?.header?.name || 'resume';
+      const fileName = userName.toLowerCase().replace(/\s+/g, '_');
+      
+      // Use the new react-pdf based PDF generator
+      await generateResumePDF(generatedResume, fileName);
+      
+      setSnackbar({
+        open: true,
+        message: 'Resume downloaded successfully',
+        severity: 'success',
+      });
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to download resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbar({
@@ -435,14 +442,7 @@ const ResumeBuilder = () => {
                 disabled={loading}
               >
                 Generate Resume
-                {loading && (
-                  <span className={classes.loader}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <style>{`.spinner{transform-origin:center;animation:spinner_animation .75s infinite linear}@keyframes spinner_animation{100%{transform:rotate(360deg)}}`}</style>
-                      <circle className="spinner" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
-                    </svg>
-                  </span>
-                )}
+                {loading && <CircularProgress size={20} className={classes.loader} />}
               </Button>
             </Typography>
             
@@ -506,8 +506,16 @@ const ResumeBuilder = () => {
                   variant="contained"
                   className={classes.downloadButton}
                   onClick={handleDownloadResume}
+                  disabled={downloadingPdf}
                 >
-                  Download PDF
+                  {downloadingPdf ? (
+                    <>
+                      Generating PDF
+                      <CircularProgress size={20} className={classes.loader} />
+                    </>
+                  ) : (
+                    'Download PDF'
+                  )}
                 </Button>
                 <Button
                   variant="contained"
