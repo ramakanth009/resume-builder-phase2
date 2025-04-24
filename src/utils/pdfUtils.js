@@ -6,9 +6,10 @@ import ResumePDF from '../components/resumeBuilder/ResumePDF';
  * Generate and download a PDF version of the resume using react-pdf
  * @param {Object} resumeData - Resume data object
  * @param {string} fileName - Name for the downloaded file (without extension)
+ * @param {string} templateName - Template style to use ('modern', 'classic', 'minimal')
  * @returns {Promise<boolean>} - True if PDF generation successful
  */
-export const generateResumePDF = async (resumeData, fileName = 'resume') => {
+export const generateResumePDF = async (resumeData, fileName = 'resume', templateName = 'classic') => {
   try {
     // Validate inputs
     if (!resumeData || !resumeData.header) {
@@ -18,8 +19,8 @@ export const generateResumePDF = async (resumeData, fileName = 'resume') => {
     // Format filename
     const safeFileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     
-    // Generate PDF blob
-    const blob = await pdf(<ResumePDF resumeData={resumeData} />).toBlob();
+    // Generate PDF blob with selected template
+    const blob = await pdf(<ResumePDF resumeData={resumeData} templateName={templateName} />).toBlob();
     
     // Save the file using FileSaver
     saveAs(blob, `${safeFileName}.pdf`);
@@ -36,11 +37,12 @@ export const generateResumePDF = async (resumeData, fileName = 'resume') => {
  * This approach uses react-pdf which creates a more accessible PDF than html2canvas
  * @param {Object} resumeData - Resume data object
  * @param {string} fileName - Name for the downloaded file
+ * @param {string} templateName - Template style to use
  * @returns {Promise<boolean>} - True if PDF generation successful
  */
-export const generateATSOptimizedPDF = async (resumeData, fileName = 'resume') => {
+export const generateATSOptimizedPDF = async (resumeData, fileName = 'resume', templateName = 'classic') => {
   // The ResumePDF component already creates an ATS-friendly PDF with proper text layers
-  return generateResumePDF(resumeData, fileName);
+  return generateResumePDF(resumeData, fileName, templateName);
 };
 
 /**

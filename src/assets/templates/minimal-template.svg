@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
+  <rect width="300" height="400" fill="#ffffff" rx="5" ry="5"/>
+  
+  <!-- Header section -->
+  <rect x="20" y="25" width="160" height="14" fill="#2d3748" rx="2" ry="2"/>
+  
+  <!-- Contact info - horizontal layout -->
+  <rect x="20" y="50" width="70" height="6" fill="#4a5568" rx="2" ry="2"/>
+  <rect x="110" y="50" width="70" height="6" fill="#4a5568" rx="2" ry="2"/>
+  <rect x="200" y="50" width="70" height="6" fill="#4a5568" rx="2" ry="2"/>
+  
+  <!-- Profile/Summary section -->
+  <rect x="20" y="80" width="70" height="8" fill="#2d3748" rx="2" ry="2"/>
+  <rect x="20" y="95" width="260" height="4" fill="#a0aec0" rx="1" ry="1"/>
+  <rect x="20" y="104" width="260" height="4" fill="#a0aec0" rx="1" ry="1"/>
+  <rect x="20" y="113" width="180" height="4" fill="#a0aec0" rx="1" ry="1"/>
+  
+  <!-- Skills section - Clean display -->
+  <rect x="20" y="135" width="50" height="8" fill="#2d3748" rx="2" ry="2"/>
+  <rect x="20" y="150" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="90" y="150" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="160" y="150" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="230" y="150" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="20" y="160" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="90" y="160" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  <rect x="160" y="160" width="60" height="5" fill="#e2e8f0" rx="2" ry="2"/>
+  
+  <!-- Experience section -->
+  <rect x="20" y="185" width="75" height="8" fill="#2d3748" rx="2" ry="2"/>
+  
+  <rect x="20" y="200" width="120" height="7" fill="#4a5568" rx="2" ry="2"/>
+  <rect x="20" y="212" width="70" height="5" fill="#718096" rx="2" ry="2"/>
+  <rect x="100" y="212" width="40" height="5" fill="#a0aec0" rx="2" ry="2"/>
+  <rect x="30" y="225" width="250" height="3" fill="#cbd5e0" rx="1" ry="1"/>
+  <rect x="30" y="234" width="250" height="3" fill="#cbd5e0" rx="1" ry="1"/>
+  
+  <rect x="20" y="250" width="120" height="7" fill="#4a5568" rx="2" ry="2"/>
+  <rect x="20" y="262" width="70" height="5" fill="#718096" rx="2" ry="2"/>
+  <rect x="100" y="262" width="40" height="5" fill="#a0aec0" rx="2" ry="2"/>
+  <rect x="30" y="275" width="250" height="3" fill="#cbd5e0" rx="1" ry="1"/>
+  <rect x="30" y="284" width="250" height="3" fill="#cbd5e0" rx="1" ry="1"/>
+  
+  <!-- Education section -->
+  <rect x="20" y="305" width="70" height="8" fill="#2d3748" rx="2" ry="2"/>
+  <rect x="20" y="320" width="90" height="7" fill="#4a5568" rx="2" ry="2"/>
+  <rect x="20" y="332" width="80" height="5" fill="#718096" rx="2" ry="2"/>
+  <rect x="235" y="332" width="45" height="5" fill="#a0aec0" rx="2" ry="2"/>
+  <rect x="20" y="343" width="120" height="3" fill="#cbd5e0" rx="1" ry="1"/>
+</svg>
