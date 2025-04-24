@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: '5px',
+    marginBottom: 5,
   },
   contactInfo: {
     flexDirection: 'row',
