@@ -27,6 +27,7 @@ import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
+import TermsAndPolicies from '../components/resumeBuilder/TermsAndPolicies';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -153,6 +154,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
+  },
+  disabledButton: {
+    backgroundColor: '#a0aec0 !important',
+    color: 'white !important',
   }
 }));
 
@@ -163,7 +168,8 @@ const steps = [
   'Skills',
   'Projects',
   'Experience',
-  'Custom Sections'
+  'Custom Sections',
+  'Terms & Policies'
 ];
 
 const ResumeBuilder = () => {
@@ -176,6 +182,10 @@ const ResumeBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
+  const [termsAccepted, setTermsAccepted] = useState({
+    updates: false,
+    dataSharing: false
+  });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -301,10 +311,29 @@ const ResumeBuilder = () => {
     return true;
   };
 
+  // Validate terms acceptance
+  const validateTermsAcceptance = () => {
+    if (!termsAccepted.updates || !termsAccepted.dataSharing) {
+      setSnackbar({
+        open: true,
+        message: 'Please accept both terms and policies to continue',
+        severity: 'error',
+      });
+      setActiveStep(6); // Switch to terms step
+      return false;
+    }
+    return true;
+  };
+
   // API Handlers
   const handleGenerateResume = async () => {
     // Validate form data first
     if (!validateResumeData()) {
+      return;
+    }
+    
+    // Validate terms acceptance
+    if (!validateTermsAcceptance()) {
       return;
     }
     
@@ -377,6 +406,9 @@ const ResumeBuilder = () => {
     });
   };
 
+  // Check if both terms are accepted
+  const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
+
   // Render current step content
   const getStepContent = (step) => {
     switch (step) {
@@ -422,6 +454,13 @@ const ResumeBuilder = () => {
             setResumeData={setResumeData} 
           />
         );
+      case 6:
+        return (
+          <TermsAndPolicies 
+            termsAccepted={termsAccepted}
+            setTermsAccepted={setTermsAccepted}
+          />
+        );
       default:
         return 'Unknown step';
     }
@@ -437,9 +476,9 @@ const ResumeBuilder = () => {
               Build Your Resume
               <Button
                 variant="contained"
-                className={classes.saveButton}
+                className={`${classes.saveButton} ${!areTermsAccepted ? classes.disabledButton : ''}`}
                 onClick={handleGenerateResume}
-                disabled={loading}
+                disabled={loading || !areTermsAccepted}
               >
                 Generate Resume
                 {loading && <CircularProgress size={20} className={classes.loader} />}
@@ -480,7 +519,8 @@ const ResumeBuilder = () => {
                 <Button
                   variant="contained"
                   onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
-                  className={classes.buttonNext}
+                  className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                  disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
                 >
                   {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
                 </Button>

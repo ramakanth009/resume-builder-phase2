@@ -16,11 +16,12 @@ import {
   useScrollTrigger
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import DescriptionIcon from '@mui/icons-material/Description';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TemplateIcon from '@mui/icons-material/Dashboard';
+import CreateIcon from '@mui/icons-material/Create'; // Added icon for "Create Resume"
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import GigaLogo from '../assets/giga-loogo.svg'; // Keep the import
 
 const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
@@ -46,6 +47,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   logoIcon: {
     marginRight: '0.5rem',
     color: '#3182ce',
+    width: '32px', // Add this line to control logo size
   },
   logoText: {
     fontWeight: 700,
@@ -199,11 +201,11 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
       <AppBar position="fixed" className={classes.appBar} elevation={2}>
         <Container maxWidth="xl">
           <Toolbar className={classes.toolbar} disableGutters>
-            {/* Logo */}
+            {/* Company Logo */}
             <Box className={classes.logo} onClick={() => navigateTo('/')}>
-              <DescriptionIcon className={classes.logoIcon} />
+              <img src={GigaLogo} alt="Gigaversity Logo" style={{ width: '32px' }} className={classes.logoIcon} />
               <Typography variant="h6" className={classes.logoText}>
-                ResumeBuilder
+                Gigaversity
               </Typography>
             </Box>
             
@@ -216,6 +218,7 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                     <Button 
                       className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
                       onClick={() => navigateTo('/resume-builder')}
+                      startIcon={<CreateIcon />} // Added Create icon here
                     >
                       Create Resume
                     </Button>
@@ -302,10 +305,12 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                     // Menu items for logged in users
                     <>
                       <MenuItem onClick={() => navigateTo('/resume-builder')}>
+                        <CreateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                         Create Resume
                       </MenuItem>
                       {currentPage === 'resume-builder' && (
                         <MenuItem onClick={handleTemplateClick}>
+                          <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                           Choose Template
                         </MenuItem>
                       )}
