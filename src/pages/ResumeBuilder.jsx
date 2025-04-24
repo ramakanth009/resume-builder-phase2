@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Container, 
   Box, 
@@ -9,14 +9,9 @@ import {
   Step, 
   StepLabel, 
   Snackbar,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton
+  CircularProgress
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
-import CloseIcon from '@mui/icons-material/Close';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -31,17 +26,13 @@ import SkillsSection from '../components/resumeBuilder/SkillsSection';
 import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
-import TermsAndPolicies from '../components/resumeBuilder/TermsAndPolicies';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
-import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
-import Navbar from '../components/Navbar';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
     minHeight: '100vh',
     padding: '2rem 0',
     backgroundColor: '#f9f9f9',
-    marginTop: '64px', // Add top margin to account for fixed navbar
   },
   container: {
     height: '100%',
@@ -85,15 +76,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: '#2b6cb0',
     },
-  },
-  disabledButton: {
-    backgroundColor: '#cbd5e0',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    cursor: 'not-allowed',
   },
   navigationButtons: {
     display: 'flex',
@@ -171,23 +153,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
-  },
-  dialogTitle: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  closeButton: {
-    color: '#2d3748',
-  },
-  dialogContent: {
-    padding: '1rem',
-  },
-  warningText: {
-    color: '#e53e3e',
-    fontSize: '0.8rem',
-    marginTop: '0.5rem',
-  },
+  }
 }));
 
 // Step labels for the stepper
@@ -197,8 +163,7 @@ const steps = [
   'Skills',
   'Projects',
   'Experience',
-  'Custom Sections',
-  'Terms & Policies'
+  'Custom Sections'
 ];
 
 const ResumeBuilder = () => {
@@ -211,12 +176,6 @@ const ResumeBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState('modern');
-  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState({
-    updates: false,
-    dataSharing: false
-  });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -257,12 +216,6 @@ const ResumeBuilder = () => {
     customSections: {}
   });
 
-  // Reference for scrolling to terms warning
-  const termsWarningRef = useRef(null);
-
-  // Check if terms are accepted
-  const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
-
   // Effects
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -300,15 +253,6 @@ const ResumeBuilder = () => {
     if (!generatedResume) {
       setActiveStep(stepIndex);
     }
-  };
-
-  // Template dialog handlers
-  const handleOpenTemplateDialog = () => {
-    setTemplateDialogOpen(true);
-  };
-
-  const handleCloseTemplateDialog = () => {
-    setTemplateDialogOpen(false);
   };
 
   // Form Validation
@@ -351,23 +295,6 @@ const ResumeBuilder = () => {
         severity: 'error',
       });
       setActiveStep(3); // Switch to projects step
-      return false;
-    }
-    
-    // Check if the terms are accepted
-    if (!areTermsAccepted) {
-      setSnackbar({
-        open: true,
-        message: 'Please accept the terms and policies to generate your resume',
-        severity: 'error',
-      });
-      setActiveStep(6); // Switch to terms step
-      
-      // Scroll to the terms warning if it exists
-      if (termsWarningRef.current) {
-        termsWarningRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-      
       return false;
     }
     
@@ -460,9 +387,6 @@ const ResumeBuilder = () => {
             setResumeData={setResumeData} 
           />
         );
-};
-
-export default ResumeBuilder;
       case 1:
         return (
           <EducationSection 
@@ -498,199 +422,131 @@ export default ResumeBuilder;
             setResumeData={setResumeData} 
           />
         );
-      case 6:
-        return (
-          <TermsAndPolicies 
-            termsAccepted={termsAccepted}
-            setTermsAccepted={setTermsAccepted}
-          />
-        );
       default:
         return 'Unknown step';
     }
   };
 
   return (
-    <>
-      {/* Fixed Navbar with Template Button */}
-      <Navbar 
-        currentPage="resume-builder" 
-        onTemplateClick={handleOpenTemplateDialog}
-      />
-      
-      <Container className={classes.root} maxWidth="xl">
-        <Box className={classes.mainContainer}>
-          {/* Form Column - Hide or show based on whether resume has been generated */}
-          {!generatedResume && (
-            <Box className={`${classes.columnBox} ${classes.formColumn}`}>
-              <Typography variant="h5" className={classes.sectionTitle}>
-                Build Your Resume
+    <Container className={classes.root} maxWidth="xl">
+      <Box className={classes.mainContainer}>
+        {/* Form Column - Hide or show based on whether resume has been generated */}
+        {!generatedResume && (
+          <Box className={`${classes.columnBox} ${classes.formColumn}`}>
+            <Typography variant="h5" className={classes.sectionTitle}>
+              Build Your Resume
+              <Button
+                variant="contained"
+                className={classes.saveButton}
+                onClick={handleGenerateResume}
+                disabled={loading}
+              >
+                Generate Resume
+                {loading && <CircularProgress size={20} className={classes.loader} />}
+              </Button>
+            </Typography>
+            
+            {/* Stepper Navigation with clickable labels */}
+            <Stepper activeStep={activeStep} className={classes.stepper}>
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel 
+                    className={classes.stepLabel} 
+                    onClick={() => handleStepClick(index)}
+                    StepIconProps={{
+                      style: { cursor: 'pointer' }
+                    }}
+                  >
+                    <span style={{ cursor: 'pointer' }}>{label}</span>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+
+            {/* Current Step Content */}
+            <Paper className={classes.paper} elevation={0}>
+              {getStepContent(activeStep)}
+              
+              {/* Navigation Buttons */}
+              <Box className={classes.navigationButtons}>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  variant="outlined"
+                  className={classes.buttonBack}
+                >
+                  Back
+                </Button>
                 <Button
                   variant="contained"
-                  className={areTermsAccepted ? classes.saveButton : classes.disabledButton}
-                  onClick={handleGenerateResume}
-                  disabled={loading || !areTermsAccepted}
+                  onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                  className={classes.buttonNext}
                 >
-                  Generate Resume
-                  {loading && <CircularProgress size={20} className={classes.loader} />}
+                  {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
                 </Button>
-              </Typography>
-              
-              {/* Stepper Navigation with clickable labels */}
-              <Stepper activeStep={activeStep} className={classes.stepper}>
-                {steps.map((label, index) => (
-                  <Step key={label}>
-                    <StepLabel 
-                      className={classes.stepLabel} 
-                      onClick={() => handleStepClick(index)}
-                      StepIconProps={{
-                        style: { cursor: 'pointer' }
-                      }}
-                    >
-                      <span style={{ cursor: 'pointer' }}>{label}</span>
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-
-              {/* Current Step Content */}
-              <Paper className={classes.paper} elevation={0}>
-                {getStepContent(activeStep)}
-                
-                {/* Terms warning message if trying to generate without accepting terms */}
-                {activeStep === 6 && !areTermsAccepted && (
-                  <Box ref={termsWarningRef}>
-                    <Typography className={classes.warningText}>
-                      Both checkboxes must be selected to generate your resume.
-                    </Typography>
-                  </Box>
-                )}
-                
-                {/* Navigation Buttons */}
-                <Box className={classes.navigationButtons}>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    variant="outlined"
-                    className={classes.buttonBack}
-                  >
-                    Back
-                  </Button>
-                  {activeStep === steps.length - 1 ? (
-                    <Button
-                      variant="contained"
-                      onClick={handleGenerateResume}
-                      className={areTermsAccepted ? classes.buttonNext : classes.disabledButton}
-                      disabled={!areTermsAccepted || loading}
-                    >
-                      {loading ? (
-                        <>
-                          Generating...
-                          <CircularProgress size={20} className={classes.loader} />
-                        </>
-                      ) : (
-                        'Generate Resume'
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      onClick={handleNext}
-                      className={classes.buttonNext}
-                    >
-                      Next
-                    </Button>
-                  )}
-                </Box>
-              </Paper>
-            </Box>
-          )}
-
-          {/* Preview Column - Adjust width to full when resume is generated */}
-          <Box 
-            className={`${generatedResume ? '' : classes.columnBox} ${classes.previewColumn}`} 
-            sx={{ width: generatedResume ? '100%' : '50%' }}
-          >
-            <Box className={classes.sectionTitle}>
-              <Typography variant="h5">
-                {generatedResume ? 'Generated Resume' : 'Resume Preview'}
-              </Typography>
-              
-              {/* Show action buttons when resume is generated */}
-              {generatedResume && (
-                <Box>
-                  <Button
-                    variant="contained"
-                    className={classes.downloadButton}
-                    onClick={handleDownloadResume}
-                    disabled={downloadingPdf}
-                  >
-                    {downloadingPdf ? (
-                      <>
-                        Generating PDF
-                        <CircularProgress size={20} className={classes.loader} />
-                      </>
-                    ) : (
-                      'Download PDF'
-                    )}
-                  </Button>
-                  <Button
-                    variant="contained"
-                    className={classes.editButton}
-                    onClick={handleEditResume}
-                  >
-                    Edit Resume
-                  </Button>
-                </Box>
-              )}
-            </Box>
-            
-            <ResumePreview 
-              userData={resumeData}
-              generatedData={generatedResume}
-              template={selectedTemplate}
-            />
+              </Box>
+            </Paper>
           </Box>
+        )}
+
+        {/* Preview Column - Adjust width to full when resume is generated */}
+        <Box 
+          className={`${generatedResume ? '' : classes.columnBox} ${classes.previewColumn}`} 
+          sx={{ width: generatedResume ? '100%' : '50%' }}
+        >
+          <Box className={classes.sectionTitle}>
+            <Typography variant="h5">
+              {generatedResume ? 'Generated Resume' : 'Resume Preview'}
+            </Typography>
+            
+            {/* Show action buttons when resume is generated */}
+            {generatedResume && (
+              <Box>
+                <Button
+                  variant="contained"
+                  className={classes.downloadButton}
+                  onClick={handleDownloadResume}
+                  disabled={downloadingPdf}
+                >
+                  {downloadingPdf ? (
+                    <>
+                      Generating PDF
+                      <CircularProgress size={20} className={classes.loader} />
+                    </>
+                  ) : (
+                    'Download PDF'
+                  )}
+                </Button>
+                <Button
+                  variant="contained"
+                  className={classes.editButton}
+                  onClick={handleEditResume}
+                >
+                  Edit Resume
+                </Button>
+              </Box>
+            )}
+          </Box>
+          
+          <ResumePreview 
+            userData={resumeData}
+            generatedData={generatedResume}
+          />
         </Box>
+      </Box>
 
-        {/* Template Selection Dialog */}
-        <Dialog 
-          open={templateDialogOpen} 
-          onClose={handleCloseTemplateDialog}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle className={classes.dialogTitle}>
-            Choose Resume Template
-            <IconButton 
-              className={classes.closeButton} 
-              onClick={handleCloseTemplateDialog}
-              size="small"
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent className={classes.dialogContent}>
-            <TemplateSelector
-              selectedTemplate={selectedTemplate}
-              setSelectedTemplate={(template) => {
-                setSelectedTemplate(template);
-                handleCloseTemplateDialog();
-              }}
-            />
-          </DialogContent>
-        </Dialog>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
-      </Container>
-    </>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
+};
+
+export default ResumeBuilder;
