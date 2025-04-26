@@ -1,6 +1,3 @@
-// src/pages/ResumeBuilder.jsx
-// This is an updated version of the ResumeBuilder component with added edit functionality
-
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
@@ -21,7 +18,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { generateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
 import { generateResumePDF } from '../utils/pdfUtils';
-import { normalizeEducationData } from '../components/resumeBuilder/ResumeBuilderFunctions';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
@@ -32,6 +28,8 @@ import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
 import TermsAndPolicies from '../components/resumeBuilder/TermsAndPolicies';
+
+import useDummyResumeData from './useDummyResumeData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -162,6 +160,43 @@ const useStyles = makeStylesWithTheme((theme) => ({
   disabledButton: {
     backgroundColor: '#a0aec0 !important',
     color: 'white !important',
+  },
+  actionButtons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '1rem',
+    marginBottom: '1rem',
+  },
+  viewModeToggle: {
+    display: 'flex',
+    marginBottom: '1rem',
+    justifyContent: 'center',
+    gap: '1rem',
+  },
+  editModeButton: {
+    backgroundColor: '#805ad5',
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: '#6b46c1',
+    },
+  },
+  previewModeButton: {
+    backgroundColor: '#4299e1',
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 600,
+    padding: '0.5rem 1.5rem',
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: '#3182ce',
+    },
+  },
+  activeModeButton: {
+    boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.5)',
   }
 }));
 
@@ -186,6 +221,7 @@ const ResumeBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState({
     updates: false,
     dataSharing: false
@@ -196,7 +232,7 @@ const ResumeBuilder = () => {
     severity: 'success',
   });
   
-  // Initialize resumeData with user information if available
+  // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
     header: {
       name: currentUser?.name || '',
@@ -229,6 +265,50 @@ const ResumeBuilder = () => {
     target_role: '',
     customSections: {}
   });
+
+  // Initialize the dummy data hook
+  const { loadDummyData, resetData, isLoaded } = useDummyResumeData(resumeData, setResumeData);
+
+  // Add handlers for dummy data
+  const handleLoadDummyData = () => {
+    loadDummyData();
+    setSnackbar({
+      open: true,
+      message: 'Sample data loaded successfully!',
+      severity: 'success',
+    });
+  };
+
+  const handleResetForm = () => {
+    resetData();
+    setSnackbar({
+      open: true,
+      message: 'Form has been reset',
+      severity: 'info',
+    });
+  };
+
+  // Add dummy data buttons component
+  const renderDummyDataButtons = () => (
+    <Box sx={{ mb: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={handleResetForm}
+        disabled={!isLoaded}
+      >
+        Reset Form
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleLoadDummyData}
+        disabled={isLoaded}
+      >
+        Load Sample Data
+      </Button>
+    </Box>
+  );
 
   // Effects
   useEffect(() => {
@@ -263,8 +343,15 @@ const ResumeBuilder = () => {
 
   // Handler for clicking on step labels
   const handleStepClick = (stepIndex) => {
-    // Allow step navigation even when resume is generated, when in edit mode
-    setActiveStep(stepIndex);
+    // Only allow step navigation if in edit mode
+    if (isEditMode) {
+      setActiveStep(stepIndex);
+    }
+  };
+
+  // Toggle between edit mode and preview mode
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
   };
 
   // Form Validation
@@ -327,52 +414,10 @@ const ResumeBuilder = () => {
     return true;
   };
 
-  // API Handlers
-  const handleGenerateResume = async () => {
-    // Validate form data first
-    if (!validateResumeData()) {
-      return;
-    }
-    
-    // Validate terms acceptance
-    if (!validateTermsAcceptance()) {
-      return;
-    }
-    
-    setLoading(true);
-    
-    try {
-      const response = await generateResume(resumeData);
-      
-      setSnackbar({
-        open: true,
-        message: 'Resume generated successfully!',
-        severity: 'success',
-      });
-      
-      // Transform the generated resume data to match frontend structure
-      const adaptedResume = adaptGeneratedResume(response.resume);
-      
-      // Store the adapted resume data and replace the preview
-      setGeneratedResume(adaptedResume);
-      
-    } catch (error) {
-      console.error('Error generating resume:', error);
-      setSnackbar({
-        open: true,
-        message: error.message || 'An error occurred generating your resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Function to map generated resume data back to form fields
   const mapGeneratedDataToFormFields = (generatedData) => {
+    // Create a deep copy to avoid mutating the original data
     const formData = JSON.parse(JSON.stringify(resumeData));
-    
-    console.log("Original generated data structure:", JSON.stringify(generatedData, null, 2));
     
     // Map header information
     if (generatedData.header) {
@@ -389,32 +434,46 @@ const ResumeBuilder = () => {
       formData.summary = generatedData.summary;
     }
     
-    // Map education (using the normalized function)
+    // Map education (handle both object and array formats)
     if (generatedData.education) {
-      formData.education = normalizeEducationData(generatedData.education);
+      if (Array.isArray(generatedData.education) && generatedData.education.length > 0) {
+        // If first education entry exists, map its values
+        const edu = generatedData.education[0];
+        formData.education = {
+          degree: edu.degree || '',
+          specialization: edu.specialization || '',
+          institution: edu.institution || '',
+          graduation_year: edu.graduationYear || edu.graduation_year || '',
+        };
+      } else if (typeof generatedData.education === 'object') {
+        // Map education object directly
+        formData.education = {
+          degree: generatedData.education.degree || '',
+          specialization: generatedData.education.specialization || '',
+          institution: generatedData.education.institution || '',
+          graduation_year: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
+        };
+      }
     }
     
-    // Map skills - ensure we have valid array content
+    // Map skills
     if (generatedData.skills && Array.isArray(generatedData.skills)) {
-      const validSkills = generatedData.skills.filter(skill => skill && typeof skill === 'string' && skill.trim() !== '');
-      formData.skills = validSkills.length > 0 ? validSkills : [''];
+      formData.skills = [...generatedData.skills];
     }
     
-    // Map certifications - ensure we have valid array content
+    // Map certifications
     if (generatedData.certifications && Array.isArray(generatedData.certifications)) {
-      // Filter out empty entries and ensure at least one item exists
-      const validCerts = generatedData.certifications.filter(cert => cert && typeof cert === 'string' && cert.trim() !== '');
-      formData.certifications = validCerts.length > 0 ? validCerts : [''];
+      formData.certifications = [...generatedData.certifications];
     }
     
     // Map projects (with either Academic_projects or projects field)
-    if (generatedData.Academic_projects && Array.isArray(generatedData.Academic_projects)) {
+    if (generatedData.Academic_projects && Array.isArray(generatedData.Academic_projects) && generatedData.Academic_projects.length > 0) {
       formData.Academic_projects = generatedData.Academic_projects.map(project => ({
         name: project.name || '',
         skills_used: project.skills_used || '',
         description: project.description || '',
       }));
-    } else if (generatedData.projects && Array.isArray(generatedData.projects)) {
+    } else if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
       // Convert generated projects format to Academic_projects format
       formData.Academic_projects = generatedData.projects.map(project => {
         // Extract key info and responsibilities
@@ -442,27 +501,19 @@ const ResumeBuilder = () => {
         };
       });
     }
-
-    // Ensure at least one project entry exists
-    formData.Academic_projects = formData.Academic_projects?.length > 0 ? 
-      formData.Academic_projects : [{
-        name: '',
-        skills_used: '',
-        description: '',
-      }];
-
-    // Map work experience with similar validation
-    let mappedExperience = [];
     
-    if (generatedData.work_experience && Array.isArray(generatedData.work_experience)) {
-      mappedExperience = generatedData.work_experience.map(exp => ({
+    // Map work experience
+    if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
+      formData.work_experience = generatedData.work_experience.map(exp => ({
         position: exp.position || '',
         company_name: exp.company_name || '',
         duration: exp.duration || '',
         description: exp.description || '',
       }));
-    } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience)) {
-      mappedExperience = generatedData.workExperience.map(exp => {
+    } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
+      // Convert workExperience format to work_experience format
+      formData.work_experience = generatedData.workExperience.map(exp => {
+        // Compile responsibilities into description if needed
         let description = exp.description || '';
         if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
           description = exp.responsibilities.join('\n');
@@ -476,16 +527,6 @@ const ResumeBuilder = () => {
         };
       });
     }
-
-    // Ensure at least one work experience entry exists
-    formData.work_experience = mappedExperience.length > 0 ? mappedExperience : [{
-      position: '',
-      company_name: '',
-      duration: '',
-      description: '',
-    }];
-    
-    console.log("Mapped work experience:", formData.work_experience);
     
     // Map custom sections
     if (generatedData.customSections) {
@@ -495,42 +536,95 @@ const ResumeBuilder = () => {
     return formData;
   };
 
-  // Handle resetting the form to edit again
-  const handleEditResume = () => {
-    if (generatedResume) {
-      try {
-        // Map the generated resume data back to the form fields
-        const formData = mapGeneratedDataToFormFields(generatedResume);
-        
-        // Accept terms since we're in edit mode - user already accepted them
-        setTermsAccepted({
-          updates: true,
-          dataSharing: true
-        });
-        
-        // Update the form data
-        setResumeData(formData);
-        
-        // Set active step back to first step for editing
-        setActiveStep(0);
-        
-        // Clear generated resume to show form again
-        setGeneratedResume(null);
-        
-        // Show success message
-        setSnackbar({
-          open: true,
-          message: 'Resume loaded for editing',
-          severity: 'success',
-        });
-      } catch (error) {
-        console.error("Error preparing resume for editing:", error);
-        setSnackbar({
-          open: true,
-          message: 'There was a problem loading the resume for editing. Please try again.',
-          severity: 'error',
-        });
-      }
+  // API Handlers
+  const handleGenerateResume = async () => {
+    // Validate form data first
+    if (!validateResumeData()) {
+      return;
+    }
+    
+    // Validate terms acceptance
+    if (!validateTermsAcceptance()) {
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const response = await generateResume(resumeData);
+      
+      setSnackbar({
+        open: true,
+        message: 'Resume generated successfully!',
+        severity: 'success',
+      });
+      
+      // Transform the generated resume data to match frontend structure
+      const adaptedResume = adaptGeneratedResume(response.resume);
+      
+      // Store the adapted resume data
+      setGeneratedResume(adaptedResume);
+      
+      // Also update the form data with generated content
+      // This enables seamless editing by keeping form and preview in sync
+      const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+      setResumeData(updatedFormData);
+      
+      // Switch to preview mode to show the generated resume
+      setIsEditMode(false);
+      
+    } catch (error) {
+      console.error('Error generating resume:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || 'An error occurred generating your resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle updating the resume after editing
+  const handleUpdateResume = async () => {
+    // Validate form data first
+    if (!validateResumeData()) {
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const response = await generateResume(resumeData);
+      
+      setSnackbar({
+        open: true,
+        message: 'Resume updated successfully!',
+        severity: 'success',
+      });
+      
+      // Transform the generated resume data to match frontend structure
+      const adaptedResume = adaptGeneratedResume(response.resume);
+      
+      // Store the adapted resume data
+      setGeneratedResume(adaptedResume);
+      
+      // Update the form data with newly generated content
+      const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+      setResumeData(updatedFormData);
+      
+      // Switch to preview mode to show the updated resume
+      setIsEditMode(false);
+      
+    } catch (error) {
+      console.error('Error updating resume:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || 'An error occurred updating your resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -539,11 +633,14 @@ const ResumeBuilder = () => {
     try {
       setDownloadingPdf(true);
       
-      const userName = generatedResume?.header?.name || 'resume';
+      // Choose which data to use for the PDF - either the generated resume or form data
+      const dataToUse = generatedResume || resumeData;
+      
+      const userName = dataToUse?.header?.name || 'resume';
       const fileName = userName.toLowerCase().replace(/\s+/g, '_');
       
-      // Use the new react-pdf based PDF generator
-      await generateResumePDF(generatedResume, fileName);
+      // Use the react-pdf based PDF generator
+      await generateResumePDF(dataToUse, fileName);
       
       setSnackbar({
         open: true,
@@ -569,44 +666,11 @@ const ResumeBuilder = () => {
     });
   };
 
-  // Handle updating the resume after editing
-  const handleUpdateResume = async () => {
-    // Validate form data first
-    if (!validateResumeData()) {
-      return;
-    }
-    
-    setLoading(true);
-    
-    try {
-      const response = await generateResume(resumeData);
-      
-      setSnackbar({
-        open: true,
-        message: 'Resume updated successfully!',
-        severity: 'success',
-      });
-      
-      // Transform the generated resume data to match frontend structure
-      const adaptedResume = adaptGeneratedResume(response.resume);
-      
-      // Store the adapted resume data and replace the preview
-      setGeneratedResume(adaptedResume);
-      
-    } catch (error) {
-      console.error('Error updating resume:', error);
-      setSnackbar({
-        open: true,
-        message: error.message || 'An error occurred updating your resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Check if both terms are accepted
   const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
+  
+  // Determine if the resume has been generated at least once
+  const hasGeneratedResume = generatedResume !== null;
 
   // Render current step content
   const getStepContent = (step) => {
@@ -667,21 +731,85 @@ const ResumeBuilder = () => {
 
   return (
     <Container className={classes.root} maxWidth="xl">
+      {/* Add dummy data buttons in edit mode */}
+      {isEditMode && renderDummyDataButtons()}
+      
+      {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
+      {hasGeneratedResume && (
+        <Box className={classes.viewModeToggle}>
+          <Button
+            variant="contained"
+            className={`${classes.editModeButton} ${isEditMode ? classes.activeModeButton : ''}`}
+            onClick={() => setIsEditMode(true)}
+            disabled={isEditMode}
+          >
+            Edit Mode
+          </Button>
+          <Button
+            variant="contained"
+            className={`${classes.previewModeButton} ${!isEditMode ? classes.activeModeButton : ''}`}
+            onClick={() => setIsEditMode(false)}
+            disabled={!isEditMode}
+          >
+            Preview Mode
+          </Button>
+        </Box>
+      )}
+
+      {/* Action buttons (only show when resume has been generated at least once) */}
+      {hasGeneratedResume && (
+        <Box className={classes.actionButtons}>
+          <Button
+            variant="contained"
+            className={classes.downloadButton}
+            onClick={handleDownloadResume}
+            disabled={downloadingPdf}
+          >
+            {downloadingPdf ? (
+              <>
+                Generating PDF
+                <CircularProgress size={20} className={classes.loader} />
+              </>
+            ) : (
+              'Download PDF'
+            )}
+          </Button>
+          
+          {/* Update button (only show in edit mode) */}
+          {isEditMode && (
+            <Button
+              variant="contained"
+              className={classes.saveButton}
+              onClick={handleUpdateResume}
+              disabled={loading || !areTermsAccepted}
+            >
+              Update Resume
+              {loading && <CircularProgress size={20} className={classes.loader} />}
+            </Button>
+          )}
+        </Box>
+      )}
+
+      {/* Main content area */}
       <Box className={classes.mainContainer}>
-        {/* Form Column - Hide or show based on whether resume has been generated */}
-        {!generatedResume && (
+        {/* Form Column - Show in edit mode */}
+        {isEditMode && (
           <Box className={`${classes.columnBox} ${classes.formColumn}`}>
             <Typography variant="h5" className={classes.sectionTitle}>
-              {resumeData.summary ? 'Edit Your Resume' : 'Build Your Resume'}
-              <Button
-                variant="contained"
-                className={`${classes.saveButton} ${!areTermsAccepted ? classes.disabledButton : ''}`}
-                onClick={resumeData.summary ? handleUpdateResume : handleGenerateResume}
-                disabled={loading || !areTermsAccepted}
-              >
-                {resumeData.summary ? 'Update Resume' : 'Generate Resume'}
-                {loading && <CircularProgress size={20} className={classes.loader} />}
-              </Button>
+              {hasGeneratedResume ? 'Edit Your Resume' : 'Build Your Resume'}
+              
+              {/* Only show the generate button if resume hasn't been generated yet */}
+              {!hasGeneratedResume && (
+                <Button
+                  variant="contained"
+                  className={`${classes.saveButton} ${!areTermsAccepted ? classes.disabledButton : ''}`}
+                  onClick={handleGenerateResume}
+                  disabled={loading || !areTermsAccepted}
+                >
+                  Generate Resume
+                  {loading && <CircularProgress size={20} className={classes.loader} />}
+                </Button>
+              )}
             </Typography>
             
             {/* Stepper Navigation with clickable labels */}
@@ -715,61 +843,41 @@ const ResumeBuilder = () => {
                 >
                   Back
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={activeStep === steps.length - 1 ? 
-                    (resumeData.summary ? handleUpdateResume : handleGenerateResume) : 
-                    handleNext}
-                  className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                  disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                >
-                  {activeStep === steps.length - 1 ? 
-                    (resumeData.summary ? 'Update Resume' : 'Generate Resume') : 
-                    'Next'}
-                </Button>
+                
+                {hasGeneratedResume ? (
+                  // If resume has been generated, show "Next" or "Update" button
+                  <Button
+                    variant="contained"
+                    onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
+                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                  >
+                    {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
+                  </Button>
+                ) : (
+                  // If resume hasn't been generated yet, show "Next" or "Generate" button
+                  <Button
+                    variant="contained"
+                    onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                  >
+                    {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+                  </Button>
+                )}
               </Box>
             </Paper>
           </Box>
         )}
 
-        {/* Preview Column - Adjust width to full when resume is generated */}
+        {/* Preview Column - Adjust width based on edit/preview mode */}
         <Box 
-          className={`${generatedResume ? '' : classes.columnBox} ${classes.previewColumn}`} 
-          sx={{ width: generatedResume ? '100%' : '50%' }}
+          className={`${isEditMode ? classes.columnBox : ''} ${classes.previewColumn}`} 
+          sx={{ width: isEditMode ? '50%' : '100%' }}
         >
-          <Box className={classes.sectionTitle}>
-            <Typography variant="h5">
-              {generatedResume ? 'Generated Resume' : 'Resume Preview'}
-            </Typography>
-            
-            {/* Show action buttons when resume is generated */}
-            {generatedResume && (
-              <Box>
-                <Button
-                  variant="contained"
-                  className={classes.downloadButton}
-                  onClick={handleDownloadResume}
-                  disabled={downloadingPdf}
-                >
-                  {downloadingPdf ? (
-                    <>
-                      Generating PDF
-                      <CircularProgress size={20} className={classes.loader} />
-                    </>
-                  ) : (
-                    'Download PDF'
-                  )}
-                </Button>
-                <Button
-                  variant="contained"
-                  className={classes.editButton}
-                  onClick={handleEditResume}
-                >
-                  Edit Resume
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <Typography variant="h5" className={classes.sectionTitle}>
+            {hasGeneratedResume ? 'Resume Preview' : 'Live Preview'}
+          </Typography>
           
           <ResumePreview 
             userData={resumeData}
