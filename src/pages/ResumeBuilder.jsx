@@ -725,50 +725,55 @@ const ResumeBuilder = () => {
     if (!validateResumeData()) {
       return;
     }
-    
-    // If we're editing an existing resume, use the update API
-    if (isEditingExisting && resumeId) {
-      setLoading(true);
-      
-      try {
-        // Call the update API
-        const response = await updateResume(resumeId, resumeData);
-        
-        if (response.status === 'success') {
-          setSnackbar({
-            open: true,
-            message: 'Resume updated successfully!',
-            severity: 'success',
-          });
-          
-          // If there's updated resume data, update our state
-          if (response.resume) {
-            const adaptedResume = adaptGeneratedResume(response.resume);
-            setGeneratedResume(adaptedResume);
-            
-            // Update form data with newly returned data if provided
-            const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
-            setResumeData(updatedFormData);
-          }
-          
-          // Switch to preview mode
-          setIsEditMode(false);
-        } else {
-          throw new Error(response.message || 'Update failed');
-        }
-      } catch (error) {
-        console.error('Error updating resume:', error);
-        setSnackbar({
-          open: true,
-          message: error.message || 'An error occurred updating your resume. Please try again.',
-          severity: 'error',
-        });
-      } finally {
-        setLoading(false);
+
+    // Get resumeId from either URL params or generated resume
+    const idToUpdate = resumeId || generatedResume?.id;
+
+    // Ensure we have a resumeId when updating
+    if (!idToUpdate) {
+      setSnackbar({
+        open: true,
+        message: 'Cannot update: No resume ID found.',
+        severity: 'error',
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Call the update API with the correct ID
+      const response = await updateResume(idToUpdate, resumeData);
+
+      // Handle successful update
+      setSnackbar({
+        open: true,
+        message: 'Resume updated successfully!',
+        severity: 'success',
+      });
+
+      // Update local state with the response data
+      if (response.resume) {
+        const adaptedResume = adaptGeneratedResume(response.resume);
+        setGeneratedResume(adaptedResume);
+
+        // Update form data to stay in sync
+        const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+        setResumeData(updatedFormData);
       }
-    } else {
-      // Use original generate function if we're not editing an existing resume
-      await handleGenerateResume();
+
+      // Switch to preview mode
+      setIsEditMode(false);
+
+    } catch (error) {
+      console.error('Error updating resume:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || 'Failed to update resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 

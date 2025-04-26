@@ -190,29 +190,41 @@ export const getResumeById = async (resumeId) => {
  */
 export const updateResume = async (resumeId, resumeData) => {
   try {
-    // Format the data similar to generateResume
+    // Ensure resumeId is provided
+    if (!resumeId) {
+      throw new Error('Resume ID is required');
+    }
+
+    // Format the data for the API
     const formattedData = {
-      ...resumeData,
-      // Include any necessary field extraction like in generateResume
-      name: resumeData.header?.name,
-      email: resumeData.header?.email,
-      phone: resumeData.header?.phone,
-      github: resumeData.header?.github,
-      linkedin: resumeData.header?.linkedin,
-      portfolio: resumeData.header?.portfolio,
-      // Extract fields from education object if they exist
-      degree: resumeData.education?.degree,
-      specialization: resumeData.education?.specialization,
-      institution: resumeData.education?.institution,
-      graduation_year: resumeData.education?.graduation_year,
+      header: {
+        name: resumeData.header.name,
+        email: resumeData.header.email,
+        phone: resumeData.header.phone,
+        github: resumeData.header.github,
+        linkedin: resumeData.header.linkedin,
+        portfolio: resumeData.header.portfolio
+      },
+      summary: resumeData.summary,
+      education: resumeData.education,
+      skills: resumeData.skills,
+      Academic_projects: resumeData.Academic_projects,
+      certifications: resumeData.certifications,
+      work_experience: resumeData.work_experience,
+      target_role: resumeData.target_role,
+      customSections: resumeData.customSections
     };
-    
+
     // Make PUT request to update the resume
     const response = await apiRequest(`/resumes/${resumeId}`, {
       method: 'PUT',
-      body: formattedData,
+      body: JSON.stringify(formattedData),
     });
-    
+
+    if (!response || response.status === 'error') {
+      throw new Error(response?.message || 'Failed to update resume');
+    }
+
     return response;
   } catch (error) {
     console.error('Error updating resume:', error);
