@@ -1,3 +1,5 @@
+// ✅ This component extends the existing ResumeBuilder.jsx with enhanced edit functionality
+
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
@@ -9,13 +11,18 @@ import {
   Step, 
   StepLabel, 
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { generateResume } from '../utils/api';
+import { generateResume, getResumeById, updateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
 import { generateResumePDF } from '../utils/pdfUtils';
 
@@ -197,6 +204,36 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   activeModeButton: {
     boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.5)',
+  },
+  pageTitle: {
+    fontWeight: 700,
+    marginBottom: '1rem',
+    textAlign: 'center',
+    color: '#2d3748',
+  },
+  statusChip: {
+    marginLeft: '0.5rem',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '9999px',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    backgroundColor: '#e6fffa',
+    color: '#319795',
+  },
+  successStatusChip: {
+    backgroundColor: '#e6fffa',
+    color: '#319795',
+  },
+  warningStatusChip: {
+    backgroundColor: '#fffaf0',
+    color: '#dd6b20',
+  },
+  resumeIdText: {
+    fontSize: '0.875rem',
+    color: '#718096',
+    marginBottom: '1rem',
+    textAlign: 'center',
+    fontStyle: 'italic',
   }
 }));
 
@@ -214,11 +251,19 @@ const steps = [
 const ResumeBuilder = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser } = useAuth();
+  
+  // Get resumeId from URL params if editing an existing resume
+  const { resumeId } = useParams();
+  
+  // Determine if we're in edit mode based on URL param
+  const isEditingExisting = Boolean(resumeId);
   
   // State Declarations
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingResume, setLoadingResume] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
@@ -231,6 +276,13 @@ const ResumeBuilder = () => {
     message: '',
     severity: 'success',
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    message: '',
+    onConfirm: null
+  });
+  const [loadingError, setLoadingError] = useState(null);
   
   // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
@@ -269,6 +321,57 @@ const ResumeBuilder = () => {
   // Initialize the dummy data hook
   const { loadDummyData, resetData, isLoaded } = useDummyResumeData(resumeData, setResumeData);
 
+  // Fetch resume data if in edit mode
+  useEffect(() => {
+    if (isEditingExisting && resumeId) {
+      const fetchResumeData = async () => {
+        setLoadingResume(true);
+        setLoadingError(null);
+        
+        try {
+          const response = await getResumeById(resumeId);
+          
+          if (response && response.status === 'success') {
+            // Set the resume data from API response
+            const adaptedResume = adaptGeneratedResume(response.resume);
+            setGeneratedResume(adaptedResume);
+            
+            // Map the data to form fields
+            const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+            setResumeData(updatedFormData);
+            
+            // Set terms as accepted since we're editing an existing resume
+            setTermsAccepted({
+              updates: true,
+              dataSharing: true
+            });
+            
+            setSnackbar({
+              open: true,
+              message: 'Resume loaded successfully',
+              severity: 'success'
+            });
+          } else {
+            throw new Error(response?.message || 'Failed to load resume');
+          }
+        } catch (error) {
+          console.error('Error fetching resume:', error);
+          setLoadingError(error.message || 'Unable to load the resume. Please try again.');
+          
+          setSnackbar({
+            open: true,
+            message: error.message || 'Failed to load resume',
+            severity: 'error'
+          });
+        } finally {
+          setLoadingResume(false);
+        }
+      };
+      
+      fetchResumeData();
+    }
+  }, [resumeId, isEditingExisting]);
+
   // Add handlers for dummy data
   const handleLoadDummyData = () => {
     loadDummyData();
@@ -280,12 +383,31 @@ const ResumeBuilder = () => {
   };
 
   const handleResetForm = () => {
-    resetData();
-    setSnackbar({
-      open: true,
-      message: 'Form has been reset',
-      severity: 'info',
-    });
+    if (isEditingExisting) {
+      // Show confirmation dialog
+      setConfirmDialog({
+        open: true,
+        title: 'Reset Resume?',
+        message: 'This will reset all changes you\'ve made to this resume. This cannot be undone.',
+        onConfirm: () => {
+          resetData();
+          setSnackbar({
+            open: true,
+            message: 'Form has been reset',
+            severity: 'info',
+          });
+          setConfirmDialog({ ...confirmDialog, open: false });
+        }
+      });
+    } else {
+      // No need for confirmation if not editing existing resume
+      resetData();
+      setSnackbar({
+        open: true,
+        message: 'Form has been reset',
+        severity: 'info',
+      });
+    }
   };
 
   // Add dummy data buttons component
@@ -295,7 +417,7 @@ const ResumeBuilder = () => {
         variant="outlined"
         color="secondary"
         onClick={handleResetForm}
-        disabled={!isLoaded}
+        disabled={!isLoaded && !isEditingExisting}
       >
         Reset Form
       </Button>
@@ -303,7 +425,7 @@ const ResumeBuilder = () => {
         variant="contained"
         color="primary"
         onClick={handleLoadDummyData}
-        disabled={isLoaded}
+        disabled={isLoaded || isEditingExisting}
       >
         Load Sample Data
       </Button>
@@ -352,6 +474,18 @@ const ResumeBuilder = () => {
   // Toggle between edit mode and preview mode
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
+  };
+
+  // Confirmation dialog handlers
+  const handleCloseConfirmDialog = () => {
+    setConfirmDialog({ ...confirmDialog, open: false });
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmDialog.onConfirm) {
+      confirmDialog.onConfirm();
+    }
+    handleCloseConfirmDialog();
   };
 
   // Form Validation
@@ -592,39 +726,49 @@ const ResumeBuilder = () => {
       return;
     }
     
-    setLoading(true);
-    
-    try {
-      const response = await generateResume(resumeData);
+    // If we're editing an existing resume, use the update API
+    if (isEditingExisting && resumeId) {
+      setLoading(true);
       
-      setSnackbar({
-        open: true,
-        message: 'Resume updated successfully!',
-        severity: 'success',
-      });
-      
-      // Transform the generated resume data to match frontend structure
-      const adaptedResume = adaptGeneratedResume(response.resume);
-      
-      // Store the adapted resume data
-      setGeneratedResume(adaptedResume);
-      
-      // Update the form data with newly generated content
-      const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
-      setResumeData(updatedFormData);
-      
-      // Switch to preview mode to show the updated resume
-      setIsEditMode(false);
-      
-    } catch (error) {
-      console.error('Error updating resume:', error);
-      setSnackbar({
-        open: true,
-        message: error.message || 'An error occurred updating your resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
+      try {
+        // Call the update API
+        const response = await updateResume(resumeId, resumeData);
+        
+        if (response.status === 'success') {
+          setSnackbar({
+            open: true,
+            message: 'Resume updated successfully!',
+            severity: 'success',
+          });
+          
+          // If there's updated resume data, update our state
+          if (response.resume) {
+            const adaptedResume = adaptGeneratedResume(response.resume);
+            setGeneratedResume(adaptedResume);
+            
+            // Update form data with newly returned data if provided
+            const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+            setResumeData(updatedFormData);
+          }
+          
+          // Switch to preview mode
+          setIsEditMode(false);
+        } else {
+          throw new Error(response.message || 'Update failed');
+        }
+      } catch (error) {
+        console.error('Error updating resume:', error);
+        setSnackbar({
+          open: true,
+          message: error.message || 'An error occurred updating your resume. Please try again.',
+          severity: 'error',
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Use original generate function if we're not editing an existing resume
+      await handleGenerateResume();
     }
   };
 
@@ -729,13 +873,64 @@ const ResumeBuilder = () => {
     }
   };
 
+  // If the resume is still loading, show a loading indicator
+  if (loadingResume) {
+    return (
+      <Container className={classes.root} maxWidth="xl">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh">
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" style={{ marginTop: '2rem' }}>
+            Loading resume...
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  // If there was an error loading the resume, show an error message
+  if (loadingError) {
+    return (
+      <Container className={classes.root} maxWidth="xl">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh">
+          <Alert severity="error" style={{ marginBottom: '1rem' }}>
+            {loadingError}
+          </Alert>
+          <Button 
+            variant="contained" 
+            color="primary"
+            onClick={() => navigate('/resume-builder')}
+          >
+            Return to Resume Builder
+          </Button>
+        </Box>
+      </Container>
+    );
+  }
+
   return (
     <Container className={classes.root} maxWidth="xl">
-      {/* Add dummy data buttons in edit mode */}
-      {isEditMode && renderDummyDataButtons()}
+      {/* Display page title based on whether we're editing or creating */}
+      <Typography variant="h4" className={classes.pageTitle}>
+        {isEditingExisting ? 'Edit Resume' : 'Build Your Resume'}
+        {isEditingExisting && (
+          <span className={`${classes.statusChip} ${classes.successStatusChip}`}>
+            Editing
+          </span>
+        )}
+      </Typography>
+      
+      {/* Display resume ID if editing */}
+      {isEditingExisting && (
+        <Typography className={classes.resumeIdText}>
+          Resume ID: {resumeId}
+        </Typography>
+      )}
+      
+      {/* Add dummy data buttons in edit mode (only when creating new) */}
+      {isEditMode && !isEditingExisting && renderDummyDataButtons()}
       
       {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
-      {hasGeneratedResume && (
+      {(hasGeneratedResume || isEditingExisting) && (
         <Box className={classes.viewModeToggle}>
           <Button
             variant="contained"
@@ -757,7 +952,7 @@ const ResumeBuilder = () => {
       )}
 
       {/* Action buttons (only show when resume has been generated at least once) */}
-      {hasGeneratedResume && (
+      {(hasGeneratedResume || isEditingExisting) && (
         <Box className={classes.actionButtons}>
           <Button
             variant="contained"
@@ -783,7 +978,7 @@ const ResumeBuilder = () => {
               onClick={handleUpdateResume}
               disabled={loading || !areTermsAccepted}
             >
-              Update Resume
+              {isEditingExisting ? 'Save Changes' : 'Generate Resume'}
               {loading && <CircularProgress size={20} className={classes.loader} />}
             </Button>
           )}
@@ -796,20 +991,7 @@ const ResumeBuilder = () => {
         {isEditMode && (
           <Box className={`${classes.columnBox} ${classes.formColumn}`}>
             <Typography variant="h5" className={classes.sectionTitle}>
-              {hasGeneratedResume ? 'Edit Your Resume' : 'Build Your Resume'}
-              
-              {/* Only show the generate button if resume hasn't been generated yet */}
-              {!hasGeneratedResume && (
-                <Button
-                  variant="contained"
-                  className={`${classes.saveButton} ${!areTermsAccepted ? classes.disabledButton : ''}`}
-                  onClick={handleGenerateResume}
-                  disabled={loading || !areTermsAccepted}
-                >
-                  Generate Resume
-                  {loading && <CircularProgress size={20} className={classes.loader} />}
-                </Button>
-              )}
+              {isEditingExisting ? 'Edit Your Resume' : hasGeneratedResume ? 'Edit Your Resume' : 'Build Your Resume'}
             </Typography>
             
             {/* Stepper Navigation with clickable labels */}
@@ -844,26 +1026,42 @@ const ResumeBuilder = () => {
                   Back
                 </Button>
                 
-                {hasGeneratedResume ? (
-                  // If resume has been generated, show "Next" or "Update" button
+                {isEditingExisting ? (
+                  // If editing existing resume, show "Next" or "Save Changes" button
                   <Button
                     variant="contained"
                     onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
                     className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
                     disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
                   >
-                    {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Save Changes' : 'Next'}
+                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
                   </Button>
                 ) : (
-                  // If resume hasn't been generated yet, show "Next" or "Generate" button
-                  <Button
-                    variant="contained"
-                    onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
-                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                  >
-                    {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
-                  </Button>
+                  // If not editing existing resume, handle either "Next" or "Generate"/"Update" button
+                  hasGeneratedResume ? (
+                    // If resume has been generated, show "Next" or "Update" button
+                    <Button
+                      variant="contained"
+                      onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
+                      className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                      disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                    >
+                      {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
+                      {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
+                    </Button>
+                  ) : (
+                    // If resume hasn't been generated yet, show "Next" or "Generate" button
+                    <Button
+                      variant="contained"
+                      onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                      className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                      disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                    >
+                      {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+                      {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
+                    </Button>
+                  )
                 )}
               </Box>
             </Paper>
@@ -876,7 +1074,7 @@ const ResumeBuilder = () => {
           sx={{ width: isEditMode ? '50%' : '100%' }}
         >
           <Typography variant="h5" className={classes.sectionTitle}>
-            {hasGeneratedResume ? 'Resume Preview' : 'Live Preview'}
+            {hasGeneratedResume || isEditingExisting ? 'Resume Preview' : 'Live Preview'}
           </Typography>
           
           <ResumePreview 
@@ -886,6 +1084,7 @@ const ResumeBuilder = () => {
         </Box>
       </Box>
 
+      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -896,6 +1095,27 @@ const ResumeBuilder = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog.open}
+        onClose={handleCloseConfirmDialog}
+      >
+        <DialogTitle>{confirmDialog.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {confirmDialog.message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmAction} color="error" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

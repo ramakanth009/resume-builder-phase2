@@ -66,6 +66,16 @@ function App() {
                 } 
               />
               
+              {/* Protected route for editing existing resume */}
+              <Route 
+                path="/resume-builder/edit/:resumeId" 
+                element={
+                  <ProtectedRoute>
+                    <ResumeBuilder />
+                  </ProtectedRoute>
+                } 
+              />
+              
               {/* Redirect any unknown routes to the landing page */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

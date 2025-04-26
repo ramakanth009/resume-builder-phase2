@@ -1,4 +1,5 @@
-// API utility functions for making HTTP requests to the backend
+// Enhanced API utility functions for making HTTP requests to the backend
+// This version includes the updateResume function to support editing existing resumes
 
 // Base URL for API requests
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
@@ -92,14 +93,16 @@ export const loginUser = async (credentials) => {
  * @returns {Promise} - Generated resume
  */
 export const generateResume = async (resumeData) => {
-  // Validate required fields based on backend expectations
+  // Backend handles validation of required fields
+  /*
   const requiredFields = [
     'name', 'email', 'phone', 'target_role',
     'degree', 'specialization', 'institution', 'graduation_year',
     'skills', 'Academic_projects', 'certifications'
   ];
+  */
   
-  // Check that each required field exists in resumeData
+  // Format the data for API request
   const formattedData = {
     ...resumeData,
     // Extract fields from header object if they exist
@@ -116,7 +119,7 @@ export const generateResume = async (resumeData) => {
     graduation_year: resumeData.education?.graduation_year,
   };
   
-  // Check for missing fields
+  /* Removing frontend validation as it's handled by backend
   const missingFields = requiredFields.filter(field => {
     const value = formattedData[field];
     if (Array.isArray(value)) {
@@ -128,6 +131,7 @@ export const generateResume = async (resumeData) => {
   if (missingFields.length > 0) {
     throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
   }
+  */
   
   try {
     const response = await apiRequest('/generate_resume', {
@@ -153,15 +157,66 @@ export const getUserResumes = async () => {
 };
 
 /**
- * Get a specific resume by ID
+ * Get a specific resume by ID for editing
  * @param {number} resumeId - Resume ID
  * @returns {Promise} - Resume data
  */
 export const getResumeById = async (resumeId) => {
   try {
-    return await apiRequest(`/resumes/${resumeId}`);
+    // Specifically call the edit endpoint
+    const response = await apiRequest(`/resumes/${resumeId}`, {
+      method: 'GET',
+      headers: {
+        'X-Action': 'edit' // Add header to indicate edit action
+      }
+    });
+
+    if (!response || response.status === 'error') {
+      throw new Error(response?.message || 'Failed to fetch resume for editing');
+    }
+
+    return response;
   } catch (error) {
-    throw new Error(error.message || 'Failed to fetch resume');
+    console.error('Error fetching resume for edit:', error);
+    throw new Error(error.message || 'Failed to fetch resume for editing');
+  }
+};
+
+/**
+ * Update an existing resume by ID
+ * @param {number} resumeId - Resume ID to update
+ * @param {Object} resumeData - Updated resume data
+ * @returns {Promise} - Updated resume response
+ */
+export const updateResume = async (resumeId, resumeData) => {
+  try {
+    // Format the data similar to generateResume
+    const formattedData = {
+      ...resumeData,
+      // Include any necessary field extraction like in generateResume
+      name: resumeData.header?.name,
+      email: resumeData.header?.email,
+      phone: resumeData.header?.phone,
+      github: resumeData.header?.github,
+      linkedin: resumeData.header?.linkedin,
+      portfolio: resumeData.header?.portfolio,
+      // Extract fields from education object if they exist
+      degree: resumeData.education?.degree,
+      specialization: resumeData.education?.specialization,
+      institution: resumeData.education?.institution,
+      graduation_year: resumeData.education?.graduation_year,
+    };
+    
+    // Make PUT request to update the resume
+    const response = await apiRequest(`/resumes/${resumeId}`, {
+      method: 'PUT',
+      body: formattedData,
+    });
+    
+    return response;
+  } catch (error) {
+    console.error('Error updating resume:', error);
+    throw new Error(error.message || 'Failed to update resume');
   }
 };
 
@@ -214,6 +269,7 @@ export default {
   generateResume,
   getUserResumes,
   getResumeById,
+  updateResume, // Add the new update function to the default export
   deleteResume,
   logoutUser
 };
