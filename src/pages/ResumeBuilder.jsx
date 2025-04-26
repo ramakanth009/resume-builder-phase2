@@ -951,9 +951,10 @@ const ResumeBuilder = () => {
         </Box>
       )}
 
-      {/* Action buttons (only show when resume has been generated at least once) */}
-      {(hasGeneratedResume || isEditingExisting) && (
-        <Box className={classes.actionButtons}>
+      {/* Action buttons */}
+      <Box className={classes.actionButtons}>
+        {/* Download PDF button - always visible when a resume exists */}
+        {(hasGeneratedResume || isEditingExisting) && (
           <Button
             variant="contained"
             className={classes.downloadButton}
@@ -969,21 +970,34 @@ const ResumeBuilder = () => {
               'Download PDF'
             )}
           </Button>
-          
-          {/* Update button (only show in edit mode) */}
-          {isEditMode && (
-            <Button
-              variant="contained"
-              className={classes.saveButton}
-              onClick={handleUpdateResume}
-              disabled={loading || !areTermsAccepted}
-            >
-              {isEditingExisting ? 'Save Changes' : 'Generate Resume'}
-              {loading && <CircularProgress size={20} className={classes.loader} />}
-            </Button>
-          )}
-        </Box>
-      )}
+        )}
+        
+        {/* Update button - only show in edit mode for existing resumes */}
+        {isEditMode && (isEditingExisting || hasGeneratedResume) && (
+          <Button
+            variant="contained"
+            className={classes.saveButton}
+            onClick={handleUpdateResume}
+            disabled={loading || !areTermsAccepted}
+          >
+            {isEditingExisting ? 'Save Changes' : 'Update Resume'}
+            {loading && <CircularProgress size={20} className={classes.loader} />}
+          </Button>
+        )}
+        
+        {/* Generate button - only show in edit mode for new resumes */}
+        {isEditMode && !isEditingExisting && !hasGeneratedResume && (
+          <Button
+            variant="contained"
+            className={classes.saveButton}
+            onClick={handleGenerateResume}
+            disabled={loading || !areTermsAccepted}
+          >
+            Generate Resume
+            {loading && <CircularProgress size={20} className={classes.loader} />}
+          </Button>
+        )}
+      </Box>
 
       {/* Main content area */}
       <Box className={classes.mainContainer}>
@@ -1037,31 +1051,28 @@ const ResumeBuilder = () => {
                     {activeStep === steps.length - 1 ? 'Save Changes' : 'Next'}
                     {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
                   </Button>
+                ) : hasGeneratedResume ? (
+                  // If resume has been generated, show "Next" or "Update" button
+                  <Button
+                    variant="contained"
+                    onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
+                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                  >
+                    {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
+                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
+                  </Button>
                 ) : (
-                  // If not editing existing resume, handle either "Next" or "Generate"/"Update" button
-                  hasGeneratedResume ? (
-                    // If resume has been generated, show "Next" or "Update" button
-                    <Button
-                      variant="contained"
-                      onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
-                      className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                      disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                    >
-                      {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
-                      {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
-                    </Button>
-                  ) : (
-                    // If resume hasn't been generated yet, show "Next" or "Generate" button
-                    <Button
-                      variant="contained"
-                      onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
-                      className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                      disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                    >
-                      {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
-                      {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
-                    </Button>
-                  )
+                  // If creating new resume, show "Next" or "Generate" button
+                  <Button
+                    variant="contained"
+                    onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
+                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                  >
+                    {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
+                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
+                  </Button>
                 )}
               </Box>
             </Paper>
