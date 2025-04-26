@@ -292,46 +292,50 @@ const ResumePreview = ({ userData, generatedData }) => {
       )}
       
       {/* Education Section */}
-      {hasEducationData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Education
+      {/* Education Section */}
+{hasEducationData() && (
+  <Box className={classes.resumeSection}>
+    <Typography variant="h6" className={classes.resumeSectionTitle}>
+      Education
+    </Typography>
+    {Array.isArray(data.education) ? (
+      // Handle array format (from API)
+      data.education.map((edu, index) => (
+        <Box key={index} className={classes.resumeEducation}>
+          <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+            {edu.degree || ''} 
+            {(edu.specialization && edu.specialization.trim() !== '') ? ` in ${edu.specialization}` : ''}
           </Typography>
-          {Array.isArray(data.education) ? (
-            data.education.map((edu, index) => (
-              <Box key={index} className={classes.resumeEducation}>
-                <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                  {edu.degree || ''} 
-                  {edu.specialization ? ` in ${edu.specialization}` : ''}
-                </Typography>
-                <Typography variant="body2">
-                  {edu.institution || ''}
-                </Typography>
-                {(edu.graduation_year || edu.graduationYear) && (
-                  <Typography variant="body2" className={classes.resumeDate}>
-                    Graduated: {edu.graduation_year || edu.graduationYear}
-                  </Typography>
-                )}
-              </Box>
-            ))
-          ) : (
-            <Box className={classes.resumeEducation}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {data.education.degree || ''} 
-                {data.education.specialization ? ` in ${data.education.specialization}` : ''}
-              </Typography>
-              <Typography variant="body2">
-                {data.education.institution || ''}
-              </Typography>
-              {data.education.graduation_year && (
-                <Typography variant="body2" className={classes.resumeDate}>
-                  Graduated: {data.education.graduation_year}
-                </Typography>
-              )}
-            </Box>
+          <Typography variant="body2">
+            {edu.institution || ''}
+          </Typography>
+          {(edu.graduation_year || edu.graduationYear) && (
+            <Typography variant="body2" className={classes.resumeDate}>
+              Graduated: {edu.graduation_year || edu.graduationYear}
+            </Typography>
           )}
         </Box>
-      )}
+      ))
+    ) : (
+      // Handle object format (from form)
+      <Box className={classes.resumeEducation}>
+        <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+          {data.education.degree || ''} 
+          {(data.education.specialization && data.education.specialization.trim() !== '') ? 
+            ` in ${data.education.specialization}` : ''}
+        </Typography>
+        <Typography variant="body2">
+          {data.education.institution || ''}
+        </Typography>
+        {data.education.graduation_year && (
+          <Typography variant="body2" className={classes.resumeDate}>
+            Graduated: {data.education.graduation_year}
+          </Typography>
+        )}
+      </Box>
+    )}
+  </Box>
+)}
 
       {/* Work Experience Section */}
       {hasWorkExperienceData() && (

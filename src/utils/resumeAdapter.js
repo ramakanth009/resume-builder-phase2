@@ -1,3 +1,5 @@
+import { normalizeEducationData } from '../components/resumeBuilder/ResumeBuilderFunctions';
+
 /**
  * This adapter transforms the backend API response structure to match what the frontend components expect
  * It resolves the field name and structure mismatches between backend and frontend
@@ -22,10 +24,8 @@ export const adaptGeneratedResume = (generatedResume) => {
     // Keep target_role as is or set default
     target_role: generatedResume.target_role || '',
     
-    // Convert education array to single object (using first item if array)
-    education: Array.isArray(generatedResume.education) 
-      ? generatedResume.education
-      : generatedResume.education || {},
+    // Normalize education data structure
+    education: normalizeEducationData(generatedResume.education),
     
     // Pass through both work_experience and workExperience for flexibility
     work_experience: generatedResume.work_experience || [],
