@@ -6,15 +6,16 @@
 /**
  * Adapts the generated resume structure from backend format to frontend-compatible format
  * @param {Object} generatedResume - Resume data from backend API
+ * @param {number} resumeId - Optional explicit ID to assign to the resume
  * @returns {Object} - Adapted resume data for frontend
  */
-export const adaptGeneratedResume = (generatedResume) => {
+export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
   if (!generatedResume) return null;
 
   // Handle both structures - keep original properties to preserve all data
   return {
-    // Preserve the ID from either the resume object or the root level resume_id
-    id: generatedResume.id ?? generatedResume.resume_id,
+    // Preserve the ID from either explicit ID, resume object, or the root level resume_id
+    id: resumeId || generatedResume.id || generatedResume.resume_id,
     
     // Keep header as is
     header: { ...generatedResume.header },

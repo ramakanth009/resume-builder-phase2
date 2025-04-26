@@ -3,84 +3,73 @@
 
 const dummyResumeData = {
   header: {
-    name: "Alex Johnson",
-    email: "alex.johnson@example.com",
-    phone: "9998887776",
-    github: "https://github.com/alexjohnson",
-    linkedin: "https://linkedin.com/in/alexjohnson",
-    portfolio: "https://alexjohnson.dev",
+    name: "Sarah Chen",
+    email: "sarah.chen@example.com",
+    phone: "1234567890",
+    github: "https://github.com/sarahchen",
+    linkedin: "https://linkedin.com/in/sarahchen",
+    portfolio: "https://sarahchen.dev",
   },
-  summary: "Dedicated software engineer with 4+ years of experience developing web applications using React, Node.js, and modern JavaScript frameworks. Passionate about creating accessible, responsive user interfaces and optimizing application performance.",
+  summary: "Full-stack developer with 5+ years of experience specializing in cloud-native applications and microservices architecture. Strong background in Java, Python, and modern JavaScript frameworks. Proven track record of delivering scalable solutions and mentoring development teams.",
   education: {
-    degree: "Bachelor of Science",
-    specialization: "Computer Science",
-    institution: "University of Technology",
-    graduation_year: "2021",
+    degree: "Master of Science",
+    specialization: "Software Engineering",
+    institution: "Stanford University",
+    graduation_year: "2019",
   },
   skills: [
-    "JavaScript (ES6+)", 
-    "React", 
-    "Node.js", 
-    "TypeScript", 
-    "HTML5/CSS3", 
-    "GraphQL",
-    "MongoDB",
-    "AWS",
-    "Git",
-    "CI/CD",
-    "Jest/React Testing Library"
+    "Java", 
+    "Python", 
+    "Spring Boot",
+    "React",
+    "Docker",
+    "Kubernetes",
+    "PostgreSQL",
+    "GCP",
+    "Jenkins",
+    "Microservices",
+    "System Design"
   ],
   Academic_projects: [
     {
-      name: "E-Commerce Platform",
-      skills_used: "React, Node.js, Express, MongoDB, Stripe API",
-      description: "Developed a full-stack e-commerce application with user authentication, product catalog, shopping cart, and payment processing using Stripe. Implemented responsive design principles and state management with Redux."
+      name: "Cloud-Native Health Platform",
+      skills_used: "Java, Spring Boot, React, GCP, Kubernetes",
+      description: "Architected and developed a scalable healthcare management system using microservices architecture. Implemented HIPAA-compliant data storage and real-time patient monitoring features."
     },
     {
-      name: "Real-time Chat Application",
-      skills_used: "React, Socket.io, Express, MongoDB",
-      description: "Built a real-time messaging application with features including user authentication, direct messaging, group chats, and message notifications. Used Socket.io for real-time communication and MongoDB for data persistence."
-    },
-    {
-      name: "Task Management System",
-      skills_used: "React, TypeScript, Redux, Node.js, PostgreSQL",
-      description: "Created a task management system with drag-and-drop functionality, task prioritization, team collaboration features, and deadline tracking. Implemented JWT-based authentication and role-based access control."
+      name: "AI-Powered Code Review Assistant",
+      skills_used: "Python, TensorFlow, FastAPI, React",
+      description: "Created an ML-powered tool that analyzes code repositories and suggests improvements. Integrated with GitHub API and implemented custom code analysis algorithms."
     }
   ],
   certifications: [
-    "AWS Certified Developer - Associate",
-    "MongoDB Certified Developer",
-    "React Certification - Meta Frontend Developer"
+    "Google Cloud Professional Architect",
+    "AWS Solutions Architect Associate",
+    "Certified Kubernetes Administrator"
   ],
   work_experience: [
     {
-      position: "Frontend Developer",
-      company_name: "TechSolutions Inc.",
-      duration: "Jan 2022 - Present",
-      description: "• Developed and maintained client-facing web applications using React, Redux, and TypeScript\n• Collaborated with UX designers to implement responsive, accessible user interfaces\n• Reduced application bundle size by 30% through code splitting and lazy loading\n• Implemented CI/CD pipelines with GitHub Actions and AWS\n• Mentored junior developers and conducted code reviews"
+      position: "Senior Software Engineer",
+      company_name: "CloudScale Solutions",
+      duration: "Mar 2021 - Present",
+      description: "• Lead developer for cloud-native microservices platform serving 1M+ users\n• Architected and implemented scalable backend services using Java and Spring Boot\n• Reduced system latency by 40% through caching and optimization\n• Led team of 5 developers and established best practices for microservices development"
     },
     {
-      position: "Junior Web Developer",
-      company_name: "Digital Innovations",
-      duration: "Jun 2020 - Dec 2021",
-      description: "• Assisted in developing web applications using React and JavaScript\n• Implemented responsive designs using CSS frameworks like Bootstrap and Tailwind CSS\n• Fixed bugs and improved application performance\n• Participated in agile development processes, including daily stand-ups and sprint planning\n• Contributed to documentation and technical specifications"
-    },
-    {
-      position: "Software Engineering Intern",
-      company_name: "InnovateTech",
-      duration: "May 2019 - Aug 2019",
-      description: "• Assisted in developing features for a customer-facing web application\n• Fixed UI bugs and implemented minor enhancements\n• Wrote unit tests using Jest\n• Participated in code reviews and team meetings"
+      position: "Full Stack Developer",
+      company_name: "TechForward Inc.",
+      duration: "Jan 2019 - Feb 2021",
+      description: "• Developed full-stack applications using Python, Django, and React\n• Implemented CI/CD pipelines using Jenkins and Docker\n• Improved application performance by 50% through database optimization\n• Mentored junior developers and led technical design discussions"
     }
   ],
-  target_role: "Senior Frontend Developer",
+  target_role: "Lead Software Engineer",
   customSections: {
-    "Open Source Contributions": [
-      "React-Component-Library: Contributed accessibility improvements to popular open-source React component library",
-      "Data-Visualization-Tool: Fixed rendering issues and added new chart types to open-source data visualization package"
+    "Technical Leadership": [
+      "Led migration of monolithic application to microservices architecture",
+      "Established coding standards and review processes for team of 15 developers"
     ],
-    "Publications": [
-      "Johnson, A. (2023). 'Modern Approaches to State Management in React Applications.' Medium.",
-      "Johnson, A. (2022). 'Optimizing Frontend Performance in JavaScript Applications.' Dev.to."
+    "Patents": [
+      "Chen, S. (2023). 'Method for Distributed Cache Management in Microservices.' US Patent 123456",
+      "Chen, S. (2022). 'System for Automated Code Quality Analysis.' US Patent 789012"
     ]
   }
 };

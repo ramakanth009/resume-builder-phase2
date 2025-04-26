@@ -1,5 +1,3 @@
-// ✅ This component extends the existing ResumeBuilder.jsx with enhanced edit functionality
-
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
@@ -333,8 +331,12 @@ const ResumeBuilder = () => {
           
           if (response && response.status === 'success') {
             // Set the resume data from API response
-            const adaptedResume = adaptGeneratedResume(response.resume);
+            // Pass the resumeId to ensure it's stored in the adapted resume
+            const adaptedResume = adaptGeneratedResume(response.resume, resumeId);
             setGeneratedResume(adaptedResume);
+            
+            // Log for debugging
+            console.log("Resume loaded with ID:", adaptedResume.id);
             
             // Map the data to form fields
             const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
@@ -694,7 +696,11 @@ const ResumeBuilder = () => {
       });
       
       // Transform the generated resume data to match frontend structure
-      const adaptedResume = adaptGeneratedResume(response.resume);
+      // Pass the ID from the API response to the adapter
+      const adaptedResume = adaptGeneratedResume(response.resume, response.id);
+      
+      // Log the resume ID for debugging
+      console.log("Resume generated with ID:", adaptedResume.id);
       
       // Store the adapted resume data
       setGeneratedResume(adaptedResume);
@@ -728,6 +734,11 @@ const ResumeBuilder = () => {
 
     // Get resumeId from either URL params or generated resume
     const idToUpdate = resumeId || generatedResume?.id;
+    
+    // Log available data for debugging
+    console.log("URL resumeId:", resumeId);
+    console.log("Generated resume ID:", generatedResume?.id);
+    console.log("ID to update:", idToUpdate);
 
     // Ensure we have a resumeId when updating
     if (!idToUpdate) {
@@ -754,7 +765,7 @@ const ResumeBuilder = () => {
 
       // Update local state with the response data
       if (response.resume) {
-        const adaptedResume = adaptGeneratedResume(response.resume);
+        const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
         setGeneratedResume(adaptedResume);
 
         // Update form data to stay in sync
