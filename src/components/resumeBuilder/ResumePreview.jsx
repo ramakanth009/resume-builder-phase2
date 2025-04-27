@@ -148,13 +148,8 @@ const ResumePreview = ({ userData, generatedData }) => {
   };
 
   const hasProjectsData = () => {
-    const academicProjects = data.Academic_projects && data.Academic_projects.length > 0 && 
-      data.Academic_projects.some(p => p.name && p.name.trim() !== '');
-      
-    const generatedProjects = data.projects && data.projects.length > 0 && 
+    return data.projects && data.projects.length > 0 && 
       data.projects.some(p => p.name && p.name.trim() !== '');
-      
-    return academicProjects || generatedProjects;
   };
 
   const hasWorkExperienceData = () => {
@@ -418,11 +413,11 @@ const ResumePreview = ({ userData, generatedData }) => {
             Projects
           </Typography>
           
-          {data.Academic_projects && data.Academic_projects.length > 0 &&
-            data.Academic_projects
+          {data.projects && data.projects.length > 0 &&
+            data.projects
               .filter(p => p.name && p.name.trim() !== '')
               .map((project, index) => (
-                <Box key={`academic-${index}`} className={classes.resumeItem}>
+                <Box key={`project-${index}`} className={classes.resumeItem}>
                   <Typography variant="subtitle1" className={classes.resumeSubtitle}>
                     {project.name || "Project Name"}
                   </Typography>
@@ -437,40 +432,8 @@ const ResumePreview = ({ userData, generatedData }) => {
                     </Typography>
                   )}
                 </Box>
-            ))}
-            
-          {data.projects && data.projects.length > 0 &&
-            data.projects
-              .filter(p => p.name && p.name.trim() !== '')
-              .map((project, index) => (
-                <Box key={`generated-${index}`} className={classes.resumeItem}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                    {project.name || "Project Name"}
-                  </Typography>
-                  
-                  {project.responsibilities && project.responsibilities.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets}>
-                      {project.responsibilities.map((responsibility, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
-                          {responsibility}
-                        </li>
-                      ))}
-                    </Box>
-                  )}
-                  
-                  {project.technologies && project.technologies.length > 0 && (
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                      Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
-                    </Typography>
-                  )}
-                  
-                  {project.description && project.description.trim() !== '' && (
-                    <Typography variant="body2">
-                      {project.description}
-                    </Typography>
-                  )}
-                </Box>
-            ))}
+              ))}
+              
         </Box>
       )}
       

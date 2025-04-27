@@ -298,7 +298,7 @@ const ResumeBuilder = () => {
       graduation_year: '',
     },
     skills: [''],
-    Academic_projects: [{
+    projects: [{   // Changed from Academic_projects to projects
       name: '',
       skills_used: '',
       description: '',
@@ -521,7 +521,7 @@ const ResumeBuilder = () => {
       return false;
     }
     
-    if (resumeData.Academic_projects.length === 0 || !resumeData.Academic_projects[0].name) {
+    if (resumeData.projects.length === 0 || !resumeData.projects[0].name) { // Changed from Academic_projects to projects
       setSnackbar({
         open: true,
         message: 'Please add at least one project',
@@ -600,16 +600,10 @@ const ResumeBuilder = () => {
       formData.certifications = [...generatedData.certifications];
     }
     
-    // Map projects (with either Academic_projects or projects field)
-    if (generatedData.Academic_projects && Array.isArray(generatedData.Academic_projects) && generatedData.Academic_projects.length > 0) {
-      formData.Academic_projects = generatedData.Academic_projects.map(project => ({
-        name: project.name || '',
-        skills_used: project.skills_used || '',
-        description: project.description || '',
-      }));
-    } else if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
-      // Convert generated projects format to Academic_projects format
-      formData.Academic_projects = generatedData.projects.map(project => {
+    // Map projects (with either projects or Academic_projects field)
+    if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
+      // Convert generated projects format to our projects format
+      formData.projects = generatedData.projects.map(project => {
         // Extract key info and responsibilities
         let description = '';
         if (project.responsibilities && Array.isArray(project.responsibilities)) {
@@ -634,6 +628,13 @@ const ResumeBuilder = () => {
           description: description,
         };
       });
+    } else if (generatedData.Academic_projects && Array.isArray(generatedData.Academic_projects) && generatedData.Academic_projects.length > 0) {
+      // For backward compatibility, convert Academic_projects to projects format
+      formData.projects = generatedData.Academic_projects.map(project => ({
+        name: project.name || '',
+        skills_used: project.skills_used || '',
+        description: project.description || '',
+      }));
     }
     
     // Map work experience
@@ -723,68 +724,64 @@ const ResumeBuilder = () => {
     }
   };
 
-// Handle updating the resume after editing
-const handleUpdateResume = async () => {
-  // Validate form data first
-  if (!validateResumeData()) {
-    return;
-  }
-
-  // Get resumeId from either URL params or generated resume
-  const idToUpdate = resumeId || generatedResume?.id;
-  
-  // Log available data for debugging
-  console.log("URL resumeId:", resumeId);
-  console.log("Generated resume ID:", generatedResume?.id);
-  console.log("ID to update:", idToUpdate);
-
-  // Ensure we have a resumeId when updating
-  if (!idToUpdate) {
-    setSnackbar({
-      open: true,
-      message: 'Cannot update: No resume ID found.',
-      severity: 'error',
-    });
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    // Call the update API with the correct ID
-    const response = await updateResume(idToUpdate, resumeData);
-
-    // Handle successful update
-    setSnackbar({
-      open: true,
-      message: 'Resume updated successfully!',
-      severity: 'success',
-    });
-
-    // Update generated resume state but NOT the form data
-    if (response.resume) {
-      const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
-      setGeneratedResume(adaptedResume);
-      
-      // Removed the two lines that were overwriting user edits:
-      // const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
-      // setResumeData(updatedFormData);
+  // Handle updating the resume after editing
+  const handleUpdateResume = async () => {
+    // Validate form data first
+    if (!validateResumeData()) {
+      return;
     }
 
-    // Switch to preview mode
-    setIsEditMode(false);
+    // Get resumeId from either URL params or generated resume
+    const idToUpdate = resumeId || generatedResume?.id;
+    
+    // Log available data for debugging
+    console.log("URL resumeId:", resumeId);
+    console.log("Generated resume ID:", generatedResume?.id);
+    console.log("ID to update:", idToUpdate);
 
-  } catch (error) {
-    console.error('Error updating resume:', error);
-    setSnackbar({
-      open: true,
-      message: error.message || 'Failed to update resume. Please try again.',
-      severity: 'error',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+    // Ensure we have a resumeId when updating
+    if (!idToUpdate) {
+      setSnackbar({
+        open: true,
+        message: 'Cannot update: No resume ID found.',
+        severity: 'error',
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Call the update API with the correct ID
+      const response = await updateResume(idToUpdate, resumeData);
+
+      // Handle successful update
+      setSnackbar({
+        open: true,
+        message: 'Resume updated successfully!',
+        severity: 'success',
+      });
+
+      // Update generated resume state but NOT the form data
+      if (response.resume) {
+        const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
+        setGeneratedResume(adaptedResume);
+      }
+
+      // Switch to preview mode
+      setIsEditMode(false);
+
+    } catch (error) {
+      console.error('Error updating resume:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || 'Failed to update resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle downloading the resume as PDF
   const handleDownloadResume = async () => {

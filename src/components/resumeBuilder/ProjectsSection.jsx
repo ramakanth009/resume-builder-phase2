@@ -61,8 +61,8 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
   const handleAddProject = () => {
     setResumeData({
       ...resumeData,
-      Academic_projects: [
-        ...resumeData.Academic_projects,
+      projects: [
+        ...resumeData.projects,
         {
           name: '',
           skills_used: '',
@@ -73,7 +73,7 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
   };
 
   const handleProjectChange = (index, field, value) => {
-    const updatedProjects = [...resumeData.Academic_projects];
+    const updatedProjects = [...resumeData.projects];
     updatedProjects[index] = {
       ...updatedProjects[index],
       [field]: value,
@@ -81,29 +81,29 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
     
     setResumeData({
       ...resumeData,
-      Academic_projects: updatedProjects,
+      projects: updatedProjects,
     });
   };
 
   const handleRemoveProject = (index) => {
     // Don't remove if it's the only project and it's empty
-    if (resumeData.Academic_projects.length === 1 && 
-        !resumeData.Academic_projects[0].name && 
-        !resumeData.Academic_projects[0].skills_used && 
-        !resumeData.Academic_projects[0].description) {
+    if (resumeData.projects.length === 1 && 
+        !resumeData.projects[0].name && 
+        !resumeData.projects[0].skills_used && 
+        !resumeData.projects[0].description) {
       return;
     }
     
     setResumeData({
       ...resumeData,
-      Academic_projects: resumeData.Academic_projects.filter((_, i) => i !== index),
+      projects: resumeData.projects.filter((_, i) => i !== index),
     });
     
     // If we just removed all projects, add an empty one
-    if (resumeData.Academic_projects.length === 1) {
+    if (resumeData.projects.length === 1) {
       setResumeData(prev => ({
         ...prev,
-        Academic_projects: [{
+        projects: [{
           name: '',
           skills_used: '',
           description: '',
@@ -115,10 +115,10 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
   return (
     <Box className={classes.form}>
       <Typography variant="h6" className={classes.formSubtitle}>
-        Academic Projects
+        Projects
       </Typography>
       
-      {resumeData.Academic_projects.map((project, index) => (
+      {resumeData.projects.map((project, index) => (
         <Paper key={index} className={classes.paper}>
           <Box className={classes.sectionTitle}>
             <Typography variant="h6">Project {index + 1}</Typography>
