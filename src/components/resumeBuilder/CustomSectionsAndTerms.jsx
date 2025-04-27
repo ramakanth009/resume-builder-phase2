@@ -8,10 +8,8 @@ import {
   Paper,
   IconButton,
   Divider,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -79,7 +77,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     margin: '0.25rem',
   },
   divider: {
-    margin: '1.5rem 0',
+    margin: '2rem 0 1.5rem',
   },
   inputContainer: {
     display: 'flex',
@@ -93,6 +91,34 @@ const useStyles = makeStylesWithTheme((theme) => ({
   sectionsList: {
     marginTop: '1rem',
     marginBottom: '1rem',
+  },
+  termsContainer: {
+    marginTop: '1rem',
+    padding: '1.5rem',
+    borderRadius: '8px',
+    backgroundColor: '#f7fafc',
+    border: '1px solid #e2e8f0',
+  },
+  checkboxContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+  checkbox: {
+    color: '#3182ce',
+    '&.Mui-checked': {
+      color: '#3182ce',
+    },
+  },
+  checkboxLabel: {
+    fontSize: '0.9rem',
+    color: '#4a5568',
+  },
+  disclaimer: {
+    fontSize: '0.8rem',
+    color: '#718096',
+    marginTop: '1rem',
+    fontStyle: 'italic',
   }
 }));
 
@@ -108,7 +134,7 @@ const suggestedSections = [
   'Professional_Affiliations'
 ];
 
-const CustomSectionsForm = ({ resumeData, setResumeData }) => {
+const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setTermsAccepted }) => {
   const classes = useStyles();
   const [sectionName, setSectionName] = useState('');
   const [itemText, setItemText] = useState('');
@@ -206,6 +232,15 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
     }
   };
 
+  // Terms & Policies change handler
+  const handleTermsChange = (event) => {
+    const { name, checked } = event.target;
+    setTermsAccepted(prev => ({
+      ...prev,
+      [name]: checked
+    }));
+  };
+
   // This function renders all created sections
   const renderAllSections = () => {
     if (existingSections.length === 0) {
@@ -275,6 +310,7 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
 
   return (
     <Box className={classes.form}>
+      {/* CUSTOM SECTIONS PART */}
       <Typography variant="h6" className={classes.formSubtitle}>
         Custom Sections
       </Typography>
@@ -322,14 +358,53 @@ const CustomSectionsForm = ({ resumeData, setResumeData }) => {
         ))}
       </Box>
       
-      <Divider className={classes.divider} />
-      
       {/* All sections rendered persistently */}
       <Box className={classes.sectionsList}>
         {renderAllSections()}
+      </Box>
+      
+      {/* TERMS & POLICIES PART */}
+      <Divider className={classes.divider} />
+      
+      <Box className={classes.termsContainer}>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Terms & Policies
+        </Typography>
+        
+        <Box className={classes.checkboxContainer}>
+          <FormControlLabel
+            control={
+              <Checkbox 
+                checked={termsAccepted.updates} 
+                onChange={handleTermsChange}
+                name="updates"
+                className={classes.checkbox}
+              />
+            }
+            label="I accept to receive updates from Gigaversity about new courses and future products."
+            className={classes.checkboxLabel}
+          />
+          
+          <FormControlLabel
+            control={
+              <Checkbox 
+                checked={termsAccepted.dataSharing} 
+                onChange={handleTermsChange}
+                name="dataSharing"
+                className={classes.checkbox}
+              />
+            }
+            label="I accept to share my data to be used for AI-generated resume creation."
+            className={classes.checkboxLabel}
+          />
+        </Box>
+        
+        <Typography className={classes.disclaimer}>
+          Both checkboxes must be selected to proceed with resume generation.
+        </Typography>
       </Box>
     </Box>
   );
 };
 
-export default CustomSectionsForm;
+export default CustomSectionsAndTerms;

@@ -30,9 +30,8 @@ import EducationSection from '../components/resumeBuilder/EducationSection';
 import SkillsSection from '../components/resumeBuilder/SkillsSection';
 import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
-import CustomSectionsForm from '../components/resumeBuilder/CustomSectionsForm';
+import CustomSectionsAndTerms from '../components/resumeBuilder/CustomSectionsAndTerms';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
-import TermsAndPolicies from '../components/resumeBuilder/TermsAndPolicies';
 
 import useDummyResumeData from './useDummyResumeData';
 
@@ -235,15 +234,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-// Step labels for the stepper
+// Step labels for the stepper - UPDATED: Combined "Custom Sections" and "Terms & Policies"
 const steps = [
   'Personal Info',
   'Education',
   'Skills',
   'Projects',
   'Experience',
-  'Custom Sections',
-  'Terms & Policies'
+  'Custom Sections & Terms'
 ];
 
 const ResumeBuilder = () => {
@@ -536,7 +534,7 @@ const ResumeBuilder = () => {
     return true;
   };
 
-  // Validate terms acceptance
+  // Validate terms acceptance - UPDATED: Changed step index from 6 to 5
   const validateTermsAcceptance = () => {
     if (!termsAccepted.updates || !termsAccepted.dataSharing) {
       setSnackbar({
@@ -544,7 +542,7 @@ const ResumeBuilder = () => {
         message: 'Please accept both terms and policies to continue',
         severity: 'error',
       });
-      setActiveStep(6); // Switch to terms step
+      setActiveStep(5); // Switch to combined Custom Sections & Terms step
       return false;
     }
     return true;
@@ -832,7 +830,7 @@ const ResumeBuilder = () => {
   // Determine if the resume has been generated at least once
   const hasGeneratedResume = generatedResume !== null;
 
-  // Render current step content
+  // Render current step content - UPDATED: Combined CustomSectionsForm and TermsAndPolicies
   const getStepContent = (step) => {
     switch (step) {
       case 0:
@@ -872,14 +870,9 @@ const ResumeBuilder = () => {
         );
       case 5:
         return (
-          <CustomSectionsForm 
+          <CustomSectionsAndTerms 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
-        );
-      case 6:
-        return (
-          <TermsAndPolicies 
+            setResumeData={setResumeData}
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
           />
