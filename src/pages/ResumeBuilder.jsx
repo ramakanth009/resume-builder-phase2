@@ -723,68 +723,68 @@ const ResumeBuilder = () => {
     }
   };
 
-  // Handle updating the resume after editing
-  const handleUpdateResume = async () => {
-    // Validate form data first
-    if (!validateResumeData()) {
-      return;
+// Handle updating the resume after editing
+const handleUpdateResume = async () => {
+  // Validate form data first
+  if (!validateResumeData()) {
+    return;
+  }
+
+  // Get resumeId from either URL params or generated resume
+  const idToUpdate = resumeId || generatedResume?.id;
+  
+  // Log available data for debugging
+  console.log("URL resumeId:", resumeId);
+  console.log("Generated resume ID:", generatedResume?.id);
+  console.log("ID to update:", idToUpdate);
+
+  // Ensure we have a resumeId when updating
+  if (!idToUpdate) {
+    setSnackbar({
+      open: true,
+      message: 'Cannot update: No resume ID found.',
+      severity: 'error',
+    });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // Call the update API with the correct ID
+    const response = await updateResume(idToUpdate, resumeData);
+
+    // Handle successful update
+    setSnackbar({
+      open: true,
+      message: 'Resume updated successfully!',
+      severity: 'success',
+    });
+
+    // Update generated resume state but NOT the form data
+    if (response.resume) {
+      const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
+      setGeneratedResume(adaptedResume);
+      
+      // Removed the two lines that were overwriting user edits:
+      // const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+      // setResumeData(updatedFormData);
     }
 
-    // Get resumeId from either URL params or generated resume
-    const idToUpdate = resumeId || generatedResume?.id;
-    
-    // Log available data for debugging
-    console.log("URL resumeId:", resumeId);
-    console.log("Generated resume ID:", generatedResume?.id);
-    console.log("ID to update:", idToUpdate);
+    // Switch to preview mode
+    setIsEditMode(false);
 
-    // Ensure we have a resumeId when updating
-    if (!idToUpdate) {
-      setSnackbar({
-        open: true,
-        message: 'Cannot update: No resume ID found.',
-        severity: 'error',
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // Call the update API with the correct ID
-      const response = await updateResume(idToUpdate, resumeData);
-
-      // Handle successful update
-      setSnackbar({
-        open: true,
-        message: 'Resume updated successfully!',
-        severity: 'success',
-      });
-
-      // Update local state with the response data
-      if (response.resume) {
-        const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
-        setGeneratedResume(adaptedResume);
-
-        // Update form data to stay in sync
-        const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
-        setResumeData(updatedFormData);
-      }
-
-      // Switch to preview mode
-      setIsEditMode(false);
-
-    } catch (error) {
-      console.error('Error updating resume:', error);
-      setSnackbar({
-        open: true,
-        message: error.message || 'Failed to update resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.error('Error updating resume:', error);
+    setSnackbar({
+      open: true,
+      message: error.message || 'Failed to update resume. Please try again.',
+      severity: 'error',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle downloading the resume as PDF
   const handleDownloadResume = async () => {
