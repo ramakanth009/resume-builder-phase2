@@ -30,7 +30,7 @@ const dummyResumeData = {
     "Microservices",
     "System Design"
   ],
-  Academic_projects: [
+  projects: [ // Changed from Academic_projects to projects
     {
       name: "Cloud-Native Health Platform",
       skills_used: "Java, Spring Boot, React, GCP, Kubernetes",
