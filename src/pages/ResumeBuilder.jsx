@@ -32,6 +32,9 @@ import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsAndTerms from '../components/resumeBuilder/CustomSectionsAndTerms';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
+import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
+import TemplateButton from '../components/resumeBuilder/TemplateButton';
+import templatesData from '../data/templatesData';
 
 import useDummyResumeData from './useDummyResumeData';
 
@@ -231,6 +234,27 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginBottom: '1rem',
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  templateSelectorWrapper: {
+    marginTop: '1rem',
+    marginBottom: '2rem',
+  },
+  templateActionButtons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: '1rem',
+    gap: '1rem',
+  },
+  templateDialog: {
+    '& .MuiDialog-paper': {
+      maxWidth: '900px',
+      width: '90%',
+    },
+  },
+  templateButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: '1rem',
   }
 }));
 
@@ -279,6 +303,12 @@ const ResumeBuilder = () => {
     onConfirm: null
   });
   const [loadingError, setLoadingError] = useState(null);
+  
+  // Template selection states
+  const [selectedTemplateId, setSelectedTemplateId] = useState(
+    templatesData.find(t => t.isDefault)?.id || 'classic'
+  );
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   
   // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
@@ -371,6 +401,28 @@ const ResumeBuilder = () => {
       fetchResumeData();
     }
   }, [resumeId, isEditingExisting]);
+
+  // Template dialog handlers
+  const handleOpenTemplateDialog = () => {
+    setTemplateDialogOpen(true);
+  };
+  
+  const handleCloseTemplateDialog = () => {
+    setTemplateDialogOpen(false);
+  };
+  
+  const handleTemplateSelect = (templateId) => {
+    setSelectedTemplateId(templateId);
+  };
+  
+  const handleConfirmTemplateSelection = () => {
+    setTemplateDialogOpen(false);
+    setSnackbar({
+      open: true,
+      message: 'Template updated successfully',
+      severity: 'success',
+    });
+  };
 
   // Add handlers for dummy data
   const handleLoadDummyData = () => {
@@ -932,6 +984,11 @@ const ResumeBuilder = () => {
         </Typography>
       )}
       
+      {/* Template button in preview section */}
+      <Box className={classes.templateButtonContainer}>
+        <TemplateButton onClick={handleOpenTemplateDialog} />
+      </Box>
+      
       {/* Add dummy data buttons in edit mode (only when creating new) */}
       {isEditMode && !isEditingExisting && renderDummyDataButtons()}
       
@@ -1097,9 +1154,43 @@ const ResumeBuilder = () => {
           <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
+            templateId={selectedTemplateId}
           />
         </Box>
       </Box>
+
+      {/* Template Selection Dialog */}
+      <Dialog 
+        open={templateDialogOpen}
+        onClose={handleCloseTemplateDialog}
+        fullWidth
+        maxWidth="lg"
+        className={classes.templateDialog}
+      >
+        <DialogContent>
+          <TemplateSelector 
+            selectedTemplateId={selectedTemplateId}
+            onTemplateSelect={handleTemplateSelect}
+          />
+          
+          <Box className={classes.templateActionButtons}>
+            <Button 
+              onClick={handleCloseTemplateDialog}
+              variant="outlined"
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleConfirmTemplateSelection}
+              variant="contained"
+              color="primary"
+            >
+              Apply Template
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
 
       {/* Snackbar for notifications */}
       <Snackbar

@@ -8,6 +8,7 @@ import {
   Link, 
   Font 
 } from '@react-pdf/renderer';
+import templatesData from '../../data/templatesData';
 
 // Register fonts for PDF rendering
 Font.register({
@@ -19,8 +20,8 @@ Font.register({
   ]
 });
 
-// Create styles
-const styles = StyleSheet.create({
+// Create base styles
+const baseStyles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Roboto',
@@ -28,6 +29,16 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     color: '#2d3748',
   },
+  footer: {
+    marginTop: 20,
+    textAlign: 'center',
+    fontSize: 8,
+    color: '#718096',
+  },
+});
+
+// Classic template styles
+const classicStyles = StyleSheet.create({
   header: {
     marginBottom: 20,
     textAlign: 'center',
@@ -118,22 +129,330 @@ const styles = StyleSheet.create({
   bulletText: {
     flex: 1,
   },
-  footer: {
-    marginTop: 20,
-    textAlign: 'center',
-    fontSize: 8,
-    color: '#718096',
+});
+
+// Modern template styles
+const modernStyles = StyleSheet.create({
+  header: {
+    marginBottom: 20,
+    textAlign: 'left',
+    paddingBottom: 15,
+    borderBottomWidth: 3,
+    borderBottomColor: '#3182ce',
+  },
+  name: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#1a202c',
+  },
+  contactInfo: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 5,
+  },
+  contactItem: {
+    fontSize: 10,
+  },
+  contactLink: {
+    color: '#0366d6',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
+  targetRole: {
+    fontSize: 13,
+    fontWeight: 'medium',
+    marginBottom: 15,
+  },
+  section: {
+    marginBottom: 18,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#3182ce',
+    marginBottom: 10,
+  },
+  summary: {
+    fontSize: 10,
+    marginBottom: 15,
+    lineHeight: 1.7,
+  },
+  skillsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
+  },
+  skillChip: {
+    backgroundColor: '#e6f7ff',
+    color: '#0366d6',
+    padding: '3 8',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  experienceItem: {
+    marginBottom: 14,
+  },
+  itemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: '#1a202c',
+  },
+  itemSubtitle: {
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  duration: {
+    fontSize: 9,
+    color: '#3182ce',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  bulletList: {
+    marginLeft: 10,
+    marginTop: 4,
+  },
+  bulletItem: {
+    fontSize: 10,
+    marginBottom: 4,
+    flexDirection: 'row',
+  },
+  bullet: {
+    width: 8,
+  },
+  bulletText: {
+    flex: 1,
   },
 });
 
-const Bullet = ({ children }) => (
+// Creative template styles
+const creativeStyles = StyleSheet.create({
+  header: {
+    marginBottom: 20,
+    textAlign: 'center',
+    padding: 15,
+    backgroundColor: '#5a67d8',
+    borderRadius: 8,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: 'white',
+  },
+  contactInfo: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: 15,
+    marginBottom: 5,
+  },
+  contactItem: {
+    fontSize: 10,
+    color: 'white',
+  },
+  contactLink: {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
+  targetRole: {
+    fontSize: 12,
+    fontWeight: 'medium',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#5a67d8',
+    paddingBottom: 2,
+    marginBottom: 10,
+    borderBottomWidth: 3,
+    borderBottomColor: '#5a67d8',
+    width: 150,
+  },
+  summary: {
+    fontSize: 10,
+    marginBottom: 15,
+    fontStyle: 'italic',
+    lineHeight: 1.8,
+  },
+  skillsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
+  },
+  skillChip: {
+    backgroundColor: '#5a67d8',
+    color: 'white',
+    padding: '3 8',
+    borderRadius: 10,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  experienceItem: {
+    marginBottom: 14,
+    paddingLeft: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#5a67d8',
+  },
+  itemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: '#1a202c',
+  },
+  itemSubtitle: {
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  duration: {
+    fontSize: 9,
+    color: '#5a67d8',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  bulletList: {
+    marginLeft: 10,
+    marginTop: 4,
+  },
+  bulletItem: {
+    fontSize: 10,
+    marginBottom: 4,
+    flexDirection: 'row',
+  },
+  bullet: {
+    width: 8,
+  },
+  bulletText: {
+    flex: 1,
+  },
+});
+
+// Executive template styles
+const executiveStyles = StyleSheet.create({
+  header: {
+    marginBottom: 20,
+    textAlign: 'center',
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#1a202c',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  contactInfo: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: 15,
+    marginBottom: 5,
+  },
+  contactItem: {
+    fontSize: 10,
+  },
+  contactLink: {
+    color: '#1a202c',
+    textDecoration: 'none',
+  },
+  targetRole: {
+    fontSize: 12,
+    fontWeight: 'medium',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  section: {
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderBottomColor: '#cbd5e0',
+    paddingBottom: 3,
+    marginBottom: 8,
+    color: '#1a202c',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  summary: {
+    fontSize: 10,
+    marginBottom: 15,
+    lineHeight: 1.7,
+  },
+  skillsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
+  },
+  skillChip: {
+    backgroundColor: '#f7fafc',
+    color: '#1a202c',
+    padding: '3 8',
+    borderRadius: 4,
+    fontSize: 9,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  experienceItem: {
+    marginBottom: 12,
+  },
+  itemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: '#1a202c',
+  },
+  itemSubtitle: {
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  duration: {
+    fontSize: 9,
+    color: '#718096',
+    marginBottom: 4,
+  },
+  bulletList: {
+    marginLeft: 10,
+    marginTop: 4,
+  },
+  bulletItem: {
+    fontSize: 10,
+    marginBottom: 3,
+    flexDirection: 'row',
+  },
+  bullet: {
+    width: 8,
+  },
+  bulletText: {
+    flex: 1,
+  },
+});
+
+const Bullet = ({ children, styles }) => (
   <View style={styles.bulletItem}>
     <Text style={styles.bullet}>•</Text>
     <Text style={styles.bulletText}>{children}</Text>
   </View>
 );
 
-const ResumePDF = ({ resumeData }) => {
+const ResumePDF = ({ resumeData, templateId = 'classic' }) => {
   // Helper functions
   const hasEducationData = () => {
     if (Array.isArray(resumeData.education)) {
@@ -175,9 +494,26 @@ const ResumePDF = ({ resumeData }) => {
     return userWorkExp || generatedWorkExp;
   };
 
+  // Select template styles based on templateId
+  const getTemplateStyles = () => {
+    switch(templateId) {
+      case 'modern':
+        return modernStyles;
+      case 'creative':
+        return creativeStyles;
+      case 'executive':
+        return executiveStyles;
+      case 'classic':
+      default:
+        return classicStyles;
+    }
+  };
+
+  const styles = getTemplateStyles();
+
   return (
     <Document title={`${resumeData.header.name || 'Resume'}`} author={resumeData.header.name || 'Applicant'}>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={baseStyles.page}>
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.name}>{resumeData.header.name || "Your Name"}</Text>
@@ -306,7 +642,7 @@ const ResumePDF = ({ resumeData }) => {
                         {experience.responsibilities
                           .filter(r => r && r.trim() !== '')
                           .map((responsibility, idx) => (
-                            <Bullet key={idx}>{responsibility}</Bullet>
+                            <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
                         ))}
                       </View>
                     )}
@@ -333,7 +669,7 @@ const ResumePDF = ({ resumeData }) => {
                     {experience.responsibilities && experience.responsibilities.length > 0 && (
                       <View style={styles.bulletList}>
                         {experience.responsibilities.map((responsibility, idx) => (
-                          <Bullet key={idx}>{responsibility}</Bullet>
+                          <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
                         ))}
                       </View>
                     )}
@@ -374,7 +710,7 @@ const ResumePDF = ({ resumeData }) => {
                     {project.responsibilities && project.responsibilities.length > 0 && (
                       <View style={styles.bulletList}>
                         {project.responsibilities.map((responsibility, idx) => (
-                          <Bullet key={idx}>{responsibility}</Bullet>
+                          <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
                         ))}
                       </View>
                     )}
@@ -402,7 +738,7 @@ const ResumePDF = ({ resumeData }) => {
               {resumeData.certifications
                 .filter(cert => cert && cert.trim() !== '')
                 .map((cert, index) => (
-                  <Bullet key={index}>{cert}</Bullet>
+                  <Bullet key={index} styles={styles}>{cert}</Bullet>
               ))}
             </View>
           </View>
@@ -428,7 +764,7 @@ const ResumePDF = ({ resumeData }) => {
                     {content
                       .filter(item => item && item.trim() !== '')
                       .map((item, index) => (
-                        <Bullet key={index}>{item}</Bullet>
+                        <Bullet key={index} styles={styles}>{item}</Bullet>
                     ))}
                   </View>
                 ) : (
@@ -439,7 +775,7 @@ const ResumePDF = ({ resumeData }) => {
         )}
         
         {/* Footer */}
-        <Text style={styles.footer}>
+        <Text style={baseStyles.footer}>
           Resume generated with Student Resume Builder
         </Text>
       </Page>

@@ -3,73 +3,73 @@
 
 const dummyResumeData = {
   header: {
-    name: "Sarah Chen",
-    email: "sarah.chen@example.com",
-    phone: "1234567890",
-    github: "https://github.com/sarahchen",
-    linkedin: "https://linkedin.com/in/sarahchen",
-    portfolio: "https://sarahchen.dev",
+    name: "Alex Rodriguez",
+    email: "alex.rodriguez@example.com",
+    phone: "9876543210",
+    github: "https://github.com/alexdev",
+    linkedin: "https://linkedin.com/in/alexrodriguez",
+    portfolio: "https://alexrod.dev",
   },
-  summary: "Full-stack developer with 5+ years of experience specializing in cloud-native applications and microservices architecture. Strong background in Java, Python, and modern JavaScript frameworks. Proven track record of delivering scalable solutions and mentoring development teams.",
+  summary: "DevOps engineer with 4+ years of experience in automation, CI/CD, and cloud infrastructure. Expert in AWS, Terraform, and container orchestration. Passionate about implementing DevSecOps practices and optimizing deployment pipelines.",
   education: {
-    degree: "Master of Science",
-    specialization: "Software Engineering",
-    institution: "Stanford University",
-    graduation_year: "2019",
+    degree: "Bachelor of Science",
+    specialization: "Computer Science",
+    institution: "University of California, Berkeley",
+    graduation_year: "2020",
   },
   skills: [
-    "Java", 
-    "Python", 
-    "Spring Boot",
-    "React",
+    "AWS", 
+    "Terraform",
     "Docker",
     "Kubernetes",
-    "PostgreSQL",
-    "GCP",
+    "Python",
+    "Node.js",
     "Jenkins",
-    "Microservices",
-    "System Design"
+    "GitLab CI",
+    "Ansible",
+    "Linux",
+    "Shell Scripting"
   ],
-  projects: [ // Changed from Academic_projects to projects
+  projects: [
     {
-      name: "Cloud-Native Health Platform",
-      skills_used: "Java, Spring Boot, React, GCP, Kubernetes",
-      description: "Architected and developed a scalable healthcare management system using microservices architecture. Implemented HIPAA-compliant data storage and real-time patient monitoring features."
+      name: "Infrastructure as Code Framework",
+      skills_used: "Terraform, AWS, Python, GitLab CI",
+      description: "Developed a reusable IaC framework that reduced infrastructure deployment time by 70%. Implemented multi-environment support and automated security compliance checks."
     },
     {
-      name: "AI-Powered Code Review Assistant",
-      skills_used: "Python, TensorFlow, FastAPI, React",
-      description: "Created an ML-powered tool that analyzes code repositories and suggests improvements. Integrated with GitHub API and implemented custom code analysis algorithms."
+      name: "Container Orchestration Platform",
+      skills_used: "Kubernetes, Docker, Helm, Go",
+      description: "Built a custom container orchestration platform serving 50+ microservices. Implemented auto-scaling and monitoring solutions using Prometheus and Grafana."
     }
   ],
   certifications: [
-    "Google Cloud Professional Architect",
-    "AWS Solutions Architect Associate",
-    "Certified Kubernetes Administrator"
+    "AWS Solutions Architect Professional",
+    "Certified Kubernetes Administrator",
+    "HashiCorp Certified Terraform Associate"
   ],
   work_experience: [
     {
-      position: "Senior Software Engineer",
-      company_name: "CloudScale Solutions",
-      duration: "Mar 2021 - Present",
-      description: "• Lead developer for cloud-native microservices platform serving 1M+ users\n• Architected and implemented scalable backend services using Java and Spring Boot\n• Reduced system latency by 40% through caching and optimization\n• Led team of 5 developers and established best practices for microservices development"
+      position: "Senior DevOps Engineer",
+      company_name: "TechCloud Solutions",
+      duration: "Jun 2022 - Present",
+      description: "• Managed cloud infrastructure for 100+ applications on AWS\n• Reduced deployment time by 60% through pipeline optimization\n• Implemented zero-downtime deployment strategies\n• Led migration from legacy systems to containerized architecture"
     },
     {
-      position: "Full Stack Developer",
-      company_name: "TechForward Inc.",
-      duration: "Jan 2019 - Feb 2021",
-      description: "• Developed full-stack applications using Python, Django, and React\n• Implemented CI/CD pipelines using Jenkins and Docker\n• Improved application performance by 50% through database optimization\n• Mentored junior developers and led technical design discussions"
+      position: "Cloud Engineer",
+      company_name: "DataSys Corp",
+      duration: "Aug 2020 - May 2022",
+      description: "• Developed and maintained CI/CD pipelines using Jenkins\n• Automated infrastructure provisioning with Terraform\n• Reduced cloud costs by 40% through resource optimization\n• Implemented monitoring and alerting solutions"
     }
   ],
-  target_role: "Lead Software Engineer",
+  target_role: "DevOps Team Lead",
   customSections: {
-    "Technical Leadership": [
-      "Led migration of monolithic application to microservices architecture",
-      "Established coding standards and review processes for team of 15 developers"
+    "Infrastructure Achievements": [
+      "Designed and implemented multi-region disaster recovery solution",
+      "Created automated security compliance scanning framework"
     ],
-    "Patents": [
-      "Chen, S. (2023). 'Method for Distributed Cache Management in Microservices.' US Patent 123456",
-      "Chen, S. (2022). 'System for Automated Code Quality Analysis.' US Patent 789012"
+    "Publications": [
+      "Rodriguez, A. (2023). 'Modern DevOps Practices.' Tech Journal Vol. 45",
+      "Rodriguez, A. (2022). 'Cloud-Native Architecture Patterns.' AWS Community Blog"
     ]
   }
 };

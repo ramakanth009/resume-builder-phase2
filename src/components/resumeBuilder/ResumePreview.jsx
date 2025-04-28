@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Chip, Link, Divider } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import templatesData from '../../data/templatesData';
 
-const useStyles = makeStylesWithTheme((theme) => ({
+// Base styles for all templates
+const useBaseStyles = makeStylesWithTheme((theme) => ({
   resumeContainer: {
     padding: '2rem',
     border: '1px solid #e2e8f0',
@@ -16,6 +18,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
     overflow: 'hidden', // Prevents text overflow
     fontFamily: 'Helvetica, Arial, sans-serif', // Consistent font family for PDF generation
   },
+  generatedNotice: {
+    marginTop: '2rem',
+    textAlign: 'center',
+    color: '#718096',
+    fontSize: '0.875rem',
+  }
+}));
+
+// Classic template styles
+const useClassicStyles = makeStylesWithTheme((theme) => ({
   resumeHeader: {
     marginBottom: '1.5rem',
     textAlign: 'center', // Center align header for better PDF appearance
@@ -115,17 +127,375 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       textDecoration: 'underline',
     },
-  },
-  generatedNotice: {
-    marginTop: '2rem',
-    textAlign: 'center',
-    color: '#718096',
-    fontSize: '0.875rem',
   }
 }));
 
-const ResumePreview = ({ userData, generatedData }) => {
-  const classes = useStyles();
+// Modern template styles
+const useModernStyles = makeStylesWithTheme((theme) => ({
+  resumeHeader: {
+    marginBottom: '2rem',
+    textAlign: 'left',
+    paddingBottom: '1.5rem',
+    borderBottom: '3px solid #3182ce',
+  },
+  resumeName: {
+    fontSize: '2.2rem',
+    fontWeight: 800,
+    marginBottom: '0.5rem',
+    color: '#1a202c',
+    textAlign: 'left',
+  },
+  resumeContact: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: '1rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
+    color: '#4a5568',
+    lineHeight: 1.5,
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  resumeSection: {
+    marginBottom: '2rem',
+  },
+  resumeSectionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    marginBottom: '1rem',
+    color: '#3182ce',
+    paddingBottom: '0.5rem',
+    borderBottom: 'none',
+  },
+  resumeSummary: {
+    color: '#2d3748',
+    marginBottom: '1.5rem',
+    lineHeight: 1.7,
+    fontSize: '1rem',
+  },
+  resumeEducation: {
+    marginBottom: '1.5rem',
+  },
+  resumeSubtitle: {
+    fontWeight: 700,
+    marginBottom: '0.25rem',
+    color: '#1a202c',
+    fontSize: '1.1rem',
+  },
+  resumeDate: {
+    fontSize: '0.875rem',
+    color: '#3182ce',
+    fontWeight: 600,
+    fontStyle: 'normal',
+  },
+  resumeSkills: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '0.5rem 0',
+  },
+  resumeSkillChip: {
+    backgroundColor: '#e6f7ff',
+    color: '#0366d6',
+    fontSize: '0.75rem',
+    height: '28px',
+    fontWeight: 600,
+    borderRadius: '4px',
+  },
+  resumeItem: {
+    marginBottom: '1.5rem',
+  },
+  resumeItemSubtitle: {
+    fontSize: '1rem',
+    color: '#2d3748',
+    marginBottom: '0.5rem',
+  },
+  resumeBullets: {
+    paddingLeft: '1.5rem',
+    margin: '0.75rem 0',
+    listStylePosition: 'outside',
+  },
+  resumeBullet: {
+    fontSize: '0.9rem',
+    color: '#2d3748',
+    marginBottom: '0.5rem',
+    lineHeight: 1.6,
+    paddingLeft: '0.5rem',
+  },
+  contactLink: {
+    color: '#0366d6',
+    textDecoration: 'none',
+    fontWeight: 600,
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  }
+}));
+
+// Creative template styles
+const useCreativeStyles = makeStylesWithTheme((theme) => ({
+  resumeHeader: {
+    marginBottom: '2rem',
+    textAlign: 'center',
+    padding: '2rem 1rem',
+    backgroundColor: '#5a67d8',
+    color: 'white',
+    borderRadius: '8px',
+  },
+  resumeName: {
+    fontSize: '2.5rem',
+    fontWeight: 800,
+    marginBottom: '1rem',
+    color: 'white',
+    textAlign: 'center',
+  },
+  resumeContact: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '1.5rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
+    color: 'white',
+    lineHeight: 1.5,
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  resumeSection: {
+    marginBottom: '2.5rem',
+  },
+  resumeSectionTitle: {
+    fontSize: '1.4rem',
+    fontWeight: 800,
+    marginBottom: '1rem',
+    color: '#5a67d8',
+    paddingBottom: '0.25rem',
+    display: 'inline-block',
+    borderBottom: '3px solid #5a67d8',
+  },
+  resumeSummary: {
+    color: '#2d3748',
+    marginBottom: '1.5rem',
+    lineHeight: 1.8,
+    fontSize: '1.05rem',
+    fontStyle: 'italic',
+  },
+  resumeEducation: {
+    marginBottom: '1.5rem',
+  },
+  resumeSubtitle: {
+    fontWeight: 700,
+    marginBottom: '0.25rem',
+    color: '#1a202c',
+    fontSize: '1.2rem',
+  },
+  resumeDate: {
+    fontSize: '0.875rem',
+    color: '#5a67d8',
+    fontWeight: 600,
+    fontStyle: 'normal',
+  },
+  resumeSkills: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '0.5rem 0',
+  },
+  resumeSkillChip: {
+    backgroundColor: '#5a67d8',
+    color: 'white',
+    fontSize: '0.75rem',
+    height: '28px',
+    fontWeight: 600,
+    borderRadius: '20px',
+  },
+  resumeItem: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingLeft: '1rem',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      left: '0',
+      top: '0.5rem',
+      bottom: '0.5rem',
+      width: '3px',
+      backgroundColor: '#5a67d8',
+      borderRadius: '4px',
+    },
+  },
+  resumeItemSubtitle: {
+    fontSize: '1rem',
+    color: '#4a5568',
+    marginBottom: '0.5rem',
+  },
+  resumeBullets: {
+    paddingLeft: '1.5rem',
+    margin: '0.75rem 0',
+    listStyleType: 'square',
+  },
+  resumeBullet: {
+    fontSize: '0.9rem',
+    color: '#2d3748',
+    marginBottom: '0.5rem',
+    lineHeight: 1.6,
+  },
+  contactLink: {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 600,
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  }
+}));
+
+// Executive template styles
+const useExecutiveStyles = makeStylesWithTheme((theme) => ({
+  resumeHeader: {
+    marginBottom: '2rem',
+    textAlign: 'center',
+    paddingBottom: '1.5rem',
+    borderBottom: '1px solid #e2e8f0',
+  },
+  resumeName: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    marginBottom: '0.75rem',
+    color: '#1a202c',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+  },
+  resumeContact: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '1.5rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
+    color: '#4a5568',
+    lineHeight: 1.5,
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  resumeSection: {
+    marginBottom: '2rem',
+  },
+  resumeSectionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    marginBottom: '1rem',
+    color: '#1a202c',
+    paddingBottom: '0.5rem',
+    borderBottom: '1px solid #cbd5e0',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+  },
+  resumeSummary: {
+    color: '#1a202c',
+    marginBottom: '1.5rem',
+    lineHeight: 1.7,
+    fontSize: '1rem',
+  },
+  resumeEducation: {
+    marginBottom: '1.5rem',
+  },
+  resumeSubtitle: {
+    fontWeight: 700,
+    marginBottom: '0.25rem',
+    color: '#1a202c',
+    fontSize: '1.05rem',
+  },
+  resumeDate: {
+    fontSize: '0.875rem',
+    color: '#718096',
+    fontStyle: 'normal',
+  },
+  resumeSkills: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '0.5rem 0',
+  },
+  resumeSkillChip: {
+    backgroundColor: '#f7fafc',
+    color: '#1a202c',
+    fontSize: '0.75rem',
+    height: '28px',
+    fontWeight: 500,
+    border: '1px solid #e2e8f0',
+  },
+  resumeItem: {
+    marginBottom: '1.5rem',
+  },
+  resumeItemSubtitle: {
+    fontSize: '0.925rem',
+    color: '#4a5568',
+    marginBottom: '0.25rem',
+  },
+  resumeBullets: {
+    paddingLeft: '1.25rem',
+    margin: '0.5rem 0',
+    listStylePosition: 'outside',
+  },
+  resumeBullet: {
+    fontSize: '0.875rem',
+    color: '#4a5568',
+    marginBottom: '0.5rem',
+    lineHeight: 1.5,
+  },
+  contactLink: {
+    color: '#1a202c',
+    textDecoration: 'none',
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  }
+}));
+
+const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
+  const baseClasses = useBaseStyles();
+  const classicClasses = useClassicStyles();
+  const modernClasses = useModernStyles();
+  const creativeClasses = useCreativeStyles();
+  const executiveClasses = useExecutiveStyles();
+  
+  // Select the appropriate styles based on template
+  const getTemplateClasses = () => {
+    switch(templateId) {
+      case 'modern':
+        return modernClasses;
+      case 'creative':
+        return creativeClasses;
+      case 'executive':
+        return executiveClasses;
+      case 'classic':
+      default:
+        return classicClasses;
+    }
+  };
+  
+  const classes = getTemplateClasses();
   
   // Use generated data if available, otherwise use user data
   const data = generatedData || userData;
@@ -206,7 +576,7 @@ const ResumePreview = ({ userData, generatedData }) => {
   };
 
   return (
-    <Box className={`${classes.resumeContainer} resume-container`}>
+    <Box className={`${baseClasses.resumeContainer} resume-container`}>
       {/* Header Section */}
       <Box className={classes.resumeHeader}>
         <Typography variant="h4" className={`${classes.resumeName} resume-name`}>
@@ -431,6 +801,15 @@ const ResumePreview = ({ userData, generatedData }) => {
                       {project.description}
                     </Typography>
                   )}
+                  {project.responsibilities && project.responsibilities.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {project.responsibilities.map((responsibility, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>
+                          {responsibility}
+                        </li>
+                      ))}
+                    </Box>
+                  )}
                 </Box>
               ))}
               
@@ -492,7 +871,7 @@ const ResumePreview = ({ userData, generatedData }) => {
       
       {/* Generated Resume Notice */}
       {generatedData && (
-        <Box className={classes.generatedNotice}>
+        <Box className={baseClasses.generatedNotice}>
           <Divider sx={{ mb: 2 }} />
           <Typography variant="body2" color="textSecondary">
             AI-enhanced resume generated successfully

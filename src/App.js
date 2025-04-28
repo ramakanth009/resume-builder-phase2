@@ -10,6 +10,7 @@ import ResumeBuilder from './pages/ResumeBuilder';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { TemplateProvider } from './contexts/TemplateContext';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -47,39 +48,41 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
-          <Router>
-            <NavbarWrapper />
-            <Routes>
-              {/* Landing page (Registration) is the root route */}
-              <Route path="/" element={<LandingPage />} />
-              
-              {/* Login page */}
-              <Route path="/login" element={<Login />} />
-              
-              {/* Protected route for resume builder */}
-              <Route 
-                path="/resume-builder" 
-                element={
-                  <ProtectedRoute>
-                    <ResumeBuilder />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* Protected route for editing existing resume */}
-              <Route 
-                path="/resume-builder/edit/:resumeId" 
-                element={
-                  <ProtectedRoute>
-                    <ResumeBuilder />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* Redirect any unknown routes to the landing page */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Router>
+          <TemplateProvider>
+            <Router>
+              <NavbarWrapper />
+              <Routes>
+                {/* Landing page (Registration) is the root route */}
+                <Route path="/" element={<LandingPage />} />
+                
+                {/* Login page */}
+                <Route path="/login" element={<Login />} />
+                
+                {/* Protected route for resume builder */}
+                <Route 
+                  path="/resume-builder" 
+                  element={
+                    <ProtectedRoute>
+                      <ResumeBuilder />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Protected route for editing existing resume */}
+                <Route 
+                  path="/resume-builder/edit/:resumeId" 
+                  element={
+                    <ProtectedRoute>
+                      <ResumeBuilder />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Redirect any unknown routes to the landing page */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Router>
+          </TemplateProvider>
         </AuthProvider>
       </ThemeProvider>
     </StyledEngineProvider>
