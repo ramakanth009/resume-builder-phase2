@@ -988,11 +988,7 @@ const getTemplateClasses = () => {
                       {experience.duration}
                     </Typography>
                   )}
-                  {experience.description && experience.description.trim() !== '' && (
-                    <Typography variant="body2">
-                      {experience.description}
-                    </Typography>
-                  )}
+                  {/* IMPORTANT CHANGE: Only show bullets, not the description text */}
                   {experience.responsibilities && experience.responsibilities.length > 0 && 
                     experience.responsibilities.some(r => r && r.trim() !== '') && (
                     <Box component="ul" className={classes.resumeBullets}>
@@ -1024,11 +1020,7 @@ const getTemplateClasses = () => {
                       {experience.duration}
                     </Typography>
                   )}
-                  {experience.description && experience.description.trim() !== '' && (
-                    <Typography variant="body2">
-                      {experience.description}
-                    </Typography>
-                  )}
+                  {/* IMPORTANT CHANGE: Only show bullets, not the description text */}
                   {experience.responsibilities && experience.responsibilities.length > 0 && (
                     <Box component="ul" className={classes.resumeBullets}>
                       {experience.responsibilities.map((responsibility, idx) => (
@@ -1063,11 +1055,7 @@ const getTemplateClasses = () => {
                       Skills: {project.skills_used}
                     </Typography>
                   )}
-                  {project.description && project.description.trim() !== '' && (
-                    <Typography variant="body2">
-                      {project.description}
-                    </Typography>
-                  )}
+                  {/* IMPORTANT CHANGE: Only show bullets, not the description text */}
                   {project.responsibilities && project.responsibilities.length > 0 && (
                     <Box component="ul" className={classes.resumeBullets}>
                       {project.responsibilities.map((responsibility, idx) => (

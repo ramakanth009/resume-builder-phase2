@@ -628,9 +628,7 @@ const hasProjectsData = () => {
                     {experience.duration && experience.duration.trim() !== '' && (
                       <Text style={styles.duration}>{experience.duration}</Text>
                     )}
-                    {experience.description && experience.description.trim() !== '' && (
-                      <Text style={styles.itemSubtitle}>{experience.description}</Text>
-                    )}
+                    {/* IMPORTANT CHANGE: Only show responsibilities as bullet points, not description */}
                     {experience.responsibilities && experience.responsibilities.length > 0 && 
                       experience.responsibilities.some(r => r && r.trim() !== '') && (
                       <View style={styles.bulletList}>
@@ -658,9 +656,7 @@ const hasProjectsData = () => {
                     {experience.duration && experience.duration.trim() !== '' && (
                       <Text style={styles.duration}>{experience.duration}</Text>
                     )}
-                    {experience.description && experience.description.trim() !== '' && (
-                      <Text style={styles.itemSubtitle}>{experience.description}</Text>
-                    )}
+                    {/* IMPORTANT CHANGE: Only show responsibilities as bullet points, not description */}
                     {experience.responsibilities && experience.responsibilities.length > 0 && (
                       <View style={styles.bulletList}>
                         {experience.responsibilities.map((responsibility, idx) => (
@@ -685,28 +681,20 @@ const hasProjectsData = () => {
           <View key={`project-${index}`} style={styles.experienceItem}>
             <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
             
-            {project.responsibilities && project.responsibilities.length > 0 && (
-              <View style={styles.bulletList}>
-                {project.responsibilities.map((responsibility, idx) => (
-                  <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
-                ))}
-              </View>
-            )}
-            
+            {/* IMPORTANT CHANGE: Show only skills as a line, not in bullets */}
             {project.skills_used && project.skills_used.trim() !== '' && (
               <Text style={styles.duration}>
                 Skills: {project.skills_used}
               </Text>
             )}
             
-            {project.technologies && project.technologies.length > 0 && (
-              <Text style={styles.duration}>
-                Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
-              </Text>
-            )}
-            
-            {project.description && project.description.trim() !== '' && (
-              <Text style={styles.itemSubtitle}>{project.description}</Text>
+            {/* IMPORTANT CHANGE: Only show responsibilities as bullet points, not description */}
+            {project.responsibilities && project.responsibilities.length > 0 && (
+              <View style={styles.bulletList}>
+                {project.responsibilities.map((responsibility, idx) => (
+                  <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
+                ))}
+              </View>
             )}
           </View>
         ))}
