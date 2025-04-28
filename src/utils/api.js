@@ -1,5 +1,4 @@
 // Enhanced API utility functions for making HTTP requests to the backend
-// This version includes the updateResume function to support editing existing resumes
 
 // Base URL for API requests
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
@@ -93,10 +92,7 @@ export const loginUser = async (credentials) => {
  * @returns {Promise} - Generated resume
  */
 export const generateResume = async (resumeData) => {
-  // Backend handles validation of required fields
-
-  
-  // Format the data for API request
+  // Format the data for API request - flatten header fields for generate endpoint
   const formattedData = {
     ...resumeData,
     // Extract fields from header object if they exist
@@ -110,22 +106,8 @@ export const generateResume = async (resumeData) => {
     degree: resumeData.education?.degree,
     specialization: resumeData.education?.specialization,
     institution: resumeData.education?.institution,
-    graduation_year: resumeData.education?.graduation_year,
+    graduation_year: resumeData.education?.graduation_year || resumeData.education?.graduationYear,
   };
-  
-  /* Removing frontend validation as it's handled by backend
-  const missingFields = requiredFields.filter(field => {
-    const value = formattedData[field];
-    if (Array.isArray(value)) {
-      return value.length === 0;
-    }
-    return !value || value.trim() === '';
-  });
-  
-  if (missingFields.length > 0) {
-    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-  }
-  */
   
   try {
     const response = await apiRequest('/generate_resume', {
@@ -189,7 +171,16 @@ export const updateResume = async (resumeId, resumeData) => {
       throw new Error('Resume ID is required');
     }
 
-    // Format the data for the API
+    // Prepare workExperience from work_experience for update format compatibility
+    const workExperience = resumeData.work_experience?.map(exp => ({
+      position: exp.position || '',
+      companyName: exp.company_name || exp.companyName || '',
+      duration: exp.duration || '',
+      responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : 
+                        (exp.description ? exp.description.split('\n').filter(Boolean) : [])
+    })) || [];
+    
+    // Format the data for the API - ensure proper structure and fields
     const formattedData = {
       header: {
         name: resumeData.header.name,
@@ -200,11 +191,20 @@ export const updateResume = async (resumeId, resumeData) => {
         portfolio: resumeData.header.portfolio
       },
       summary: resumeData.summary,
-      education: resumeData.education,
+      education: {
+        ...resumeData.education,
+        graduationYear: resumeData.education.graduation_year || resumeData.education.graduationYear
+      },
       skills: resumeData.skills,
-      projects: resumeData.projects,
+      projects: resumeData.projects.map(proj => ({
+        ...proj,
+        responsibilities: Array.isArray(proj.responsibilities) ? proj.responsibilities :
+                          (proj.description ? proj.description.split('\n').filter(Boolean) : [])
+      })),
       certifications: resumeData.certifications,
+      // Include both formats for maximum compatibility
       work_experience: resumeData.work_experience,
+      workExperience: workExperience,
       target_role: resumeData.target_role,
       customSections: resumeData.customSections
     };
@@ -212,7 +212,7 @@ export const updateResume = async (resumeId, resumeData) => {
     // Make PUT request to update the resume
     const response = await apiRequest(`/resumes/${resumeId}`, {
       method: 'PUT',
-      body: JSON.stringify(formattedData),
+      body: formattedData,
     });
 
     if (!response || response.status === 'error') {
@@ -267,7 +267,6 @@ export const logoutUser = async () => {
   }
 };
 
-
 export default {
   apiRequest,
   registerUser,
@@ -275,7 +274,7 @@ export default {
   generateResume,
   getUserResumes,
   getResumeById,
-  updateResume, // Add the new update function to the default export
+  updateResume,
   deleteResume,
   logoutUser
 };

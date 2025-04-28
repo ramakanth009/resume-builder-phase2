@@ -1,10 +1,17 @@
-// In src/utils/resumeAdapter.js, modify the adaptGeneratedResume function:
+// resumeAdapter.js - Handles data conversion between frontend and API formats
 
+/**
+ * Adapts the generated resume from API format to frontend format
+ * Handles both generate and update endpoint response structures
+ * @param {Object} generatedResume - The resume data from API
+ * @param {string|number|null} resumeId - Optional resume ID to include
+ * @returns {Object} - Adapted resume for frontend use
+ */
 export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
   if (!generatedResume) return null;
 
-  // Handle both structures - keep original properties to preserve all data
-  return {
+  // Create a normalized version that works with both generate and update formats
+  const adaptedResume = {
     // Preserve the ID from either explicit ID, resume object, or the root level resume_id
     id: resumeId || generatedResume.id || generatedResume.resume_id,
     
@@ -12,27 +19,20 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     header: { ...generatedResume.header },
     
     // Keep summary as is
-    summary: generatedResume.summary,
+    summary: generatedResume.summary || '',
     
     // Keep target_role as is or set default
     target_role: generatedResume.target_role || '',
     
-    // Convert education array to single object (using first item if array)
-    education: Array.isArray(generatedResume.education) 
-      ? generatedResume.education
-      : generatedResume.education || {},
+    // Convert education array to education object if needed
+    education: normalizeEducation(generatedResume.education),
     
-    // Pass through BOTH work_experience and workExperience for flexibility
-    // This ensures that regardless of which format is used, we'll have data available
-    work_experience: generatedResume.work_experience || 
-                    generatedResume.workExperience || 
-                    [],
-    workExperience: generatedResume.workExperience || 
-                   generatedResume.work_experience || 
-                   [],
+    // Support both work_experience and workExperience formats
+    work_experience: normalizeWorkExperience(generatedResume.work_experience || generatedResume.workExperience || []),
+    workExperience: normalizeWorkExperience(generatedResume.workExperience || generatedResume.work_experience || []),
     
-    // Pass through projects for flexibility
-    projects: generatedResume.projects || [],
+    // Convert projects with responsibilities/description normalization
+    projects: normalizeProjects(generatedResume.projects || []),
     
     // Keep skills as is
     skills: generatedResume.skills || [],
@@ -43,4 +43,115 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     // Keep customSections as is
     customSections: generatedResume.customSections || {}
   };
+
+  return adaptedResume;
+};
+
+/**
+ * Normalizes education data structure between object and array formats
+ * @param {Object|Array} education - Education data from API
+ * @returns {Object} - Normalized education object
+ */
+const normalizeEducation = (education) => {
+  if (!education) return {};
+  
+  // If it's already an array, return it
+  if (Array.isArray(education)) {
+    return education;
+  }
+  
+  // If it's an object, just return it
+  if (typeof education === 'object') {
+    // Ensure both graduation_year and graduationYear fields exist
+    return {
+      ...education,
+      graduation_year: education.graduation_year || education.graduationYear || '',
+      graduationYear: education.graduationYear || education.graduation_year || '',
+    };
+  }
+  
+  // Default empty object if none of the above
+  return {};
+};
+
+/**
+ * Normalizes work experience data to support both API formats
+ * @param {Array} workExperience - Work experience data from API
+ * @returns {Array} - Normalized work experience array
+ */
+const normalizeWorkExperience = (workExperience) => {
+  if (!workExperience || !Array.isArray(workExperience)) return [];
+  
+  return workExperience.map(exp => {
+    // Convert description to responsibilities if not already present
+    let responsibilities = exp.responsibilities || [];
+    let description = exp.description || '';
+    
+    if (!responsibilities.length && description) {
+      responsibilities = description.split('\n').filter(item => item.trim());
+    }
+    
+    if (!description && responsibilities.length) {
+      description = responsibilities.join('\n');
+    }
+    
+    // Ensure both company_name and companyName exist
+    const companyName = exp.companyName || exp.company_name || '';
+    const company_name = exp.company_name || exp.companyName || '';
+    
+    return {
+      ...exp,
+      company_name,
+      companyName,
+      description,
+      responsibilities,
+    };
+  });
+};
+
+/**
+ * Normalizes project data to support both API formats
+ * @param {Array} projects - Projects data from API
+ * @returns {Array} - Normalized projects array
+ */
+const normalizeProjects = (projects) => {
+  if (!projects || !Array.isArray(projects)) return [];
+  
+  return projects.map(project => {
+    // Convert description to responsibilities if not already present
+    let responsibilities = project.responsibilities || [];
+    let description = project.description || '';
+    
+    if (!responsibilities.length && description) {
+      responsibilities = description.split('\n').filter(item => item.trim());
+    }
+    
+    if (!description && responsibilities.length) {
+      description = responsibilities.join('\n');
+    }
+    
+    // Handle skills/technologies mapping
+    let skills_used = project.skills_used || '';
+    let technologies = project.technologies || [];
+    
+    if (!skills_used && Array.isArray(technologies) && technologies.length) {
+      skills_used = technologies.join(', ');
+    }
+    
+    if (!technologies.length && skills_used) {
+      technologies = skills_used.split(',').map(s => s.trim());
+    }
+    
+    return {
+      ...project,
+      description,
+      responsibilities,
+      skills_used,
+      technologies,
+    };
+  });
+};
+
+export default {
+  adaptGeneratedResume
 };

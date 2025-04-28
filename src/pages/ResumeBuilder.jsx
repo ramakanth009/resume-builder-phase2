@@ -258,7 +258,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-// Step labels for the stepper - UPDATED: Combined "Custom Sections" and "Terms & Policies"
+// Step labels for the stepper - Combined "Custom Sections" and "Terms & Policies"
 const steps = [
   'Personal Info',
   'Education',
@@ -267,6 +267,67 @@ const steps = [
   'Experience',
   'Custom Sections & Terms'
 ];
+
+/**
+ * Prepares form data for API submission by ensuring all required fields are present
+ * in both generate and update formats
+ * @param {Object} formData - The current resume form data
+ * @returns {Object} - Properly formatted data for API
+ */
+const prepareFormDataForApi = (formData) => {
+  // Create a deep copy of the data to avoid mutations
+  const apiData = JSON.parse(JSON.stringify(formData));
+  
+  // Handle education fields - ensure both formats are present
+  if (apiData.education) {
+    apiData.education.graduation_year = apiData.education.graduation_year || apiData.education.graduationYear || '';
+    apiData.education.graduationYear = apiData.education.graduationYear || apiData.education.graduation_year || '';
+  }
+  
+  // Handle work experience - ensure both formats are available
+  if (apiData.work_experience && Array.isArray(apiData.work_experience)) {
+    apiData.work_experience = apiData.work_experience.map(exp => {
+      // Ensure all required fields exist in both formats
+      return {
+        ...exp,
+        company_name: exp.company_name || exp.companyName || '',
+        companyName: exp.companyName || exp.company_name || '',
+        responsibilities: exp.responsibilities || (exp.description ? exp.description.split('\n').filter(Boolean) : []),
+      };
+    });
+    
+    // Also map to workExperience for update format
+    apiData.workExperience = apiData.work_experience.map(exp => ({
+      position: exp.position || '',
+      companyName: exp.companyName || exp.company_name || '',
+      duration: exp.duration || '',
+      responsibilities: exp.responsibilities || (exp.description ? exp.description.split('\n').filter(Boolean) : []),
+    }));
+  }
+  
+  // Handle projects - ensure both formats are available
+  if (apiData.projects && Array.isArray(apiData.projects)) {
+    apiData.projects = apiData.projects.map(proj => {
+      // Create technologies array from skills_used if not present
+      const technologies = proj.technologies && proj.technologies.length 
+        ? proj.technologies 
+        : (proj.skills_used ? proj.skills_used.split(',').map(s => s.trim()) : []);
+      
+      // Create responsibilities array from description if not present
+      const responsibilities = proj.responsibilities && proj.responsibilities.length
+        ? proj.responsibilities
+        : (proj.description ? proj.description.split('\n').filter(Boolean) : []);
+      
+      return {
+        ...proj,
+        technologies,
+        responsibilities,
+      };
+    });
+  }
+  
+  return apiData;
+};
 
 const ResumeBuilder = () => {
   const classes = useStyles();
@@ -310,7 +371,7 @@ const ResumeBuilder = () => {
   );
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   
-  // Initialize resumeData with empty structure
+  // Initialize resumeData with empty structure and fields for both formats
   const [resumeData, setResumeData] = useState({
     header: {
       name: currentUser?.name || '',
@@ -326,19 +387,28 @@ const ResumeBuilder = () => {
       specialization: '',
       institution: '',
       graduation_year: '',
+      // Also include graduationYear for update format compatibility
+      graduationYear: '',
     },
     skills: [''],
     projects: [{   
       name: '',
       skills_used: '',
       description: '',
+      // Add fields for update format
+      responsibilities: [],
+      link: '',
+      technologies: [],
     }],
     certifications: [''],
     work_experience: [{
       position: '',
       company_name: '',
+      // Add field for update format
+      companyName: '',
       duration: '',
       description: '',
+      responsibilities: [],
     }],
     target_role: '',
     customSections: {}
@@ -586,7 +656,7 @@ const ResumeBuilder = () => {
     return true;
   };
 
-  // Validate terms acceptance - UPDATED: Changed step index from 6 to 5
+  // Validate terms acceptance
   const validateTermsAcceptance = () => {
     if (!termsAccepted.updates || !termsAccepted.dataSharing) {
       setSnackbar({
@@ -630,6 +700,7 @@ const ResumeBuilder = () => {
           specialization: edu.specialization || '',
           institution: edu.institution || '',
           graduation_year: edu.graduationYear || edu.graduation_year || '',
+          graduationYear: edu.graduationYear || edu.graduation_year || '',
         };
       } else if (typeof generatedData.education === 'object') {
         // Map education object directly
@@ -638,6 +709,7 @@ const ResumeBuilder = () => {
           specialization: generatedData.education.specialization || '',
           institution: generatedData.education.institution || '',
           graduation_year: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
+          graduationYear: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
         };
       }
     }
@@ -653,63 +725,71 @@ const ResumeBuilder = () => {
     }
     
     // Map projects field
-if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
-  // Convert generated projects format to our projects format
-  formData.projects = generatedData.projects.map(project => {
-    // Extract key info and responsibilities
-    let description = '';
-    if (project.responsibilities && Array.isArray(project.responsibilities)) {
-      description = project.responsibilities.join('\n');
-    } else if (project.description) {
-      description = project.description;
+    if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
+      // Convert generated projects format to our projects format
+      formData.projects = generatedData.projects.map(project => {
+        // Extract key info and responsibilities
+        let description = '';
+        if (project.responsibilities && Array.isArray(project.responsibilities)) {
+          description = project.responsibilities.join('\n');
+        } else if (project.description) {
+          description = project.description;
+        }
+        
+        // Extract skills
+        let skills = '';
+        if (project.skills_used) {
+          skills = project.skills_used;
+        } else if (project.technologies) {
+          skills = Array.isArray(project.technologies) 
+            ? project.technologies.join(', ') 
+            : project.technologies;
+        }
+        
+        return {
+          name: project.name || '',
+          skills_used: skills,
+          description: description,
+          responsibilities: Array.isArray(project.responsibilities) ? [...project.responsibilities] : [],
+          technologies: Array.isArray(project.technologies) ? [...project.technologies] : 
+            (skills ? skills.split(',').map(s => s.trim()) : []),
+          link: project.link || '',
+        };
+      });
+    } else {
+      // Initialize with empty array if no projects exist
+      formData.projects = [];
     }
     
-    // Extract skills
-    let skills = '';
-    if (project.skills_used) {
-      skills = project.skills_used;
-    } else if (project.technologies) {
-      skills = Array.isArray(project.technologies) 
-        ? project.technologies.join(', ') 
-        : project.technologies;
+    // Map work experience
+    if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
+      formData.work_experience = generatedData.work_experience.map(exp => ({
+        position: exp.position || '',
+        company_name: exp.company_name || '',
+        companyName: exp.companyName || exp.company_name || '',
+        duration: exp.duration || '',
+        description: exp.description || (exp.responsibilities ? exp.responsibilities.join('\n') : ''),
+        responsibilities: exp.responsibilities || [],
+      }));
+    } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
+      // Convert workExperience format to work_experience format
+      formData.work_experience = generatedData.workExperience.map(exp => {
+        // Compile responsibilities into description if needed
+        let description = exp.description || '';
+        if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
+          description = exp.responsibilities.join('\n');
+        }
+        
+        return {
+          position: exp.position || '',
+          company_name: exp.companyName || '',
+          companyName: exp.companyName || '',
+          duration: exp.duration || '',
+          description: description,
+          responsibilities: exp.responsibilities || [],
+        };
+      });
     }
-    
-    return {
-      name: project.name || '',
-      skills_used: skills,
-      description: description,
-    };
-  });
-} else {
-  // Initialize with empty array if no projects exist
-  formData.projects = [];
-}
-    
-// Map work experience
-if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
-  formData.work_experience = generatedData.work_experience.map(exp => ({
-    position: exp.position || '',
-    company_name: exp.company_name || '',
-    duration: exp.duration || '',
-    description: exp.description || '',
-  }));
-} else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
-  // Convert workExperience format to work_experience format
-  formData.work_experience = generatedData.workExperience.map(exp => {
-    // Compile responsibilities into description if needed
-    let description = exp.description || '';
-    if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
-      description = exp.responsibilities.join('\n');
-    }
-    
-    return {
-      position: exp.position || '',
-      company_name: exp.companyName || '',
-      duration: exp.duration || '',
-      description: description,
-    };
-  });
-}
     
     // Map custom sections
     if (generatedData.customSections) {
@@ -734,7 +814,11 @@ if (generatedData.work_experience && Array.isArray(generatedData.work_experience
     setLoading(true);
     
     try {
-      const response = await generateResume(resumeData);
+      // Prepare form data for API with proper field mapping
+      const apiReadyData = prepareFormDataForApi(resumeData);
+      
+      // Call the generate resume API
+      const response = await generateResume(apiReadyData);
       
       setSnackbar({
         open: true,
@@ -800,8 +884,11 @@ if (generatedData.work_experience && Array.isArray(generatedData.work_experience
     setLoading(true);
 
     try {
+      // Prepare form data for API with proper field mapping
+      const apiReadyData = prepareFormDataForApi(resumeData);
+      
       // Call the update API with the correct ID
-      const response = await updateResume(idToUpdate, resumeData);
+      const response = await updateResume(idToUpdate, apiReadyData);
 
       // Handle successful update
       setSnackbar({
@@ -875,7 +962,7 @@ if (generatedData.work_experience && Array.isArray(generatedData.work_experience
   // Determine if the resume has been generated at least once
   const hasGeneratedResume = generatedResume !== null;
 
-  // Render current step content - UPDATED: Combined CustomSectionsForm and TermsAndPolicies
+  // Render current step content
   const getStepContent = (step) => {
     switch (step) {
       case 0:

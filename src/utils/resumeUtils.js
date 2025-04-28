@@ -43,6 +43,7 @@ export const transformHeaderData = (headerData = {}) => {
 
 /**
  * Transform work experience data to a consistent format
+ * Supports both work_experience and workExperience formats
  */
 export const transformWorkExperience = (workExp = []) => {
   if (!workExp) return [];
@@ -52,20 +53,33 @@ export const transformWorkExperience = (workExp = []) => {
     .filter(exp => exp && typeof exp === 'object')
     .map(exp => {
       const normalized = normalizeObject(exp);
-      let responsibilities = Array.isArray(exp.responsibilities)
-        ? exp.responsibilities
-        : typeof normalized.description === "string"
-        ? [normalized.description]
-        : [];
+      
+      // Handle responsibilities - support both description and responsibilities
+      let responsibilities = [];
+      if (Array.isArray(exp.responsibilities)) {
+        responsibilities = exp.responsibilities;
+      } else if (typeof exp.description === "string") {
+        responsibilities = exp.description.split('\n').filter(Boolean);
+      } else if (typeof normalized.description === "string") {
+        responsibilities = normalized.description.split('\n').filter(Boolean);
+      }
 
+      // Create a unified object with both field naming formats
       return {
+        // Common fields
         position: cleanString(exp.position || normalized.position),
-        companyName: cleanString(exp.companyName || exp.company_name || normalized.companyname || normalized.company_name),
         duration: cleanString(exp.duration || normalized.duration),
+        
+        // Both naming formats for company
+        company_name: cleanString(exp.company_name || exp.companyName || normalized.companyname || normalized.company_name),
+        companyName: cleanString(exp.companyName || exp.company_name || normalized.companyname || normalized.company_name),
+        
+        // Both versions of description/responsibilities
+        description: responsibilities.join('\n'),
         responsibilities: responsibilities.map(cleanString).filter(Boolean),
       };
     })
-    .filter(exp => exp.position || exp.companyName);
+    .filter(exp => exp.position || exp.companyName || exp.company_name);
 };
 
 /**
@@ -75,11 +89,13 @@ export const transformEducation = (edu = {}) => {
   if (!edu) return {};
   const normalized = normalizeObject(edu);
 
+  // Return both field formats for graduation year
   return {
     degree: cleanString(edu.degree || normalized.degree),
     specialization: cleanString(edu.specialization || normalized.specialization),
     institution: cleanString(edu.institution || normalized.institution),
-    graduationYear: cleanString(edu.graduationYear || edu.graduation_year || normalized.graduationyear || normalized.graduation_year)
+    graduationYear: cleanString(edu.graduationYear || edu.graduation_year || normalized.graduationyear || normalized.graduation_year),
+    graduation_year: cleanString(edu.graduation_year || edu.graduationYear || normalized.graduation_year || normalized.graduationyear)
   };
 };
 
@@ -95,19 +111,40 @@ export const transformProjects = (projects = []) => {
     .map(proj => {
       const normalized = normalizeObject(proj);
       
+      // Handle skills and technologies consistently
       let skills = [];
+      let skillsString = '';
+      
       if (Array.isArray(proj.technologies)) {
         skills = proj.technologies;
+        skillsString = skills.join(', ');
       } else if (typeof proj.skills_used === 'string') {
-        skills = proj.skills_used.split(',');
+        skillsString = proj.skills_used;
+        skills = skillsString.split(',').map(s => s.trim()).filter(Boolean);
       } else if (typeof normalized.skills_used === 'string') {
-        skills = normalized.skills_used.split(',');
+        skillsString = normalized.skills_used;
+        skills = skillsString.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      
+      // Handle responsibilities and description consistently
+      let responsibilities = [];
+      let description = '';
+      
+      if (Array.isArray(proj.responsibilities)) {
+        responsibilities = proj.responsibilities;
+        description = responsibilities.join('\n');
+      } else if (typeof proj.description === 'string') {
+        description = proj.description;
+        responsibilities = description.split('\n').filter(Boolean);
       }
 
       return {
         name: cleanString(proj.name || normalized.name),
-        description: cleanString(proj.description || normalized.description),
-        skills_used: skills.map(cleanString).filter(Boolean).join(', ')
+        description: description,
+        responsibilities: responsibilities,
+        skills_used: skillsString,
+        technologies: skills,
+        link: cleanString(proj.link || normalized.link || '')
       };
     })
     .filter(proj => proj.name);
@@ -157,7 +194,39 @@ export const transformCertifications = (certData) => {
 };
 
 /**
+ * Prepare data from form for API submission
+ * Ensures compatibility with both generate and update endpoints
+ */
+export const prepareResumeDataForApi = (formData) => {
+  if (!formData) return null;
+  
+  try {
+    // Create a deep copy to avoid mutations
+    const apiData = JSON.parse(JSON.stringify(formData));
+    
+    // Transform each section of the resume for API compatibility
+    return {
+      header: transformHeaderData(formData.header),
+      summary: cleanString(formData.summary),
+      target_role: cleanString(formData.target_role),
+      education: transformEducation(formData.education),
+      skills: transformSkills(formData.skills),
+      work_experience: transformWorkExperience(formData.work_experience),
+      workExperience: transformWorkExperience(formData.work_experience),
+      projects: transformProjects(formData.projects),
+      certifications: transformCertifications(formData.certifications),
+      customSections: formData.customSections || {}
+    };
+  } catch (error) {
+    console.error('Data preparation error:', error);
+    // Return original data if transformation fails
+    return formData;
+  }
+};
+
+/**
  * Transform the entire resume data from any format to our standardized format
+ * Handles both generate and update endpoint responses
  */
 export const transformResumeData = (apiResponse) => {
   if (!apiResponse || !apiResponse.resume) {
@@ -179,18 +248,23 @@ export const transformResumeData = (apiResponse) => {
         normalized.workexperience ||
         normalized.work_experience
       ),
+      workExperience: transformWorkExperience(
+        resume.workExperience || 
+        resume.work_experience ||
+        normalized.workexperience ||
+        normalized.work_experience
+      ),
       education: transformEducation(resume.education || normalized.education),
       projects: transformProjects(
         resume.projects || 
-        resume.projects ||
-        normalized.projects ||
         normalized.projects
       ),
       certifications: transformCertifications(
         resume.certifications || 
         normalized.certifications
       ),
-      customSections: resume.customSections || {}
+      customSections: resume.customSections || {},
+      target_role: cleanString(resume.target_role || normalized.target_role)
     };
   } catch (error) {
     console.error('Data transformation error:', error);
@@ -211,5 +285,6 @@ export default {
   transformProjects,
   transformSkills,
   transformCertifications,
-  transformResumeData
+  transformResumeData,
+  prepareResumeDataForApi
 };

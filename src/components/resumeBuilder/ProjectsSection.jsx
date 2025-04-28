@@ -67,36 +67,58 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
           name: '',
           skills_used: '',
           description: '',
+          responsibilities: [],
+          link: '',
         },
       ],
     });
   };
 
-  // Modified function to convert description to responsibilities:
-const handleProjectChange = (index, field, value) => {
-  const updatedProjects = [...resumeData.projects];
-  
-  // If the field is description, we need to set it as responsibilities for the backend
-  if (field === 'description') {
-    updatedProjects[index] = {
-      ...updatedProjects[index],
-      // Convert description text to responsibilities array (split by newlines)
-      responsibilities: value.split('\n').filter(item => item.trim()),
-      // Keep the original description for UI display
-      [field]: value,
-    };
-  } else {
-    updatedProjects[index] = {
-      ...updatedProjects[index],
-      [field]: value,
-    };
-  }
-  
-  setResumeData({
-    ...resumeData,
-    projects: updatedProjects,
-  });
-};
+  const handleProjectChange = (index, field, value) => {
+    const updatedProjects = [...resumeData.projects];
+    
+    if (field === 'description') {
+      // Convert description text to responsibilities array
+      const responsibilities = value.split('\n').filter(item => item.trim());
+      
+      updatedProjects[index] = {
+        ...updatedProjects[index],
+        responsibilities: responsibilities,
+        description: value,
+      };
+    } else if (field === 'skills_used') {
+      // Handle both fields for technologies/skills
+      const skills = value;
+      // Add skills to responsibilities if applicable
+      const existingDesc = updatedProjects[index].description || '';
+      const existingResp = updatedProjects[index].responsibilities || [];
+      
+      // Only add skills to responsibilities if there are no responsibilities yet
+      let updatedResp = existingResp;
+      if (existingResp.length === 0 && skills) {
+        updatedResp = [`Technologies used: ${skills}`];
+      }
+      
+      updatedProjects[index] = {
+        ...updatedProjects[index],
+        skills_used: skills,
+        technologies: skills.split(',').map(s => s.trim()),
+        responsibilities: updatedResp,
+        [field]: value,
+      };
+    } else {
+      updatedProjects[index] = {
+        ...updatedProjects[index],
+        [field]: value,
+      };
+    }
+    
+    setResumeData({
+      ...resumeData,
+      projects: updatedProjects,
+    });
+  };
+
   const handleRemoveProject = (index) => {
     // Don't remove if it's the only project and it's empty
     if (resumeData.projects.length === 1 && 
@@ -119,6 +141,8 @@ const handleProjectChange = (index, field, value) => {
           name: '',
           skills_used: '',
           description: '',
+          responsibilities: [],
+          link: '',
         }]
       }));
     }
@@ -165,7 +189,17 @@ const handleProjectChange = (index, field, value) => {
           />
           
           <TextField
-            label="summary"
+            label="Project Link (Optional)"
+            value={project.link || ''}
+            onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+            placeholder="e.g., https://github.com/yourusername/project"
+          />
+          
+          <TextField
+            label="Summary"
             value={project.description}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
             variant="outlined"

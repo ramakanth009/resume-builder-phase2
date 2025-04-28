@@ -66,37 +66,47 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
         {
           position: '',
           company_name: '',
+          companyName: '',
           duration: '',
           description: '',
+          responsibilities: [],
         },
       ],
     });
   };
 
-const handleWorkExperienceChange = (index, field, value) => {
-  const updatedWorkExperience = [...resumeData.work_experience];
-  
-  // If the field is description, we need to set it as responsibilities for the backend
-  if (field === 'description') {
-    updatedWorkExperience[index] = {
-      ...updatedWorkExperience[index],
-      // Convert description text to responsibilities array (split by newlines)
-      responsibilities: value.split('\n').filter(item => item.trim()),
-      // Keep the original description for UI display
-      [field]: value,
-    };
-  } else {
-    updatedWorkExperience[index] = {
-      ...updatedWorkExperience[index],
-      [field]: value,
-    };
-  }
-  
-  setResumeData({
-    ...resumeData,
-    work_experience: updatedWorkExperience,
-  });
-};
+  const handleWorkExperienceChange = (index, field, value) => {
+    const updatedWorkExperience = [...resumeData.work_experience];
+    
+    if (field === 'description') {
+      // Convert description text to responsibilities array
+      const responsibilities = value.split('\n').filter(item => item.trim());
+      
+      updatedWorkExperience[index] = {
+        ...updatedWorkExperience[index],
+        responsibilities: responsibilities,
+        description: value,
+      };
+    } else if (field === 'company_name') {
+      // Handle both field names for company
+      updatedWorkExperience[index] = {
+        ...updatedWorkExperience[index],
+        company_name: value,
+        companyName: value,
+        [field]: value,
+      };
+    } else {
+      updatedWorkExperience[index] = {
+        ...updatedWorkExperience[index],
+        [field]: value,
+      };
+    }
+    
+    setResumeData({
+      ...resumeData,
+      work_experience: updatedWorkExperience,
+    });
+  };
 
   const handleRemoveWorkExperience = (index) => {
     // Don't remove if it's the only experience and it's empty
@@ -120,8 +130,10 @@ const handleWorkExperienceChange = (index, field, value) => {
         work_experience: [{
           position: '',
           company_name: '',
+          companyName: '',
           duration: '',
           description: '',
+          responsibilities: [],
         }]
       }));
     }
