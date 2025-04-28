@@ -363,6 +363,7 @@ const useCreativeStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
+
 // Executive template styles
 const useExecutiveStyles = makeStylesWithTheme((theme) => ({
   resumeHeader: {
@@ -472,6 +473,266 @@ const useExecutiveStyles = makeStylesWithTheme((theme) => ({
     },
   }
 }));
+// Add these new style hooks in the ResumePreview.jsx file after the existing style hooks
+
+// Professional template styles (inspired by Richard Sanchez resume)
+const useProfessionalStyles = makeStylesWithTheme((theme) => ({
+  resumeHeader: {
+    marginBottom: '2rem',
+    textAlign: 'center',
+    paddingBottom: '1rem',
+    position: 'relative',
+    backgroundColor: '#e6f7ff',
+    padding: '2rem 1rem',
+    borderRadius: '0',
+  },
+  resumeName: {
+    fontSize: '2.2rem',
+    fontWeight: 800,
+    marginBottom: '0.5rem',
+    color: '#2d3748',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+  },
+  resumeContact: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '1rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
+    color: '#4a5568',
+    lineHeight: 1.5,
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  resumeSection: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+  },
+  resumeSectionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    marginBottom: '1rem',
+    color: '#2d3748',
+    paddingBottom: '0.5rem',
+    borderBottom: '1px solid #e2e8f0',
+    position: 'relative',
+  },
+  resumeSummary: {
+    color: '#4a5568',
+    marginBottom: '1.5rem',
+    lineHeight: 1.7,
+    fontSize: '0.95rem',
+  },
+  resumeEducation: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingLeft: '1rem',
+    borderLeft: '2px solid #e2e8f0',
+  },
+  resumeSubtitle: {
+    fontWeight: 700,
+    marginBottom: '0.25rem',
+    color: '#2d3748',
+    fontSize: '1.05rem',
+  },
+  resumeDate: {
+    fontSize: '0.875rem',
+    color: '#718096',
+    fontStyle: 'normal',
+    fontWeight: '500',
+  },
+  resumeSkills: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '0.5rem 0',
+  },
+  resumeSkillChip: {
+    backgroundColor: '#e6f7ff',
+    color: '#0366d6',
+    fontSize: '0.75rem',
+    height: '28px',
+    fontWeight: 500,
+    border: '1px solid #a0aec0',
+  },
+  resumeItem: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingLeft: '1rem',
+    borderLeft: '2px solid #e2e8f0',
+  },
+  resumeItemSubtitle: {
+    fontSize: '0.95rem',
+    color: '#4a5568',
+    marginBottom: '0.25rem',
+  },
+  resumeBullets: {
+    paddingLeft: '1.25rem',
+    margin: '0.5rem 0',
+    listStylePosition: 'outside',
+  },
+  resumeBullet: {
+    fontSize: '0.875rem',
+    color: '#4a5568',
+    marginBottom: '0.5rem',
+    lineHeight: 1.5,
+  },
+  contactLink: {
+    color: '#3182ce',
+    textDecoration: 'none',
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  }
+}));
+
+// Creative Blue template styles (inspired by Morgan Maxwell resume)
+const useCreativeBlueStyles = makeStylesWithTheme((theme) => ({
+  resumeHeader: {
+    marginBottom: '1.5rem',
+    textAlign: 'left',
+    position: 'relative',
+    borderBottom: 'none',
+  },
+  resumeName: {
+    fontSize: '2.5rem',
+    fontWeight: 700,
+    marginBottom: '0.5rem',
+    color: '#0047ab', // Royal blue
+    textAlign: 'left',
+    fontFamily: 'Georgia, serif',
+  },
+  resumeContact: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: '1rem',
+    marginTop: '1rem',
+    marginBottom: '0.75rem',
+    fontSize: '0.9rem',
+    color: '#2d3748',
+    lineHeight: 1.5,
+    padding: '0.5rem',
+    border: '1px solid #e2e8f0',
+    borderRadius: '4px',
+    backgroundColor: '#f8fafc',
+  },
+  resumeContactItem: {
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  resumeSection: {
+    marginBottom: '2rem',
+    position: 'relative',
+  },
+  resumeSectionTitle: {
+    fontSize: '1.4rem',
+    fontWeight: 700,
+    marginBottom: '1rem',
+    color: '#0047ab', // Royal blue
+    paddingBottom: '0.25rem',
+    borderBottom: 'none',
+    position: 'relative',
+  },
+  resumeSummary: {
+    color: '#2d3748',
+    marginBottom: '1.5rem',
+    lineHeight: 1.8,
+    fontSize: '0.95rem',
+  },
+  resumeEducation: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingLeft: '1.5rem',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      left: '0',
+      top: '0.5rem',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: '#0047ab', // Royal blue
+    },
+  },
+  resumeSubtitle: {
+    fontWeight: 700,
+    marginBottom: '0.25rem',
+    color: '#2d3748',
+    fontSize: '1.1rem',
+  },
+  resumeDate: {
+    fontSize: '0.875rem',
+    color: '#0047ab', // Royal blue
+    fontWeight: 500,
+    fontStyle: 'normal',
+  },
+  resumeSkills: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '0.5rem 0',
+  },
+  resumeSkillChip: {
+    backgroundColor: '#e6f0ff',
+    color: '#0047ab', // Royal blue
+    fontSize: '0.75rem',
+    height: '28px',
+    fontWeight: 600,
+    border: 'none',
+  },
+  resumeItem: {
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingLeft: '1.5rem',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      left: '0',
+      top: '0.5rem',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: '#0047ab', // Royal blue
+    },
+  },
+  resumeItemSubtitle: {
+    fontSize: '0.95rem',
+    color: '#4a5568',
+    marginBottom: '0.25rem',
+  },
+  resumeBullets: {
+    paddingLeft: '1.25rem',
+    margin: '0.5rem 0',
+    listStyleType: 'square',
+  },
+  resumeBullet: {
+    fontSize: '0.875rem',
+    color: '#2d3748',
+    marginBottom: '0.5rem',
+    lineHeight: 1.6,
+  },
+  contactLink: {
+    color: '#0047ab', // Royal blue
+    textDecoration: 'none',
+    fontWeight: 600,
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  }
+}));
 
 const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
   const baseClasses = useBaseStyles();
@@ -479,21 +740,27 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
   const modernClasses = useModernStyles();
   const creativeClasses = useCreativeStyles();
   const executiveClasses = useExecutiveStyles();
+  const professionalClasses = useProfessionalStyles();
+  const creativeBlueClasses = useCreativeBlueStyles();
   
   // Select the appropriate styles based on template
-  const getTemplateClasses = () => {
-    switch(templateId) {
-      case 'modern':
-        return modernClasses;
-      case 'creative':
-        return creativeClasses;
-      case 'executive':
-        return executiveClasses;
-      case 'classic':
-      default:
-        return classicClasses;
-    }
-  };
+const getTemplateClasses = () => {
+  switch(templateId) {
+    case 'modern':
+      return modernClasses;
+    case 'creative':
+      return creativeClasses;
+    case 'executive':
+      return executiveClasses;
+    case 'professional':
+      return professionalClasses;
+    case 'creativeBlue':
+      return creativeBlueClasses;
+    case 'classic':
+    default:
+      return classicClasses;
+  }
+};
   
   const classes = getTemplateClasses();
   
