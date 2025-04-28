@@ -53,6 +53,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
       backgroundColor: '#bee3f8',
     },
   },
+  helperText: {
+    marginTop: '-0.5rem',
+    marginBottom: '1rem',
+    color: '#718096',
+    fontSize: '0.75rem',
+  }
 }));
 
 const ExperienceSection = ({ resumeData, setResumeData }) => {
@@ -191,7 +197,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
           />
           
           <TextField
-            label="Description"
+            label="Responsibilities (One per line)"
             value={experience.description}
             onChange={(e) => handleWorkExperienceChange(index, 'description', e.target.value)}
             variant="outlined"
@@ -199,9 +205,12 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
             multiline
             rows={3}
             className={classes.textField}
-            placeholder="Describe your responsibilities and achievements"
+            placeholder="Enter your responsibilities, one per line"
             required
           />
+          <Typography className={classes.helperText}>
+            Each line will be converted into a bullet point on your resume
+          </Typography>
         </Paper>
       ))}
       

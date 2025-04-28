@@ -609,15 +609,16 @@ const hasProjectsData = () => {
           </View>
         )}
 
-        {/* Work Experience Section */}
+        {/* Work Experience Section - WITH FIXES TO PREVENT DUPLICATES */}
         {hasWorkExperienceData() && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Work Experience</Text>
             
-            {resumeData.work_experience && resumeData.work_experience.length > 0 &&
+            {/* IMPORTANT FIX: Only render from one source to prevent duplicates */}
+            {resumeData.work_experience && resumeData.work_experience.length > 0 ? (
               resumeData.work_experience
                 .filter(exp => (exp.position && exp.position.trim() !== '') || 
-                               (exp.company_name && exp.company_name.trim() !== ''))
+                              (exp.company_name && exp.company_name.trim() !== ''))
                 .map((experience, index) => (
                   <View key={`work-${index}`} style={styles.experienceItem}>
                     <Text style={styles.itemTitle}>
@@ -640,12 +641,12 @@ const hasProjectsData = () => {
                       </View>
                     )}
                   </View>
-              ))}
-            
-            {resumeData.workExperience && resumeData.workExperience.length > 0 &&
+                ))
+            ) : resumeData.workExperience && resumeData.workExperience.length > 0 ? (
+              // If no work_experience, try to use workExperience instead
               resumeData.workExperience
                 .filter(exp => (exp.position && exp.position.trim() !== '') || 
-                               (exp.companyName && exp.companyName.trim() !== ''))
+                              (exp.companyName && exp.companyName.trim() !== ''))
                 .map((experience, index) => (
                   <View key={`workExp-${index}`} style={styles.experienceItem}>
                     <Text style={styles.itemTitle}>
@@ -665,41 +666,42 @@ const hasProjectsData = () => {
                       </View>
                     )}
                   </View>
-              ))}
+                ))
+            ) : null}
           </View>
         )}
         
         {/* Projects Section */}
-{hasProjectsData() && (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>Projects</Text>
-    
-    {resumeData.projects && resumeData.projects.length > 0 &&
-      resumeData.projects
-        .filter(p => p.name && p.name.trim() !== '')
-        .map((project, index) => (
-          <View key={`project-${index}`} style={styles.experienceItem}>
-            <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
+        {hasProjectsData() && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Projects</Text>
             
-            {/* IMPORTANT CHANGE: Show only skills as a line, not in bullets */}
-            {project.skills_used && project.skills_used.trim() !== '' && (
-              <Text style={styles.duration}>
-                Skills: {project.skills_used}
-              </Text>
-            )}
-            
-            {/* IMPORTANT CHANGE: Only show responsibilities as bullet points, not description */}
-            {project.responsibilities && project.responsibilities.length > 0 && (
-              <View style={styles.bulletList}>
-                {project.responsibilities.map((responsibility, idx) => (
-                  <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
+            {resumeData.projects && resumeData.projects.length > 0 &&
+              resumeData.projects
+                .filter(p => p.name && p.name.trim() !== '')
+                .map((project, index) => (
+                  <View key={`project-${index}`} style={styles.experienceItem}>
+                    <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
+                    
+                    {/* IMPORTANT CHANGE: Show only skills as a line, not in bullets */}
+                    {project.skills_used && project.skills_used.trim() !== '' && (
+                      <Text style={styles.duration}>
+                        Skills: {project.skills_used}
+                      </Text>
+                    )}
+                    
+                    {/* IMPORTANT CHANGE: Only show responsibilities as bullet points, not description */}
+                    {project.responsibilities && project.responsibilities.length > 0 && (
+                      <View style={styles.bulletList}>
+                        {project.responsibilities.map((responsibility, idx) => (
+                          <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
+                        ))}
+                      </View>
+                    )}
+                  </View>
                 ))}
-              </View>
-            )}
           </View>
-        ))}
-  </View>
-)}
+        )}
         
         {/* Certifications Section */}
         {resumeData.certifications && resumeData.certifications.length > 0 && 

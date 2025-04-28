@@ -53,6 +53,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
       backgroundColor: '#bee3f8',
     },
   },
+  helperText: {
+    marginTop: '-0.5rem',
+    marginBottom: '1rem',
+    color: '#718096',
+    fontSize: '0.75rem',
+  }
 }));
 
 const ProjectsSection = ({ resumeData, setResumeData }) => {
@@ -89,21 +95,11 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
     } else if (field === 'skills_used') {
       // Handle both fields for technologies/skills
       const skills = value;
-      // Add skills to responsibilities if applicable
-      const existingDesc = updatedProjects[index].description || '';
-      const existingResp = updatedProjects[index].responsibilities || [];
-      
-      // Only add skills to responsibilities if there are no responsibilities yet
-      let updatedResp = existingResp;
-      if (existingResp.length === 0 && skills) {
-        updatedResp = [`Technologies used: ${skills}`];
-      }
       
       updatedProjects[index] = {
         ...updatedProjects[index],
         skills_used: skills,
         technologies: skills.split(',').map(s => s.trim()),
-        responsibilities: updatedResp,
         [field]: value,
       };
     } else {
@@ -199,7 +195,7 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
           />
           
           <TextField
-            label="Summary"
+            label="Responsibilities and Achievements (One per line)"
             value={project.description}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
             variant="outlined"
@@ -207,8 +203,12 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
             multiline
             rows={3}
             className={classes.textField}
-            placeholder="Describe the project, your role, and accomplishments"
+            placeholder="Enter project details, one per line"
+            required
           />
+          <Typography className={classes.helperText}>
+            Each line will be converted into a bullet point on your resume
+          </Typography>
         </Paper>
       ))}
       

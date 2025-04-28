@@ -965,14 +965,15 @@ const getTemplateClasses = () => {
         </Box>
       )}
 
-      {/* Work Experience Section */}
+      {/* Work Experience Section - WITH FIXES TO PREVENT DUPLICATES */}
       {hasWorkExperienceData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Work Experience
           </Typography>
           
-          {data.work_experience && data.work_experience.length > 0 &&
+          {/* IMPORTANT FIX: Only render from one source to prevent duplicates */}
+          {data.work_experience && data.work_experience.length > 0 ? (
             data.work_experience
               .filter(exp => (exp.position && exp.position.trim() !== '') || 
                             (exp.company_name && exp.company_name.trim() !== ''))
@@ -1002,9 +1003,9 @@ const getTemplateClasses = () => {
                     </Box>
                   )}
                 </Box>
-            ))}
-          
-          {data.workExperience && data.workExperience.length > 0 &&
+              ))
+          ) : data.workExperience && data.workExperience.length > 0 ? (
+            // If no work_experience, try to use workExperience instead
             data.workExperience
               .filter(exp => (exp.position && exp.position.trim() !== '') || 
                             (exp.companyName && exp.companyName.trim() !== ''))
@@ -1031,7 +1032,8 @@ const getTemplateClasses = () => {
                     </Box>
                   )}
                 </Box>
-            ))}
+              ))
+          ) : null}
         </Box>
       )}
       
