@@ -9,7 +9,6 @@ import {
   CardMedia, 
   CardActionArea,
   Chip,
-  Button,
   Snackbar,
   Alert
 } from '@mui/material';
@@ -90,20 +89,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: 'white',
     fontWeight: 600,
     zIndex: 10,
-  },
-  actionButton: {
-    marginTop: '2rem',
-    textAlign: 'center',
-  },
-  applyButton: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    padding: '0.75rem 2rem',
-    fontWeight: 600,
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
   }
 }));
 
@@ -118,12 +103,10 @@ const TemplateGallery = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleTemplateSelect = (id) => {
-    setSelectedTemplate(id);
-  };
-
-  const handleApplyTemplate = () => {
+    // No need to check if it's the same template
     // Save selected template to localStorage
-    localStorage.setItem('selectedTemplateId', selectedTemplate);
+    localStorage.setItem('selectedTemplateId', id);
+    setSelectedTemplate(id);
     setOpenSnackbar(true);
     
     // Navigate back to resume builder after a short delay
@@ -186,16 +169,6 @@ const TemplateGallery = () => {
             </Grid>
           ))}
         </Grid>
-
-        <Box className={classes.actionButton}>
-          <Button
-            variant="contained"
-            className={classes.applyButton}
-            onClick={handleApplyTemplate}
-          >
-            Apply Selected Template
-          </Button>
-        </Box>
 
         <Snackbar
           open={openSnackbar}
