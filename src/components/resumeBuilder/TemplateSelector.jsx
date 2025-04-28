@@ -25,12 +25,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginBottom: '2rem',
     color: '#718096',
   },
+  cardContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '24px',
+  },
   card: {
     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
     borderRadius: '8px',
-    height: '100%',
     transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
     position: 'relative',
+    width: '100%',
+    height: '300px', // Fixed height for all cards
+    display: 'flex',
+    flexDirection: 'column',
     '&:hover': {
       transform: 'translateY(-4px)',
       boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
@@ -41,21 +50,24 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   cardContent: {
     padding: '1rem',
+    flexGrow: 0,
   },
   cardMedia: {
-    height: 200,
+    height: '200px',
     backgroundSize: 'contain',
     borderRadius: '8px 8px 0 0',
     backgroundColor: '#f7fafc',
+    flexGrow: 1,
   },
   placeholderImage: {
-    height: 200,
+    height: '200px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     borderRadius: '8px 8px 0 0',
+    flexGrow: 1,
   },
   templateName: {
     fontWeight: 600,
@@ -91,7 +103,7 @@ const TemplateSelector = ({ selectedTemplateId, onTemplateSelect }) => {
       
       <Grid container spacing={3}>
         {templatesData.map((template) => (
-          <Grid item xs={12} sm={6} md={3} key={template.id}>
+          <Grid item xs={12} sm={6} md={4} key={template.id}>
             <Card 
               className={`${classes.card} ${selectedTemplateId === template.id ? classes.selectedCard : ''}`}
               onClick={() => onTemplateSelect(template.id)}
@@ -103,7 +115,7 @@ const TemplateSelector = ({ selectedTemplateId, onTemplateSelect }) => {
                   className={classes.selectedChip} 
                 />
               )}
-              <CardActionArea>
+              <CardActionArea sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
                 {template.previewImage ? (
                   <CardMedia
                     className={classes.cardMedia}
