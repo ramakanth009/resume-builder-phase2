@@ -74,7 +74,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
   };
 
   const handleWorkExperienceChange = (index, field, value) => {
-    const updatedWorkExperience = [...resumeData.work_experience];
+    const updatedWorkExperience = [...resumeData.workExperience];
     updatedWorkExperience[index] = {
       ...updatedWorkExperience[index],
       [field]: value,

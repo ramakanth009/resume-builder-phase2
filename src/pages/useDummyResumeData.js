@@ -1,7 +1,7 @@
 // useDummyResumeData.js
 // A custom hook to easily import and use the dummy resume data in your components
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import dummyResumeData from './dummyResumeData';
 
 /**
