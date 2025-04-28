@@ -180,11 +180,11 @@ export const transformResumeData = (apiResponse) => {
         normalized.work_experience
       ),
       education: transformEducation(resume.education || normalized.education),
-      Academic_projects: transformProjects(
+      projects: transformProjects(
         resume.projects || 
-        resume.Academic_projects ||
+        resume.projects ||
         normalized.projects ||
-        normalized.academic_projects
+        normalized.projects
       ),
       certifications: transformCertifications(
         resume.certifications || 

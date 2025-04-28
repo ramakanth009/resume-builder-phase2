@@ -37,7 +37,7 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     
     // Pass through projects for flexibility
     // Updated: Now using 'projects' instead of 'Academic_projects'
-    projects: generatedResume.projects || generatedResume.Academic_projects || [],
+    projects: generatedResume.projects ||[],
     
     // Keep skills as is
     skills: generatedResume.skills || [],

@@ -328,7 +328,7 @@ const ResumeBuilder = () => {
       graduation_year: '',
     },
     skills: [''],
-    projects: [{   // Changed from Academic_projects to projects
+    projects: [{   
       name: '',
       skills_used: '',
       description: '',
@@ -573,7 +573,7 @@ const ResumeBuilder = () => {
       return false;
     }
     
-    if (resumeData.projects.length === 0 || !resumeData.projects[0].name) { // Changed from Academic_projects to projects
+    if (resumeData.projects.length === 0 || !resumeData.projects[0].name) { 
       setSnackbar({
         open: true,
         message: 'Please add at least one project',
@@ -652,42 +652,38 @@ const ResumeBuilder = () => {
       formData.certifications = [...generatedData.certifications];
     }
     
-    // Map projects (with either projects or Academic_projects field)
-    if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
-      // Convert generated projects format to our projects format
-      formData.projects = generatedData.projects.map(project => {
-        // Extract key info and responsibilities
-        let description = '';
-        if (project.responsibilities && Array.isArray(project.responsibilities)) {
-          description = project.responsibilities.join('\n');
-        } else if (project.description) {
-          description = project.description;
-        }
-        
-        // Extract skills
-        let skills = '';
-        if (project.skills_used) {
-          skills = project.skills_used;
-        } else if (project.technologies) {
-          skills = Array.isArray(project.technologies) 
-            ? project.technologies.join(', ') 
-            : project.technologies;
-        }
-        
-        return {
-          name: project.name || '',
-          skills_used: skills,
-          description: description,
-        };
-      });
-    } else if (generatedData.Academic_projects && Array.isArray(generatedData.Academic_projects) && generatedData.Academic_projects.length > 0) {
-      // For backward compatibility, convert Academic_projects to projects format
-      formData.projects = generatedData.Academic_projects.map(project => ({
-        name: project.name || '',
-        skills_used: project.skills_used || '',
-        description: project.description || '',
-      }));
+    // Map projects field
+if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
+  // Convert generated projects format to our projects format
+  formData.projects = generatedData.projects.map(project => {
+    // Extract key info and responsibilities
+    let description = '';
+    if (project.responsibilities && Array.isArray(project.responsibilities)) {
+      description = project.responsibilities.join('\n');
+    } else if (project.description) {
+      description = project.description;
     }
+    
+    // Extract skills
+    let skills = '';
+    if (project.skills_used) {
+      skills = project.skills_used;
+    } else if (project.technologies) {
+      skills = Array.isArray(project.technologies) 
+        ? project.technologies.join(', ') 
+        : project.technologies;
+    }
+    
+    return {
+      name: project.name || '',
+      skills_used: skills,
+      description: description,
+    };
+  });
+} else {
+  // Initialize with empty array if no projects exist
+  formData.projects = [];
+}
     
     // Map work experience
     if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {

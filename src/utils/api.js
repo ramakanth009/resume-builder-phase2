@@ -94,13 +94,7 @@ export const loginUser = async (credentials) => {
  */
 export const generateResume = async (resumeData) => {
   // Backend handles validation of required fields
-  /*
-  const requiredFields = [
-    'name', 'email', 'phone', 'target_role',
-    'degree', 'specialization', 'institution', 'graduation_year',
-    'skills', 'Academic_projects', 'certifications'
-  ];
-  */
+
   
   // Format the data for API request
   const formattedData = {
@@ -208,7 +202,7 @@ export const updateResume = async (resumeId, resumeData) => {
       summary: resumeData.summary,
       education: resumeData.education,
       skills: resumeData.skills,
-      Academic_projects: resumeData.Academic_projects,
+      projects: resumeData.projects,
       certifications: resumeData.certifications,
       work_experience: resumeData.work_experience,
       target_role: resumeData.target_role,

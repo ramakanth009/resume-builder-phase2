@@ -468,15 +468,10 @@ const ResumePDF = ({ resumeData, templateId = 'classic' }) => {
     );
   };
 
-  const hasProjectsData = () => {
-    const academicProjects = resumeData.Academic_projects && resumeData.Academic_projects.length > 0 && 
-      resumeData.Academic_projects.some(p => p.name && p.name.trim() !== '');
-      
-    const generatedProjects = resumeData.projects && resumeData.projects.length > 0 && 
-      resumeData.projects.some(p => p.name && p.name.trim() !== '');
-      
-    return academicProjects || generatedProjects;
-  };
+const hasProjectsData = () => {
+  return resumeData.projects && resumeData.projects.length > 0 && 
+    resumeData.projects.some(p => p.name && p.name.trim() !== '');
+};
 
   const hasWorkExperienceData = () => {
     const userWorkExp = resumeData.work_experience && resumeData.work_experience.length > 0 && 
@@ -679,55 +674,44 @@ const ResumePDF = ({ resumeData, templateId = 'classic' }) => {
         )}
         
         {/* Projects Section */}
-        {hasProjectsData() && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Projects</Text>
+{hasProjectsData() && (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>Projects</Text>
+    
+    {resumeData.projects && resumeData.projects.length > 0 &&
+      resumeData.projects
+        .filter(p => p.name && p.name.trim() !== '')
+        .map((project, index) => (
+          <View key={`project-${index}`} style={styles.experienceItem}>
+            <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
             
-            {resumeData.Academic_projects && resumeData.Academic_projects.length > 0 &&
-              resumeData.Academic_projects
-                .filter(p => p.name && p.name.trim() !== '')
-                .map((project, index) => (
-                  <View key={`academic-${index}`} style={styles.experienceItem}>
-                    <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
-                    {project.skills_used && project.skills_used.trim() !== '' && (
-                      <Text style={styles.duration}>
-                        Skills: {project.skills_used}
-                      </Text>
-                    )}
-                    {project.description && project.description.trim() !== '' && (
-                      <Text style={styles.itemSubtitle}>{project.description}</Text>
-                    )}
-                  </View>
-              ))}
-              
-            {resumeData.projects && resumeData.projects.length > 0 &&
-              resumeData.projects
-                .filter(p => p.name && p.name.trim() !== '')
-                .map((project, index) => (
-                  <View key={`generated-${index}`} style={styles.experienceItem}>
-                    <Text style={styles.itemTitle}>{project.name || "Project Name"}</Text>
-                    
-                    {project.responsibilities && project.responsibilities.length > 0 && (
-                      <View style={styles.bulletList}>
-                        {project.responsibilities.map((responsibility, idx) => (
-                          <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
-                        ))}
-                      </View>
-                    )}
-                    
-                    {project.technologies && project.technologies.length > 0 && (
-                      <Text style={styles.duration}>
-                        Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
-                      </Text>
-                    )}
-                    
-                    {project.description && project.description.trim() !== '' && (
-                      <Text style={styles.itemSubtitle}>{project.description}</Text>
-                    )}
-                  </View>
-              ))}
+            {project.responsibilities && project.responsibilities.length > 0 && (
+              <View style={styles.bulletList}>
+                {project.responsibilities.map((responsibility, idx) => (
+                  <Bullet key={idx} styles={styles}>{responsibility}</Bullet>
+                ))}
+              </View>
+            )}
+            
+            {project.skills_used && project.skills_used.trim() !== '' && (
+              <Text style={styles.duration}>
+                Skills: {project.skills_used}
+              </Text>
+            )}
+            
+            {project.technologies && project.technologies.length > 0 && (
+              <Text style={styles.duration}>
+                Skills: {Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies}
+              </Text>
+            )}
+            
+            {project.description && project.description.trim() !== '' && (
+              <Text style={styles.itemSubtitle}>{project.description}</Text>
+            )}
           </View>
-        )}
+        ))}
+  </View>
+)}
         
         {/* Certifications Section */}
         {resumeData.certifications && resumeData.certifications.length > 0 && 
