@@ -33,7 +33,6 @@ import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsAndTerms from '../components/resumeBuilder/CustomSectionsAndTerms';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
 import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
-import TemplateButton from '../components/resumeBuilder/TemplateButton';
 import templatesData from '../data/templatesData';
 
 import useDummyResumeData from './useDummyResumeData';
@@ -308,7 +307,6 @@ const ResumeBuilder = () => {
   const [selectedTemplateId, setSelectedTemplateId] = useState(
     templatesData.find(t => t.isDefault)?.id || 'classic'
   );
-  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   
   // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
@@ -402,27 +400,7 @@ const ResumeBuilder = () => {
     }
   }, [resumeId, isEditingExisting]);
 
-  // Template dialog handlers
-  const handleOpenTemplateDialog = () => {
-    setTemplateDialogOpen(true);
-  };
-  
-  const handleCloseTemplateDialog = () => {
-    setTemplateDialogOpen(false);
-  };
-  
-  const handleTemplateSelect = (templateId) => {
-    setSelectedTemplateId(templateId);
-  };
-  
-  const handleConfirmTemplateSelection = () => {
-    setTemplateDialogOpen(false);
-    setSnackbar({
-      open: true,
-      message: 'Template updated successfully',
-      severity: 'success',
-    });
-  };
+
 
   // Add handlers for dummy data
   const handleLoadDummyData = () => {
@@ -984,10 +962,7 @@ const ResumeBuilder = () => {
         </Typography>
       )}
       
-      {/* Template button in preview section */}
-      <Box className={classes.templateButtonContainer}>
-        <TemplateButton onClick={handleOpenTemplateDialog} />
-      </Box>
+      
       
       {/* Add dummy data buttons in edit mode (only when creating new) */}
       {isEditMode && !isEditingExisting && renderDummyDataButtons()}
@@ -1159,38 +1134,7 @@ const ResumeBuilder = () => {
         </Box>
       </Box>
 
-      {/* Template Selection Dialog */}
-      <Dialog 
-        open={templateDialogOpen}
-        onClose={handleCloseTemplateDialog}
-        fullWidth
-        maxWidth="lg"
-        className={classes.templateDialog}
-      >
-        <DialogContent>
-          <TemplateSelector 
-            selectedTemplateId={selectedTemplateId}
-            onTemplateSelect={handleTemplateSelect}
-          />
-          
-          <Box className={classes.templateActionButtons}>
-            <Button 
-              onClick={handleCloseTemplateDialog}
-              variant="outlined"
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleConfirmTemplateSelection}
-              variant="contained"
-              color="primary"
-            >
-              Apply Template
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
+      
 
       {/* Snackbar for notifications */}
       <Snackbar

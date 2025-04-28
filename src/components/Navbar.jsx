@@ -191,10 +191,8 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
 
   // Handle template button click
   const handleTemplateClick = () => {
-    if (onTemplateClick) {
-      onTemplateClick();
-    }
-  };
+  navigate('/templates');
+};
   
   return (
     <>
