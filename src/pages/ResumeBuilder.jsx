@@ -304,10 +304,9 @@ const ResumeBuilder = () => {
   const [loadingError, setLoadingError] = useState(null);
   
   // Template selection states
-  const [selectedTemplateId, setSelectedTemplateId] = useState(
-    templatesData.find(t => t.isDefault)?.id || 'classic'
-  );
-  
+  const { templateId, setTemplateId } = useTemplate();
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+
   // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
     header: {
@@ -1129,12 +1128,37 @@ const ResumeBuilder = () => {
           <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
-            templateId={selectedTemplateId}
+            templateId={templateId}
           />
         </Box>
       </Box>
 
-      
+      <Box className={classes.templateButtonContainer}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenTemplateDialog}
+        >
+          Change Template
+        </Button>
+      </Box>
+
+      <Dialog
+        open={templateDialogOpen}
+        onClose={handleCloseTemplateDialog}
+        className={classes.templateDialog}
+      >
+        <DialogTitle>Select Template</DialogTitle>
+        <DialogContent>
+          <TemplateSelector
+            selectedTemplate={templateId}
+            onSelect={handleTemplateSelect}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTemplateDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar for notifications */}
       <Snackbar
