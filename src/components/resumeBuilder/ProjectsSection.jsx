@@ -72,19 +72,42 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
     });
   };
 
-  const handleProjectChange = (index, field, value) => {
-    const updatedProjects = [...resumeData.projects];
+  // const handleProjectChange = (index, field, value) => {
+  //   const updatedProjects = [...resumeData.projects];
+  //   updatedProjects[index] = {
+  //     ...updatedProjects[index],
+  //     [field]: value,
+  //   };
+    
+  //   setResumeData({
+  //     ...resumeData,
+  //     projects: updatedProjects,
+  //   });
+  // };
+const handleProjectChange = (index, field, value) => {
+  const updatedProjects = [...resumeData.projects];
+  
+  // If the field is description, we need to set it as responsibilities for the backend
+  if (field === 'description') {
+    updatedProjects[index] = {
+      ...updatedProjects[index],
+      // Convert description text to responsibilities array (split by newlines)
+      responsibilities: value.split('\n').filter(item => item.trim()),
+      // Keep the original description for UI display
+      [field]: value,
+    };
+  } else {
     updatedProjects[index] = {
       ...updatedProjects[index],
       [field]: value,
     };
-    
-    setResumeData({
-      ...resumeData,
-      projects: updatedProjects,
-    });
-  };
-
+  }
+  
+  setResumeData({
+    ...resumeData,
+    projects: updatedProjects,
+  });
+};
   const handleRemoveProject = (index) => {
     // Don't remove if it's the only project and it's empty
     if (resumeData.projects.length === 1 && 

@@ -73,18 +73,19 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
     });
   };
 
-  const handleWorkExperienceChange = (index, field, value) => {
-    const updatedWorkExperience = [...resumeData.workExperience];
-    updatedWorkExperience[index] = {
-      ...updatedWorkExperience[index],
-      [field]: value,
-    };
-    
-    setResumeData({
-      ...resumeData,
-      work_experience: updatedWorkExperience,
-    });
+const handleWorkExperienceChange = (index, field, value) => {
+  // Use resumeData.work_experience instead of resumeData.workExperience
+  const updatedWorkExperience = [...resumeData.work_experience];
+  updatedWorkExperience[index] = {
+    ...updatedWorkExperience[index],
+    [field]: value,
   };
+  
+  setResumeData({
+    ...resumeData,
+    work_experience: updatedWorkExperience,
+  });
+};
 
   const handleRemoveWorkExperience = (index) => {
     // Don't remove if it's the only experience and it's empty
