@@ -33,6 +33,7 @@ import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
 import CustomSectionsAndTerms from '../components/resumeBuilder/CustomSectionsAndTerms';
 import ResumePreview from '../components/resumeBuilder/ResumePreview';
 import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
+import TemplateButton from '../components/resumeBuilder/TemplateButton';
 import templatesData from '../data/templatesData';
 
 import useDummyResumeData from './useDummyResumeData';
@@ -304,9 +305,11 @@ const ResumeBuilder = () => {
   const [loadingError, setLoadingError] = useState(null);
   
   // Template selection states
-  const { templateId, setTemplateId } = useTemplate();
+  const [selectedTemplateId, setSelectedTemplateId] = useState(
+    templatesData.find(t => t.isDefault)?.id || 'classic'
+  );
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
-
+  
   // Initialize resumeData with empty structure
   const [resumeData, setResumeData] = useState({
     header: {
@@ -399,7 +402,27 @@ const ResumeBuilder = () => {
     }
   }, [resumeId, isEditingExisting]);
 
-
+  // Template dialog handlers
+  const handleOpenTemplateDialog = () => {
+    setTemplateDialogOpen(true);
+  };
+  
+  const handleCloseTemplateDialog = () => {
+    setTemplateDialogOpen(false);
+  };
+  
+  const handleTemplateSelect = (templateId) => {
+    setSelectedTemplateId(templateId);
+  };
+  
+  const handleConfirmTemplateSelection = () => {
+    setTemplateDialogOpen(false);
+    setSnackbar({
+      open: true,
+      message: 'Template updated successfully',
+      severity: 'success',
+    });
+  };
 
   // Add handlers for dummy data
   const handleLoadDummyData = () => {
@@ -961,7 +984,10 @@ const ResumeBuilder = () => {
         </Typography>
       )}
       
-      
+      {/* Template button in preview section */}
+      <Box className={classes.templateButtonContainer}>
+        <TemplateButton onClick={handleOpenTemplateDialog} />
+      </Box>
       
       {/* Add dummy data buttons in edit mode (only when creating new) */}
       {isEditMode && !isEditingExisting && renderDummyDataButtons()}
@@ -1128,36 +1154,42 @@ const ResumeBuilder = () => {
           <ResumePreview 
             userData={resumeData}
             generatedData={generatedResume}
-            templateId={templateId}
+            templateId={selectedTemplateId}
           />
         </Box>
       </Box>
 
-      <Box className={classes.templateButtonContainer}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenTemplateDialog}
-        >
-          Change Template
-        </Button>
-      </Box>
-
-      <Dialog
+      {/* Template Selection Dialog */}
+      <Dialog 
         open={templateDialogOpen}
         onClose={handleCloseTemplateDialog}
+        fullWidth
+        maxWidth="lg"
         className={classes.templateDialog}
       >
-        <DialogTitle>Select Template</DialogTitle>
         <DialogContent>
-          <TemplateSelector
-            selectedTemplate={templateId}
-            onSelect={handleTemplateSelect}
+          <TemplateSelector 
+            selectedTemplateId={selectedTemplateId}
+            onTemplateSelect={handleTemplateSelect}
           />
+          
+          <Box className={classes.templateActionButtons}>
+            <Button 
+              onClick={handleCloseTemplateDialog}
+              variant="outlined"
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleConfirmTemplateSelection}
+              variant="contained"
+              color="primary"
+            >
+              Apply Template
+            </Button>
+          </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseTemplateDialog}>Close</Button>
-        </DialogActions>
       </Dialog>
 
       {/* Snackbar for notifications */}
