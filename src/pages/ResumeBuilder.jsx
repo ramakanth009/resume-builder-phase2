@@ -685,31 +685,31 @@ if (generatedData.projects && Array.isArray(generatedData.projects) && generated
   formData.projects = [];
 }
     
-    // Map work experience
-    if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
-      formData.work_experience = generatedData.work_experience.map(exp => ({
-        position: exp.position || '',
-        company_name: exp.company_name || '',
-        duration: exp.duration || '',
-        description: exp.description || '',
-      }));
-    } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
-      // Convert workExperience format to work_experience format
-      formData.work_experience = generatedData.workExperience.map(exp => {
-        // Compile responsibilities into description if needed
-        let description = exp.description || '';
-        if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
-          description = exp.responsibilities.join('\n');
-        }
-        
-        return {
-          position: exp.position || '',
-          company_name: exp.companyName || '',
-          duration: exp.duration || '',
-          description: description,
-        };
-      });
+// Map work experience
+if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
+  formData.work_experience = generatedData.work_experience.map(exp => ({
+    position: exp.position || '',
+    company_name: exp.company_name || '',
+    duration: exp.duration || '',
+    description: exp.description || '',
+  }));
+} else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
+  // Convert workExperience format to work_experience format
+  formData.work_experience = generatedData.workExperience.map(exp => {
+    // Compile responsibilities into description if needed
+    let description = exp.description || '';
+    if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
+      description = exp.responsibilities.join('\n');
     }
+    
+    return {
+      position: exp.position || '',
+      company_name: exp.companyName || '',
+      duration: exp.duration || '',
+      description: description,
+    };
+  });
+}
     
     // Map custom sections
     if (generatedData.customSections) {

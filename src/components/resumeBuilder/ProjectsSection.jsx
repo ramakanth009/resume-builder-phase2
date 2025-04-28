@@ -72,18 +72,7 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
     });
   };
 
-  // const handleProjectChange = (index, field, value) => {
-  //   const updatedProjects = [...resumeData.projects];
-  //   updatedProjects[index] = {
-  //     ...updatedProjects[index],
-  //     [field]: value,
-  //   };
-    
-  //   setResumeData({
-  //     ...resumeData,
-  //     projects: updatedProjects,
-  //   });
-  // };
+  // Modified function to convert description to responsibilities:
 const handleProjectChange = (index, field, value) => {
   const updatedProjects = [...resumeData.projects];
   
@@ -176,7 +165,7 @@ const handleProjectChange = (index, field, value) => {
           />
           
           <TextField
-            label="Description"
+            label="summary"
             value={project.description}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
             variant="outlined"

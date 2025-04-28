@@ -74,12 +74,23 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
   };
 
 const handleWorkExperienceChange = (index, field, value) => {
-  // Use resumeData.work_experience instead of resumeData.workExperience
   const updatedWorkExperience = [...resumeData.work_experience];
-  updatedWorkExperience[index] = {
-    ...updatedWorkExperience[index],
-    [field]: value,
-  };
+  
+  // If the field is description, we need to set it as responsibilities for the backend
+  if (field === 'description') {
+    updatedWorkExperience[index] = {
+      ...updatedWorkExperience[index],
+      // Convert description text to responsibilities array (split by newlines)
+      responsibilities: value.split('\n').filter(item => item.trim()),
+      // Keep the original description for UI display
+      [field]: value,
+    };
+  } else {
+    updatedWorkExperience[index] = {
+      ...updatedWorkExperience[index],
+      [field]: value,
+    };
+  }
   
   setResumeData({
     ...resumeData,

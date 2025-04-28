@@ -1,14 +1,5 @@
-/**
- * This adapter transforms the backend API response structure to match what the frontend components expect
- * It resolves the field name and structure mismatches between backend and frontend
- */
+// In src/utils/resumeAdapter.js, modify the adaptGeneratedResume function:
 
-/**
- * Adapts the generated resume structure from backend format to frontend-compatible format
- * @param {Object} generatedResume - Resume data from backend API
- * @param {number} resumeId - Optional explicit ID to assign to the resume
- * @returns {Object} - Adapted resume data for frontend
- */
 export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
   if (!generatedResume) return null;
 
@@ -31,13 +22,17 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
       ? generatedResume.education
       : generatedResume.education || {},
     
-    // Pass through both work_experience and workExperience for flexibility
-    work_experience: generatedResume.work_experience || [],
-    workExperience: generatedResume.workExperience || [],
+    // Pass through BOTH work_experience and workExperience for flexibility
+    // This ensures that regardless of which format is used, we'll have data available
+    work_experience: generatedResume.work_experience || 
+                    generatedResume.workExperience || 
+                    [],
+    workExperience: generatedResume.workExperience || 
+                   generatedResume.work_experience || 
+                   [],
     
     // Pass through projects for flexibility
-    // Updated: Now using 'projects' instead of 'Academic_projects'
-    projects: generatedResume.projects ||[],
+    projects: generatedResume.projects || [],
     
     // Keep skills as is
     skills: generatedResume.skills || [],
@@ -49,5 +44,3 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     customSections: generatedResume.customSections || {}
   };
 };
-
-export default { adaptGeneratedResume };
