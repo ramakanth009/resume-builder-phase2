@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 30,
     color: '#1a202c',
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -203,6 +203,19 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
           <Text style={styles.summary}>{resumeData.summary}</Text>
         </View>
       )}
+      {/* Skills Section */}
+      {resumeData.skills && resumeData.skills.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Skills</Text>
+          <View style={styles.skillsContainer}>
+            {resumeData.skills.map((skill, index) => 
+              skill && skill.trim() !== '' ? (
+                <Text key={index} style={styles.skillChip}>{skill}</Text>
+              ) : null
+            )}
+          </View>
+        </View>
+      )}
       
       {/* Work Experience Section */}
       {getWorkExperience().length > 0 && (
@@ -279,19 +292,7 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
         </View>
       )}
       
-      {/* Skills Section */}
-      {resumeData.skills && resumeData.skills.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Skills</Text>
-          <View style={styles.skillsContainer}>
-            {resumeData.skills.map((skill, index) => 
-              skill && skill.trim() !== '' ? (
-                <Text key={index} style={styles.skillChip}>{skill}</Text>
-              ) : null
-            )}
-          </View>
-        </View>
-      )}
+      
       
       {/* Projects Section */}
       {resumeData.projects && resumeData.projects.length > 0 && 

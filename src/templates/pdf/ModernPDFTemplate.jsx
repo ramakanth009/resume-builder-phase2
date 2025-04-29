@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 30,
     color: '#1a202c',
   },
   contactInfo: {

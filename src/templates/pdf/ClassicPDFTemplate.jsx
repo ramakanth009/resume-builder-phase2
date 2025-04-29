@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 30,
   },
   contactInfo: {
     flexDirection: 'row',

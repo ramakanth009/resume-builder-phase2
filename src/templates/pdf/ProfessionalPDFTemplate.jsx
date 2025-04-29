@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 7,
+    marginBottom: 30,
     color: '#2d3748',
     textTransform: 'uppercase',
     letterSpacing: 1,
