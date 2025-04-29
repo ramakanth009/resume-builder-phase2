@@ -1,4 +1,3 @@
-// src/styles/templates/professionalStyles.js
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useProfessionalStyles = makeStylesWithTheme((theme) => ({

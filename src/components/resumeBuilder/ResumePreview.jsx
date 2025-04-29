@@ -4,8 +4,8 @@ import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import templatesData from '../../data/templatesData';
 
 // Import styles from separate files
-import useProfessionalStyles from '../styles/templates/professionalStyles';
-import useCreativeBlueStyles from '../styles/templates/creativeBlueStyles';
+import useProfessionalStyles from '../../templates/pdf/professionalStyles';
+import useCreativeBlueStyles from '../../templates/pdf/CreativeBlueStyles';
 
 // Base styles for all templates
 const useBaseStyles = makeStylesWithTheme((theme) => ({

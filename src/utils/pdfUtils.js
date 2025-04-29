@@ -1,16 +1,11 @@
 // src/utils/pdfUtils.js
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+import { getTemplateById, getRegisteredTemplateIds } from '../templates/pdfTemplateRegistry';
 import ResumePDF from '../components/resumeBuilder/ResumePDF';
-import { getRegisteredTemplateIds } from '../templates/pdfTemplateRegistry';
 
 export const generateResumePDF = async (resumeData, templateId = 'classic', fileName = 'resume') => {
   try {
-    // Validate inputs
-    if (!resumeData || !resumeData.header) {
-      throw new Error('Invalid resume data structure');
-    }
-
     // Validate template ID
     const validTemplateIds = getRegisteredTemplateIds();
     const safeTemplateId = validTemplateIds.includes(templateId) ? templateId : 'classic';
@@ -31,11 +26,6 @@ export const generateResumePDF = async (resumeData, templateId = 'classic', file
   }
 };
 
-export const generateATSOptimizedPDF = async (resumeData, templateId = 'classic', fileName = 'resume') => {
-  return generateResumePDF(resumeData, templateId, fileName);
-};
-
 export default {
-  generateResumePDF,
-  generateATSOptimizedPDF
+  generateResumePDF
 };
