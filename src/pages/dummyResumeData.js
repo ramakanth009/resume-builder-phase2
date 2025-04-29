@@ -3,73 +3,72 @@
 
 const dummyResumeData = {
   header: {
-    name: "Sarah Chen",
-    email: "sarah.chen@example.com",
+    name: "Taylor Morgan",
+    email: "taylor.morgan@example.com",
     phone: "1234567890",
-    github: "https://github.com/sarahcodes",
-    linkedin: "https://linkedin.com/in/sarahchen",
-    portfolio: "https://sarahchen.dev",
+    linkedin: "https://linkedin.com/in/taylormorgan",
+    portfolio: "https://taylormorgan.portfolio",
   },
-  summary: "Full Stack Developer with 5+ years of experience building scalable web applications. Expertise in React, Node.js, and cloud services. Strong background in developing user-centric solutions and leading agile development teams.",
+  summary: "Marketing Manager with 5+ years of experience in digital campaign strategy and brand development. Expertise in social media management, content creation, and audience analytics. Strong background in developing cross-platform marketing initiatives and leading creative teams.",
   education: {
-    degree: "Master of Science",
-    specialization: "Software Engineering",
-    institution: "Stanford University",
+    degree: "Bachelor of Arts",
+    specialization: "Marketing Communications",
+    institution: "University of Michigan",
     graduation_year: "2019",
   },
   skills: [
-    "React.js",
-    "Node.js",
-    "TypeScript",
-    "MongoDB",
-    "PostgreSQL",
-    "AWS",
-    "GraphQL",
-    "Next.js",
-    "Redux",
-    "Jest",
-    "CI/CD"
+    "Digital Marketing",
+    "Social Media Management",
+    "Content Strategy",
+    "Brand Development",
+    "Market Research",
+    "Email Campaigns",
+    "SEO/SEM",
+    "Google Analytics",
+    "Adobe Creative Suite",
+    "Project Management"
   ],
   projects: [
     {
-      name: "E-commerce Platform",
-      skills_used: "React, Node.js, MongoDB, AWS",
-      description: "Developed a full-stack e-commerce platform handling 10k+ daily users. Implemented real-time inventory tracking and payment gateway integration."
+      name: "Seasonal Product Launch Campaign",
+      skills_used: "Digital Marketing, Content Strategy, Social Media",
+      description: "Developed and executed an integrated marketing campaign for new product line launch. Achieved 45% increase in engagement and 30% growth in sales compared to previous launches."
     },
     {
-      name: "Social Media Analytics Dashboard",
-      skills_used: "Next.js, GraphQL, TypeScript, PostgreSQL",
-      description: "Built a real-time analytics dashboard processing data from multiple social media platforms. Reduced data processing time by 80%."
+      name: "Brand Refresh Initiative",
+      skills_used: "Brand Development, Market Research, Content Creation",
+      description: "Led comprehensive brand refresh including messaging, visual identity, and market positioning. Resulted in 25% increase in brand recognition metrics within target demographic."
     }
   ],
   certifications: [
-    "AWS Certified Developer Associate",
-    "MongoDB Certified Developer",
-    "Google Cloud Professional Developer"
+    "Google Analytics Certification",
+    "HubSpot Marketing Certification",
+    "Facebook Blueprint Certification"
   ],
   work_experience: [
     {
-      position: "Senior Full Stack Developer",
-      company_name: "InnovateTech Solutions",
+      position: "Senior Marketing Manager",
+      company_name: "Bright Horizon Brands",
       duration: "Jan 2021 - Present",
-      description: "Led development of microservices-based architecture\n Mentored junior developers and conducted code reviews\n Improved application performance by 70%\n Implemented automated testing achieving 90% coverage"
+      description: "Manage marketing strategies for portfolio of consumer brands\nLead team of 5 marketing specialists and coordinate with external agencies\nDeveloped cross-channel campaigns resulting in 35% revenue growth\nOptimized marketing budget allocation improving ROI by 28%"
     },
     {
-      position: "Full Stack Developer",
-      company_name: "WebScale Systems",
+      position: "Digital Marketing Specialist",
+      company_name: "Urban Marketing Group",
       duration: "Mar 2019 - Dec 2020",
-      description: "Developed and maintained multiple client-facing applications\n Implemented responsive designs and PWA features\n Reduced API response time by 60%\n Collaborated with UX team for optimal user experience"
+      description: "Created and implemented digital marketing campaigns for various clients\nManaged social media accounts and content calendars\nIncreased client audience engagement by average of 40%\nCollaborated with design team to develop compelling visual content"
     }
   ],
-  target_role: "Lead Full Stack Developer",
+  target_role: "Marketing Director",
   customSections: {
-    "Technical Leadership": [
-      "Led migration from monolithic to microservices architecture",
-      "Established coding standards and best practices"
+    "Leadership Experience": [
+      "Led cross-functional team of 12 for major market entry initiative",
+      "Mentored junior marketing staff through professional development program"
     ],
-    "Open Source Contributions": [
-      "Core contributor to React-Data-Grid library",
-      "Created popular npm package for form validation"
+    "Languages": [
+      "English (Native)",
+      "Spanish (Professional Working Proficiency)",
+      "French (Conversational)"
     ]
   }
 };
