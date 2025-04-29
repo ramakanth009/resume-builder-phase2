@@ -12,23 +12,43 @@ export const AuthProvider = ({ children }) => {
   
   // Check for existing user session on app load
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
+    const checkAuthStatus = async () => {
       try {
-        setCurrentUser(JSON.parse(userData));
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        
+        if (token && userData) {
+          try {
+            // Parse user data
+            const user = JSON.parse(userData);
+            
+            // Verify the token is still valid
+            // This would ideally call an endpoint to verify the token
+            if (user && user.id) {
+              setCurrentUser(user);
+            } else {
+              // Invalid user data
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+            }
+          } catch (err) {
+            // If user data is invalid, clear localStorage
+            console.error('Error parsing user data:', err);
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        }
       } catch (err) {
-        // If user data is invalid, clear localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        console.error('Auth check error:', err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
     
-    setLoading(false);
+    checkAuthStatus();
   }, []);
   
-  // Login function
+  // Login function with improved error handling
   const login = async (email, password) => {
     setLoading(true);
     setError('');
@@ -56,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Register function
+  // Register function with improved error handling
   const register = async (name, email, password) => {
     setLoading(true);
     setError('');
@@ -78,28 +98,35 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Fixed Logout function with simplified implementation
-const logout = async () => {
-  setLoading(true);
-  setError('');
-  
-  try {
-    // Call the logoutUser function to make API request and clear localStorage
-    await logoutUser();
+  // Logout function with improved error handling
+  const logout = async () => {
+    setLoading(true);
+    setError('');
     
-    // Update state
-    setCurrentUser(null);
-  } catch (err) {
-    console.error('Logout error:', err);
-    
-    // Even if there's an error, make sure the user is logged out locally
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setCurrentUser(null);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      // Call the logoutUser function to make API request
+      await logoutUser();
+      
+      // Always clear local storage and state, even if API call fails
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setCurrentUser(null);
+      
+      return { status: 'success', message: 'Logged out successfully' };
+    } catch (err) {
+      console.error('Logout error:', err);
+      
+      // Still clear localStorage even if there's an error with the API call
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setCurrentUser(null);
+      
+      setError(err.message || 'Failed to logout');
+      return { status: 'success', message: 'Logged out locally' };
+    } finally {
+      setLoading(false);
+    }
+  };
   
   // Value to be provided by the context
   const value = {
@@ -113,7 +140,7 @@ const logout = async () => {
   
   return (
     <AuthContext.Provider value={value}>
-      {!loading ? children : <div>Loading...</div>}
+      {children}
     </AuthContext.Provider>
   );
 };
