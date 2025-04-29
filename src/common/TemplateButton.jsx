@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import TemplateIcon from '@mui/icons-material/Dashboard';
-import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import makeStylesWithTheme from '../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   templateButton: {

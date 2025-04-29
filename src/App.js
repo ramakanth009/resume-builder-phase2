@@ -7,8 +7,8 @@ import './App.css';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import ResumeBuilder from './pages/ResumeBuilder';
-import Navbar from './components/Navbar';
-import Loading from './components/Loading';
+import Navbar from './common/Navbar';
+import Loading from './common/Loading';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';
 

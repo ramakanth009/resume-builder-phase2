@@ -25,15 +25,15 @@ import { adaptGeneratedResume } from '../utils/resumeAdapter';
 import { generateResumePDF } from '../utils/pdfUtils';
 
 // Section Components
-import PersonalInfoSection from '../components/resumeBuilder/PersonalInfoSection';
-import EducationSection from '../components/resumeBuilder/EducationSection';
-import SkillsSection from '../components/resumeBuilder/SkillsSection';
-import ProjectsSection from '../components/resumeBuilder/ProjectsSection';
-import ExperienceSection from '../components/resumeBuilder/ExperienceSection';
-import CustomSectionsAndTerms from '../components/resumeBuilder/CustomSectionsAndTerms';
-import ResumePreview from '../components/resumeBuilder/ResumePreview';
-import TemplateSelector from '../components/resumeBuilder/TemplateSelector';
-import TemplateButton from '../components/resumeBuilder/TemplateButton';
+import PersonalInfoSection from '../components/resumeBuilderComponents/PersonalInfoSection';
+import EducationSection from '../components/resumeBuilderComponents/EducationSection';
+import SkillsSection from '../components/resumeBuilderComponents/SkillsSection';
+import ProjectsSection from '../components/resumeBuilderComponents/ProjectsSection';
+import ExperienceSection from '../components/resumeBuilderComponents/ExperienceSection';
+import CustomSectionsAndTerms from '../components/resumeBuilderComponents/CustomSectionsAndTerms';
+import ResumePreview from '../components/previewComponents/ResumePreview';
+import TemplateSelector from '../components/previewComponents/TemplateSelector';
+import TemplateButton from '../common/TemplateButton';
 import templatesData from '../data/templatesData';
 
 import useDummyResumeData from './useDummyResumeData';

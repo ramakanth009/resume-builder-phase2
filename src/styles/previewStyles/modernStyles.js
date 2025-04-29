@@ -1,27 +1,24 @@
-import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+// src/templates/pdf/modernStyles.js
+import makeStylesWithTheme from '../makeStylesAdapter';
 
-const useProfessionalStyles = makeStylesWithTheme((theme) => ({
+const useModernStyles = makeStylesWithTheme((theme) => ({
   resumeHeader: {
     marginBottom: '2rem',
-    textAlign: 'center',
-    paddingBottom: '1rem',
-    position: 'relative',
-    backgroundColor: '#e6f7ff',
-    padding: '2rem 1rem',
-    borderRadius: '0',
+    textAlign: 'left',
+    paddingBottom: '1.5rem',
+    borderBottom: '3px solid #3182ce',
   },
   resumeName: {
     fontSize: '2.2rem',
     fontWeight: 800,
     marginBottom: '0.5rem',
-    color: '#2d3748',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
+    color: '#1a202c',
+    textAlign: 'left',
   },
   resumeContact: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: '1rem',
     marginBottom: '0.75rem',
     fontSize: '0.9rem',
@@ -35,41 +32,36 @@ const useProfessionalStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
   },
   resumeSection: {
-    marginBottom: '1.5rem',
-    position: 'relative',
+    marginBottom: '2rem',
   },
   resumeSectionTitle: {
     fontSize: '1.25rem',
     fontWeight: 700,
     marginBottom: '1rem',
-    color: '#2d3748',
+    color: '#3182ce',
     paddingBottom: '0.5rem',
-    borderBottom: '1px solid #e2e8f0',
-    position: 'relative',
+    borderBottom: 'none',
   },
   resumeSummary: {
-    color: '#4a5568',
+    color: '#2d3748',
     marginBottom: '1.5rem',
     lineHeight: 1.7,
-    fontSize: '0.95rem',
+    fontSize: '1rem',
   },
   resumeEducation: {
     marginBottom: '1.5rem',
-    position: 'relative',
-    paddingLeft: '1rem',
-    borderLeft: '2px solid #e2e8f0',
   },
   resumeSubtitle: {
     fontWeight: 700,
     marginBottom: '0.25rem',
-    color: '#2d3748',
-    fontSize: '1.05rem',
+    color: '#1a202c',
+    fontSize: '1.1rem',
   },
   resumeDate: {
     fontSize: '0.875rem',
-    color: '#718096',
+    color: '#3182ce',
+    fontWeight: 600,
     fontStyle: 'normal',
-    fontWeight: '500',
   },
   resumeSkills: {
     display: 'flex',
@@ -82,34 +74,33 @@ const useProfessionalStyles = makeStylesWithTheme((theme) => ({
     color: '#0366d6',
     fontSize: '0.75rem',
     height: '28px',
-    fontWeight: 500,
-    border: '1px solid #a0aec0',
+    fontWeight: 600,
+    borderRadius: '4px',
   },
   resumeItem: {
     marginBottom: '1.5rem',
-    position: 'relative',
-    paddingLeft: '1rem',
-    borderLeft: '2px solid #e2e8f0',
   },
   resumeItemSubtitle: {
-    fontSize: '0.95rem',
-    color: '#4a5568',
-    marginBottom: '0.25rem',
+    fontSize: '1rem',
+    color: '#2d3748',
+    marginBottom: '0.5rem',
   },
   resumeBullets: {
-    paddingLeft: '1.25rem',
-    margin: '0.5rem 0',
+    paddingLeft: '1.5rem',
+    margin: '0.75rem 0',
     listStylePosition: 'outside',
   },
   resumeBullet: {
-    fontSize: '0.875rem',
-    color: '#4a5568',
+    fontSize: '0.9rem',
+    color: '#2d3748',
     marginBottom: '0.5rem',
-    lineHeight: 1.5,
+    lineHeight: 1.6,
+    paddingLeft: '0.5rem',
   },
   contactLink: {
-    color: '#3182ce',
+    color: '#0366d6',
     textDecoration: 'none',
+    fontWeight: 600,
     wordBreak: 'break-word',
     overflowWrap: 'break-word',
     '&:hover': {
@@ -118,4 +109,4 @@ const useProfessionalStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-export default useProfessionalStyles;
+export default useModernStyles;

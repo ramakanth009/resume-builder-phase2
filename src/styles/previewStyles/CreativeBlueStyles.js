@@ -1,5 +1,5 @@
 // src/styles/templates/creativeBlueStyles.js
-import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import makeStylesWithTheme from '../makeStylesAdapter';
 
 const useCreativeBlueStyles = makeStylesWithTheme((theme) => ({
   resumeHeader: {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
-import ResumeDocument from '../components/resumeBuilder/ResumeDocument';
+import ResumeDocument from '../components/previewComponents/ResumeDocument';
 import { getTemplatePDFComponent } from '../templates/pdfTemplateRegistry';
 
 export const generateResumePDF = async (resumeData, templateId = 'classic', fileName = 'resume') => {
