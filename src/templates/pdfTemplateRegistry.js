@@ -1,4 +1,12 @@
 // src/templates/pdfTemplateRegistry.js
+import React from 'react';
+import ClassicPDFTemplate from './pdf/ClassicPDFTemplate';
+import ModernPDFTemplate from './pdf/ModernPDFTemplate';
+import CreativePDFTemplate from './pdf/CreativePDFTemplate';
+import ExecutivePDFTemplate from './pdf/ExecutivePDFTemplate';
+import ProfessionalPDFTemplate from './pdf/ProfessionalPDFTemplate';
+import CreativeBluePDFTemplate from './pdf/CreativeBluePDFTemplate';
+
 import classicStyles from './pdf/classicStyles';
 import modernStyles from './pdf/modernStyles';
 import creativeStyles from './pdf/creativeStyles';
@@ -6,19 +14,42 @@ import executiveStyles from './pdf/executiveStyles';
 import professionalStyles from './pdf/professionalStyles';
 import creativeBlueStyles from './pdf/CreativeBlueStyles';
 
-// Template registry for PDF generation
+// Complete template registry with both styles and PDF components
 const templateRegistry = {
-  classic: { styles: classicStyles },
-  modern: { styles: modernStyles },
-  creative: { styles: creativeStyles },
-  executive: { styles: executiveStyles },
-  professional: { styles: professionalStyles },
-  creativeBlue: { styles: creativeBlueStyles }
+  classic: { 
+    styles: classicStyles,
+    PDFComponent: ClassicPDFTemplate 
+  },
+  modern: { 
+    styles: modernStyles,
+    PDFComponent: ModernPDFTemplate 
+  },
+  creative: { 
+    styles: creativeStyles,
+    PDFComponent: CreativePDFTemplate 
+  },
+  executive: { 
+    styles: executiveStyles,
+    PDFComponent: ExecutivePDFTemplate 
+  },
+  professional: { 
+    styles: professionalStyles,
+    PDFComponent: ProfessionalPDFTemplate 
+  },
+  creativeBlue: { 
+    styles: creativeBlueStyles,
+    PDFComponent: CreativeBluePDFTemplate 
+  }
 };
 
 // Get template styles by ID
 export const getTemplateStyles = (templateId) => {
   return (templateRegistry[templateId] || templateRegistry.classic).styles;
+};
+
+// Get template PDF component by ID
+export const getTemplatePDFComponent = (templateId) => {
+  return (templateRegistry[templateId] || templateRegistry.classic).PDFComponent;
 };
 
 // Get list of registered template IDs

@@ -533,26 +533,26 @@ const ResumeBuilder = () => {
   };
 
   // Add dummy data buttons component
-  const renderDummyDataButtons = () => (
-    <Box sx={{ mb: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={handleResetForm}
-        disabled={!isLoaded && !isEditingExisting}
-      >
-        Reset Form
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleLoadDummyData}
-        disabled={isLoaded || isEditingExisting}
-      >
-        Load Sample Data
-      </Button>
-    </Box>
-  );
+  // const renderDummyDataButtons = () => (
+  //   <Box sx={{ mb: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+  //     <Button
+  //       variant="outlined"
+  //       color="secondary"
+  //       onClick={handleResetForm}
+  //       disabled={!isLoaded && !isEditingExisting}
+  //     >
+  //       Reset Form
+  //     </Button>
+  //     <Button
+  //       variant="contained"
+  //       color="primary"
+  //       onClick={handleLoadDummyData}
+  //       disabled={isLoaded || isEditingExisting}
+  //     >
+  //       Load Sample Data
+  //     </Button>
+  //   </Box>
+  // );
 
   // Effects
   useEffect(() => {
@@ -919,7 +919,7 @@ const ResumeBuilder = () => {
   };
 
   // Handle downloading the resume as PDF
-  const handleDownloadResume = async () => {
+const handleDownloadResume = async () => {
   try {
     setDownloadingPdf(true);
     
@@ -927,7 +927,7 @@ const ResumeBuilder = () => {
     const userName = dataToUse?.header?.name || 'resume';
     const fileName = userName.toLowerCase().replace(/\s+/g, '_');
     
-    // Pass selected template ID to PDF generator
+    // Pass the correct data and template ID
     await generateResumePDF(dataToUse, selectedTemplateId, fileName);
     
     setSnackbar({
@@ -1071,7 +1071,7 @@ const ResumeBuilder = () => {
       </Box>
       
       {/* Add dummy data buttons in edit mode (only when creating new) */}
-      {isEditMode && !isEditingExisting && renderDummyDataButtons()}
+      {/* {isEditMode && !isEditingExisting && renderDummyDataButtons()} */}
       
       {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
       {(hasGeneratedResume || isEditingExisting) && (

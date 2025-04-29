@@ -1,20 +1,29 @@
 // src/utils/pdfUtils.js
+import React from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
-import { getTemplateById, getRegisteredTemplateIds } from '../templates/pdfTemplateRegistry';
-import ResumePDF from '../components/resumeBuilder/ResumePDF';
+import ResumeDocument from '../components/resumeBuilder/ResumeDocument';
+import { getTemplatePDFComponent } from '../templates/pdfTemplateRegistry';
 
 export const generateResumePDF = async (resumeData, templateId = 'classic', fileName = 'resume') => {
   try {
-    // Validate template ID
-    const validTemplateIds = getRegisteredTemplateIds();
-    const safeTemplateId = validTemplateIds.includes(templateId) ? templateId : 'classic';
-    
     // Format filename
     const safeFileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     
-    // Generate PDF blob with specified template
-    const blob = await pdf(<ResumePDF resumeData={resumeData} templateId={safeTemplateId} />).toBlob();
+    // Get the template component for PDF generation
+    const PDFComponent = getTemplatePDFComponent(templateId);
+    
+    if (!PDFComponent) {
+      throw new Error(`Template component not found for ID: ${templateId}`);
+    }
+
+    // Generate PDF blob with template component
+    const blob = await pdf(
+      <ResumeDocument 
+        resumeData={resumeData} 
+        PDFComponent={PDFComponent} 
+      />
+    ).toBlob();
     
     // Save the file
     saveAs(blob, `${safeFileName}.pdf`);
@@ -24,8 +33,4 @@ export const generateResumePDF = async (resumeData, templateId = 'classic', file
     console.error('Error generating PDF:', error);
     throw error;
   }
-};
-
-export default {
-  generateResumePDF
 };

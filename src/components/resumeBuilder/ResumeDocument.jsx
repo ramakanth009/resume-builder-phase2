@@ -31,17 +31,7 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-/**
- * Main Resume Document component for PDF generation
- * 
- * @param {Object} props - Component props
- * @param {Object} props.resumeData - Resume data to render
- * @param {Object} props.template - Template configuration object
- * @returns {React.Component} - React-PDF Document component
- */
-const ResumeDocument = ({ resumeData, template }) => {
-  const { PDFComponent } = template;
-  
+const ResumeDocument = ({ resumeData, PDFComponent }) => {
   return (
     <Document title={`${resumeData.header.name || 'Resume'}`} author={resumeData.header.name || 'Applicant'}>
       <Page size="A4" style={baseStyles.page}>

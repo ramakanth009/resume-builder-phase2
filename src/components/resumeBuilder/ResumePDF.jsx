@@ -1,7 +1,7 @@
 // src/components/resumeBuilder/ResumePDF.jsx
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Link, Font } from '@react-pdf/renderer';
-import { getTemplateStyles } from '../../templates/pdfTemplateRegistry';
+import { Document, Page, StyleSheet, Font } from '@react-pdf/renderer';
+import { getTemplatePDFComponent } from '../../templates/pdfTemplateRegistry';
 
 // Register fonts
 Font.register({
@@ -23,35 +23,30 @@ const baseStyles = StyleSheet.create({
     color: '#2d3748',
   },
   footer: {
-    marginTop: 20,
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
     textAlign: 'center',
     fontSize: 8,
     color: '#718096',
-  },
+  }
 });
 
-const Bullet = ({ children, styles }) => (
-  <View style={styles.bulletItem}>
-    <Text style={styles.bullet}>•</Text>
-    <Text style={styles.bulletText}>{children}</Text>
-  </View>
-);
-
+// This is a wrapper component that loads the correct template component
 const ResumePDF = ({ resumeData, templateId = 'classic' }) => {
-  // Get template styles dynamically
-  const styles = getTemplateStyles(templateId);
+  // Get the PDF component for the selected template
+  const PDFComponent = getTemplatePDFComponent(templateId);
   
-  // Helper functions
-  const hasEducationData = () => {
-    // Existing implementation
-  };
-
-  // Document rendering with dynamic styles
+  if (!PDFComponent) {
+    console.error(`Template component not found for ID: ${templateId}`);
+    return null;
+  }
+  
   return (
     <Document title={`${resumeData.header.name || 'Resume'}`} author={resumeData.header.name || 'Applicant'}>
       <Page size="A4" style={baseStyles.page}>
-        {/* Content using dynamic styles */}
-        {/* Existing implementation but using styles from registry */}
+        <PDFComponent resumeData={resumeData} />
       </Page>
     </Document>
   );

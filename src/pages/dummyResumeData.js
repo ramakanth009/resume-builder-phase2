@@ -3,73 +3,73 @@
 
 const dummyResumeData = {
   header: {
-    name: "Alex Rodriguez",
-    email: "alex.rodriguez@example.com",
-    phone: "9876543210",
-    github: "https://github.com/alexdev",
-    linkedin: "https://linkedin.com/in/alexrodriguez",
-    portfolio: "https://alexrod.dev",
+    name: "Sarah Chen",
+    email: "sarah.chen@example.com",
+    phone: "1234567890",
+    github: "https://github.com/sarahcodes",
+    linkedin: "https://linkedin.com/in/sarahchen",
+    portfolio: "https://sarahchen.dev",
   },
-  summary: "DevOps engineer with 4+ years of experience in automation, CI/CD, and cloud infrastructure. Expert in AWS, Terraform, and container orchestration. Passionate about implementing DevSecOps practices and optimizing deployment pipelines.",
+  summary: "Full Stack Developer with 5+ years of experience building scalable web applications. Expertise in React, Node.js, and cloud services. Strong background in developing user-centric solutions and leading agile development teams.",
   education: {
-    degree: "Bachelor of Science",
-    specialization: "Computer Science",
-    institution: "University of California, Berkeley",
-    graduation_year: "2020",
+    degree: "Master of Science",
+    specialization: "Software Engineering",
+    institution: "Stanford University",
+    graduation_year: "2019",
   },
   skills: [
-    "AWS", 
-    "Terraform",
-    "Docker",
-    "Kubernetes",
-    "Python",
+    "React.js",
     "Node.js",
-    "Jenkins",
-    "GitLab CI",
-    "Ansible",
-    "Linux",
-    "Shell Scripting"
+    "TypeScript",
+    "MongoDB",
+    "PostgreSQL",
+    "AWS",
+    "GraphQL",
+    "Next.js",
+    "Redux",
+    "Jest",
+    "CI/CD"
   ],
   projects: [
     {
-      name: "Infrastructure as Code Framework",
-      skills_used: "Terraform, AWS, Python, GitLab CI",
-      description: "Developed a reusable IaC framework that reduced infrastructure deployment time by 70%. Implemented multi-environment support and automated security compliance checks."
+      name: "E-commerce Platform",
+      skills_used: "React, Node.js, MongoDB, AWS",
+      description: "Developed a full-stack e-commerce platform handling 10k+ daily users. Implemented real-time inventory tracking and payment gateway integration."
     },
     {
-      name: "Container Orchestration Platform",
-      skills_used: "Kubernetes, Docker, Helm, Go",
-      description: "Built a custom container orchestration platform serving 50+ microservices. Implemented auto-scaling and monitoring solutions using Prometheus and Grafana."
+      name: "Social Media Analytics Dashboard",
+      skills_used: "Next.js, GraphQL, TypeScript, PostgreSQL",
+      description: "Built a real-time analytics dashboard processing data from multiple social media platforms. Reduced data processing time by 80%."
     }
   ],
   certifications: [
-    "AWS Solutions Architect Professional",
-    "Certified Kubernetes Administrator",
-    "HashiCorp Certified Terraform Associate"
+    "AWS Certified Developer Associate",
+    "MongoDB Certified Developer",
+    "Google Cloud Professional Developer"
   ],
   work_experience: [
     {
-      position: "Senior DevOps Engineer",
-      company_name: "TechCloud Solutions",
-      duration: "Jun 2022 - Present",
-      description: "• Managed cloud infrastructure for 100+ applications on AWS\n• Reduced deployment time by 60% through pipeline optimization\n• Implemented zero-downtime deployment strategies\n• Led migration from legacy systems to containerized architecture"
+      position: "Senior Full Stack Developer",
+      company_name: "InnovateTech Solutions",
+      duration: "Jan 2021 - Present",
+      description: "Led development of microservices-based architecture\n Mentored junior developers and conducted code reviews\n Improved application performance by 70%\n Implemented automated testing achieving 90% coverage"
     },
     {
-      position: "Cloud Engineer",
-      company_name: "DataSys Corp",
-      duration: "Aug 2020 - May 2022",
-      description: "• Developed and maintained CI/CD pipelines using Jenkins\n• Automated infrastructure provisioning with Terraform\n• Reduced cloud costs by 40% through resource optimization\n• Implemented monitoring and alerting solutions"
+      position: "Full Stack Developer",
+      company_name: "WebScale Systems",
+      duration: "Mar 2019 - Dec 2020",
+      description: "Developed and maintained multiple client-facing applications\n Implemented responsive designs and PWA features\n Reduced API response time by 60%\n Collaborated with UX team for optimal user experience"
     }
   ],
-  target_role: "DevOps Team Lead",
+  target_role: "Lead Full Stack Developer",
   customSections: {
-    "Infrastructure Achievements": [
-      "Designed and implemented multi-region disaster recovery solution",
-      "Created automated security compliance scanning framework"
+    "Technical Leadership": [
+      "Led migration from monolithic to microservices architecture",
+      "Established coding standards and best practices"
     ],
-    "Publications": [
-      "Rodriguez, A. (2023). 'Modern DevOps Practices.' Tech Journal Vol. 45",
-      "Rodriguez, A. (2022). 'Cloud-Native Architecture Patterns.' AWS Community Blog"
+    "Open Source Contributions": [
+      "Core contributor to React-Data-Grid library",
+      "Created popular npm package for form validation"
     ]
   }
 };
