@@ -1,4 +1,3 @@
-// src/components/resumeBuilder/ResumeDocument.jsx
 import React from 'react';
 import { Document, Page, StyleSheet, Font } from '@react-pdf/renderer';
 
@@ -32,6 +31,14 @@ const baseStyles = StyleSheet.create({
   },
 });
 
+/**
+ * Main Resume Document component for PDF generation
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.resumeData - Resume data to render
+ * @param {Object} props.template - Template configuration object
+ * @returns {React.Component} - React-PDF Document component
+ */
 const ResumeDocument = ({ resumeData, template }) => {
   const { PDFComponent } = template;
   
