@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Chip, Link, Divider } from '@mui/material';
-import makeStylesWithTheme from '../styles/makeStylesAdapter';
-import templatesData from '../data/templatesData';
+import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import templatesData from '../../data/templatesData';
 
 // Import styles from separate files
 import useProfessionalStyles from '../styles/templates/professionalStyles';
