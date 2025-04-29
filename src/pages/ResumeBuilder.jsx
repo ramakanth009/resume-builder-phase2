@@ -920,34 +920,32 @@ const ResumeBuilder = () => {
 
   // Handle downloading the resume as PDF
   const handleDownloadResume = async () => {
-    try {
-      setDownloadingPdf(true);
-      
-      // Choose which data to use for the PDF - either the generated resume or form data
-      const dataToUse = generatedResume || resumeData;
-      
-      const userName = dataToUse?.header?.name || 'resume';
-      const fileName = userName.toLowerCase().replace(/\s+/g, '_');
-      
-      // Use the react-pdf based PDF generator
-      await generateResumePDF(dataToUse, fileName);
-      
-      setSnackbar({
-        open: true,
-        message: 'Resume downloaded successfully',
-        severity: 'success',
-      });
-    } catch (error) {
-      console.error('Error downloading resume:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to download resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setDownloadingPdf(false);
-    }
-  };
+  try {
+    setDownloadingPdf(true);
+    
+    const dataToUse = generatedResume || resumeData;
+    const userName = dataToUse?.header?.name || 'resume';
+    const fileName = userName.toLowerCase().replace(/\s+/g, '_');
+    
+    // Pass selected template ID to PDF generator
+    await generateResumePDF(dataToUse, selectedTemplateId, fileName);
+    
+    setSnackbar({
+      open: true,
+      message: 'Resume downloaded successfully',
+      severity: 'success',
+    });
+  } catch (error) {
+    console.error('Error downloading resume:', error);
+    setSnackbar({
+      open: true,
+      message: 'Failed to download resume. Please try again.',
+      severity: 'error',
+    });
+  } finally {
+    setDownloadingPdf(false);
+  }
+};
 
   const handleCloseSnackbar = () => {
     setSnackbar({
