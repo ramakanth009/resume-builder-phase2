@@ -1,5 +1,3 @@
-// Enhanced API utility functions for making HTTP requests to the backend
-
 // Base URL for API requests
 const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
 
@@ -34,6 +32,18 @@ export const apiRequest = async (endpoint, options = {}) => {
   try {
     // Make the API request
     const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
+    
+    // Check for 401 Unauthorized before parsing JSON
+    if (response.status === 401) {
+      // Token is invalid, clear auth data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // Force redirect to login page - use hash router format
+      window.location.href = '/#/login';
+      
+      throw new Error('Session expired. Please login again.');
+    }
     
     // Parse the JSON response
     const data = await response.json();
@@ -70,21 +80,37 @@ export const registerUser = async (userData) => {
 };
 
 /**
- * User login
+ * User login with throttling
  * @param {Object} credentials - User login credentials
  * @returns {Promise} - Login response with token
  */
-export const loginUser = async (credentials) => {
-  try {
-    const response = await apiRequest('/auth/login', {
-      method: 'POST',
-      body: credentials,
-    });
-    return response;
-  } catch (error) {
-    throw new Error(error.message || 'Login failed');
-  }
-};
+export const loginUser = (() => {
+  let isRequesting = false;
+  
+  return async (credentials) => {
+    // Prevent multiple simultaneous requests
+    if (isRequesting) {
+      console.warn('Login request already in progress');
+      return Promise.reject(new Error('Login already in progress'));
+    }
+    
+    try {
+      isRequesting = true;
+      const response = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: credentials,
+      });
+      return response;
+    } catch (error) {
+      throw new Error(error.message || 'Login failed');
+    } finally {
+      // Reset requesting flag after a small delay
+      setTimeout(() => {
+        isRequesting = false;
+      }, 500);
+    }
+  };
+})();
 
 /**
  * Generate resume with validation for required fields

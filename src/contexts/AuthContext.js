@@ -69,6 +69,11 @@ export const AuthProvider = ({ children }) => {
   
   // Login function with improved error handling
   const login = async (email, password) => {
+    // Prevent multiple simultaneous login attempts
+    if (loading) {
+      return Promise.reject(new Error('Login already in progress'));
+    }
+    
     setLoading(true);
     setError('');
     
@@ -97,6 +102,11 @@ export const AuthProvider = ({ children }) => {
   
   // Register function with improved error handling
   const register = async (name, email, password) => {
+    // Prevent multiple simultaneous registration attempts
+    if (loading) {
+      return Promise.reject(new Error('Registration already in progress'));
+    }
+    
     setLoading(true);
     setError('');
     
@@ -119,6 +129,11 @@ export const AuthProvider = ({ children }) => {
   
   // Logout function with improved error handling
   const logout = async () => {
+    // Prevent multiple simultaneous logout attempts
+    if (loading) {
+      return Promise.reject(new Error('Logout already in progress'));
+    }
+    
     setLoading(true);
     setError('');
     
