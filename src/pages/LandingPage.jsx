@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -11,132 +11,134 @@ import {
   useMediaQuery,
   useTheme,
   Fade,
-} from '@mui/material';
-import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
-import { makeStyles } from '@mui/styles';
-import illustration from '../assets/resume-illustration.svg';
-import { useAuth } from '../contexts/AuthContext';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import GigaLogo from '../assets/giga-loogo.svg';
+} from "@mui/material";
+import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+import { useAuth } from "../contexts/AuthContext";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import GigaLogo from "../assets/giga-loogo.svg";
 
 // → Mapped to your color distribution
 const colors = {
-  primaryDarkNavy: '#27286c',     // ~25%
-  white: '#ffffff',               // ~20%
-  lightBlue: '#60cae6',           // ~15%
-  royalBlue: '#233f94',           // ~12%
-  goldenYellow: '#ffc615',        // ~10%
-  navyVariant: '#2a2b6a',         // ~8%
-  skyBlue: '#427bbf',             // ~7%
-  midBlue: '#354fa2',             // ~3%
+  primaryDarkNavy: "#27286c", // ~25%
+  white: "#ffffff", // ~20%
+  lightBlue: "#60cae6", // ~15%
+  royalBlue: "#233f94", // ~12%
+  goldenYellow: "#ffc615", // ~10%
+  navyVariant: "#2a2b6a", // ~8%
+  skyBlue: "#427bbf", // ~7%
+  midBlue: "#354fa2", // ~3%
 };
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: '100%',
-    display: 'flex',
-    flexWrap: 'wrap',            // allow stacking on narrow screens
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    height: "100vh",
   },
   leftSection: {
-    flex: '1 1 300px',            // grow/shrink, min-width 300px
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
+    flex: "1 1 300px", // grow/shrink, min-width 300px
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    // padding: "1rem",
+    // borderRadius: "0px 100px 100px 0px", // allow stacking on narrow screens
     backgroundColor: colors.primaryDarkNavy,
+    
   },
   rightSection: {
-    flex: '1 1 300px',            // grow/shrink, min-width 300px
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-    padding: '0.5rem 1rem',       // minimal vertical + horizontal padding
+    flex: "1 1 300px", // grow/shrink, min-width 300px
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    padding: "0.5rem 1rem", // minimal vertical + horizontal padding
     backgroundColor: colors.white,
   },
   formContainer: {
-    width: '100%',
-    maxWidth: '500px',            // optional cap for very wide screens
-    margin: '0 auto',
-    padding: '1rem',
-    boxSizing: 'border-box',
+    width: "100%",
+    maxWidth: "500px", // optional cap for very wide screens
+    margin: "0 auto",
+    padding: "0.5rem",
+    boxSizing: "border-box",
   },
   logoContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "1.5rem",
   },
   logo: {
     width: 40,
     height: 40,
-    marginRight: '0.5rem',
+    marginRight: "0.5rem",
   },
   logoText: {
     fontWeight: 700,
-    fontSize: '1.5rem',
+    fontSize: "1.5rem",
     color: colors.navyVariant,
   },
   welcomeText: {
     color: colors.navyVariant,
     fontWeight: 700,
-    marginBottom: '0.5rem',
-    fontSize: '1.75rem',
+    marginBottom: "0.5rem",
+    fontSize: "1.75rem",
   },
   subtitle: {
     color: colors.midBlue,
-    marginBottom: '1.5rem',
+    marginBottom: "1.5rem",
   },
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
   },
   textField: {
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
     },
-    '& .MuiOutlinedInput-notchedOutline': {
+    "& .MuiOutlinedInput-notchedOutline": {
       borderColor: colors.skyBlue,
     },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
+    "&:hover .MuiOutlinedInput-notchedOutline": {
       borderColor: colors.lightBlue,
     },
-    '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
       borderColor: colors.lightBlue,
     },
   },
   formDivider: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: '1rem 0',
+    display: "flex",
+    alignItems: "center",
+    margin: "1rem 0",
     color: colors.midBlue,
-    '&::before, &::after': {
+    "&::before, &::after": {
       content: '""',
       flex: 1,
       borderBottom: `1px solid ${colors.skyBlue}`,
     },
-    '&::before': { marginRight: '0.5rem' },
-    '&::after':  { marginLeft: '0.5rem' },
+    "&::before": { marginRight: "0.5rem" },
+    "&::after": { marginLeft: "0.5rem" },
   },
   button: {
-    padding: '0.75rem',
-    borderRadius: '8px',
+    padding: "0.75rem",
+    borderRadius: "8px",
     fontWeight: 600,
-    textTransform: 'none',
-    fontSize: '1rem',
-    marginTop: '0.5rem',
+    textTransform: "none",
+    fontSize: "1rem",
+    marginTop: "0.5rem",
     backgroundColor: colors.royalBlue,
     color: colors.white,
-    '&:hover': {
+    "&:hover": {
       backgroundColor: colors.midBlue,
     },
   },
   loginLink: {
-    textAlign: 'center',
-    marginTop: '1rem',
+    textAlign: "center",
+    // marginTop: "1rem",
   },
   loginText: {
     color: colors.midBlue,
@@ -144,48 +146,42 @@ const useStyles = makeStyles(() => ({
   loginButton: {
     color: colors.royalBlue,
     fontWeight: 600,
-    textTransform: 'none',
-    padding: '0 4px',
+    textTransform: "none",
+    padding: "0 4px",
   },
   loader: {
-    marginLeft: '8px',
+    marginLeft: "8px",
     color: colors.white,
   },
   // Left side content
   welcomeLeft: {
     color: colors.white,
     fontWeight: 700,
-    fontSize: '1.75rem',
-    marginBottom: '1rem',
-    textAlign: 'center',
+    fontSize: "1.75rem",
+    marginBottom: "1rem",
+    textAlign: "center",
   },
   subtitleLeft: {
-    color: 'rgba(255,255,255,0.8)',
-    marginBottom: '1.5rem',
-    textAlign: 'center',
-    maxWidth: '300px',
-  },
-  illustration: {
-    width: '80%',
-    maxWidth: '300px',
-    marginBottom: '1.5rem',
-    filter: 'brightness(1.05)',
+    color: "rgba(255,255,255,0.8)",
+    marginBottom: "1.5rem",
+    textAlign: "center",
+    maxWidth: "300px",
   },
   featuresContainer: {
-    width: '100%',
-    maxWidth: '280px',
-    marginTop: '1rem',
+    width: "100%",
+    maxWidth: "280px",
+    marginTop: "1rem",
   },
   featureItem: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: '0.5rem 0',
+    display: "flex",
+    alignItems: "center",
+    margin: "0.5rem 0",
     color: colors.white,
   },
   checkmark: {
-    marginRight: '0.75rem',
-    fontWeight: 'bold',
-    fontSize: '1.1rem',
+    marginRight: "0.75rem",
+    fontWeight: "bold",
+    fontSize: "1.1rem",
   },
 }));
 
@@ -193,89 +189,104 @@ const LandingPage = () => {
   const classes = useStyles();
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { register, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', confirmPassword: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
-    open: false, message: '', severity: 'success'
+    open: false,
+    message: "",
+    severity: "success",
   });
   const [showPassword, setShowPassword] = useState({
-    password: false, confirmPassword: false
+    password: false,
+    confirmPassword: false,
   });
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(f => ({ ...f, [name]: value }));
+    setFormData((f) => ({ ...f, [name]: value }));
     if (errors[name]) {
-      setErrors(e => ({ ...e, [name]: null }));
+      setErrors((e) => ({ ...e, [name]: null }));
     }
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
     try {
       await register(formData.name, formData.email, formData.password);
-      setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
-      setTimeout(() => navigate('/login'), 1000);
+      setSnackbar({
+        open: true,
+        message: "Registration successful!",
+        severity: "success",
+      });
+      setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
       setSnackbar({
         open: true,
-        message: err.message || 'Registration failed.',
-        severity: 'error'
+        message: err.message || "Registration failed.",
+        severity: "error",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleTogglePasswordVisibility = field => () => {
-    setShowPassword(s => ({ ...s, [field]: !s[field] }));
+  const handleTogglePasswordVisibility = (field) => () => {
+    setShowPassword((s) => ({ ...s, [field]: !s[field] }));
   };
-  const handleCloseSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
+  const handleCloseSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
 
   return (
     <Box className={classes.root}>
       <Fade in timeout={600}>
         <Box className={classes.leftSection}>
-          <img src={illustration} alt="Resume Builder" className={classes.illustration} />
-          <Typography className={classes.welcomeLeft}>Resume Builder</Typography>
+          <Typography className={classes.welcomeLeft}>
+            Resume Builder
+          </Typography>
           <Typography className={classes.subtitleLeft}>
             Create professional resumes in minutes, completely free!
           </Typography>
           <Box className={classes.featuresContainer}>
-            {['Free for all students','ATS-friendly templates','Live preview as you type','Multiple design options']
-              .map((text,i) => (
-                <Box key={i} className={classes.featureItem}>
-                  <span className={classes.checkmark}>✓</span>
-                  <Typography variant="body2">{text}</Typography>
-                </Box>
+            {[
+              "Free for all students",
+              "ATS-friendly templates",
+              "Live preview as you type",
+              "Multiple design options",
+            ].map((text, i) => (
+              <Box key={i} className={classes.featureItem}>
+                <span className={classes.checkmark}>✓</span>
+                <Typography variant="body2">{text}</Typography>
+              </Box>
             ))}
           </Box>
         </Box>
@@ -290,7 +301,9 @@ const LandingPage = () => {
             </Box>
 
             <Typography className={classes.welcomeText}>Sign Up</Typography>
-            <Typography className={classes.subtitle}>Create your account to get started</Typography>
+            <Typography className={classes.subtitle}>
+              Create your account to get started
+            </Typography>
 
             <form className={classes.form} onSubmit={handleSubmit}>
               <TextField
@@ -324,7 +337,7 @@ const LandingPage = () => {
                 fullWidth
                 label="Password"
                 name="password"
-                type={showPassword.password ? 'text' : 'password'}
+                type={showPassword.password ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
                 error={!!errors.password}
@@ -333,11 +346,18 @@ const LandingPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleTogglePasswordVisibility('password')} edge="end">
-                        {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility("password")}
+                        edge="end"
+                      >
+                        {showPassword.password ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
               <TextField
@@ -346,7 +366,7 @@ const LandingPage = () => {
                 fullWidth
                 label="Confirm Password"
                 name="confirmPassword"
-                type={showPassword.confirmPassword ? 'text' : 'password'}
+                type={showPassword.confirmPassword ? "text" : "password"}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 error={!!errors.confirmPassword}
@@ -355,11 +375,20 @@ const LandingPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleTogglePasswordVisibility('confirmPassword')} edge="end">
-                        {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility(
+                          "confirmPassword"
+                        )}
+                        edge="end"
+                      >
+                        {showPassword.confirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
 
@@ -369,18 +398,30 @@ const LandingPage = () => {
                 fullWidth
                 disabled={loading || authLoading}
               >
-                {loading || authLoading
-                  ? <>Creating Account<CircularProgress size={20} className={classes.loader} /></>
-                  : 'Sign Up'}
+                {loading || authLoading ? (
+                  <>
+                    Creating Account
+                    <CircularProgress size={20} className={classes.loader} />
+                  </>
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
 
               <Typography className={classes.formDivider}>or</Typography>
 
               <Box className={classes.loginLink}>
-                <Typography className={classes.loginText} variant="body2" display="inline">
+                <Typography
+                  className={classes.loginText}
+                  variant="body2"
+                  display="inline"
+                >
                   Already have an account?
                 </Typography>
-                <Button className={classes.loginButton} onClick={() => navigate('/login')}>
+                <Button
+                  className={classes.loginButton}
+                  onClick={() => navigate("/login")}
+                >
                   Log in
                 </Button>
               </Box>
@@ -393,9 +434,14 @@ const LandingPage = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} elevation={6} variant="filled">
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          elevation={6}
+          variant="filled"
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

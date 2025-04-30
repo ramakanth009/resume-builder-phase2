@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -9,182 +9,222 @@ import {
   useMediaQuery,
   useTheme,
   Fade,
-  IconButton
+  IconButton,
+  InputAdornment
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import GigaLogo from '../assets/giga-loogo.svg';
 import { useAuth } from '../contexts/AuthContext';
-import illustration from '../assets/resume-illustration.svg';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// Color palette matching the green theme from reference image
+// Enhanced color palette with additional colors for gradients and animations
 const colors = {
-  primary: {
-    main: '#0EB582',    // Primary green
-    light: '#E6F7F2',   // Light green background
-    dark: '#0A8F66',    // Darker green for hover states
-  },
-  text: {
-    primary: '#2E384D',  // Dark text
-    secondary: '#6B7A99', // Medium gray text
-    light: '#FFFFFF',    // White text
-  },
-  background: {
-    default: '#F5F7FA',  // Light gray background
-    paper: '#FFFFFF',    // White background
-  },
-  error: '#E63946',      // Error red
+  primaryDarkNavy: "#27286c", // Base dark navy
+  white: "#ffffff",
+  lightBlue: "#60cae6",
+  royalBlue: "#233f94",
+  goldenYellow: "#ffc615",
+  navyVariant: "#2a2b6a",
+  skyBlue: "#427bbf",
+  midBlue: "#354fa2",
+  // Additional colors for gradients
+  deepIndigo: "#1a1b4b",
+  electricBlue: "#4e7ac7",
+  accentTeal: "#38b6d2",
 };
 
 const useStyles = makeStyles(() => ({
   root: {
-    minHeight: '100vh',
-    width: '100%',
-    display: 'flex',
-    overflow: 'hidden',
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    height: "100vh",
+    overflow: "hidden",
   },
-  // Left section (form)
+  // Left section remains mostly unchanged
   leftSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '50%',
-    padding: '2rem',
-    backgroundColor: colors.background.paper,
-    '@media (max-width: 900px)': {
-      width: '100%',
-    },
+    flex: "1 1 300px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "0px 100px 100px 0px",
+    backgroundColor: colors.white,
+    position: "relative",
+    zIndex: 1,
   },
-  // Right section (illustration)
+  // Enhanced right section with gradient
   rightSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '50%',
-    padding: '2rem',
-    backgroundColor: colors.primary.main,
-    '@media (max-width: 900px)': {
-      display: 'none',
-    },
+    flex: "1 1 300px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    padding: "0.5rem 1rem",
+    background: `linear-gradient(135deg, ${colors.primaryDarkNavy} 0%, ${colors.deepIndigo} 100%)`,
+    position: "relative",
+    overflow: "hidden",
+  },
+  // Background decoration elements
+  backgroundCircle: {
+    position: "absolute",
+    borderRadius: "50%",
+    opacity: 0.1,
+    background: colors.electricBlue,
+    transition: "all 0.8s ease-in-out",
   },
   formContainer: {
-    maxWidth: '400px',
-    width: '100%',
-    margin: '0 auto',
-    padding: '2rem',
-  },
-  logo: {
-    width: '40px',
-    height: '40px',
-    marginRight: '0.5rem',
+    width: "100%",
+    maxWidth: "500px",
+    margin: "0 auto",
+    padding: "0.5rem",
+    boxSizing: "border-box",
   },
   logoContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '2rem',
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "1.5rem",
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    marginRight: "0.5rem",
   },
   logoText: {
     fontWeight: 700,
-    fontSize: '1.5rem',
-    color: colors.text.primary,
+    fontSize: "1.5rem",
+    color: colors.navyVariant,
   },
   welcomeText: {
-    color: colors.text.primary,
+    color: colors.navyVariant,
     fontWeight: 700,
-    marginBottom: '0.5rem',
-    fontSize: '1.75rem',
+    marginBottom: "0.5rem",
+    fontSize: "1.75rem",
   },
   subtitle: {
-    color: colors.text.secondary,
-    marginBottom: '2rem',
+    color: colors.midBlue,
+    marginBottom: "1.5rem",
   },
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.25rem',
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
   },
   textField: {
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '0.5rem',
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
     },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#E2E8F0',
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: colors.skyBlue,
     },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: colors.primary.main,
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: colors.lightBlue,
     },
-    '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: colors.primary.main,
+    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: colors.lightBlue,
     },
   },
   formDivider: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: '1.5rem 0',
-    color: colors.text.secondary,
-    '&::before, &::after': {
+    display: "flex",
+    alignItems: "center",
+    margin: "1rem 0",
+    color: colors.midBlue,
+    "&::before, &::after": {
       content: '""',
       flex: 1,
-      borderBottom: '1px solid #E2E8F0',
+      borderBottom: `1px solid ${colors.skyBlue}`,
     },
-    '&::before': {
-      marginRight: '0.5rem',
-    },
-    '&::after': {
-      marginLeft: '0.5rem',
-    },
+    "&::before": { marginRight: "0.5rem" },
+    "&::after": { marginLeft: "0.5rem" },
   },
   button: {
-    padding: '0.75rem',
-    borderRadius: '0.5rem',
+    padding: "0.75rem",
+    borderRadius: "8px",
     fontWeight: 600,
-    textTransform: 'none',
-    fontSize: '1rem',
-    marginTop: '1rem',
-    backgroundColor: colors.primary.main,
-    color: colors.text.light,
-    '&:hover': {
-      backgroundColor: colors.primary.dark,
+    textTransform: "none",
+    fontSize: "1rem",
+    marginTop: "0.5rem",
+    backgroundColor: colors.royalBlue,
+    color: colors.white,
+    "&:hover": {
+      backgroundColor: colors.midBlue,
     },
   },
-  registerLink: {
-    textAlign: 'center',
-    marginTop: '1.5rem',
+  signupLink: {
+    textAlign: "center",
   },
-  registerText: {
-    color: colors.text.secondary,
+  signupText: {
+    color: colors.midBlue,
   },
-  registerButton: {
-    color: colors.primary.main,
+  signupButton: {
+    color: colors.royalBlue, 
     fontWeight: 600,
-    textTransform: 'none',
-    padding: '0 4px',
+    textTransform: "none",
+    padding: "0 4px",
   },
   loader: {
-    marginLeft: '10px',
-    color: 'white',
+    marginLeft: "8px",
+    color: colors.white,
   },
-  // Right side content styles
+  // Enhanced right section content
+  rightContentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    position: 'relative',
+    zIndex: 2,
+  },
   welcomeRight: {
-    color: colors.text.light,
+    color: colors.white,
     fontWeight: 700,
-    fontSize: '1.75rem',
-    marginBottom: '1rem',
-    textAlign: 'center',
+    fontSize: "1.75rem",
+    marginBottom: "1rem",
+    textAlign: "center",
+    textShadow: "0px 2px 4px rgba(0,0,0,0.2)",
   },
   subtitleRight: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginBottom: '2rem',
-    textAlign: 'center',
+    color: "rgba(255,255,255,0.8)",
+    marginBottom: "1.5rem",
+    textAlign: "center",
+    maxWidth: "300px",
   },
-  illustration: {
-    width: '80%',
-    maxWidth: '300px',
-    marginBottom: '2rem',
-    filter: 'brightness(1.05)',
+  featuresContainer: {
+    width: "100%",
+    maxWidth: "280px",
+    marginTop: "1rem",
+  },
+  featureItem: {
+    display: "flex",
+    alignItems: "center",
+    margin: "0.75rem 0",
+    color: colors.white,
+    transform: "translateX(0)",
+    transition: "transform 0.3s ease-out",
+    "&:hover": {
+      transform: "translateX(8px)",
+    },
+  },
+  checkmark: {
+    marginRight: "0.75rem",
+    fontWeight: "bold",
+    fontSize: "1.1rem",
+    color: colors.accentTeal,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "24px",
+    height: "24px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.1)",
+  },
+  highlightText: {
+    color: colors.accentTeal,
+    fontWeight: 600,
   },
 }));
 
@@ -201,11 +241,36 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
+  
+  // Feature items with staggered animation
+  const featureItems = [
+    "Free for all students",
+    "ATS-friendly templates",
+    "Live preview as you type",
+    "Multiple design options",
+  ];
+  
+  // Animation states for features
+  const [visibleFeatures, setVisibleFeatures] = useState([]);
+  
+  // Set up staggered animation for features
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      featureItems.forEach((_, index) => {
+        setTimeout(() => {
+          setVisibleFeatures(prev => [...prev, index]);
+        }, index * 150);
+      });
+    }, 800); // Start after the main fade-in
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -261,13 +326,17 @@ const Login = () => {
     });
   };
 
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   const navigateToRegister = () => {
     navigate('/');
   };
 
   return (
     <Box className={classes.root}>
-      {/* Left Section - Form */}
+      {/* Left Section - Form (now white) */}
       <Fade in={true} timeout={600}>
         <Box className={classes.leftSection}>
           <Box className={classes.formContainer}>
@@ -278,10 +347,10 @@ const Login = () => {
               </Typography>
             </Box>
             
-            <Typography variant="h4" className={classes.welcomeText}>
+            <Typography className={classes.welcomeText}>
               Welcome Back!
             </Typography>
-            <Typography variant="body1" className={classes.subtitle}>
+            <Typography className={classes.subtitle}>
               Log in to continue to your account
             </Typography>
             
@@ -306,12 +375,24 @@ const Login = () => {
                 fullWidth
                 label="Password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
                 placeholder="Enter your password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               
               <Button
@@ -333,12 +414,12 @@ const Login = () => {
               
               <Typography className={classes.formDivider}>or</Typography>
               
-              <Box className={classes.registerLink}>
-                <Typography className={classes.registerText} variant="body2" display="inline">
+              <Box className={classes.signupLink}>
+                <Typography className={classes.signupText} variant="body2" display="inline">
                   Don't have an account?
                 </Typography>
                 <Button
-                  className={classes.registerButton}
+                  className={classes.signupButton}
                   onClick={navigateToRegister}
                 >
                   Sign up
@@ -349,16 +430,85 @@ const Login = () => {
         </Box>
       </Fade>
       
-      {/* Right Section - Illustration */}
+      {/* Enhanced Right Section with animations and decorative elements */}
       <Fade in={true} timeout={800}>
         <Box className={classes.rightSection}>
-          <img src={illustration} alt="Resume Builder" className={classes.illustration} />
-          <Typography variant="h4" className={classes.welcomeRight}>
-            Resume Builder
-          </Typography>
-          <Typography variant="body1" className={classes.subtitleRight}>
-            Create professional resumes in minutes
-          </Typography>
+          {/* Decorative background circles */}
+          <Box 
+            className={classes.backgroundCircle} 
+            sx={{ 
+              top: '10%', 
+              right: '-5%', 
+              width: '300px', 
+              height: '300px',
+              animation: 'float 15s infinite ease-in-out'
+            }}
+          />
+          <Box 
+            className={classes.backgroundCircle} 
+            sx={{ 
+              bottom: '5%', 
+              left: '-10%', 
+              width: '250px', 
+              height: '250px',
+              animation: 'float 12s infinite ease-in-out reverse'
+            }}
+          />
+          <Box 
+            className={classes.backgroundCircle} 
+            sx={{ 
+              top: '50%', 
+              left: '30%', 
+              width: '100px', 
+              height: '100px',
+              animation: 'pulse 8s infinite ease-in-out'
+            }}
+          />
+          
+          {/* Content container */}
+          <Box className={classes.rightContentContainer}>
+            <Fade in={true} timeout={1000}>
+              <Typography className={classes.welcomeRight}>
+                Resume <span className={classes.highlightText}>Builder</span>
+              </Typography>
+            </Fade>
+            
+            <Fade in={true} timeout={1200}>
+              <Typography className={classes.subtitleRight}>
+                Create professional resumes in minutes, completely free!
+              </Typography>
+            </Fade>
+            
+            <Box className={classes.featuresContainer}>
+              {featureItems.map((text, i) => (
+                <Fade 
+                  in={visibleFeatures.includes(i)} 
+                  timeout={600}
+                  key={i}
+                >
+                  <Box className={classes.featureItem}>
+                    <span className={classes.checkmark}>✓</span>
+                    <Typography variant="body2">{text}</Typography>
+                  </Box>
+                </Fade>
+              ))}
+            </Box>
+          </Box>
+          
+          {/* Global animation styles */}
+          <style jsx global>{`
+            @keyframes float {
+              0% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(5deg); }
+              100% { transform: translateY(0) rotate(0deg); }
+            }
+            
+            @keyframes pulse {
+              0% { transform: scale(1); opacity: 0.1; }
+              50% { transform: scale(1.2); opacity: 0.2; }
+              100% { transform: scale(1); opacity: 0.1; }
+            }
+          `}</style>
         </Box>
       </Fade>
       
@@ -368,7 +518,7 @@ const Login = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} elevation={6} variant="filled">
           {snackbar.message}
         </Alert>
       </Snackbar>
