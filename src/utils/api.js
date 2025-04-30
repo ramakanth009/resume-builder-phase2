@@ -1,7 +1,7 @@
 // Enhanced API utility functions for making HTTP requests to the backend
 
 // Base URL for API requests
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
