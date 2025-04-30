@@ -223,11 +223,11 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                       Create Resume
                     </Button>
                     
-                    {/* Template selector button */}
+                    {/* Add Choose Template button to navbar when on resume-builder */}
                     {currentPage === 'resume-builder' && (
                       <Button
                         className={classes.templateButton}
-                        onClick={handleTemplateClick}
+                        onClick={onTemplateClick}
                         startIcon={<TemplateIcon />}
                       >
                         Choose Template
@@ -308,8 +308,9 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                         <CreateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                         Create Resume
                       </MenuItem>
+                      {/* Add Choose Template to mobile menu */}
                       {currentPage === 'resume-builder' && (
-                        <MenuItem onClick={handleTemplateClick}>
+                        <MenuItem onClick={onTemplateClick}>
                           <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                           Choose Template
                         </MenuItem>

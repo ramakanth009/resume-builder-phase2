@@ -34,8 +34,10 @@ import ResumePreview from '../components/previewComponents/ResumePreview';
 import TemplateSelector from '../components/previewComponents/TemplateSelector';
 import TemplateButton from '../common/TemplateButton';
 import templatesData from '../data/templatesData';
+import Navbar from '../common/Navbar';
+import DummyDataLoader from '../components/resumeBuilderComponents/DummyDataLoader';
 
-import { useStyles } from './Styles.resumebuilder';
+import { useStyles } from './resumebuilder.Styles';
 
 // Step labels for the stepper - Combined "Custom Sections" and "Terms & Policies"
 const steps = [
@@ -149,7 +151,12 @@ const ResumeBuilder = () => {
     templatesData.find(t => t.isDefault)?.id || 'classic'
   );
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
-  
+
+  // Handler to open template dialog (to be passed to Navbar)
+  const handleOpenTemplateDialog = () => {
+    setTemplateDialogOpen(true);
+  };
+
   // Initialize resumeData with empty structure and fields for both formats
   const [resumeData, setResumeData] = useState({
     header: {
@@ -249,10 +256,6 @@ const ResumeBuilder = () => {
   }, [resumeId, isEditingExisting]);
 
   // Template dialog handlers
-  const handleOpenTemplateDialog = () => {
-    setTemplateDialogOpen(true);
-  };
-  
   const handleCloseTemplateDialog = () => {
     setTemplateDialogOpen(false);
   };
@@ -742,6 +745,20 @@ const handleDownloadResume = async () => {
 
   return (
     <Container className={classes.root} maxWidth="xl">
+      {/* Navbar with template button handler */}
+      <Navbar currentPage="resume-builder" onTemplateClick={handleOpenTemplateDialog} />
+      
+      {/* Add DummyDataLoader component */}
+      {isEditMode && !isEditingExisting && !hasGeneratedResume && (
+        <DummyDataLoader onLoadData={(dummyData) => {
+          setResumeData(dummyData);
+          setSnackbar({
+            open: true,
+            message: 'Dummy data loaded successfully',
+            severity: 'success',
+          });
+        }} />
+      )}
       
       {/* Display resume ID if editing */}
       {isEditingExisting && (
@@ -935,7 +952,6 @@ const handleDownloadResume = async () => {
             selectedTemplateId={selectedTemplateId}
             onTemplateSelect={handleTemplateSelect}
           />
-          
           <Box className={classes.templateActionButtons}>
             <Button 
               onClick={handleCloseTemplateDialog}
