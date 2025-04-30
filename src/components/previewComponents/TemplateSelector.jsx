@@ -276,48 +276,7 @@ const TemplateSelector = ({
         ))}
       </Grid>
       
-      {/* Selected template features */}
-      {selectedTemplate && (
-        <Fade in={!!selectedTemplate}>
-          <Box className={classes.featuresContainer}>
-            <Typography variant="subtitle1" fontWeight="600">
-              {selectedTemplate.name} Template Features:
-            </Typography>
-            <Box mt={1}>
-              <Box className={classes.featureItem}>
-                <CheckIcon className={classes.checkIcon} />
-                <Typography>Clean, professional design</Typography>
-              </Box>
-              <Box className={classes.featureItem}>
-                <CheckIcon className={classes.checkIcon} />
-                <Typography>Optimized for Applicant Tracking Systems (ATS)</Typography>
-              </Box>
-              <Box className={classes.featureItem}>
-                <CheckIcon className={classes.checkIcon} />
-                <Typography>PDF download with one click</Typography>
-              </Box>
-              <Box className={classes.featureItem}>
-                <CheckIcon className={classes.checkIcon} />
-                <Typography>Structured sections for easy reading</Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Fade>
-      )}
-      
       <Divider className={classes.divider} />
-      
-      {/* Confirmation buttons */}
-      <Box className={classes.buttonContainer}>
-        <Button 
-          variant="contained" 
-          className={classes.applyButton}
-          onClick={handleConfirmClick}
-          disabled={!selectedTemplateId}
-        >
-          Apply Template
-        </Button>
-      </Box>
     </Box>
   );
 };
