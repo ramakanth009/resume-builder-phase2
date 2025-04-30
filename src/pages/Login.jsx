@@ -9,11 +9,14 @@ import {
   Paper, 
   Snackbar,
   CircularProgress,
-  Grid
+  Grid,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import illustration from '../assets/resume-illustration.svg';
+import GigaLogo from '../assets/giga-loogo.svg';
 import { useAuth } from '../contexts/AuthContext';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -21,6 +24,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minHeight: '100vh',
     padding: '2rem 0',
     background: '#f5f7fa',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'auto',
   },
   paper: {
     padding: '2rem',
@@ -44,7 +50,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1.5rem',
-    flex: 1, // Take available space
+    flex: 1,
   },
   textField: {
     '& .MuiOutlinedInput-root': {
@@ -84,7 +90,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   registerLink: {
     textAlign: 'center',
-    marginTop: 'auto', // Push to bottom
+    marginTop: 'auto',
     paddingTop: '1.5rem',
   },
   registerText: {
@@ -100,24 +106,33 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginLeft: '10px',
     color: 'white',
   },
-  gridContainer: {
-    height: '100%',
-  },
-  formWrapper: {
+  logoContainer: {
     display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    height: '500px', // Fixed minimum height
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '1.5rem',
+  },
+  logo: {
+    width: '32px',
+    height: '32px',
+    marginRight: '0.5rem',
+  },
+  logoText: {
+    fontWeight: 700,
+    fontSize: '1.25rem',
   },
   contentContainer: {
-    margin: '0 auto',
     maxWidth: '1200px',
+    margin: '0 auto',
+    width: '100%',
   }
 }));
 
 const Login = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { login, error: authError, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -162,33 +177,22 @@ const Login = () => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!validateForm()) return;
-  
-  // Prevent handler from running if already loading
-  if (authLoading) return;
-  
-  try {
-    await login(formData.email, formData.password);
+  const handleSubmit = (e) => {
+    e.preventDefault();
     
-    setSnackbar({
-      open: true,
-      message: 'Login successful! Redirecting to resume builder...',
-      severity: 'success',
-    });
+    if (!validateForm()) return;
     
-    // Navigate immediately instead of using setTimeout
-    navigate('/resume-builder');
-  } catch (error) {
-    setSnackbar({
-      open: true,
-      message: error.message || 'Login failed. Please check your credentials.',
-      severity: 'error',
+    // Navigate directly to loading screen with login credentials
+    navigate('/loading', { 
+      state: { 
+        destination: '/resume-builder',
+        loginData: {
+          email: formData.email,
+          password: formData.password
+        } 
+      }
     });
-  }
-};
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbar({
@@ -203,114 +207,132 @@ const handleSubmit = async (e) => {
 
   return (
     <Box className={classes.root}>
-      <Container maxWidth="lg">
-        <Box mb={4}>
-          <Typography variant="h3" align="center" className={classes.title} gutterBottom>
-            Student Resume Builder
-          </Typography>
-          <Typography variant="h6" align="center" className={classes.subtitle}>
-            Welcome back! Log in to your account
+      <Container>
+        {/* Logo */}
+        <Box className={classes.logoContainer}>
+          <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
+          <Typography variant="h6" className={classes.logoText}>
+            Gigaversity
           </Typography>
         </Box>
         
+        {/* Title (only visible on non-mobile) */}
+        {!isMobile && (
+          <Box mb={4}>
+            <Typography variant="h3" align="center" className={classes.title} gutterBottom>
+              Student Resume Builder
+            </Typography>
+            <Typography variant="h6" align="center" className={classes.subtitle}>
+              Welcome back! Log in to your account
+            </Typography>
+          </Box>
+        )}
+        
+        {/* Mobile Title (only visible on mobile) */}
+        {isMobile && (
+          <Box mb={3}>
+            <Typography variant="h5" align="center" className={classes.title} gutterBottom>
+              Log In
+            </Typography>
+          </Box>
+        )}
+        
+        {/* Content Container */}
         <Box className={classes.contentContainer}>
-          <Grid container spacing={4} className={classes.gridContainer}>
-            {/* Left side - Login Form */}
+          <Grid container spacing={3}>
+            {/* Login Form */}
             <Grid item xs={12} md={6}>
               <Paper className={classes.paper} elevation={0}>
-                <Box className={classes.formWrapper}>
+                {!isMobile && (
                   <Typography variant="h5" gutterBottom className={classes.title}>
                     Log in to your account
                   </Typography>
-                  <Typography variant="body2" gutterBottom className={classes.subtitle}>
-                    Continue building and managing your professional resumes
-                  </Typography>
+                )}
+                
+                <form className={classes.form} onSubmit={handleSubmit}>
+                  <TextField
+                    className={classes.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                  />
                   
-                  <form className={classes.form} onSubmit={handleSubmit}>
-                    <TextField
-                      className={classes.textField}
-                      variant="outlined"
-                      fullWidth
-                      label="Email Address"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      error={!!errors.email}
-                      helperText={errors.email}
-                    />
-                    
-                    <TextField
-                      className={classes.textField}
-                      variant="outlined"
-                      fullWidth
-                      label="Password"
-                      name="password"
-                      type="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      error={!!errors.password}
-                      helperText={errors.password}
-                    />
-                    
+                  <TextField
+                    className={classes.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                  />
+                  
+                  <Button
+                    className={classes.button}
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    disabled={authLoading}
+                  >
+                    {authLoading ? (
+                      <>
+                        Logging In
+                        <CircularProgress size={20} className={classes.loader} />
+                      </>
+                    ) : (
+                      'Log In'
+                    )}
+                  </Button>
+                  
+                  <Box className={classes.registerLink}>
+                    <Typography className={classes.registerText} variant="body2" display="inline">
+                      Don't have an account?
+                    </Typography>
                     <Button
-                      className={classes.button}
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      disabled={authLoading}
+                      className={classes.registerButton}
+                      onClick={navigateToRegister}
                     >
-                      {authLoading ? (
-                        <>
-                          Logging In
-                          <CircularProgress size={20} className={classes.loader} />
-                        </>
-                      ) : (
-                        'Log In'
-                      )}
+                      Sign up
                     </Button>
-                    
-                    <Box sx={{ flexGrow: 1 }} /> {/* Spacer to push content to bottom */}
-                    
-                    <Box className={classes.registerLink}>
-                      <Typography className={classes.registerText} variant="body2" display="inline">
-                        Don't have an account?
-                      </Typography>
-                      <Button
-                        className={classes.registerButton}
-                        onClick={navigateToRegister}
-                      >
-                        Sign up
-                      </Button>
-                    </Box>
-                  </form>
-                </Box>
+                  </Box>
+                </form>
               </Paper>
             </Grid>
             
-            {/* Right side - Info and Illustration */}
-            <Grid item xs={12} md={6}>
-              <Paper className={classes.infoBox} elevation={0}>
-                <img src={illustration} alt="Resume Building" className={classes.illustration} />
-                <Typography variant="h5" gutterBottom align="center" className={classes.title} sx={{ mt: 3 }}>
-                  Build Your Professional Resume
-                </Typography>
-                <Typography variant="body1" paragraph align="center">
-                  Sign in to continue building your future with our professional resume tools.
-                </Typography>
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="body2" paragraph>
-                    • Create ATS-friendly resumes
+            {/* Info Box (hidden on mobile) */}
+            {!isMobile && (
+              <Grid item xs={12} md={6}>
+                <Paper className={classes.infoBox} elevation={0}>
+                  <img src={illustration} alt="Resume Building" className={classes.illustration} />
+                  <Typography variant="h5" gutterBottom align="center" className={classes.title} sx={{ mt: 3 }}>
+                    Build Your Professional Resume
                   </Typography>
-                  <Typography variant="body2" paragraph>
-                    • Access multiple resume templates
+                  <Typography variant="body1" paragraph align="center">
+                    Sign in to continue building your future with our professional resume tools.
                   </Typography>
-                  <Typography variant="body2" paragraph>
-                    • Save and manage your resume history
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="body2" paragraph>
+                      • Create ATS-friendly resumes
+                    </Typography>
+                    <Typography variant="body2" paragraph>
+                      • Access multiple resume templates
+                    </Typography>
+                    <Typography variant="body2" paragraph>
+                      • Save and manage your resume history
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Container>

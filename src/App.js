@@ -7,6 +7,7 @@ import './App.css';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import ResumeBuilder from './pages/ResumeBuilder';
+import LoadingScreen from './common/LoadingScreen';
 import Navbar from './common/Navbar';
 import Loading from './common/Loading';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -14,7 +15,7 @@ import { TemplateProvider } from './contexts/TemplateContext';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
-  const { currentUser, loading } = useAuth(); // Use auth context directly
+  const { currentUser, loading } = useAuth();
   
   if (loading) {
     return <Loading message="Checking authentication..." />;
@@ -33,8 +34,9 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
   
-  // Only show navbar when user is authenticated and not on auth pages
-  const shouldShowNavbar = currentUser && currentPath !== '/' && currentPath !== '/login';
+  // Only show navbar when user is authenticated and not on auth/loading pages
+  const isAuthPage = ['/login', '/', '/loading'].includes(currentPath);
+  const shouldShowNavbar = currentUser && !isAuthPage;
   
   // If we should show navbar, determine which tab should be active
   const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
@@ -57,6 +59,9 @@ function App() {
                 
                 {/* Login page */}
                 <Route path="/login" element={<Login />} />
+                
+                {/* Loading screen as transition between auth and app */}
+                <Route path="/loading" element={<LoadingScreen />} />
                 
                 {/* Protected route for resume builder */}
                 <Route 

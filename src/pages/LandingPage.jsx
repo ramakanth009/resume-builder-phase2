@@ -93,19 +93,18 @@ const LandingPage = () => {
     setLoading(true);
     
     try {
-      // Use the register function from AuthContext
-      const response = await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.email, formData.password);
       
       setSnackbar({
         open: true,
-        message: 'Registration successful! Redirecting to login...',
+        message: 'Registration successful! Redirecting...',
         severity: 'success',
       });
       
-      // Redirect to login after a short delay
+      // Navigate to loading screen and then to login
       setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+        navigate('/loading', { state: { destination: '/login' } });
+      }, 1000);
     } catch (error) {
       setSnackbar({
         open: true,
@@ -135,17 +134,24 @@ const LandingPage = () => {
     }));
   };
 
-  // Inline styles to avoid issues with makeStylesWithTheme
+  // Styles defined inline to match requirements
   const styles = {
     root: {
       minHeight: '100vh',
       padding: '2rem 0',
       background: '#f9f9f9',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'auto',
     },
     paper: {
       padding: '2rem',
       borderRadius: '10px',
       boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: '#ffffff',
     },
     title: {
       fontWeight: 700,
@@ -175,15 +181,15 @@ const LandingPage = () => {
       marginTop: '1rem',
       backgroundColor: '#3182ce',
       color: 'white',
-      '&:hover': {
-        backgroundColor: '#2b6cb0',
-      },
+    },
+    buttonHover: {
+      backgroundColor: '#2b6cb0',
     },
     illustration: {
       width: '100%',
       height: 'auto',
-      maxWidth: '400px',
-      maxHeight: '390px',
+      maxWidth: '350px',
+      maxHeight: '350px',
       display: 'block',
       margin: '0 auto',
     },
@@ -204,22 +210,28 @@ const LandingPage = () => {
       marginLeft: '10px',
       color: 'white',
     },
+    logoContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: '1.5rem',
+    },
     logo: {
       width: '32px',
       height: '32px',
       marginRight: '0.5rem',
     },
-    logoContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '1rem',
+    contentContainer: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      width: '100%',
     }
   };
 
   return (
     <Box sx={styles.root}>
-      <Container maxWidth="lg">
+      <Container>
+        {/* Logo */}
         <Box sx={styles.logoContainer}>
           <img src={GigaLogo} alt="Gigaversity Logo" style={styles.logo} />
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
@@ -227,166 +239,189 @@ const LandingPage = () => {
           </Typography>
         </Box>
         
-        <Box mb={4}>
-          <Typography variant="h3" align="center" sx={styles.title} gutterBottom>
-            Student Resume Builder
-          </Typography>
-          <Typography variant="h6" align="center" sx={styles.subtitle}>
-            Create a professional resume in minutes, completely free!
-          </Typography>
-        </Box>
+        {/* Title (hide on mobile) */}
+        {!isMobile && (
+          <Box mb={4}>
+            <Typography variant="h3" align="center" sx={styles.title} gutterBottom>
+              Student Resume Builder
+            </Typography>
+            <Typography variant="h6" align="center" sx={styles.subtitle}>
+              Create a professional resume in minutes, completely free!
+            </Typography>
+          </Box>
+        )}
         
-        <Grid container spacing={4}>
-          {/* Left side - Registration Form */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={styles.paper} elevation={0}>
-              <Typography variant="h5" gutterBottom sx={styles.title}>
-                Create your account
-              </Typography>
-              <Typography variant="body2" gutterBottom sx={styles.subtitle}>
-                Get started with your free account to create and manage your resumes.
-              </Typography>
-              
-              <form style={styles.form} onSubmit={handleSubmit}>
-                <TextField
-                  sx={styles.textField}
-                  variant="outlined"
-                  fullWidth
-                  label="Full Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  error={!!errors.name}
-                  helperText={errors.name}
-                />
+        {/* Mobile title */}
+        {isMobile && (
+          <Box mb={3}>
+            <Typography variant="h5" align="center" sx={styles.title} gutterBottom>
+              Create Account
+            </Typography>
+          </Box>
+        )}
+        
+        <Box sx={styles.contentContainer}>
+          <Grid container spacing={4}>
+            {/* Left side - Registration Form */}
+            <Grid item xs={12} md={6}>
+              <Paper sx={styles.paper} elevation={0}>
+                {!isMobile && (
+                  <>
+                    <Typography variant="h5" gutterBottom sx={styles.title}>
+                      Create your account
+                    </Typography>
+                    <Typography variant="body2" gutterBottom sx={styles.subtitle}>
+                      Get started with your free account to create and manage your resumes.
+                    </Typography>
+                  </>
+                )}
                 
-                <TextField
-                  sx={styles.textField}
-                  variant="outlined"
-                  fullWidth
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={!!errors.email}
-                  helperText={errors.email}
-                />
-                
-                <TextField
-                  sx={styles.textField}
-                  variant="outlined"
-                  fullWidth
-                  label="Password"
-                  name="password"
-                  type={showPassword.password ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleTogglePasswordVisibility('password')}
-                          edge="end"
-                        >
-                          {showPassword.password ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                
-                <TextField
-                  sx={styles.textField}
-                  variant="outlined"
-                  fullWidth
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type={showPassword.confirmPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleTogglePasswordVisibility('confirmPassword')}
-                          edge="end"
-                        >
-                          {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                
-                <Button
-                  sx={styles.button}
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disabled={loading || authLoading}
-                >
-                  {loading || authLoading ? (
-                    <>
-                      Creating Account
-                      <CircularProgress size={20} sx={styles.loader} />
-                    </>
-                  ) : (
-                    'Sign Up'
-                  )}
-                </Button>
-              </form>
-              
-              <Box sx={styles.loginLink}>
-                <Typography sx={styles.loginText} variant="body2" display="inline">
-                  Already have an account?
-                </Typography>
-                <Button
-                  sx={styles.loginButton}
-                  onClick={navigateToLogin}
-                >
-                  Log in
-                </Button>
-              </Box>
-            </Paper>
+                <form style={styles.form} onSubmit={handleSubmit}>
+                  <TextField
+                    sx={styles.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Full Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    error={!!errors.name}
+                    helperText={errors.name}
+                  />
+                  
+                  <TextField
+                    sx={styles.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                  />
+                  
+                  <TextField
+                    sx={styles.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Password"
+                    name="password"
+                    type={showPassword.password ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleTogglePasswordVisibility('password')}
+                            edge="end"
+                          >
+                            {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  
+                  <TextField
+                    sx={styles.textField}
+                    variant="outlined"
+                    fullWidth
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type={showPassword.confirmPassword ? 'text' : 'password'}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleTogglePasswordVisibility('confirmPassword')}
+                            edge="end"
+                          >
+                            {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  
+                  <Button
+                    sx={{...styles.button, '&:hover': styles.buttonHover}}
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    disabled={loading || authLoading}
+                  >
+                    {loading || authLoading ? (
+                      <>
+                        Creating Account
+                        <CircularProgress size={20} sx={styles.loader} />
+                      </>
+                    ) : (
+                      'Sign Up'
+                    )}
+                  </Button>
+                  
+                  <Box sx={styles.loginLink}>
+                    <Typography sx={styles.loginText} variant="body2" display="inline">
+                      Already have an account?
+                    </Typography>
+                    <Button
+                      sx={styles.loginButton}
+                      onClick={navigateToLogin}
+                    >
+                      Log in
+                    </Button>
+                  </Box>
+                </form>
+              </Paper>
+            </Grid>
+            
+            {/* Right side - Info and Illustration (hide on mobile) */}
+            {!isMobile && (
+              <Grid item xs={12} md={6}>
+                <Paper sx={{ 
+                  ...styles.paper, 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  backgroundColor: '#f0f5ff', 
+                }} elevation={0}>
+                  <img src={illustration} alt="Resume Building" style={styles.illustration} />
+                  <Typography variant="h5" gutterBottom align="center" sx={styles.title} mt={3}>
+                    Why Choose Our Resume Builder?
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="body1" paragraph>
+                      ✓ Free for all students
+                    </Typography>
+                    <Typography variant="body1" paragraph>
+                      ✓ ATS-friendly resume templates
+                    </Typography>
+                    <Typography variant="body1" paragraph>
+                      ✓ Live preview as you type
+                    </Typography>
+                    <Typography variant="body1" paragraph>
+                      ✓ Save and edit multiple versions
+                    </Typography>
+                    <Typography variant="body1">
+                      ✓ Professionally designed templates
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
           </Grid>
-          
-          {/* Right side - Info and Illustration */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ 
-              ...styles.paper, 
-              display: 'flex', 
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%'
-            }} elevation={0}>
-              <img src={illustration} alt="Resume Building" style={styles.illustration} />
-              <Typography variant="h5" gutterBottom align="center" sx={styles.title}>
-                Why Choose Our Resume Builder?
-              </Typography>
-              <Typography variant="body1" paragraph>
-                ✓ Free for all students
-              </Typography>
-              <Typography variant="body1" paragraph>
-                ✓ ATS-friendly resume templates
-              </Typography>
-              <Typography variant="body1" paragraph>
-                ✓ Live preview as you type
-              </Typography>
-              <Typography variant="body1" paragraph>
-                ✓ Save and edit multiple versions
-              </Typography>
-              <Typography variant="body1">
-                ✓ Professionally designed templates
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
+        </Box>
       </Container>
       
       <Snackbar 
