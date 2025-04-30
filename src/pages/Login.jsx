@@ -1,103 +1,164 @@
 import React, { useState } from 'react';
-import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { 
-  Container, 
   Box, 
   Typography, 
   TextField, 
   Button, 
-  Paper, 
   Snackbar,
   CircularProgress,
-  Grid,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Fade,
+  IconButton
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
-import illustration from '../assets/resume-illustration.svg';
+import { makeStyles } from '@mui/styles';
 import GigaLogo from '../assets/giga-loogo.svg';
 import { useAuth } from '../contexts/AuthContext';
+import illustration from '../assets/resume-illustration.svg';
 
-const useStyles = makeStylesWithTheme((theme) => ({
+// Color palette matching the green theme from reference image
+const colors = {
+  primary: {
+    main: '#0EB582',    // Primary green
+    light: '#E6F7F2',   // Light green background
+    dark: '#0A8F66',    // Darker green for hover states
+  },
+  text: {
+    primary: '#2E384D',  // Dark text
+    secondary: '#6B7A99', // Medium gray text
+    light: '#FFFFFF',    // White text
+  },
+  background: {
+    default: '#F5F7FA',  // Light gray background
+    paper: '#FFFFFF',    // White background
+  },
+  error: '#E63946',      // Error red
+};
+
+const useStyles = makeStyles(() => ({
   root: {
     minHeight: '100vh',
-    padding: '2rem 0',
-    background: '#f5f7fa',
+    width: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+  },
+  // Left section (form)
+  leftSection: {
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'auto',
-  },
-  paper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
     padding: '2rem',
-    borderRadius: '10px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-    height: '100%',
+    backgroundColor: colors.background.paper,
+    '@media (max-width: 900px)': {
+      width: '100%',
+    },
+  },
+  // Right section (illustration)
+  rightSection: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    padding: '2rem',
+    backgroundColor: colors.primary.main,
+    '@media (max-width: 900px)': {
+      display: 'none',
+    },
   },
-  title: {
+  formContainer: {
+    maxWidth: '400px',
+    width: '100%',
+    margin: '0 auto',
+    padding: '2rem',
+  },
+  logo: {
+    width: '40px',
+    height: '40px',
+    marginRight: '0.5rem',
+  },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '2rem',
+  },
+  logoText: {
+    fontWeight: 700,
+    fontSize: '1.5rem',
+    color: colors.text.primary,
+  },
+  welcomeText: {
+    color: colors.text.primary,
     fontWeight: 700,
     marginBottom: '0.5rem',
-    color: '#2d3748',
+    fontSize: '1.75rem',
   },
   subtitle: {
+    color: colors.text.secondary,
     marginBottom: '2rem',
-    color: '#718096',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
-    flex: 1,
+    gap: '1.25rem',
   },
   textField: {
     '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
+      borderRadius: '0.5rem',
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#E2E8F0',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: colors.primary.main,
+    },
+    '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: colors.primary.main,
+    },
+  },
+  formDivider: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: '1.5rem 0',
+    color: colors.text.secondary,
+    '&::before, &::after': {
+      content: '""',
+      flex: 1,
+      borderBottom: '1px solid #E2E8F0',
+    },
+    '&::before': {
+      marginRight: '0.5rem',
+    },
+    '&::after': {
+      marginLeft: '0.5rem',
     },
   },
   button: {
     padding: '0.75rem',
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     fontWeight: 600,
     textTransform: 'none',
     fontSize: '1rem',
     marginTop: '1rem',
-    backgroundColor: '#3182ce',
-    color: 'white',
+    backgroundColor: colors.primary.main,
+    color: colors.text.light,
     '&:hover': {
-      backgroundColor: '#2b6cb0',
+      backgroundColor: colors.primary.dark,
     },
-  },
-  illustration: {
-    width: '100%',
-    height: 'auto',
-    maxWidth: '300px',
-    display: 'block',
-    margin: '0 auto',
-  },
-  infoBox: {
-    padding: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    backgroundColor: '#f0f5ff',
-    borderRadius: '10px',
-    height: '100%',
   },
   registerLink: {
     textAlign: 'center',
-    marginTop: 'auto',
-    paddingTop: '1.5rem',
+    marginTop: '1.5rem',
   },
   registerText: {
-    color: '#718096',
+    color: colors.text.secondary,
   },
   registerButton: {
-    color: '#3182ce',
+    color: colors.primary.main,
     fontWeight: 600,
     textTransform: 'none',
     padding: '0 4px',
@@ -106,26 +167,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginLeft: '10px',
     color: 'white',
   },
-  logoContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '1.5rem',
-  },
-  logo: {
-    width: '32px',
-    height: '32px',
-    marginRight: '0.5rem',
-  },
-  logoText: {
+  // Right side content styles
+  welcomeRight: {
+    color: colors.text.light,
     fontWeight: 700,
-    fontSize: '1.25rem',
+    fontSize: '1.75rem',
+    marginBottom: '1rem',
+    textAlign: 'center',
   },
-  contentContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    width: '100%',
-  }
+  subtitleRight: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: '2rem',
+    textAlign: 'center',
+  },
+  illustration: {
+    width: '80%',
+    maxWidth: '300px',
+    marginBottom: '2rem',
+    filter: 'brightness(1.05)',
+  },
 }));
 
 const Login = () => {
@@ -207,135 +267,100 @@ const Login = () => {
 
   return (
     <Box className={classes.root}>
-      <Container>
-        {/* Logo */}
-        <Box className={classes.logoContainer}>
-          <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
-          <Typography variant="h6" className={classes.logoText}>
-            Gigaversity
+      {/* Left Section - Form */}
+      <Fade in={true} timeout={600}>
+        <Box className={classes.leftSection}>
+          <Box className={classes.formContainer}>
+            <Box className={classes.logoContainer}>
+              <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
+              <Typography className={classes.logoText}>
+                Gigaversity
+              </Typography>
+            </Box>
+            
+            <Typography variant="h4" className={classes.welcomeText}>
+              Welcome Back!
+            </Typography>
+            <Typography variant="body1" className={classes.subtitle}>
+              Log in to continue to your account
+            </Typography>
+            
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Email Address"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                placeholder="Enter your email"
+              />
+              
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                placeholder="Enter your password"
+              />
+              
+              <Button
+                className={classes.button}
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={authLoading}
+              >
+                {authLoading ? (
+                  <>
+                    Logging In
+                    <CircularProgress size={20} className={classes.loader} />
+                  </>
+                ) : (
+                  'Log In'
+                )}
+              </Button>
+              
+              <Typography className={classes.formDivider}>or</Typography>
+              
+              <Box className={classes.registerLink}>
+                <Typography className={classes.registerText} variant="body2" display="inline">
+                  Don't have an account?
+                </Typography>
+                <Button
+                  className={classes.registerButton}
+                  onClick={navigateToRegister}
+                >
+                  Sign up
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Box>
+      </Fade>
+      
+      {/* Right Section - Illustration */}
+      <Fade in={true} timeout={800}>
+        <Box className={classes.rightSection}>
+          <img src={illustration} alt="Resume Builder" className={classes.illustration} />
+          <Typography variant="h4" className={classes.welcomeRight}>
+            Resume Builder
+          </Typography>
+          <Typography variant="body1" className={classes.subtitleRight}>
+            Create professional resumes in minutes
           </Typography>
         </Box>
-        
-        {/* Title (only visible on non-mobile) */}
-        {!isMobile && (
-          <Box mb={4}>
-            <Typography variant="h3" align="center" className={classes.title} gutterBottom>
-              Student Resume Builder
-            </Typography>
-            <Typography variant="h6" align="center" className={classes.subtitle}>
-              Welcome back! Log in to your account
-            </Typography>
-          </Box>
-        )}
-        
-        {/* Mobile Title (only visible on mobile) */}
-        {isMobile && (
-          <Box mb={3}>
-            <Typography variant="h5" align="center" className={classes.title} gutterBottom>
-              Log In
-            </Typography>
-          </Box>
-        )}
-        
-        {/* Content Container */}
-        <Box className={classes.contentContainer}>
-          <Grid container spacing={3}>
-            {/* Login Form */}
-            <Grid item xs={12} md={6}>
-              <Paper className={classes.paper} elevation={0}>
-                {!isMobile && (
-                  <Typography variant="h5" gutterBottom className={classes.title}>
-                    Log in to your account
-                  </Typography>
-                )}
-                
-                <form className={classes.form} onSubmit={handleSubmit}>
-                  <TextField
-                    className={classes.textField}
-                    variant="outlined"
-                    fullWidth
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    error={!!errors.email}
-                    helperText={errors.email}
-                  />
-                  
-                  <TextField
-                    className={classes.textField}
-                    variant="outlined"
-                    fullWidth
-                    label="Password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    error={!!errors.password}
-                    helperText={errors.password}
-                  />
-                  
-                  <Button
-                    className={classes.button}
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={authLoading}
-                  >
-                    {authLoading ? (
-                      <>
-                        Logging In
-                        <CircularProgress size={20} className={classes.loader} />
-                      </>
-                    ) : (
-                      'Log In'
-                    )}
-                  </Button>
-                  
-                  <Box className={classes.registerLink}>
-                    <Typography className={classes.registerText} variant="body2" display="inline">
-                      Don't have an account?
-                    </Typography>
-                    <Button
-                      className={classes.registerButton}
-                      onClick={navigateToRegister}
-                    >
-                      Sign up
-                    </Button>
-                  </Box>
-                </form>
-              </Paper>
-            </Grid>
-            
-            {/* Info Box (hidden on mobile) */}
-            {!isMobile && (
-              <Grid item xs={12} md={6}>
-                <Paper className={classes.infoBox} elevation={0}>
-                  <img src={illustration} alt="Resume Building" className={classes.illustration} />
-                  <Typography variant="h5" gutterBottom align="center" className={classes.title} sx={{ mt: 3 }}>
-                    Build Your Professional Resume
-                  </Typography>
-                  <Typography variant="body1" paragraph align="center">
-                    Sign in to continue building your future with our professional resume tools.
-                  </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" paragraph>
-                      • Create ATS-friendly resumes
-                    </Typography>
-                    <Typography variant="body2" paragraph>
-                      • Access multiple resume templates
-                    </Typography>
-                    <Typography variant="body2" paragraph>
-                      • Save and manage your resume history
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            )}
-          </Grid>
-        </Box>
-      </Container>
+      </Fade>
       
       <Snackbar 
         open={snackbar.open} 
