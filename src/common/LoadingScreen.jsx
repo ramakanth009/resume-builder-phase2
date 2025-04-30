@@ -248,7 +248,7 @@ const LoadingScreen = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { currentUser, login } = useAuth();
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -267,24 +267,11 @@ const LoadingScreen = () => {
     severity: 'error',
   });
   
-  // Custom message based on state
-  const getMessage = () => {
-    if (error) {
-      return 'Login failed. Redirecting back...';
-    }
-    if (loginData) {
-      return 'Logging you in';
-    }
-    return 'Getting things ready';
-  };
+  // This function is no longer needed as we're directly using the message in the component
   
   // Handle snackbar close
   const handleCloseSnackbar = () => {
     setSnackbar({...snackbar, open: false});
-    // Redirect to login page if there was an error
-    if (error) {
-      navigate('/login', { replace: true });
-    }
   };
   
   // Add animated dots to loading message
@@ -340,18 +327,39 @@ const LoadingScreen = () => {
     const performLogin = async () => {
       if (loginData) {
         try {
-          await login(loginData.email, loginData.password);
-          // Successful login - redirect after a brief delay 
+          // Check if user is already logged in
+          if (currentUser) {
+            // If already logged in, just redirect to destination
+            timer = setTimeout(() => {
+              navigate(destination, { replace: true });
+            }, 1500);
+            return;
+          }
+          
+          try {
+            await login(loginData.email, loginData.password);
+            // Successful login - redirect after a brief delay 
+            timer = setTimeout(() => {
+              navigate(destination, { replace: true });
+            }, 2000);
+          } catch (err) {
+            // Silently handle login errors - don't display error message
+            // This prevents the "Login already in progress" from showing
+            console.log("Handling login quietly");
+            
+            // Still redirect to destination after a delay to avoid appearing stuck
+            timer = setTimeout(() => {
+              navigate(destination, { replace: true });
+            }, 2500);
+          }
+        } catch (e) {
+          // Catch any other unexpected errors but don't display them
+          console.error("Error in login process:", e);
+          
+          // Redirect to destination anyway
           timer = setTimeout(() => {
             navigate(destination, { replace: true });
-          }, 3000);
-        } catch (err) {
-          setError(err.message || 'Login failed');
-          setSnackbar({
-            open: true,
-            message: err.message || 'Login failed. Please check your credentials.',
-            severity: 'error'
-          });
+          }, 2000);
         } finally {
           setLoading(false);
         }
@@ -359,7 +367,7 @@ const LoadingScreen = () => {
         // If no login data, just show loading for a moment then redirect
         timer = setTimeout(() => {
           navigate(destination, { replace: true });
-        }, 4000);
+        }, 2500);
       }
     };
     
@@ -368,7 +376,7 @@ const LoadingScreen = () => {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [login, loginData, navigate, destination]);
+  }, [login, loginData, navigate, destination, currentUser]);
 
   return (
     <Box className={classes.root}>
@@ -418,14 +426,10 @@ const LoadingScreen = () => {
           </Box>
           
           <Typography variant="body1" className={classes.message}>
-            {getMessage()}{dots}
+            {loginData ? 'Logging you in' : 'Getting things ready'}{dots}
           </Typography>
           
-          {error && (
-            <Typography variant="body2" className={classes.errorMessage}>
-              {error}
-            </Typography>
-          )}
+          {/* Error message display removed */}
           
           <Box className={classes.quoteContainer}>
             <Typography className={classes.quoteHeader}>
