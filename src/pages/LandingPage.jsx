@@ -41,6 +41,7 @@ const useStyles = makeStyles(() => ({
     flexWrap: "wrap",
     height: "100vh",
   },
+  // Condensed left side styles
   leftSection: {
     flex: "1 1 300px",
     display: "flex",
@@ -50,6 +51,7 @@ const useStyles = makeStyles(() => ({
     background: colors.backgroundGradient,
     position: "relative",
     overflow: "hidden",
+    padding: "1rem", // Reduced padding
   },
   rightSection: {
     flex: "1 1 300px", // grow/shrink, min-width 300px
@@ -139,7 +141,6 @@ const useStyles = makeStyles(() => ({
   },
   loginLink: {
     textAlign: "center",
-    // marginTop: "1rem",
   },
   loginText: {
     color: colors.midBlue,
@@ -154,68 +155,23 @@ const useStyles = makeStyles(() => ({
     marginLeft: "8px",
     color: colors.white,
   },
-  // Left side content
-  welcomeLeft: {
-    color: colors.white,
-    fontWeight: 700,
-    fontSize: "1.75rem",
-    marginBottom: "1rem",
-    textAlign: "center",
-  },
-  subtitleLeft: {
-    color: "rgba(255,255,255,0.8)",
-    marginBottom: "1.5rem",
-    textAlign: "center",
-    maxWidth: "300px",
-  },
-  featuresContainer: {
-    width: "100%",
-    maxWidth: "320px",
-    marginTop: "2rem",
-    padding: "0 1.5rem",
-  },
-  featureItem: {
-    display: "flex",
-    alignItems: "flex-start",
-    margin: "1.5rem 0",
-    color: "rgba(255,255,255,0.9)",
-    opacity: 0,
-    transform: "translateY(20px)",
-    animation: "$slideIn 0.6s forwards",
-    gap: "1rem",
-  },
-  "@keyframes slideIn": {
-    to: { opacity: 1, transform: "translateY(0)" },
-  },
-  animatedShape: {
-    position: "absolute",
-    borderRadius: "30% 70% 70% 30% 0% 70%",
-    background: "rgba(255,255,255,0.1)",
-    animation: "$float 20s infinite",
-  },
-  "@keyframes float": {
-    "0%": { transform: "rotate(0deg) translateX(0)" },
-    "50%": { transform: "rotate(180deg) translateX(20px)" },
-    "100%": { transform: "rotate(360deg) translateX(0)" },
-  },
-  
-  // Enhanced left side styles
+  // Condensed left side content
   leftContentContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '2rem',
+    padding: '1rem', // Reduced padding
     width: '100%',
     position: 'relative',
     zIndex: 2,
   },
   mainHeadline: {
     color: colors.white,
-    fontWeight: 900,
-    fontSize: '2.6rem',
+    fontWeight: 800,
+    fontSize: '2rem', // Reduced from 2.6rem
     textAlign: 'center',
-    marginBottom: '1rem',
+    marginBottom: '0.5rem', // Reduced from 1rem
     lineHeight: 1.2,
   },
   highlightedText: {
@@ -235,31 +191,30 @@ const useStyles = makeStyles(() => ({
   tagline: {
     color: 'rgba(255,255,255,0.8)',
     textAlign: 'center',
-    marginBottom: '2rem',
+    marginBottom: '1rem', // Reduced from 2rem
     fontWeight: 400,
+    fontSize: '0.9rem', // Added smaller font size
   },
-  
-  // Statistics grid styles
+  // Condensed stats grid
   statsGridContainer: {
     display: 'flex',
-    flexDirection: 'row', // Changed from column to row
-    gap: '1rem',
+    flexWrap: 'wrap',
+    gap: '0.5rem', // Reduced gap
     width: '100%',
-    maxWidth: '900px', // Increased to accommodate horizontal layout
-    marginBottom: '2rem',
-    justifyContent: 'center', // Center the cards
-    flexWrap: 'wrap', // Allow wrapping on smaller screens
+    maxWidth: '900px',
+    marginBottom: '1rem', // Reduced from 2rem
+    justifyContent: 'center',
   },
   statCard: {
     backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: '12px',
-    padding: '1rem',
+    borderRadius: '8px', // Smaller radius
+    padding: '0.5rem 0.75rem', // Reduced padding
     display: 'flex',
     flexDirection: 'column',
     transition: 'all 0.3s ease',
-    flex: '1 1 250px', // Added flex basis for equal widths
-    maxWidth: '280px', // Prevent cards from getting too wide
-    minWidth: '200px', // Ensure cards don't get too narrow
+    flex: '1 1 150px', // Smaller flex basis
+    maxWidth: '200px', // Reduced max width
+    minWidth: '130px', // Reduced min width
     '&:hover': {
       backgroundColor: 'rgba(255,255,255,0.15)',
       transform: 'translateY(-3px)',
@@ -267,26 +222,55 @@ const useStyles = makeStyles(() => ({
   },
   statNumber: {
     color: colors.featurePink,
-    fontWeight: 900,
-    fontSize: '2rem',
-    marginBottom: '0.5rem',
+    fontWeight: 800,
+    fontSize: '1.5rem', // Reduced from 2rem
+    marginBottom: '0.25rem', // Reduced margin
   },
   statDescription: {
     color: colors.white,
-    fontSize: '0.9rem',
+    fontSize: '0.8rem', // Reduced from 0.9rem
   },
-  
-  // Enhanced features styles
+  // Condensed features
+  featuresContainer: {
+    width: "100%",
+    maxWidth: "280px", // Reduced from 320px
+    marginTop: "1rem", // Reduced from 2rem
+    padding: "0 1rem", // Reduced padding
+  },
   featuresHeading: {
     color: colors.white,
-    fontWeight: 700,
-    marginBottom: "1.5rem",
+    fontWeight: 600,
+    marginBottom: "0.75rem", // Reduced from 1.5rem
     textAlign: "center",
-    fontSize: "1.5rem",
+    fontSize: "1.1rem", // Reduced from 1.5rem
+  },
+  featureItem: {
+    display: "flex",
+    alignItems: "flex-start",
+    margin: "0.75rem 0", // Reduced from 1.5rem
+    color: "rgba(255,255,255,0.9)",
+    opacity: 0,
+    transform: "translateY(20px)",
+    animation: "$slideIn 0.6s forwards",
+    gap: "0.75rem", // Reduced from 1rem
+  },
+  "@keyframes slideIn": {
+    to: { opacity: 1, transform: "translateY(0)" },
+  },
+  animatedShape: {
+    position: "absolute",
+    borderRadius: "30% 70% 70% 30% 0% 70%",
+    background: "rgba(255,255,255,0.1)",
+    animation: "$float 20s infinite",
+  },
+  "@keyframes float": {
+    "0%": { transform: "rotate(0deg) translateX(0)" },
+    "50%": { transform: "rotate(180deg) translateX(20px)" },
+    "100%": { transform: "rotate(360deg) translateX(0)" },
   },
   featureIcon: {
-    width: "28px",
-    height: "28px",
+    width: "22px", // Reduced from 28px
+    height: "22px", // Reduced from 28px
     backgroundColor: colors.featurePink,
     borderRadius: "50%",
     display: "flex",
@@ -295,18 +279,19 @@ const useStyles = makeStyles(() => ({
     color: colors.white,
     fontWeight: "bold",
     flexShrink: 0,
-    marginTop: "4px",
+    marginTop: "2px", // Reduced from 4px
+    fontSize: "0.75rem", // Added smaller font size
   },
   featureTitle: {
     color: colors.white,
     fontWeight: 600,
-    marginBottom: "0.5rem",
-    fontSize: "1.1rem",
+    marginBottom: "0.25rem", // Reduced from 0.5rem
+    fontSize: "0.9rem", // Reduced from 1.1rem
   },
   featureDescription: {
     color: "rgba(255,255,255,0.7)",
-    fontSize: "0.9rem",
-    lineHeight: "1.5",
+    fontSize: "0.8rem", // Reduced from 0.9rem
+    lineHeight: "1.4", // Reduced from 1.5
   },
 }));
 
@@ -413,28 +398,26 @@ const LandingPage = () => {
           sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
         />
 
-        {/* Enhanced left side content */}
+        {/* Condensed left content */}
         <Fade in timeout={1000}>
           <Box className={classes.leftContentContainer}>
-            <Typography
-              variant="h2"
-              className={classes.mainHeadline}
-            >
-              Launch Your Career <br/>
-              <span className={classes.highlightedText}>With Confidence</span>
+            {/* Simplified headline with reduced linebreak */}
+            <Typography variant="h2" className={classes.mainHeadline}>
+              Launch Your Career
+              <span className={classes.highlightedText}> With Confidence</span>
             </Typography>
             
-            <Typography variant="h6" className={classes.tagline}>
-              The resume builder designed specifically for students
+            <Typography variant="subtitle1" className={classes.tagline}>
+              The resume builder for students
             </Typography>
             
-            {/* Value proposition statistics */}
+            {/* More compact statistics */}
             <Box className={classes.statsGridContainer}>
               <Fade in timeout={1200}>
                 <Box className={classes.statCard}>
                   <Typography variant="h3" className={classes.statNumber}>68%</Typography>
-                  <Typography variant="body1" className={classes.statDescription}>
-                    More interview callbacks with professional templates
+                  <Typography variant="body2" className={classes.statDescription}>
+                    More interview callbacks
                   </Typography>
                 </Box>
               </Fade>
@@ -442,8 +425,8 @@ const LandingPage = () => {
               <Fade in timeout={1400}>
                 <Box className={classes.statCard}>
                   <Typography variant="h3" className={classes.statNumber}>7.4s</Typography>
-                  <Typography variant="body1" className={classes.statDescription}>
-                    Average time recruiters spend reviewing a resume
+                  <Typography variant="body2" className={classes.statDescription}>
+                    Average recruiter review time
                   </Typography>
                 </Box>
               </Fade>
@@ -451,17 +434,17 @@ const LandingPage = () => {
               <Fade in timeout={1600}>
                 <Box className={classes.statCard}>
                   <Typography variant="h3" className={classes.statNumber}>100%</Typography>
-                  <Typography variant="body1" className={classes.statDescription}>
-                    Free for all students. No hidden fees
+                  <Typography variant="body2" className={classes.statDescription}>
+                    Free for students
                   </Typography>
                 </Box>
               </Fade>
             </Box>
             
-            {/* Feature list */}
+            {/* Condensed features with shorter descriptions */}
             <Box className={classes.featuresContainer}>
               <Typography variant="h6" className={classes.featuresHeading}>
-                Why Gigaversity Resume Builder?
+                Why Choose Us?
               </Typography>
               
               {visibleFeatures.map((index) => (
@@ -470,19 +453,17 @@ const LandingPage = () => {
                     className={classes.featureItem}
                     sx={{ animationDelay: `${index * 0.2}s` }}
                   >
-                    <Box className={classes.featureIcon}>
-                      ✓
-                    </Box>
+                    <Box className={classes.featureIcon}>✓</Box>
                     <Box>
-                      <Typography variant="subtitle1" className={classes.featureTitle}>
-                        {["ATS-Optimized Templates", "Real-Time Preview", "Multiple Design Options", "One-Click Download"][index]}
+                      <Typography variant="subtitle2" className={classes.featureTitle}>
+                        {["ATS-Optimized", "Real-Time Preview", "Multiple Templates", "One-Click Download"][index]}
                       </Typography>
                       <Typography variant="body2" className={classes.featureDescription}>
                         {[
-                          "Ensure your resume passes automated screening systems used by 95% of large companies.",
-                          "See changes instantly as you type. No surprises in the final output.",
-                          "Choose from professional templates designed for different industries and roles.",
-                          "Download your polished resume as a PDF with a single click when you're done."
+                          "Pass automated screening systems used by top companies.",
+                          "See changes instantly as you type.",
+                          "Choose from professional templates for various roles.",
+                          "Export your resume as PDF with a single click."
                         ][index]}
                       </Typography>
                     </Box>
