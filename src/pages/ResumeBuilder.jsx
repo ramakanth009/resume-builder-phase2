@@ -742,15 +742,6 @@ const handleDownloadResume = async () => {
 
   return (
     <Container className={classes.root} maxWidth="xl">
-      {/* Display page title based on whether we're editing or creating */}
-      <Typography variant="h4" className={classes.pageTitle}>
-        {isEditingExisting ? 'Edit Resume' : 'Build Your Resume'}
-        {isEditingExisting && (
-          <span className={`${classes.statusChip} ${classes.successStatusChip}`}>
-            Editing
-          </span>
-        )}
-      </Typography>
       
       {/* Display resume ID if editing */}
       {isEditingExisting && (

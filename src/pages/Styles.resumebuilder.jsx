@@ -167,29 +167,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       activeModeButton: {
         boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.5)',
       },
-      pageTitle: {
-        fontWeight: 700,
-        marginBottom: '1rem',
-        textAlign: 'center',
-        color: '#2d3748',
-      },
-      statusChip: {
-        marginLeft: '0.5rem',
-        padding: '0.25rem 0.75rem',
-        borderRadius: '9999px',
-        fontSize: '0.75rem',
-        fontWeight: 600,
-        backgroundColor: '#e6fffa',
-        color: '#319795',
-      },
-      successStatusChip: {
-        backgroundColor: '#e6fffa',
-        color: '#319795',
-      },
-      warningStatusChip: {
-        backgroundColor: '#fffaf0',
-        color: '#dd6b20',
-      },
       resumeIdText: {
         fontSize: '0.875rem',
         color: '#718096',
