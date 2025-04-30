@@ -193,39 +193,91 @@ const useStyles = makeStyles(() => ({
     textAlign: "center",
     maxWidth: "300px",
   },
-  featuresContainer: {
-    width: "100%",
-    maxWidth: "280px",
-    marginTop: "1rem",
+  processContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1.5rem',
+    marginTop: '2rem',
+    width: '100%',
+    maxWidth: '280px',
+  },
+  processStep: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    transform: 'translateX(0)',
+    transition: 'transform 0.3s ease-out',
+    '&:hover': {
+      transform: 'translateX(8px)',
+    },
+  },
+  processIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '26px',
+    height: '26px',
+    borderRadius: '50%',
+    backgroundColor: colors.accentTeal,
+    color: colors.white,
+    fontWeight: 'bold',
+    fontSize: '0.9rem',
+  },
+  processText: {
+    color: colors.white,
+    fontSize: '0.9rem',
+  },
+  
+  // Student benefits styles
+  studentBenefits: {
+    marginTop: '2.5rem',
+    width: '100%',
+    maxWidth: '320px',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: '12px',
+    padding: '1.5rem',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255,255,255,0.1)',
+  },
+  benefitsTitle: {
+    color: colors.accentTeal,
+    marginBottom: '1.5rem',
+    fontWeight: 700,
+    fontSize: '1.2rem',
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase',
   },
   featureItem: {
     display: "flex",
     alignItems: "center",
-    margin: "0.75rem 0",
+    margin: "1rem 0",
     color: colors.white,
     transform: "translateX(0)",
-    transition: "transform 0.3s ease-out",
+    transition: "all 0.3s ease-out",
+    padding: "0.5rem 0.75rem",
+    borderRadius: "8px",
     "&:hover": {
       transform: "translateX(8px)",
+      backgroundColor: 'rgba(255,255,255,0.1)',
     },
   },
   checkmark: {
-    marginRight: "0.75rem",
+    marginRight: "1rem",
     fontWeight: "bold",
     fontSize: "1.1rem",
     color: colors.accentTeal,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "24px",
-    height: "24px",
+    width: "26px",
+    height: "26px",
     borderRadius: "50%",
-    background: "rgba(255,255,255,0.1)",
+    background: "rgba(56,182,210,0.15)",
+    border: `1px solid ${colors.accentTeal}`,
   },
-  highlightText: {
-    color: colors.accentTeal,
-    fontWeight: 600,
-  },
+  // Remove these style blocks:
+  /* statsContainer, statItem, statNumber, statText, testimonialBox, testimonialText, testimonialAuthor */
 }));
 
 const Login = () => {
@@ -465,7 +517,7 @@ const Login = () => {
             }}
           />
           
-          {/* Content container */}
+          {/* Enhanced right side content */}
           <Box className={classes.rightContentContainer}>
             <Fade in={true} timeout={1000}>
               <Typography className={classes.welcomeRight}>
@@ -475,11 +527,48 @@ const Login = () => {
             
             <Fade in={true} timeout={1200}>
               <Typography className={classes.subtitleRight}>
-                Create professional resumes in minutes, completely free!
+                Create professional, ATS-friendly resumes that get you noticed
               </Typography>
             </Fade>
             
-            <Box className={classes.featuresContainer}>
+            {/* Process visualization */}
+            <Box className={classes.processContainer}>
+              <Fade in={true} timeout={1400}>
+                <Box className={classes.processStep}>
+                  <Box className={classes.processIcon}>1</Box>
+                  <Typography variant="body2" className={classes.processText}>
+                    Fill in your details with our guided form
+                  </Typography>
+                </Box>
+              </Fade>
+              
+              <Fade in={true} timeout={1600}>
+                <Box className={classes.processStep}>
+                  <Box className={classes.processIcon}>2</Box>
+                  <Typography variant="body2" className={classes.processText}>
+                    Choose from multiple professional templates
+                  </Typography>
+                </Box>
+              </Fade>
+              
+              <Fade in={true} timeout={1800}>
+                <Box className={classes.processStep}>
+                  <Box className={classes.processIcon}>3</Box>
+                  <Typography variant="body2" className={classes.processText}>
+                    Download your ATS-optimized resume instantly
+                  </Typography>
+                </Box>
+              </Fade>
+            </Box>
+            
+            {/* Student specific benefits */}
+            <Box className={classes.studentBenefits}>
+              <Fade in={true} timeout={2400}>
+                <Typography variant="subtitle1" className={classes.benefitsTitle}>
+                  <span className={classes.highlightText}>Student Benefits:</span>
+                </Typography>
+              </Fade>
+              
               {featureItems.map((text, i) => (
                 <Fade 
                   in={visibleFeatures.includes(i)} 

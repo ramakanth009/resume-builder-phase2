@@ -170,17 +170,19 @@ const useStyles = makeStyles(() => ({
   },
   featuresContainer: {
     width: "100%",
-    maxWidth: "280px",
-    marginTop: "1rem",
+    maxWidth: "320px",
+    marginTop: "2rem",
+    padding: "0 1.5rem",
   },
   featureItem: {
     display: "flex",
-    alignItems: "center",
-    margin: "1rem 0",
+    alignItems: "flex-start",
+    margin: "1.5rem 0",
     color: "rgba(255,255,255,0.9)",
     opacity: 0,
     transform: "translateY(20px)",
     animation: "$slideIn 0.6s forwards",
+    gap: "1rem",
   },
   "@keyframes slideIn": {
     to: { opacity: 1, transform: "translateY(0)" },
@@ -195,6 +197,116 @@ const useStyles = makeStyles(() => ({
     "0%": { transform: "rotate(0deg) translateX(0)" },
     "50%": { transform: "rotate(180deg) translateX(20px)" },
     "100%": { transform: "rotate(360deg) translateX(0)" },
+  },
+  
+  // Enhanced left side styles
+  leftContentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '2rem',
+    width: '100%',
+    position: 'relative',
+    zIndex: 2,
+  },
+  mainHeadline: {
+    color: colors.white,
+    fontWeight: 900,
+    fontSize: '2.6rem',
+    textAlign: 'center',
+    marginBottom: '1rem',
+    lineHeight: 1.2,
+  },
+  highlightedText: {
+    color: colors.featurePink,
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      left: 0,
+      bottom: '-5px',
+      width: '100%',
+      height: '4px',
+      backgroundColor: colors.featurePink,
+      borderRadius: '2px',
+    },
+  },
+  tagline: {
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
+    marginBottom: '2rem',
+    fontWeight: 400,
+  },
+  
+  // Statistics grid styles
+  statsGridContainer: {
+    display: 'flex',
+    flexDirection: 'row', // Changed from column to row
+    gap: '1rem',
+    width: '100%',
+    maxWidth: '900px', // Increased to accommodate horizontal layout
+    marginBottom: '2rem',
+    justifyContent: 'center', // Center the cards
+    flexWrap: 'wrap', // Allow wrapping on smaller screens
+  },
+  statCard: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: '12px',
+    padding: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    transition: 'all 0.3s ease',
+    flex: '1 1 250px', // Added flex basis for equal widths
+    maxWidth: '280px', // Prevent cards from getting too wide
+    minWidth: '200px', // Ensure cards don't get too narrow
+    '&:hover': {
+      backgroundColor: 'rgba(255,255,255,0.15)',
+      transform: 'translateY(-3px)',
+    },
+  },
+  statNumber: {
+    color: colors.featurePink,
+    fontWeight: 900,
+    fontSize: '2rem',
+    marginBottom: '0.5rem',
+  },
+  statDescription: {
+    color: colors.white,
+    fontSize: '0.9rem',
+  },
+  
+  // Enhanced features styles
+  featuresHeading: {
+    color: colors.white,
+    fontWeight: 700,
+    marginBottom: "1.5rem",
+    textAlign: "center",
+    fontSize: "1.5rem",
+  },
+  featureIcon: {
+    width: "28px",
+    height: "28px",
+    backgroundColor: colors.featurePink,
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.white,
+    fontWeight: "bold",
+    flexShrink: 0,
+    marginTop: "4px",
+  },
+  featureTitle: {
+    color: colors.white,
+    fontWeight: 600,
+    marginBottom: "0.5rem",
+    fontSize: "1.1rem",
+  },
+  featureDescription: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: "0.9rem",
+    lineHeight: "1.5",
   },
 }));
 
@@ -226,12 +338,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      [
-        "Free for students",
-        "ATS Templates",
-        "Live Preview",
-        "Design Options",
-      ].forEach((_, i) => {
+      [0, 1, 2, 3].forEach((i) => {
         setTimeout(() => setVisibleFeatures((prev) => [...prev, i]), i * 150);
       });
     }, 500);
@@ -306,47 +413,85 @@ const LandingPage = () => {
           sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
         />
 
+        {/* Enhanced left side content */}
         <Fade in timeout={1000}>
-          <Typography
-            variant="h2"
-            sx={{
-              color: "white",
-              mb: 4,
-              fontWeight: 700,
-              textAlign: "center",
-            }}
-          >
-            Build Your Future
-          </Typography>
-        </Fade>
-
-        {visibleFeatures.map((_, i) => (
-          <Fade key={i} in timeout={500}>
-            <Box
-              className={classes.featureItem}
-              sx={{ animationDelay: `${i * 0.2}s` }}
+          <Box className={classes.leftContentContainer}>
+            <Typography
+              variant="h2"
+              className={classes.mainHeadline}
             >
-              <Box
-                sx={{
-                  width: 24,
-                  height: 24,
-                  bgcolor: colors.featurePink,
-                  borderRadius: "50%",
-                  mr: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                }}
-              >
-                ✓
-              </Box>
-              <Typography variant="h6">
-                {["Free for students", "ATS Templates", "Live Preview", "Design Options"][i]}
-              </Typography>
+              Launch Your Career <br/>
+              <span className={classes.highlightedText}>With Confidence</span>
+            </Typography>
+            
+            <Typography variant="h6" className={classes.tagline}>
+              The resume builder designed specifically for students
+            </Typography>
+            
+            {/* Value proposition statistics */}
+            <Box className={classes.statsGridContainer}>
+              <Fade in timeout={1200}>
+                <Box className={classes.statCard}>
+                  <Typography variant="h3" className={classes.statNumber}>68%</Typography>
+                  <Typography variant="body1" className={classes.statDescription}>
+                    More interview callbacks with professional templates
+                  </Typography>
+                </Box>
+              </Fade>
+              
+              <Fade in timeout={1400}>
+                <Box className={classes.statCard}>
+                  <Typography variant="h3" className={classes.statNumber}>7.4s</Typography>
+                  <Typography variant="body1" className={classes.statDescription}>
+                    Average time recruiters spend reviewing a resume
+                  </Typography>
+                </Box>
+              </Fade>
+              
+              <Fade in timeout={1600}>
+                <Box className={classes.statCard}>
+                  <Typography variant="h3" className={classes.statNumber}>100%</Typography>
+                  <Typography variant="body1" className={classes.statDescription}>
+                    Free for all students. No hidden fees
+                  </Typography>
+                </Box>
+              </Fade>
             </Box>
-          </Fade>
-        ))}
+            
+            {/* Feature list */}
+            <Box className={classes.featuresContainer}>
+              <Typography variant="h6" className={classes.featuresHeading}>
+                Why Gigaversity Resume Builder?
+              </Typography>
+              
+              {visibleFeatures.map((index) => (
+                <Fade key={index} in timeout={500 + (index * 100)}>
+                  <Box
+                    className={classes.featureItem}
+                    sx={{ animationDelay: `${index * 0.2}s` }}
+                  >
+                    <Box className={classes.featureIcon}>
+                      ✓
+                    </Box>
+                    <Box>
+                      <Typography variant="subtitle1" className={classes.featureTitle}>
+                        {["ATS-Optimized Templates", "Real-Time Preview", "Multiple Design Options", "One-Click Download"][index]}
+                      </Typography>
+                      <Typography variant="body2" className={classes.featureDescription}>
+                        {[
+                          "Ensure your resume passes automated screening systems used by 95% of large companies.",
+                          "See changes instantly as you type. No surprises in the final output.",
+                          "Choose from professional templates designed for different industries and roles.",
+                          "Download your polished resume as a PDF with a single click when you're done."
+                        ][index]}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Fade>
+              ))}
+            </Box>
+          </Box>
+        </Fade>
       </Box>
 
       <Fade in timeout={800}>
