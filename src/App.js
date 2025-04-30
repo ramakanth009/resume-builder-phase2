@@ -14,14 +14,15 @@ import { TemplateProvider } from './contexts/TemplateContext';
 const Login = React.lazy(() => import('./pages/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
   
+  // Show loading screen while checking authentication
   if (loading) {
-    // return <Loading message="Checking authentication..." />;
+    return <LoadingScreen />;
   }
   
+  // Redirect to login only after we've confirmed no user exists
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }

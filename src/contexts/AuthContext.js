@@ -22,12 +22,13 @@ export const AuthProvider = ({ children }) => {
             // Parse user data
             const user = JSON.parse(userData);
             
-            // Verify the token is still valid
-            // This would ideally call an endpoint to verify the token
-            if (user && user.id) {
+            // Optional: Verify token expiration if using JWT
+            const isTokenValid = verifyTokenExpiration(token);
+            
+            if (user && user.id && isTokenValid) {
               setCurrentUser(user);
             } else {
-              // Invalid user data
+              // Invalid user data or expired token
               localStorage.removeItem('token');
               localStorage.removeItem('user');
             }
@@ -47,6 +48,24 @@ export const AuthProvider = ({ children }) => {
     
     checkAuthStatus();
   }, []);
+  
+  // Function to check if JWT token is expired
+  const verifyTokenExpiration = (token) => {
+    try {
+      // For JWT: Split the token to get payload part
+      const payload = token.split('.')[1];
+      // Decode base64
+      const decodedPayload = atob(payload);
+      const tokenData = JSON.parse(decodedPayload);
+      
+      // Check if token has expired
+      const currentTime = Math.floor(Date.now() / 1000);
+      return tokenData.exp > currentTime;
+    } catch (error) {
+      console.error('Token verification error:', error);
+      return false; // If we can't verify, consider invalid
+    }
+  };
   
   // Login function with improved error handling
   const login = async (email, password) => {
