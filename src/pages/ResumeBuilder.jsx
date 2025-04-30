@@ -17,7 +17,6 @@ import {
   DialogTitle
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
-import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume, getResumeById, updateResume } from '../utils/api';
@@ -36,227 +35,7 @@ import TemplateSelector from '../components/previewComponents/TemplateSelector';
 import TemplateButton from '../common/TemplateButton';
 import templatesData from '../data/templatesData';
 
-import useDummyResumeData from './useDummyResumeData';
-
-const useStyles = makeStylesWithTheme((theme) => ({
-  root: {
-    minHeight: '100vh',
-    padding: '2rem 0',
-    backgroundColor: '#f9f9f9',
-  },
-  container: {
-    height: '100%',
-  },
-  formColumn: {
-    padding: '1rem',
-    height: '100%',
-    overflowY: 'auto',
-    borderRight: {
-      xs: 'none',
-      md: '1px solid #e2e8f0'
-    },
-  },
-  previewColumn: {
-    padding: '1rem',
-    height: '100%',
-    overflowY: 'auto',
-    backgroundColor: '#ffffff',
-  },
-  paper: {
-    padding: '1.5rem',
-    marginBottom: '1.5rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-  },
-  sectionTitle: {
-    fontWeight: 600,
-    marginBottom: '1rem',
-    color: '#2d3748',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  saveButton: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
-  },
-  navigationButtons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: '2rem',
-  },
-  buttonNext: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
-  },
-  buttonBack: {
-    color: '#718096',
-    borderColor: '#e2e8f0',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#f7fafc',
-    },
-  },
-  stepper: {
-    marginBottom: '2rem',
-    padding: '1rem',
-    backgroundColor: 'transparent',
-  },
-  mainContainer: {
-    display: 'flex',
-    flexDirection: {
-      xs: 'column',
-      md: 'row'
-    },
-  },
-  columnBox: {
-    flex: 1,
-    width: {
-      xs: '100%',
-      md: '50%'
-    },
-  },
-  loader: {
-    marginLeft: '0.5rem',
-    color: 'white',
-  },
-  stepLabel: {
-    cursor: 'pointer',
-  },
-  downloadButton: {
-    backgroundColor: '#38a169',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    marginLeft: '1rem',
-    '&:hover': {
-      backgroundColor: '#2f855a',
-    },
-  },
-  editButton: {
-    backgroundColor: '#805ad5',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    marginLeft: '1rem',
-    '&:hover': {
-      backgroundColor: '#6b46c1',
-    },
-  },
-  disabledButton: {
-    backgroundColor: '#a0aec0 !important',
-    color: 'white !important',
-  },
-  actionButtons: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '1rem',
-    marginBottom: '1rem',
-  },
-  viewModeToggle: {
-    display: 'flex',
-    marginBottom: '1rem',
-    justifyContent: 'center',
-    gap: '1rem',
-  },
-  editModeButton: {
-    backgroundColor: '#805ad5',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#6b46c1',
-    },
-  },
-  previewModeButton: {
-    backgroundColor: '#4299e1',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#3182ce',
-    },
-  },
-  activeModeButton: {
-    boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.5)',
-  },
-  pageTitle: {
-    fontWeight: 700,
-    marginBottom: '1rem',
-    textAlign: 'center',
-    color: '#2d3748',
-  },
-  statusChip: {
-    marginLeft: '0.5rem',
-    padding: '0.25rem 0.75rem',
-    borderRadius: '9999px',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    backgroundColor: '#e6fffa',
-    color: '#319795',
-  },
-  successStatusChip: {
-    backgroundColor: '#e6fffa',
-    color: '#319795',
-  },
-  warningStatusChip: {
-    backgroundColor: '#fffaf0',
-    color: '#dd6b20',
-  },
-  resumeIdText: {
-    fontSize: '0.875rem',
-    color: '#718096',
-    marginBottom: '1rem',
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  templateSelectorWrapper: {
-    marginTop: '1rem',
-    marginBottom: '2rem',
-  },
-  templateActionButtons: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginTop: '1rem',
-    gap: '1rem',
-  },
-  templateDialog: {
-    '& .MuiDialog-paper': {
-      maxWidth: '900px',
-      width: '90%',
-    },
-  },
-  templateButtonContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginBottom: '1rem',
-  }
-}));
+import { useStyles } from './Styles.resumebuilder';
 
 // Step labels for the stepper - Combined "Custom Sections" and "Terms & Policies"
 const steps = [
@@ -414,9 +193,6 @@ const ResumeBuilder = () => {
     customSections: {}
   });
 
-  // Initialize the dummy data hook
-  const { loadDummyData, resetData, isLoaded } = useDummyResumeData(resumeData, setResumeData);
-
   // Fetch resume data if in edit mode
   useEffect(() => {
     if (isEditingExisting && resumeId) {
@@ -493,88 +269,6 @@ const ResumeBuilder = () => {
       severity: 'success',
     });
   };
-
-  // Add handlers for dummy data
-  const handleLoadDummyData = () => {
-    loadDummyData();
-    setSnackbar({
-      open: true,
-      message: 'Sample data loaded successfully!',
-      severity: 'success',
-    });
-  };
-
-  const handleResetForm = () => {
-    if (isEditingExisting) {
-      // Show confirmation dialog
-      setConfirmDialog({
-        open: true,
-        title: 'Reset Resume?',
-        message: 'This will reset all changes you\'ve made to this resume. This cannot be undone.',
-        onConfirm: () => {
-          resetData();
-          setSnackbar({
-            open: true,
-            message: 'Form has been reset',
-            severity: 'info',
-          });
-          setConfirmDialog({ ...confirmDialog, open: false });
-        }
-      });
-    } else {
-      // No need for confirmation if not editing existing resume
-      resetData();
-      setSnackbar({
-        open: true,
-        message: 'Form has been reset',
-        severity: 'info',
-      });
-    }
-  };
-
-  // Add dummy data buttons component
-  const renderDummyDataButtons = () => (
-    <Box sx={{ mb: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={handleResetForm}
-        disabled={!isLoaded && !isEditingExisting}
-      >
-        Reset Form
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleLoadDummyData}
-        disabled={isLoaded || isEditingExisting}
-      >
-        Load Sample Data
-      </Button>
-    </Box>
-  );
-
-  // Effects
-  useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!currentUser) {
-      navigate('/login');
-    }
-  }, [currentUser, navigate]);
-
-  useEffect(() => {
-    // Update user information if available
-    if (currentUser) {
-      setResumeData(prev => ({
-        ...prev,
-        header: {
-          ...prev.header,
-          name: currentUser.name || prev.header.name,
-          email: currentUser.email || prev.header.email,
-        },
-      }));
-    }
-  }, [currentUser]);
 
   // Navigation Handlers
   const handleNext = () => {
@@ -1069,9 +763,6 @@ const handleDownloadResume = async () => {
       <Box className={classes.templateButtonContainer}>
         <TemplateButton onClick={handleOpenTemplateDialog} />
       </Box>
-      
-      {/* Add dummy data buttons in edit mode (only when creating new) */}
-      {isEditMode && !isEditingExisting && renderDummyDataButtons()}
       
       {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
       {(hasGeneratedResume || isEditingExisting) && (
