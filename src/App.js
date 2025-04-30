@@ -4,14 +4,14 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import './App.css';
-import LandingPage from './pages/LandingPage';
+import LandingPage from './pages/landingpage/LandingPage';
 import LoadingScreen from './common/LoadingScreen';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';
 
 // Lazy load components
-const Login = React.lazy(() => import('./pages/Login'));
+const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
 const ProtectedRoute = ({ children }) => {
