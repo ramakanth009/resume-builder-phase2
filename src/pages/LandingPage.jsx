@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -30,6 +30,8 @@ const colors = {
   navyVariant: "#2a2b6a", // ~8%
   skyBlue: "#427bbf", // ~7%
   midBlue: "#354fa2", // ~3%
+  featurePink: "#FF80AB",
+  backgroundGradient: "linear-gradient(135deg, #2A2B6A 0%, #3F51B5 100%)",
 };
 
 const useStyles = makeStyles(() => ({
@@ -40,15 +42,14 @@ const useStyles = makeStyles(() => ({
     height: "100vh",
   },
   leftSection: {
-    flex: "1 1 300px", // grow/shrink, min-width 300px
+    flex: "1 1 300px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    // padding: "1rem",
-    // borderRadius: "0px 100px 100px 0px", // allow stacking on narrow screens
-    backgroundColor: colors.primaryDarkNavy,
-    
+    background: colors.backgroundGradient,
+    position: "relative",
+    overflow: "hidden",
   },
   rightSection: {
     flex: "1 1 300px", // grow/shrink, min-width 300px
@@ -175,13 +176,25 @@ const useStyles = makeStyles(() => ({
   featureItem: {
     display: "flex",
     alignItems: "center",
-    margin: "0.5rem 0",
-    color: colors.white,
+    margin: "1rem 0",
+    color: "rgba(255,255,255,0.9)",
+    opacity: 0,
+    transform: "translateY(20px)",
+    animation: "$slideIn 0.6s forwards",
   },
-  checkmark: {
-    marginRight: "0.75rem",
-    fontWeight: "bold",
-    fontSize: "1.1rem",
+  "@keyframes slideIn": {
+    to: { opacity: 1, transform: "translateY(0)" },
+  },
+  animatedShape: {
+    position: "absolute",
+    borderRadius: "30% 70% 70% 30% 0% 70%",
+    background: "rgba(255,255,255,0.1)",
+    animation: "$float 20s infinite",
+  },
+  "@keyframes float": {
+    "0%": { transform: "rotate(0deg) translateX(0)" },
+    "50%": { transform: "rotate(180deg) translateX(20px)" },
+    "100%": { transform: "rotate(360deg) translateX(0)" },
   },
 }));
 
@@ -209,6 +222,21 @@ const LandingPage = () => {
     password: false,
     confirmPassword: false,
   });
+  const [visibleFeatures, setVisibleFeatures] = useState([]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      [
+        "Free for students",
+        "ATS Templates",
+        "Live Preview",
+        "Design Options",
+      ].forEach((_, i) => {
+        setTimeout(() => setVisibleFeatures((prev) => [...prev, i]), i * 150);
+      });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -268,29 +296,58 @@ const LandingPage = () => {
 
   return (
     <Box className={classes.root}>
-      <Fade in timeout={600}>
-        <Box className={classes.leftSection}>
-          <Typography className={classes.welcomeLeft}>
-            Resume Builder
+      <Box className={classes.leftSection}>
+        <Box
+          className={classes.animatedShape}
+          sx={{ top: "-100px", left: "-50px", width: "300px", height: "300px" }}
+        />
+        <Box
+          className={classes.animatedShape}
+          sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
+        />
+
+        <Fade in timeout={1000}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: "white",
+              mb: 4,
+              fontWeight: 700,
+              textAlign: "center",
+            }}
+          >
+            Build Your Future
           </Typography>
-          <Typography className={classes.subtitleLeft}>
-            Create professional resumes in minutes, completely free!
-          </Typography>
-          <Box className={classes.featuresContainer}>
-            {[
-              "Free for all students",
-              "ATS-friendly templates",
-              "Live preview as you type",
-              "Multiple design options",
-            ].map((text, i) => (
-              <Box key={i} className={classes.featureItem}>
-                <span className={classes.checkmark}>✓</span>
-                <Typography variant="body2">{text}</Typography>
+        </Fade>
+
+        {visibleFeatures.map((_, i) => (
+          <Fade key={i} in timeout={500}>
+            <Box
+              className={classes.featureItem}
+              sx={{ animationDelay: `${i * 0.2}s` }}
+            >
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  bgcolor: colors.featurePink,
+                  borderRadius: "50%",
+                  mr: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                }}
+              >
+                ✓
               </Box>
-            ))}
-          </Box>
-        </Box>
-      </Fade>
+              <Typography variant="h6">
+                {["Free for students", "ATS Templates", "Live Preview", "Design Options"][i]}
+              </Typography>
+            </Box>
+          </Fade>
+        ))}
+      </Box>
 
       <Fade in timeout={800}>
         <Box className={classes.rightSection}>
