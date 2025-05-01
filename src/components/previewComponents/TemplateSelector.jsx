@@ -15,6 +15,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import { getAllTemplates } from '../../templates/templateRegistry';
 import templatesData from '../../data/templatesData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -57,6 +58,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundColor: '#f7fafc',
     flex: '1 0 auto',
+  },
+  templateImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
   },
   fallbackImage: {
     height: 240,
@@ -132,12 +138,30 @@ const TemplateSelector = ({
   onConfirm
 }) => {
   const classes = useStyles();
+  const [imageErrors, setImageErrors] = useState({});
   
   // Handle template selection
   const handleTemplateClick = (templateId) => {
     if (onTemplateSelect) {
       onTemplateSelect(templateId);
     }
+  };
+  
+  // Handle image error
+  const handleImageError = (templateId) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [templateId]: true
+    }));
+  };
+  
+  // Render fallback content when image fails to load
+  const renderFallbackContent = (template) => {
+    return (
+      <Box className={classes.fallbackImage}>
+        {template.name.charAt(0)}
+      </Box>
+    );
   };
 
   return (
@@ -189,11 +213,19 @@ const TemplateSelector = ({
                 )}
                 
                 <CardActionArea className={classes.cardActionArea}>
-                  {/* Display image using the imported image */}
-                  <div 
-                    className={classes.cardMedia}
-                    style={{ backgroundImage: `url(${template.previewImage})` }}
-                  />
+                  {/* Display template image or fallback */}
+                  {template.previewImage && !imageErrors[template.id] ? (
+                    <div className={classes.cardMedia}>
+                      <img
+                        src={template.previewImage}
+                        alt={`${template.name} template`}
+                        className={classes.templateImage}
+                        onError={() => handleImageError(template.id)}
+                      />
+                    </div>
+                  ) : (
+                    renderFallbackContent(template)
+                  )}
                   
                   <CardContent className={classes.cardContent}>
                     <Typography variant="h6" className={classes.templateName}>
