@@ -293,6 +293,45 @@ export const logoutUser = async () => {
   }
 };
 
+/**
+ * Get available target roles
+ * @returns {Promise} - List of target roles
+ */
+export const getTargetRoles = async () => {
+  try {
+    return await apiRequest('/target_roles');
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch target roles');
+  }
+};
+
+/**
+ * Get project recommendations for a role
+ * @param {string} role - Role name or display name
+ * @returns {Promise} - List of recommended projects
+ */
+export const getProjectRecommendations = async (role) => {
+  try {
+    return await apiRequest(`/project_recommendations/${encodeURIComponent(role)}`);
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch project recommendations');
+  }
+};
+
+/**
+ * Get details of a specific project
+ * @param {string} projectKey - Project key identifier
+ * @returns {Promise} - Project details
+ */
+export const getProjectDetails = async (projectKey) => {
+  try {
+    return await apiRequest(`/project_details/${encodeURIComponent(projectKey)}`);
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch project details');
+  }
+};
+
+// Update the default export to include the new functions
 export default {
   apiRequest,
   registerUser,
@@ -302,5 +341,8 @@ export default {
   getResumeById,
   updateResume,
   deleteResume,
-  logoutUser
+  logoutUser,
+  getTargetRoles,
+  getProjectRecommendations, 
+  getProjectDetails
 };

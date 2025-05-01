@@ -151,6 +151,9 @@ const ResumeBuilder = () => {
   );
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
 
+  // Target role state
+  const [targetRole, setTargetRole] = useState(resumeData?.target_role || '');
+
   // Handler to open template dialog (to be passed to Navbar)
   const handleOpenTemplateDialog = () => {
     setTemplateDialogOpen(true);
@@ -271,6 +274,13 @@ const ResumeBuilder = () => {
       fetchResumeData();
     }
   }, [resumeId, isEditingExisting]);
+
+  // Set target role from resumeData if available (for editing existing resumes)
+  useEffect(() => {
+    if (resumeData.target_role && !targetRole) {
+      setTargetRole(resumeData.target_role);
+    }
+  }, [resumeData.target_role, targetRole]);
 
   // Navigation Handlers
   const handleNext = () => {
@@ -615,33 +625,33 @@ const ResumeBuilder = () => {
   };
 
   // Handle downloading the resume as PDF
-const handleDownloadResume = async () => {
-  try {
-    setDownloadingPdf(true);
-    
-    const dataToUse = generatedResume || resumeData;
-    const userName = dataToUse?.header?.name || 'resume';
-    const fileName = userName.toLowerCase().replace(/\s+/g, '_');
-    
-    // Pass the correct data and template ID
-    await generateResumePDF(dataToUse, selectedTemplateId, fileName);
-    
-    setSnackbar({
-      open: true,
-      message: 'Resume downloaded successfully',
-      severity: 'success',
-    });
-  } catch (error) {
-    console.error('Error downloading resume:', error);
-    setSnackbar({
-      open: true,
-      message: 'Failed to download resume. Please try again.',
-      severity: 'error',
-    });
-  } finally {
-    setDownloadingPdf(false);
-  }
-};
+  const handleDownloadResume = async () => {
+    try {
+      setDownloadingPdf(true);
+      
+      const dataToUse = generatedResume || resumeData;
+      const userName = dataToUse?.header?.name || 'resume';
+      const fileName = userName.toLowerCase().replace(/\s+/g, '_');
+      
+      // Pass the correct data and template ID
+      await generateResumePDF(dataToUse, selectedTemplateId, fileName);
+      
+      setSnackbar({
+        open: true,
+        message: 'Resume downloaded successfully',
+        severity: 'success',
+      });
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to download resume. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbar({
@@ -674,35 +684,41 @@ const handleDownloadResume = async () => {
         return (
           <PersonalInfoSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
+            setResumeData={setResumeData}
+            onRoleSelect={handleRoleSelect}
+            targetRole={targetRole}
           />
         );
       case 1:
         return (
           <EducationSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
+            setResumeData={setResumeData}
+            targetRole={targetRole} // Pass for context-aware validation
           />
         );
       case 2:
         return (
           <SkillsSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
+            setResumeData={setResumeData}
+            targetRole={targetRole} // Pass for skill suggestions
           />
         );
       case 3:
         return (
           <ProjectsSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
+            setResumeData={setResumeData}
+            targetRole={targetRole} // Pass for project relevance
           />
         );
       case 4:
         return (
           <ExperienceSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData} 
+            setResumeData={setResumeData}
+            targetRole={targetRole} // Pass for experience relevance
           />
         );
       case 5:
@@ -712,6 +728,7 @@ const handleDownloadResume = async () => {
             setResumeData={setResumeData}
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
+            targetRole={targetRole} // Pass for custom section suggestions
           />
         );
       default:
