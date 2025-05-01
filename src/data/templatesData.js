@@ -1,11 +1,11 @@
 // src/data/templatesData.js
 
-// Import images with correct paths and consistent naming
+// Import images with correct paths
 import classicPreview from '../assets/templates/classic.png';
 import modernPreview from '../assets/templates/modern.png';
 import creativePreview from '../assets/templates/creative.png';
 import executivePreview from '../assets/templates/executive.png';
-import professionalPreview from '../assets/templates/professional.png'; // Fixed capitalization
+import professionalPreview from '../assets/templates/professional.png';
 
 // Template data for resume templates
 const templatesData = [
@@ -41,7 +41,7 @@ const templatesData = [
     id: 'professional',
     name: 'Professional',
     description: 'A clean, light blue template with modern elegant design',
-    previewImage: professionalPreview, // Using corrected import
+    previewImage: professionalPreview,
     isDefault: false
   }
 ];

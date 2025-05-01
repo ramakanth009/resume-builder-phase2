@@ -156,6 +156,24 @@ const ResumeBuilder = () => {
     setTemplateDialogOpen(true);
   };
 
+  // Template dialog handlers
+  const handleCloseTemplateDialog = () => {
+    setTemplateDialogOpen(false);
+  };
+  
+  const handleTemplateSelect = (templateId) => {
+    setSelectedTemplateId(templateId);
+  };
+  
+  const handleConfirmTemplateSelection = () => {
+    setTemplateDialogOpen(false);
+    setSnackbar({
+      open: true,
+      message: 'Template updated successfully',
+      severity: 'success',
+    });
+  };
+
   // Initialize resumeData with empty structure and fields for both formats
   const [resumeData, setResumeData] = useState({
     header: {
@@ -253,24 +271,6 @@ const ResumeBuilder = () => {
       fetchResumeData();
     }
   }, [resumeId, isEditingExisting]);
-
-  // Template dialog handlers
-  const handleCloseTemplateDialog = () => {
-    setTemplateDialogOpen(false);
-  };
-  
-  const handleTemplateSelect = (templateId) => {
-    setSelectedTemplateId(templateId);
-  };
-  
-  const handleConfirmTemplateSelection = () => {
-    setTemplateDialogOpen(false);
-    setSnackbar({
-      open: true,
-      message: 'Template updated successfully',
-      severity: 'success',
-    });
-  };
 
   // Navigation Handlers
   const handleNext = () => {

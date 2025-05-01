@@ -1,10 +1,40 @@
 // src/templates/templateRegistry.js
-import pdfTemplateRegistry, { getTemplateStyles } from './pdfTemplateRegistry';
+import ClassicPDFTemplate from './pdf/ClassicPDFTemplate';
+import ModernPDFTemplate from './pdf/ModernPDFTemplate';
+import CreativePDFTemplate from './pdf/CreativePDFTemplate';
+import ExecutivePDFTemplate from './pdf/ExecutivePDFTemplate';
+import ProfessionalPDFTemplate from './pdf/ProfessionalPDFTemplate';
 
-// Template registry that combines both preview and PDF components
+// Simplified template registry with only PDF components
 const templateRegistry = {
-  // Use the same structure as pdfTemplateRegistry but will add preview components later
-  ...pdfTemplateRegistry
+  classic: { 
+    PDFComponent: ClassicPDFTemplate 
+  },
+  modern: { 
+    PDFComponent: ModernPDFTemplate 
+  },
+  creative: { 
+    PDFComponent: CreativePDFTemplate 
+  },
+  executive: { 
+    PDFComponent: ExecutivePDFTemplate 
+  },
+  professional: { 
+    PDFComponent: ProfessionalPDFTemplate 
+  }
+};
+
+// Get template styles by ID - now returns an empty object since styles are defined in components
+export const getTemplateStyles = () => ({});
+
+// Get template PDF component by ID
+export const getTemplatePDFComponent = (templateId) => {
+  return (templateRegistry[templateId] || templateRegistry.classic).PDFComponent;
+};
+
+// Get list of registered template IDs
+export const getRegisteredTemplateIds = () => {
+  return Object.keys(templateRegistry);
 };
 
 // Get template by ID with fallback to default
@@ -16,10 +46,8 @@ export const getTemplateById = (templateId) => {
 export const getAllTemplates = () => {
   return Object.keys(templateRegistry).map(id => ({
     id,
-    name: id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1'),
-    // Add more properties as needed
+    name: id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')
   }));
 };
 
-export { getTemplateStyles };
 export default templateRegistry;

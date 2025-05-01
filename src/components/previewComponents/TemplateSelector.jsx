@@ -15,7 +15,6 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-import { getAllTemplates } from '../../templates/templateRegistry';
 import templatesData from '../../data/templatesData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -127,38 +126,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-// Templates data already imported at the top
-
 const TemplateSelector = ({ 
   selectedTemplateId = 'classic', 
   onTemplateSelect,
   onConfirm
 }) => {
   const classes = useStyles();
-  const [imageErrors, setImageErrors] = useState({});
   
   // Handle template selection
   const handleTemplateClick = (templateId) => {
     if (onTemplateSelect) {
       onTemplateSelect(templateId);
     }
-  };
-  
-  // Handle image error
-  const handleImageError = (templateId) => {
-    setImageErrors(prev => ({
-      ...prev,
-      [templateId]: true
-    }));
-  };
-  
-  // Render fallback content when image fails to load
-  const renderFallbackContent = (template) => {
-    return (
-      <Box className={classes.fallbackImage}>
-        {template.name.charAt(0)}
-      </Box>
-    );
   };
 
   return (
@@ -210,18 +189,11 @@ const TemplateSelector = ({
                 )}
                 
                 <CardActionArea className={classes.cardActionArea}>
-                  {/* Display template image or fallback */}
-                  {template.previewImage && !imageErrors[template.id] ? (
-                    <div 
-                      className={classes.cardMedia}
-                      style={{ 
-                        backgroundImage: `url(${template.previewImage})` 
-                      }}
-                      onError={() => handleImageError(template.id)}
-                    />
-                  ) : (
-                    renderFallbackContent(template)
-                  )}
+                  {/* Display image using the imported image */}
+                  <div 
+                    className={classes.cardMedia}
+                    style={{ backgroundImage: `url(${template.previewImage})` }}
+                  />
                   
                   <CardContent className={classes.cardContent}>
                     <Typography variant="h6" className={classes.templateName}>
