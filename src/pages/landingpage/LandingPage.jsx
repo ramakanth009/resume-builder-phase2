@@ -19,6 +19,10 @@ import { useAuth } from "../../contexts/AuthContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import GigaLogo from "../../assets/giga-loogo.svg";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import GetAppIcon from "@mui/icons-material/GetApp";
 
 // → Mapped to your color distribution
 const colors = {
@@ -30,7 +34,6 @@ const colors = {
   navyVariant: "#2a2b6a", // ~8%
   skyBlue: "#427bbf", // ~7%
   midBlue: "#354fa2", // ~3%
-  featurePink: "#FF80AB",
   backgroundGradient: "linear-gradient(135deg, #2A2B6A 0%, #3F51B5 100%)",
 };
 
@@ -41,7 +44,7 @@ const useStyles = makeStyles(() => ({
     flexWrap: "wrap",
     height: "100vh",
   },
-  // Condensed left side styles
+  // Enhanced left side styles
   leftSection: {
     flex: "1 1 300px",
     display: "flex",
@@ -51,20 +54,20 @@ const useStyles = makeStyles(() => ({
     background: colors.backgroundGradient,
     position: "relative",
     overflow: "hidden",
-    padding: "1rem", // Reduced padding
+    padding: "1rem", // Increased padding
   },
   rightSection: {
-    flex: "1 1 300px", // grow/shrink, min-width 300px
+    flex: "1 1 300px",
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
     justifyContent: "flex-start",
-    padding: "0.5rem 1rem", // minimal vertical + horizontal padding
+    padding: "0.5rem 1rem",
     backgroundColor: colors.white,
   },
   formContainer: {
     width: "100%",
-    maxWidth: "500px", // optional cap for very wide screens
+    maxWidth: "500px",
     margin: "0 auto",
     padding: "0.5rem",
     boxSizing: "border-box",
@@ -155,27 +158,28 @@ const useStyles = makeStyles(() => ({
     marginLeft: "8px",
     color: colors.white,
   },
-  // Condensed left side content
+  // Enhanced left side content
   leftContentContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '1rem', // Reduced padding
+    padding: '2rem', // Increased padding
     width: '100%',
     position: 'relative',
     zIndex: 2,
+    maxWidth: '800px', // Added max width
   },
   mainHeadline: {
     color: colors.white,
     fontWeight: 800,
-    fontSize: '2rem', // Reduced from 2.6rem
+    fontSize: '2.4rem', // Increased from 2rem
     textAlign: 'center',
-    marginBottom: '0.5rem', // Reduced from 1rem
+    marginBottom: '1rem', // Increased from 0.5rem
     lineHeight: 1.2,
   },
   highlightedText: {
-    color: colors.featurePink,
+    color: colors.goldenYellow,
     position: 'relative',
     '&::after': {
       content: '""',
@@ -184,78 +188,117 @@ const useStyles = makeStyles(() => ({
       bottom: '-5px',
       width: '100%',
       height: '4px',
-      backgroundColor: colors.featurePink,
+      backgroundColor: colors.goldenYellow,
       borderRadius: '2px',
     },
   },
   tagline: {
-    color: 'rgba(255,255,255,0.8)',
+    color: 'rgba(255,255,255,0.9)',
     textAlign: 'center',
-    marginBottom: '1rem', // Reduced from 2rem
+    marginBottom: '2rem', // Increased from 1rem
     fontWeight: 400,
-    fontSize: '0.9rem', // Added smaller font size
+    fontSize: '1.1rem', // Increased from 0.9rem
   },
-  // Condensed stats grid
+  // Enhanced stats grid
   statsGridContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '0.5rem', // Reduced gap
+    gap: '1rem', // Reduced gap
     width: '100%',
     maxWidth: '900px',
-    marginBottom: '1rem', // Reduced from 2rem
+    marginBottom: '1rem', // Increased margin
     justifyContent: 'center',
   },
   statCard: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: '8px', // Smaller radius
-    padding: '0.5rem 0.75rem', // Reduced padding
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: '12px', // Increased radius
+    padding: '1rem 1.5rem', // Increased padding
     display: 'flex',
     flexDirection: 'column',
     transition: 'all 0.3s ease',
-    flex: '1 1 150px', // Smaller flex basis
-    maxWidth: '200px', // Reduced max width
-    minWidth: '130px', // Reduced min width
+    flex: '1 1 180px', // Increased flex basis
+    maxWidth: '220px', // Increased max width
+    minWidth: '160px', // Increased min width
     '&:hover': {
-      backgroundColor: 'rgba(255,255,255,0.15)',
+      backgroundColor: 'rgba(255,255,255,0.2)',
       transform: 'translateY(-3px)',
     },
   },
   statNumber: {
-    color: colors.featurePink,
+    color: colors.goldenYellow,
     fontWeight: 800,
-    fontSize: '1.5rem', // Reduced from 2rem
-    marginBottom: '0.25rem', // Reduced margin
+    fontSize: '1.8rem', // Increased from 1.5rem
+    marginBottom: '0.5rem', // Increased margin
   },
   statDescription: {
     color: colors.white,
-    fontSize: '0.8rem', // Reduced from 0.9rem
+    fontSize: '0.95rem', // Increased from 0.8rem
   },
-  // Condensed features
+  // Enhanced features grid
   featuresContainer: {
     width: "100%",
-    maxWidth: "280px", // Reduced from 320px
-    marginTop: "1rem", // Reduced from 2rem
-    padding: "0 1rem", // Reduced padding
+    maxWidth: "800px", // Increased from 280px
+    marginTop: "1rem", // Increased from 1rem
+    padding: "0 1rem",
   },
   featuresHeading: {
     color: colors.white,
-    fontWeight: 600,
-    marginBottom: "0.75rem", // Reduced from 1.5rem
+    fontWeight: 700,
+    marginBottom: "1.5rem", // Increased from 0.75rem
     textAlign: "center",
-    fontSize: "1.1rem", // Reduced from 1.5rem
+    fontSize: "1.4rem", // Increased from 1.1rem
+  },
+  featuresGrid: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '1.5rem',
+    width: '100%',
   },
   featureItem: {
+    flex: '1 1 calc(50% - 0.75rem)',
+    minWidth: '280px',
     display: "flex",
     alignItems: "flex-start",
-    margin: "0.75rem 0", // Reduced from 1.5rem
+    padding: "1.2rem",
     color: "rgba(255,255,255,0.9)",
-    opacity: 0,
-    transform: "translateY(20px)",
-    animation: "$slideIn 0.6s forwards",
-    gap: "0.75rem", // Reduced from 1rem
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: "12px",
+    transition: "all 0.3s ease",
+    gap: "1rem",
+    transform: "translateY(0)",
+    "&:hover": {
+      backgroundColor: "rgba(255,255,255,0.15)",
+      transform: "translateY(-5px)",
+    },
   },
-  "@keyframes slideIn": {
-    to: { opacity: 1, transform: "translateY(0)" },
+  featureIcon: {
+    width: "32px", // Increased from 22px
+    height: "32px", // Increased from 22px
+    backgroundColor: colors.goldenYellow,
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.navyVariant,
+    fontWeight: "bold",
+    flexShrink: 0,
+    marginTop: "0.2rem", // Unchanged
+    fontSize: "0.9rem", // Increased from 0.75rem
+  },
+  featureContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem",
+  },
+  featureTitle: {
+    color: colors.white,
+    fontWeight: 700,
+    fontSize: '1.1rem', // Increased from 0.9rem
+  },
+  featureDescription: {
+    color: "rgba(255,255,255,0.8)",
+    fontSize: '0.95rem', // Increased from 0.8rem
+    lineHeight: "1.5", // Increased from 1.4
   },
   animatedShape: {
     position: "absolute",
@@ -267,31 +310,6 @@ const useStyles = makeStyles(() => ({
     "0%": { transform: "rotate(0deg) translateX(0)" },
     "50%": { transform: "rotate(180deg) translateX(20px)" },
     "100%": { transform: "rotate(360deg) translateX(0)" },
-  },
-  featureIcon: {
-    width: "22px", // Reduced from 28px
-    height: "22px", // Reduced from 28px
-    backgroundColor: colors.featurePink,
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: colors.white,
-    fontWeight: "bold",
-    flexShrink: 0,
-    marginTop: "2px", // Reduced from 4px
-    fontSize: "0.75rem", // Added smaller font size
-  },
-  featureTitle: {
-    color: colors.white,
-    fontWeight: 600,
-    marginBottom: "0.25rem", // Reduced from 0.5rem
-    fontSize: "0.9rem", // Reduced from 1.1rem
-  },
-  featureDescription: {
-    color: "rgba(255,255,255,0.7)",
-    fontSize: "0.8rem", // Reduced from 0.9rem
-    lineHeight: "1.4", // Reduced from 1.5
   },
 }));
 
@@ -386,9 +404,40 @@ const LandingPage = () => {
   };
   const handleCloseSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
 
+  // Featured stats data
+  const statsData = [
+    { number: "71%", description: "More interview callbacks" },
+    { number: "7.4s", description: "Average review time" }
+  ];
+
+  // Feature data with icons
+  const featureData = [
+    {
+      title: "ATS-Optimized",
+      description: "Pass automated screening systems used by top companies",
+      icon: <CheckCircleIcon fontSize="small" />
+    },
+    {
+      title: "Real-Time Preview",
+      description: "See changes instantly as you type your information",
+      icon: <VisibilityIcon fontSize="small" />
+    },
+    {
+      title: "Multiple Templates",
+      description: "Choose from professional designs for various roles",
+      icon: <FormatListBulletedIcon fontSize="small" />
+    },
+    {
+      title: "One-Click Download",
+      description: "Export your resume as PDF with a single click",
+      icon: <GetAppIcon fontSize="small" />
+    }
+  ];
+
   return (
     <Box className={classes.root}>
       <Box className={classes.leftSection}>
+        {/* Background decorative elements */}
         <Box
           className={classes.animatedShape}
           sx={{ top: "-100px", left: "-50px", width: "300px", height: "300px" }}
@@ -398,78 +447,58 @@ const LandingPage = () => {
           sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
         />
 
-        {/* Condensed left content */}
+        {/* Enhanced left content */}
         <Fade in timeout={1000}>
           <Box className={classes.leftContentContainer}>
-            {/* Simplified headline with reduced linebreak */}
+            {/* Enhanced headline */}
             <Typography variant="h2" className={classes.mainHeadline}>
               Launch Your Career
               <span className={classes.highlightedText}> With Confidence</span>
             </Typography>
             
             <Typography variant="subtitle1" className={classes.tagline}>
-              The resume builder for students
+              The professional resume builder designed for students
             </Typography>
             
-            {/* More compact statistics */}
+            {/* Enhanced statistics */}
             <Box className={classes.statsGridContainer}>
-              <Fade in timeout={1200}>
-                <Box className={classes.statCard}>
-                  <Typography variant="h3" className={classes.statNumber}>68%</Typography>
-                  <Typography variant="body2" className={classes.statDescription}>
-                    More interview callbacks
-                  </Typography>
-                </Box>
-              </Fade>
-              
-              <Fade in timeout={1400}>
-                <Box className={classes.statCard}>
-                  <Typography variant="h3" className={classes.statNumber}>7.4s</Typography>
-                  <Typography variant="body2" className={classes.statDescription}>
-                    Average recruiter review time
-                  </Typography>
-                </Box>
-              </Fade>
-              
-              <Fade in timeout={1600}>
-                <Box className={classes.statCard}>
-                  <Typography variant="h3" className={classes.statNumber}>100%</Typography>
-                  <Typography variant="body2" className={classes.statDescription}>
-                    Free for students
-                  </Typography>
-                </Box>
-              </Fade>
+              {statsData.map((stat, index) => (
+                <Fade in timeout={1200 + (index * 200)} key={index}>
+                  <Box className={classes.statCard}>
+                    <Typography variant="h3" className={classes.statNumber}>{stat.number}</Typography>
+                    <Typography variant="body2" className={classes.statDescription}>
+                      {stat.description}
+                    </Typography>
+                  </Box>
+                </Fade>
+              ))}
             </Box>
             
-            {/* Condensed features with shorter descriptions */}
+            {/* Enhanced features section - now using Box instead of Grid */}
             <Box className={classes.featuresContainer}>
               <Typography variant="h6" className={classes.featuresHeading}>
                 Why Choose Us?
               </Typography>
               
-              {visibleFeatures.map((index) => (
-                <Fade key={index} in timeout={500 + (index * 100)}>
-                  <Box
-                    className={classes.featureItem}
-                    sx={{ animationDelay: `${index * 0.2}s` }}
-                  >
-                    <Box className={classes.featureIcon}>✓</Box>
-                    <Box>
-                      <Typography variant="subtitle2" className={classes.featureTitle}>
-                        {["ATS-Optimized", "Real-Time Preview", "Multiple Templates", "One-Click Download"][index]}
-                      </Typography>
-                      <Typography variant="body2" className={classes.featureDescription}>
-                        {[
-                          "Pass automated screening systems used by top companies.",
-                          "See changes instantly as you type.",
-                          "Choose from professional templates for various roles.",
-                          "Export your resume as PDF with a single click."
-                        ][index]}
-                      </Typography>
+              <Box className={classes.featuresGrid}>
+                {featureData.map((feature, index) => (
+                  <Fade in={visibleFeatures.includes(index)} timeout={600} key={index}>
+                    <Box className={classes.featureItem}>
+                      <Box className={classes.featureIcon}>
+                        {feature.icon}
+                      </Box>
+                      <Box className={classes.featureContent}>
+                        <Typography variant="subtitle2" className={classes.featureTitle}>
+                          {feature.title}
+                        </Typography>
+                        <Typography variant="body2" className={classes.featureDescription}>
+                          {feature.description}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </Fade>
-              ))}
+                  </Fade>
+                ))}
+              </Box>
             </Box>
           </Box>
         </Fade>
