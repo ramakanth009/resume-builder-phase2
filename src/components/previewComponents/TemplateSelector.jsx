@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Typography, 
@@ -7,16 +7,16 @@ import {
   CardContent, 
   CardActionArea,
   Chip,
+  Paper,
   Fade,
   Grow,
-  Paper,
-  Divider,
-  CardMedia
+  Divider
 } from '@mui/material';
-import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-import { getAllTemplates } from '../../templates/templateRegistry';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
+import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import { getAllTemplates } from '../../templates/templateRegistry';
+import templatesData from '../../data/templatesData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
@@ -49,18 +49,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   cardContent: {
     padding: '1rem',
-    flex: '0 0 auto', // Don't grow, don't shrink, use auto size
+    flex: '0 0 auto',
   },
   cardMedia: {
-    height: 200,
+    height: 240,
     backgroundSize: 'contain',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundColor: '#f7fafc',
-    flex: '1 0 auto', // Grow to fill available space
+    flex: '1 0 auto',
   },
   fallbackImage: {
-    height: 200,
+    height: 240,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -127,40 +127,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-/**
- * Template Selector component with image previews
- */
+// Templates data already imported at the top
+
 const TemplateSelector = ({ 
-  selectedTemplateId, 
+  selectedTemplateId = 'classic', 
   onTemplateSelect,
   onConfirm
 }) => {
   const classes = useStyles();
-  const [templates, setTemplates] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState({});
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  
-  // Load templates on mount
-  useEffect(() => {
-    // Get all templates from the registry
-    const allTemplates = getAllTemplates();
-    setTemplates(allTemplates);
-    
-    // Find the selected template
-    const selected = allTemplates.find(t => t.id === selectedTemplateId);
-    setSelectedTemplate(selected);
-    
-    setLoading(false);
-  }, [selectedTemplateId]);
   
   // Handle template selection
   const handleTemplateClick = (templateId) => {
-    onTemplateSelect(templateId);
-    
-    // Find the selected template for additional info
-    const selected = templates.find(t => t.id === templateId);
-    setSelectedTemplate(selected);
+    if (onTemplateSelect) {
+      onTemplateSelect(templateId);
+    }
   };
   
   // Handle image error
@@ -199,12 +180,12 @@ const TemplateSelector = ({
       
       {/* Template grid */}
       <Grid container spacing={3} className={classes.gridContainer}>
-        {templates.map((template, index) => (
+        {templatesData.map((template, index) => (
           <Grow
-            key={template.id}
-            in={!loading}
+            in={true}
             style={{ transformOrigin: '0 0 0' }}
             timeout={(index + 1) * 200}
+            key={template.id}
           >
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <Card 
@@ -229,23 +210,25 @@ const TemplateSelector = ({
                 )}
                 
                 <CardActionArea className={classes.cardActionArea}>
-                  {/* Show image preview or fallback */}
+                  {/* Display template image or fallback */}
                   {template.previewImage && !imageErrors[template.id] ? (
-                    <CardMedia
-                      component="img"
+                    <div 
                       className={classes.cardMedia}
-                      image={template.previewImage}
-                      title={template.name}
+                      style={{ 
+                        backgroundImage: `url(${template.previewImage})` 
+                      }}
                       onError={() => handleImageError(template.id)}
                     />
                   ) : (
                     renderFallbackContent(template)
                   )}
                   
-                  {/* Template name at the bottom */}
                   <CardContent className={classes.cardContent}>
                     <Typography variant="h6" className={classes.templateName}>
                       {template.name}
+                    </Typography>
+                    <Typography variant="body2" className={classes.templateDescription}>
+                      {template.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -260,4 +243,4 @@ const TemplateSelector = ({
   );
 };
 
-export default React.memo(TemplateSelector);
+export default TemplateSelector;
