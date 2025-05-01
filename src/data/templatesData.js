@@ -1,12 +1,9 @@
-import classicPreview from '../assets/templates/classic-preview.jpeg';
-import modernPreview from '../assets/templates/modern-preview.jpeg';
-import creativePreview from '../assets/templates/creative-preview.jpeg';
-import executivePreview from '../assets/templates/executive-preview.jpeg';
-// Import template preview images for new templates
-// These would need to be created based on the PDFs provided
-// For now, we'll assume they exist with these names
-import professionalPreview from '../assets/templates/professional-preview.jpg';
-import creativeBluePreview from '../assets/templates/creative-blue-preview.jpg';
+import classicPreview from '../assets/templates/classic.png';
+import modernPreview from '../assets/templates/modern.png';
+import creativePreview from '../assets/templates/creative.png';
+import executivePreview from '../assets/templates/executive.png';
+import professionalPreview from '../assets/templates/Professional.png';
+// import creativeBluePreview from '../assets/templates/creative-blue-preview.jpg';
 
 // Template data for resume templates
 const templatesData = [
@@ -45,13 +42,13 @@ const templatesData = [
     previewImage: professionalPreview,
     isDefault: false
   },
-  {
-    id: 'creativeBlue',
-    name: 'Creative Blue',
-    description: 'A modern blue template focused on web and creative professionals',
-    previewImage: creativeBluePreview,
-    isDefault: false
-  }
+  // {
+  //   id: 'creativeBlue',
+  //   name: 'Creative Blue',
+  //   description: 'A modern blue template focused on web and creative professionals',
+  //   previewImage: creativeBluePreview,
+  //   isDefault: false
+  // }
 ];
 
 export default templatesData;

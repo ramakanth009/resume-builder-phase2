@@ -22,6 +22,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { generateResume, getResumeById, updateResume } from '../utils/api';
 import { adaptGeneratedResume } from '../utils/resumeAdapter';
 import { generateResumePDF } from '../utils/pdfUtils';
+import { dummyResumes } from '../data/dummyResumeData';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilderComponents/PersonalInfoSection';
@@ -655,6 +656,17 @@ const handleDownloadResume = async () => {
   // Determine if the resume has been generated at least once
   const hasGeneratedResume = generatedResume !== null;
 
+  // Handler for loading dummy data
+  const handleLoadDummyData = () => {
+    const dummyData = dummyResumes[0];
+    setResumeData(dummyData);
+    setSnackbar({
+      open: true,
+      message: 'Demo data loaded successfully!',
+      severity: 'success',
+    });
+  };
+
   // Render current step content
   const getStepContent = (step) => {
     switch (step) {
@@ -744,7 +756,11 @@ const handleDownloadResume = async () => {
   return (
     <Container className={classes.root} maxWidth="xl">
       {/* Navbar with template button handler */}
-      <Navbar currentPage="resume-builder" onTemplateClick={handleOpenTemplateDialog} />
+      <Navbar 
+        currentPage="resume-builder" 
+        onTemplateClick={handleOpenTemplateDialog} 
+        onLoadDummyData={handleLoadDummyData}
+      />
       
       {/* Display resume ID if editing */}
       {isEditingExisting && (

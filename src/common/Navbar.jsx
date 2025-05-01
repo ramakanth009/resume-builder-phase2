@@ -142,7 +142,7 @@ function HideOnScroll(props) {
   );
 }
 
-const Navbar = ({ currentPage, onTemplateClick }) => {
+const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:768px)');
@@ -223,15 +223,24 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                       Create Resume
                     </Button>
                     
-                    {/* Add Choose Template button to navbar when on resume-builder */}
+                    {/* Add Choose Template and Load Demo buttons when on resume-builder */}
                     {currentPage === 'resume-builder' && (
-                      <Button
-                        className={classes.templateButton}
-                        onClick={onTemplateClick}
-                        startIcon={<TemplateIcon />}
-                      >
-                        Choose Template
-                      </Button>
+                      <>
+                        <Button
+                          className={classes.templateButton}
+                          onClick={onTemplateClick}
+                          startIcon={<TemplateIcon />}
+                        >
+                          Choose Template
+                        </Button>
+                        <Button
+                          className={classes.templateButton}
+                          onClick={onLoadDummyData}
+                          startIcon={<TemplateIcon />}
+                        >
+                          Load Demo Data
+                        </Button>
+                      </>
                     )}
                     
                     {/* Add more navigation buttons here as needed */}
@@ -308,12 +317,18 @@ const Navbar = ({ currentPage, onTemplateClick }) => {
                         <CreateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                         Create Resume
                       </MenuItem>
-                      {/* Add Choose Template to mobile menu */}
+                      {/* Add Choose Template and Load Demo to mobile menu */}
                       {currentPage === 'resume-builder' && (
-                        <MenuItem onClick={onTemplateClick}>
-                          <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
-                          Choose Template
-                        </MenuItem>
+                        <>
+                          <MenuItem onClick={onTemplateClick}>
+                            <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                            Choose Template
+                          </MenuItem>
+                          <MenuItem onClick={onLoadDummyData}>
+                            <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                            Load Demo Data
+                          </MenuItem>
+                        </>
                       )}
                       <MenuItem onClick={handleLogout}>
                         Logout

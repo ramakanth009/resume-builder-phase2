@@ -8,7 +8,7 @@ import useModernStyles from '../../styles/previewStyles/modernStyles';
 import useCreativeStyles from '../../styles/previewStyles/creativeStyles';
 import useExecutiveStyles from '../../styles/previewStyles/executiveStyles';
 import useProfessionalStyles from '../../styles/previewStyles/professionalStyles';
-import useCreativeBlueStyles from '../../styles/previewStyles/CreativeBlueStyles';
+// import useCreativeBlueStyles from '../../styles/previewStyles/CreativeBlueStyles';
 
 // Base styles for all templates
 const useBaseStyles = makeStylesWithTheme((theme) => ({
@@ -40,7 +40,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
   const creativeClasses = useCreativeStyles();
   const executiveClasses = useExecutiveStyles();
   const professionalClasses = useProfessionalStyles();
-  const creativeBlueClasses = useCreativeBlueStyles();
+  // const creativeBlueClasses = useCreativeBlueStyles();
   
   // Select the appropriate styles based on template
   const getTemplateClasses = () => {
@@ -53,8 +53,8 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
         return executiveClasses;
       case 'professional':
         return professionalClasses;
-      case 'creativeBlue':
-        return creativeBlueClasses;
+      // case 'creativeBlue':
+      //   return creativeBlueClasses;
       case 'classic':
       default:
         return classicClasses;
