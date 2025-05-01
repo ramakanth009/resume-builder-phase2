@@ -233,13 +233,13 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         >
                           Choose Template
                         </Button>
-                        {/* <Button
+                        <Button
                           className={classes.templateButton}
                           onClick={onLoadDummyData}
                           startIcon={<TemplateIcon />}
                         >
                           Load Demo Data
-                        </Button> */}
+                        </Button>
                       </>
                     )}
                     

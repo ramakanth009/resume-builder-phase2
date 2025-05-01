@@ -144,15 +144,13 @@ const ResumeBuilder = () => {
     onConfirm: null
   });
   const [loadingError, setLoadingError] = useState(null);
+  const [targetRole, setTargetRole] = useState('');
   
   // Template selection states
   const [selectedTemplateId, setSelectedTemplateId] = useState(
     templatesData.find(t => t.isDefault)?.id || 'classic'
   );
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
-
-  // Target role state
-  const [targetRole, setTargetRole] = useState(resumeData?.target_role || '');
 
   // Handler to open template dialog (to be passed to Navbar)
   const handleOpenTemplateDialog = () => {
@@ -220,6 +218,21 @@ const ResumeBuilder = () => {
     customSections: {}
   });
 
+  // Handler for role selection
+  const handleRoleSelect = (role) => {
+    if (role && role !== targetRole) {
+      setTargetRole(role);
+      console.log(`Target role selected: ${role}`);
+    }
+  };
+
+  // Set target role from resumeData if available (for editing existing resumes)
+  useEffect(() => {
+    if (resumeData.target_role && !targetRole) {
+      setTargetRole(resumeData.target_role);
+    }
+  }, [resumeData.target_role, targetRole]);
+
   // Fetch resume data if in edit mode
   useEffect(() => {
     if (isEditingExisting && resumeId) {
@@ -274,13 +287,6 @@ const ResumeBuilder = () => {
       fetchResumeData();
     }
   }, [resumeId, isEditingExisting]);
-
-  // Set target role from resumeData if available (for editing existing resumes)
-  useEffect(() => {
-    if (resumeData.target_role && !targetRole) {
-      setTargetRole(resumeData.target_role);
-    }
-  }, [resumeData.target_role, targetRole]);
 
   // Navigation Handlers
   const handleNext = () => {
@@ -686,23 +692,20 @@ const ResumeBuilder = () => {
             resumeData={resumeData} 
             setResumeData={setResumeData}
             onRoleSelect={handleRoleSelect}
-            targetRole={targetRole}
           />
         );
       case 1:
         return (
           <EducationSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData}
-            targetRole={targetRole} // Pass for context-aware validation
+            setResumeData={setResumeData} 
           />
         );
       case 2:
         return (
           <SkillsSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData}
-            targetRole={targetRole} // Pass for skill suggestions
+            setResumeData={setResumeData} 
           />
         );
       case 3:
@@ -710,15 +713,14 @@ const ResumeBuilder = () => {
           <ProjectsSection 
             resumeData={resumeData} 
             setResumeData={setResumeData}
-            targetRole={targetRole} // Pass for project relevance
+            targetRole={targetRole}
           />
         );
       case 4:
         return (
           <ExperienceSection 
             resumeData={resumeData} 
-            setResumeData={setResumeData}
-            targetRole={targetRole} // Pass for experience relevance
+            setResumeData={setResumeData} 
           />
         );
       case 5:
@@ -728,7 +730,6 @@ const ResumeBuilder = () => {
             setResumeData={setResumeData}
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
-            targetRole={targetRole} // Pass for custom section suggestions
           />
         );
       default:
