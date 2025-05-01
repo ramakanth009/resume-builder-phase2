@@ -195,7 +195,7 @@ const ProjectsSection = ({ resumeData, setResumeData }) => {
           />
           
           <TextField
-            label="Responsibilities and Achievements (One per line)"
+            label="Description (One per line)"
             value={project.description}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
             variant="outlined"

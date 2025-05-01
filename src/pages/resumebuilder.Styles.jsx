@@ -186,7 +186,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       },
       templateDialog: {
         '& .MuiDialog-paper': {
-          maxWidth: '900px',
+          maxWidth: '1000px',
           width: '90%',
         },
       },

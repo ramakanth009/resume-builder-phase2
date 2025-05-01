@@ -5,14 +5,13 @@ import {
   Grid, 
   Card, 
   CardContent, 
-  CardMedia, 
   CardActionArea,
   Chip,
   Fade,
   Grow,
   Paper,
-  Button,
-  Divider
+  Divider,
+  CardMedia
 } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getAllTemplates } from '../../templates/templateRegistry';
@@ -42,21 +41,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
       transform: 'translateY(-4px)',
       boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
     },
+    display: 'flex',
+    flexDirection: 'column',
   },
   selectedCard: {
     boxShadow: '0 0 0 3px #3182ce, 0 4px 6px rgba(0,0,0,0.1)',
   },
   cardContent: {
     padding: '1rem',
+    flex: '0 0 auto', // Don't grow, don't shrink, use auto size
   },
   cardMedia: {
     height: 200,
     backgroundSize: 'contain',
-    borderRadius: '8px 8px 0 0',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     backgroundColor: '#f7fafc',
-    position: 'relative',
+    flex: '1 0 auto', // Grow to fill available space
   },
-  placeholderImage: {
+  fallbackImage: {
     height: 200,
     display: 'flex',
     alignItems: 'center',
@@ -64,18 +67,19 @@ const useStyles = makeStylesWithTheme((theme) => ({
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     borderRadius: '8px 8px 0 0',
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
   },
   templateName: {
     fontWeight: 600,
-    marginBottom: '0.5rem',
     color: '#2d3748',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    textAlign: 'center',
+    fontSize: '1.25rem',
   },
   templateDescription: {
     color: '#718096',
     fontSize: '0.875rem',
+    textAlign: 'center',
   },
   selectedChip: {
     position: 'absolute',
@@ -116,51 +120,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#2d4a8a',
     fontSize: '0.9rem',
   },
-  buttonContainer: {
+  cardActionArea: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    marginTop: '2rem',
-    gap: '1rem',
-  },
-  applyButton: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
-  },
-  featuresContainer: {
-    padding: '1rem',
-    borderRadius: '8px',
-    backgroundColor: '#f7fafc',
-    marginTop: '1rem',
-  },
-  featureItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '0.5rem',
-    fontSize: '0.9rem',
-    color: '#4a5568',
-  },
-  checkIcon: {
-    color: '#38a169',
-    fontSize: '1rem',
-  },
-  divider: {
-    margin: '1.5rem 0',
+    flexDirection: 'column',
+    height: '100%',
   }
 }));
 
 /**
- * Enhanced Template Selector component
- * Allows users to browse and select from available resume templates
- * 
- * @param {Object} props - Component props
- * @param {string} props.selectedTemplateId - Currently selected template ID
- * @param {Function} props.onTemplateSelect - Callback when template is selected
- * @param {Function} props.onConfirm - Optional callback when selection is confirmed
- * @returns {React.Component} - React component
+ * Template Selector component with image previews
  */
 const TemplateSelector = ({ 
   selectedTemplateId, 
@@ -170,6 +138,7 @@ const TemplateSelector = ({
   const classes = useStyles();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState({});
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   
   // Load templates on mount
@@ -194,11 +163,21 @@ const TemplateSelector = ({
     setSelectedTemplate(selected);
   };
   
-  // Handle confirmation button click
-  const handleConfirmClick = () => {
-    if (onConfirm) {
-      onConfirm(selectedTemplateId);
-    }
+  // Handle image error
+  const handleImageError = (templateId) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [templateId]: true
+    }));
+  };
+  
+  // Render fallback content when image fails to load
+  const renderFallbackContent = (template) => {
+    return (
+      <Box className={classes.fallbackImage}>
+        {template.name.charAt(0)}
+      </Box>
+    );
   };
 
   return (
@@ -249,24 +228,24 @@ const TemplateSelector = ({
                   />
                 )}
                 
-                <CardActionArea>
-                  {template.previewImage ? (
+                <CardActionArea className={classes.cardActionArea}>
+                  {/* Show image preview or fallback */}
+                  {template.previewImage && !imageErrors[template.id] ? (
                     <CardMedia
+                      component="img"
                       className={classes.cardMedia}
                       image={template.previewImage}
                       title={template.name}
+                      onError={() => handleImageError(template.id)}
                     />
                   ) : (
-                    <Box className={classes.placeholderImage}>
-                      <Typography variant="h6">{template.name}</Typography>
-                    </Box>
+                    renderFallbackContent(template)
                   )}
+                  
+                  {/* Template name at the bottom */}
                   <CardContent className={classes.cardContent}>
                     <Typography variant="h6" className={classes.templateName}>
                       {template.name}
-                    </Typography>
-                    <Typography variant="body2" className={classes.templateDescription}>
-                      {template.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -276,7 +255,7 @@ const TemplateSelector = ({
         ))}
       </Grid>
       
-      <Divider className={classes.divider} />
+      <Divider sx={{ margin: '2rem 0' }} />
     </Box>
   );
 };

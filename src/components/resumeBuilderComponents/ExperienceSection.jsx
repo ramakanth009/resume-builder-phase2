@@ -197,7 +197,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
           />
           
           <TextField
-            label="Responsibilities (One per line)"
+            label="Description (One per line)"
             value={experience.description}
             onChange={(e) => handleWorkExperienceChange(index, 'description', e.target.value)}
             variant="outlined"

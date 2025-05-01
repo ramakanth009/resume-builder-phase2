@@ -42,7 +42,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     color: '#2d3748',
     textDecoration: 'none',
-    cursor: 'pointer',
+    // cursor: 'pointer',
   },
   logoIcon: {
     marginRight: '0.5rem',
@@ -202,7 +202,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
         <Container maxWidth="xl">
           <Toolbar className={classes.toolbar} disableGutters>
             {/* Company Logo */}
-            <Box className={classes.logo} onClick={() => navigateTo('/')}>
+            <Box className={classes.logo}>
               <img src={GigaLogo} alt="Gigaversity Logo" style={{ width: '32px' }} className={classes.logoIcon} />
               <Typography variant="h6" className={classes.logoText}>
                 Gigaversity
