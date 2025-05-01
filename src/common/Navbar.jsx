@@ -122,7 +122,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   contentOffset: {
-    minHeight: '64px', // Match the height of your AppBar
+    minHeight: '20px', // Match the height of your AppBar
   },
 }));
 

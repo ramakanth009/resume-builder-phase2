@@ -32,10 +32,8 @@ import ExperienceSection from '../components/resumeBuilderComponents/ExperienceS
 import CustomSectionsAndTerms from '../components/resumeBuilderComponents/CustomSectionsAndTerms';
 import ResumePreview from '../components/previewComponents/ResumePreview';
 import TemplateSelector from '../components/previewComponents/TemplateSelector';
-import TemplateButton from '../common/TemplateButton';
 import templatesData from '../data/templatesData';
 import Navbar from '../common/Navbar';
-import DummyDataLoader from '../components/resumeBuilderComponents/DummyDataLoader';
 
 import { useStyles } from './resumebuilder.Styles';
 
@@ -748,29 +746,12 @@ const handleDownloadResume = async () => {
       {/* Navbar with template button handler */}
       <Navbar currentPage="resume-builder" onTemplateClick={handleOpenTemplateDialog} />
       
-      {/* Add DummyDataLoader component */}
-      {isEditMode && !isEditingExisting && !hasGeneratedResume && (
-        <DummyDataLoader onLoadData={(dummyData) => {
-          setResumeData(dummyData);
-          setSnackbar({
-            open: true,
-            message: 'Dummy data loaded successfully',
-            severity: 'success',
-          });
-        }} />
-      )}
-      
       {/* Display resume ID if editing */}
       {isEditingExisting && (
         <Typography className={classes.resumeIdText}>
           Resume ID: {resumeId}
         </Typography>
       )}
-      
-      {/* Template button in preview section */}
-      <Box className={classes.templateButtonContainer}>
-        <TemplateButton onClick={handleOpenTemplateDialog} />
-      </Box>
       
       {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
       {(hasGeneratedResume || isEditingExisting) && (
@@ -812,32 +793,6 @@ const handleDownloadResume = async () => {
             ) : (
               'Download PDF'
             )}
-          </Button>
-        )}
-        
-        {/* Update button - only show in edit mode for existing resumes */}
-        {isEditMode && (isEditingExisting || hasGeneratedResume) && (
-          <Button
-            variant="contained"
-            className={classes.saveButton}
-            onClick={handleUpdateResume}
-            disabled={loading || !areTermsAccepted}
-          >
-            {isEditingExisting ? 'Save Changes' : 'Update Resume'}
-            {loading && <CircularProgress size={20} className={classes.loader} />}
-          </Button>
-        )}
-        
-        {/* Generate button - only show in edit mode for new resumes */}
-        {isEditMode && !isEditingExisting && !hasGeneratedResume && (
-          <Button
-            variant="contained"
-            className={classes.saveButton}
-            onClick={handleGenerateResume}
-            disabled={loading || !areTermsAccepted}
-          >
-            Generate Resume
-            {loading && <CircularProgress size={20} className={classes.loader} />}
           </Button>
         )}
       </Box>
