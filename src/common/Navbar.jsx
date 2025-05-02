@@ -233,13 +233,13 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         >
                           Choose Template
                         </Button>
-                        <Button
+                        {/* <Button
                           className={classes.templateButton}
                           onClick={onLoadDummyData}
                           startIcon={<TemplateIcon />}
                         >
                           Load Demo Data
-                        </Button>
+                        </Button> */}
                       </>
                     )}
                     
@@ -324,10 +324,10 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                             <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                             Choose Template
                           </MenuItem>
-                          <MenuItem onClick={onLoadDummyData}>
+                          {/* <MenuItem onClick={onLoadDummyData}>
                             <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                             Load Demo Data
-                          </MenuItem>
+                          </MenuItem> */}
                         </>
                       )}
                       <MenuItem onClick={handleLogout}>
