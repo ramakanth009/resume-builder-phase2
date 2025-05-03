@@ -22,6 +22,9 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     height: "100vh",
     overflow: "hidden",
     backgroundColor: colors.white,
+    '@media (max-width: 960px)': {
+      flexDirection: 'column',
+    }
   },
   leftSection: {
     flex: "1 1 300px",
@@ -33,6 +36,17 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     backgroundColor: colors.white,
     position: "relative",
     zIndex: 1,
+    '@media (max-width: 1200px)': {
+      flex: "1 1 250px",
+    },
+    '@media (max-width: 960px)': {
+      width: '100%',
+      borderRadius: 0,
+      padding: '2rem 1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '1.5rem 0.75rem',
+    }
   },
   rightSection: {
     flex: "1 1 300px",
@@ -44,6 +58,9 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     background: `linear-gradient(135deg, ${colors.primaryDarkNavy} 0%, ${colors.deepIndigo} 100%)`,
     position: "relative",
     overflow: "hidden",
+    '@media (max-width: 960px)': {
+      display: 'none',
+    }
   },
   backgroundCircle: {
     position: "absolute",
@@ -58,6 +75,9 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     margin: "0 auto",
     padding: "0.5rem",
     boxSizing: "border-box",
+    '@media (max-width: 600px)': {
+      padding: '0.25rem',
+    }
   },
   logoContainer: {
     display: "flex",
@@ -79,6 +99,12 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 700,
     marginBottom: "0.5rem",
     fontSize: "1.75rem",
+    '@media (max-width: 600px)': {
+      fontSize: '1.5rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1.25rem',
+    }
   },
   subtitle: {
     color: colors.midBlue,
@@ -88,6 +114,9 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: "1rem",
+    '@media (max-width: 480px)': {
+      gap: '0.75rem',
+    }
   },
   textField: {
     "& .MuiOutlinedInput-root": {
@@ -128,6 +157,14 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     "&:hover": {
       backgroundColor: colors.midBlue,
     },
+    '@media (max-width: 600px)': {
+      padding: '0.6rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.5rem',
+      fontSize: '0.85rem',
+    }
   },
   signupLink: {
     textAlign: "center",

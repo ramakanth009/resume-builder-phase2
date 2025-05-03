@@ -134,11 +134,13 @@ const Login = () => {
         handleTogglePasswordVisibility={handleTogglePasswordVisibility}
         navigateToRegister={navigateToRegister}
       />
-      <LoginRightSection
-        classes={classes}
-        featureItems={featureItems}
-        visibleFeatures={visibleFeatures}
-      />
+      {!isMobile && (
+        <LoginRightSection
+          classes={classes}
+          featureItems={featureItems}
+          visibleFeatures={visibleFeatures}
+        />
+      )}
       <Snackbar 
         open={snackbar.open} 
         autoHideDuration={6000} 

@@ -117,7 +117,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
       padding: '0.4rem 0.6rem',
     },
-    // display: 'none', 
+    display: 'none', 
     // Hidden by default as requested
   },
   userButton: {
@@ -419,7 +419,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                             <TemplateIcon fontSize="small" className={classes.menuItemIcon} />
                             Choose Template
                           </MenuItem>
-                          <MenuItem onClick={handleLoadDummyData} className={classes.menuItem} style={{ display: 'none' }}>
+                          <MenuItem onClick={handleLoadDummyData} className={classes.menuItem}>
                             <DataIcon fontSize="small" className={classes.menuItemIcon} />
                             Load Demo Data
                           </MenuItem>

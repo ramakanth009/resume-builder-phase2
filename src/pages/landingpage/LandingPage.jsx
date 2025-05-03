@@ -37,7 +37,7 @@ const colors = {
   backgroundGradient: "linear-gradient(135deg, #2A2B6A 0%, #3F51B5 100%)",
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     display: "flex",
@@ -54,7 +54,10 @@ const useStyles = makeStyles(() => ({
     background: colors.backgroundGradient,
     position: "relative",
     overflow: "hidden",
-    padding: "1rem", // Increased padding
+    padding: "1rem",
+    "@media (max-width: 960px)": {
+      display: "none",
+    },
   },
   rightSection: {
     flex: "1 1 300px",
@@ -63,14 +66,21 @@ const useStyles = makeStyles(() => ({
     alignItems: "stretch",
     justifyContent: "flex-start",
     padding: "0.5rem 1rem",
-    backgroundColor: colors.white,
+    "@media (max-width: 960px)": {
+      flex: "1 1 100%",
+    },
   },
   formContainer: {
     width: "100%",
     maxWidth: "500px",
     margin: "0 auto",
     padding: "0.5rem",
-    boxSizing: "border-box",
+    "@media (max-width: 600px)": {
+      padding: "1rem",
+    },
+    "@media (max-width: 375px)": {
+      padding: "0.5rem",
+    },
   },
   logoContainer: {
     display: "flex",
@@ -92,10 +102,20 @@ const useStyles = makeStyles(() => ({
     fontWeight: 700,
     marginBottom: "0.5rem",
     fontSize: "1.75rem",
+    "@media (max-width: 600px)": {
+      fontSize: "1.5rem",
+    },
+    "@media (max-width: 375px)": {
+      fontSize: "1.25rem",
+    },
   },
   subtitle: {
     color: colors.midBlue,
     marginBottom: "1.5rem",
+    "@media (max-width: 600px)": {
+      fontSize: "0.9rem",
+      marginBottom: "1rem",
+    },
   },
   form: {
     display: "flex",
@@ -160,79 +180,96 @@ const useStyles = makeStyles(() => ({
   },
   // Enhanced left side content
   leftContentContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '2rem', // Increased padding
-    width: '100%',
-    position: 'relative',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "2rem", // Increased padding
+    width: "100%",
+    position: "relative",
     zIndex: 2,
-    maxWidth: '800px', // Added max width
+    maxWidth: "800px", // Added max width
   },
   mainHeadline: {
     color: colors.white,
     fontWeight: 800,
-    fontSize: '2.4rem', // Increased from 2rem
-    textAlign: 'center',
-    marginBottom: '1rem', // Increased from 0.5rem
+    fontSize: "2.4rem", // Increased from 2rem
+    textAlign: "center",
+    marginBottom: "1rem", // Increased from 0.5rem
     lineHeight: 1.2,
+    "@media (max-width: 1200px)": {
+      fontSize: "2rem",
+    },
+    "@media (max-width: 600px)": {
+      fontSize: "1.8rem",
+    },
+    "@media (max-width: 480px)": {
+      fontSize: "1.5rem",
+    },
   },
   highlightedText: {
     color: colors.goldenYellow,
-    position: 'relative',
-    '&::after': {
+    position: "relative",
+    "&::after": {
       content: '""',
-      position: 'absolute',
+      position: "absolute",
       left: 0,
-      bottom: '-5px',
-      width: '100%',
-      height: '4px',
+      bottom: "-5px",
+      width: "100%",
+      height: "4px",
       backgroundColor: colors.goldenYellow,
-      borderRadius: '2px',
+      borderRadius: "2px",
     },
   },
   tagline: {
-    color: 'rgba(255,255,255,0.9)',
-    textAlign: 'center',
-    marginBottom: '2rem', // Increased from 1rem
+    color: "rgba(255,255,255,0.9)",
+    textAlign: "center",
+    marginBottom: "2rem", // Increased from 1rem
     fontWeight: 400,
-    fontSize: '1.1rem', // Increased from 0.9rem
+    fontSize: "1.1rem", // Increased from 0.9rem
   },
   // Enhanced stats grid
   statsGridContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '1rem', // Reduced gap
-    width: '100%',
-    maxWidth: '900px',
-    marginBottom: '1rem', // Increased margin
-    justifyContent: 'center',
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "1rem", // Reduced gap
+    width: "100%",
+    maxWidth: "900px",
+    marginBottom: "1rem", // Increased margin
+    justifyContent: "center",
+    "@media (max-width: 600px)": {
+      gap: "0.5rem",
+    },
   },
   statCard: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: '12px', // Increased radius
-    padding: '1rem 1.5rem', // Increased padding
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'all 0.3s ease',
-    flex: '1 1 180px', // Increased flex basis
-    maxWidth: '220px', // Increased max width
-    minWidth: '160px', // Increased min width
-    '&:hover': {
-      backgroundColor: 'rgba(255,255,255,0.2)',
-      transform: 'translateY(-3px)',
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: "12px", // Increased radius
+    padding: "1rem 1.5rem", // Increased padding
+    display: "flex",
+    flexDirection: "column",
+    transition: "all 0.3s ease",
+    flex: "1 1 180px", // Increased flex basis
+    maxWidth: "220px", // Increased max width
+    minWidth: "160px", // Increased min width
+    "@media (max-width: 600px)": {
+      flex: "1 1 140px",
+      minWidth: "140px",
+      padding: "0.75rem 1rem",
+    },
+    "@media (max-width: 375px)": {
+      flex: "1 1 120px",
+      minWidth: "120px",
     },
   },
   statNumber: {
     color: colors.goldenYellow,
     fontWeight: 800,
-    fontSize: '1.8rem', // Increased from 1.5rem
-    marginBottom: '0.5rem', // Increased margin
+    fontSize: "1.8rem", // Increased from 1.5rem
+    marginBottom: "0.5rem", // Increased margin
   },
   statDescription: {
     color: colors.white,
-    fontSize: '0.95rem', // Increased from 0.8rem
+    fontSize: "0.95rem", // Increased from 0.8rem
   },
   // Enhanced features grid
   featuresContainer: {
@@ -249,26 +286,23 @@ const useStyles = makeStyles(() => ({
     fontSize: "1.4rem", // Increased from 1.1rem
   },
   featuresGrid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '1.5rem',
-    width: '100%',
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "1.5rem",
+    width: "100%",
+    "@media (max-width: 600px)": {
+      gap: "1rem",
+    },
   },
   featureItem: {
-    flex: '1 1 calc(50% - 0.75rem)',
-    minWidth: '280px',
+    flex: "1 1 calc(50% - 0.75rem)",
+    minWidth: "280px",
     display: "flex",
     alignItems: "flex-start",
     padding: "1.2rem",
-    color: "rgba(255,255,255,0.9)",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    borderRadius: "12px",
-    transition: "all 0.3s ease",
-    gap: "1rem",
-    transform: "translateY(0)",
-    "&:hover": {
-      backgroundColor: "rgba(255,255,255,0.15)",
-      transform: "translateY(-5px)",
+    "@media (max-width: 600px)": {
+      minWidth: "100%",
+      padding: "1rem",
     },
   },
   featureIcon: {
@@ -293,11 +327,11 @@ const useStyles = makeStyles(() => ({
   featureTitle: {
     color: colors.white,
     fontWeight: 700,
-    fontSize: '1.1rem', // Increased from 0.9rem
+    fontSize: "1.1rem", // Increased from 0.9rem
   },
   featureDescription: {
     color: "rgba(255,255,255,0.8)",
-    fontSize: '0.95rem', // Increased from 0.8rem
+    fontSize: "0.95rem", // Increased from 0.8rem
     lineHeight: "1.5", // Increased from 1.4
   },
   animatedShape: {
@@ -407,7 +441,7 @@ const LandingPage = () => {
   // Featured stats data
   const statsData = [
     { number: "71%", description: "More interview callbacks" },
-    { number: "7.4s", description: "Average review time" }
+    { number: "7.4s", description: "Average review time" },
   ];
 
   // Feature data with icons
@@ -415,23 +449,23 @@ const LandingPage = () => {
     {
       title: "ATS-Optimized",
       description: "Pass automated screening systems used by top companies",
-      icon: <CheckCircleIcon fontSize="small" />
+      icon: <CheckCircleIcon fontSize="small" />,
     },
     {
       title: "Real-Time Preview",
       description: "See changes instantly as you type your information",
-      icon: <VisibilityIcon fontSize="small" />
+      icon: <VisibilityIcon fontSize="small" />,
     },
     {
       title: "Multiple Templates",
       description: "Choose from professional designs for various roles",
-      icon: <FormatListBulletedIcon fontSize="small" />
+      icon: <FormatListBulletedIcon fontSize="small" />,
     },
     {
       title: "One-Click Download",
       description: "Export your resume as PDF with a single click",
-      icon: <GetAppIcon fontSize="small" />
-    }
+      icon: <GetAppIcon fontSize="small" />,
+    },
   ];
 
   return (
@@ -455,17 +489,19 @@ const LandingPage = () => {
               Launch Your Career
               <span className={classes.highlightedText}> With Confidence</span>
             </Typography>
-            
+
             <Typography variant="subtitle1" className={classes.tagline}>
               The professional resume builder designed for students
             </Typography>
-            
+
             {/* Enhanced statistics */}
             <Box className={classes.statsGridContainer}>
               {statsData.map((stat, index) => (
-                <Fade in timeout={1200 + (index * 200)} key={index}>
+                <Fade in timeout={1200 + index * 200} key={index}>
                   <Box className={classes.statCard}>
-                    <Typography variant="h3" className={classes.statNumber}>{stat.number}</Typography>
+                    <Typography variant="h3" className={classes.statNumber}>
+                      {stat.number}
+                    </Typography>
                     <Typography variant="body2" className={classes.statDescription}>
                       {stat.description}
                     </Typography>
@@ -473,20 +509,18 @@ const LandingPage = () => {
                 </Fade>
               ))}
             </Box>
-            
+
             {/* Enhanced features section - now using Box instead of Grid */}
             <Box className={classes.featuresContainer}>
               <Typography variant="h6" className={classes.featuresHeading}>
                 Why Choose Us?
               </Typography>
-              
+
               <Box className={classes.featuresGrid}>
                 {featureData.map((feature, index) => (
                   <Fade in={visibleFeatures.includes(index)} timeout={600} key={index}>
                     <Box className={classes.featureItem}>
-                      <Box className={classes.featureIcon}>
-                        {feature.icon}
-                      </Box>
+                      <Box className={classes.featureIcon}>{feature.icon}</Box>
                       <Box className={classes.featureContent}>
                         <Typography variant="subtitle2" className={classes.featureTitle}>
                           {feature.title}
@@ -562,11 +596,7 @@ const LandingPage = () => {
                         onClick={handleTogglePasswordVisibility("password")}
                         edge="end"
                       >
-                        {showPassword.password ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
+                        {showPassword.password ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -588,16 +618,10 @@ const LandingPage = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={handleTogglePasswordVisibility(
-                          "confirmPassword"
-                        )}
+                        onClick={handleTogglePasswordVisibility("confirmPassword")}
                         edge="end"
                       >
-                        {showPassword.confirmPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
+                        {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
