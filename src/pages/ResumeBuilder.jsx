@@ -407,6 +407,50 @@ const useStyles = makeStylesWithTheme((theme) => ({
     flex: 1,
     overflow: 'auto',
   },
+  // New styles for mobile generated preview
+  mobilePreviewContainer: {
+    display: 'none', // Hidden by default
+    '@media (max-width: 960px)': {
+      display: 'block', // Show only on mobile/tablet when in preview mode
+      marginTop: '2rem',
+    },
+  },
+  mobilePreviewHeader: {
+    textAlign: 'center',
+    marginBottom: '1rem',
+    padding: '0.75rem',
+    backgroundColor: '#ebf8ff',
+    borderRadius: '8px',
+    color: '#3182ce',
+    fontWeight: 600,
+    '@media (max-width: 480px)': {
+      fontSize: '1rem',
+      padding: '0.5rem',
+    },
+  },
+  mobileResumePreview: {
+    padding: '1rem',
+    border: '1px solid #e2e8f0',
+    borderRadius: '8px',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+    overflowX: 'auto',
+    '@media (max-width: 480px)': {
+      padding: '0.75rem',
+    },
+  },
+  mobileViewToggle: {
+    display: 'none', // Hidden by default
+    '@media (max-width: 960px)': {
+      display: 'flex', // Show on mobile/tablet
+      justifyContent: 'center',
+      marginTop: '1.5rem',
+      gap: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      marginTop: '1rem',
+    },
+  },
 }));
 
 // Step labels for sidebar navigation
@@ -501,6 +545,7 @@ const ResumeBuilder = () => {
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false); // New state for mobile preview
   const [termsAccepted, setTermsAccepted] = useState({
     updates: false,
     dataSharing: false
@@ -595,7 +640,6 @@ const ResumeBuilder = () => {
   const handleRoleSelect = (role) => {
     if (role && role !== targetRole) {
       setTargetRole(role);
-      console.log(`Target role selected: ${role}`);
     }
   };
 
@@ -621,9 +665,6 @@ const ResumeBuilder = () => {
             // Pass the resumeId to ensure it's stored in the adapted resume
             const adaptedResume = adaptGeneratedResume(response.resume, resumeId);
             setGeneratedResume(adaptedResume);
-            
-            // Log for debugging
-            console.log("Resume loaded with ID:", adaptedResume.id);
             
             // Map the data to form fields
             const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
@@ -681,6 +722,14 @@ const ResumeBuilder = () => {
   // Toggle between edit mode and preview mode
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
+    if (isMobile && !isEditMode) {
+      setIsMobilePreviewMode(false); // Return to edit mode on mobile
+    }
+  };
+
+  // New handler for mobile preview mode toggle
+  const toggleMobilePreviewMode = () => {
+    setIsMobilePreviewMode(!isMobilePreviewMode);
   };
 
   // Confirmation dialog handlers
@@ -915,9 +964,6 @@ const ResumeBuilder = () => {
       // Pass the ID from the API response to the adapter
       const adaptedResume = adaptGeneratedResume(response.resume, response.id);
       
-      // Log the resume ID for debugging
-      console.log("Resume generated with ID:", adaptedResume.id);
-      
       // Store the adapted resume data
       setGeneratedResume(adaptedResume);
       
@@ -928,6 +974,11 @@ const ResumeBuilder = () => {
       
       // Switch to preview mode to show the generated resume
       setIsEditMode(false);
+      
+      // For mobile, show the preview
+      if (isMobile) {
+        setIsMobilePreviewMode(true);
+      }
       
     } catch (error) {
       console.error('Error generating resume:', error);
@@ -950,11 +1001,6 @@ const ResumeBuilder = () => {
 
     // Get resumeId from either URL params or generated resume
     const idToUpdate = resumeId || generatedResume?.id;
-    
-    // Log available data for debugging
-    console.log("URL resumeId:", resumeId);
-    console.log("Generated resume ID:", generatedResume?.id);
-    console.log("ID to update:", idToUpdate);
 
     // Ensure we have a resumeId when updating
     if (!idToUpdate) {
@@ -990,6 +1036,11 @@ const ResumeBuilder = () => {
 
       // Switch to preview mode
       setIsEditMode(false);
+      
+      // For mobile, show the preview
+      if (isMobile) {
+        setIsMobilePreviewMode(true);
+      }
 
     } catch (error) {
       console.error('Error updating resume:', error);
@@ -1189,6 +1240,28 @@ const ResumeBuilder = () => {
           </Button>
         </Box>
       )}
+      
+      {/* Mobile view toggle buttons - only shown when a resume has been generated */}
+      {(hasGeneratedResume || isEditingExisting) && isMobile && (
+        <Box className={classes.mobileViewToggle}>
+          <Button
+            variant="contained"
+            className={`${classes.editModeButton} ${!isMobilePreviewMode ? classes.activeModeButton : ''}`}
+            onClick={() => setIsMobilePreviewMode(false)}
+            disabled={!isMobilePreviewMode}
+          >
+            Edit Mode
+          </Button>
+          <Button
+            variant="contained"
+            className={`${classes.previewModeButton} ${isMobilePreviewMode ? classes.activeModeButton : ''}`}
+            onClick={() => setIsMobilePreviewMode(true)}
+            disabled={isMobilePreviewMode}
+          >
+            View Resume
+          </Button>
+        </Box>
+      )}
 
       {/* Action buttons */}
       <Box className={classes.actionButtons}>
@@ -1214,8 +1287,8 @@ const ResumeBuilder = () => {
 
       {/* Main content area with sidebar margin */}
       <Box className={`${classes.mainContainer} ${classes.mainContentWithSidebar}`}>
-        {/* Form Column - Show in edit mode */}
-        {isEditMode && (
+        {/* Form Column - Show in edit mode or when not in mobile preview mode */}
+        {(isEditMode || (isMobile && !isMobilePreviewMode)) && (
           <Box className={`${classes.columnBox} ${classes.formColumn}`}>
             <Typography variant="h5" className={classes.sectionHeader}>
               {isEditingExisting ? 'Edit Your Resume' : hasGeneratedResume ? 'Edit Your Resume' : 'Build Your Resume'}
@@ -1283,6 +1356,43 @@ const ResumeBuilder = () => {
             </Box>
           </Box>
         </Box>
+        
+        {/* Mobile Preview - Only shown on mobile when in preview mode and a resume exists */}
+        {isMobile && isMobilePreviewMode && (hasGeneratedResume || isEditingExisting) && (
+          <Box className={classes.mobilePreviewContainer}>
+            <Typography variant="h6" className={classes.mobilePreviewHeader}>
+              Your Generated Resume
+            </Typography>
+            
+            <Box className={classes.mobileResumePreview}>
+              <ResumePreview 
+                userData={resumeData}
+                generatedData={generatedResume}
+                templateId={selectedTemplateId}
+              />
+            </Box>
+            
+            {/* Download button for mobile preview */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Button
+                variant="contained"
+                className={classes.downloadButton}
+                onClick={handleDownloadResume}
+                disabled={downloadingPdf}
+                fullWidth
+              >
+                {downloadingPdf ? (
+                  <>
+                    Generating PDF
+                    <CircularProgress size={20} className={classes.loader} />
+                  </>
+                ) : (
+                  'Download PDF'
+                )}
+              </Button>
+            </Box>
+          </Box>
+        )}
       </Box>
 
       {/* Template Selection Dialog */}
