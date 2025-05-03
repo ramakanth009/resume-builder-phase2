@@ -1,3 +1,4 @@
+// src/common/Navbar.jsx
 import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import {
@@ -18,10 +19,9 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TemplateIcon from '@mui/icons-material/Dashboard';
-import CreateIcon from '@mui/icons-material/Create'; // Added icon for "Create Resume"
+import CreateIcon from '@mui/icons-material/Create';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import GigaLogo from '../assets/giga-loogo.svg'; // Keep the import
 
 const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
@@ -34,25 +34,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end', // Changed to flex-end since we're removing the logo
     padding: '0.5rem 1rem',
-  },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    color: '#2d3748',
-    textDecoration: 'none',
-    // cursor: 'pointer',
-  },
-  logoIcon: {
-    marginRight: '0.5rem',
-    color: '#3182ce',
-    width: '32px', // Add this line to control logo size
-  },
-  logoText: {
-    fontWeight: 700,
-    fontSize: '1.25rem',
-    color: '#2d3748',
   },
   navButtons: {
     display: 'flex',
@@ -122,17 +105,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   contentOffset: {
-    minHeight: '20px', // Match the height of your AppBar
+    minHeight: '64px',
   },
+  navbarWithSidebar: {
+    paddingLeft: '64px',
+    width: 'calc(100% - 64px)',
+    transition: 'padding-left 0.3s ease-in-out, width 0.3s ease-in-out',
+  }
 }));
 
 // Hide on scroll functionality
 function HideOnScroll(props) {
   const { children } = props;
-  // Note: this trigger is reversed - we want to show on scroll down
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 200, // Show after scrolling more than 200px
+    threshold: 200,
   });
 
   return (
@@ -142,7 +129,7 @@ function HideOnScroll(props) {
   );
 }
 
-const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
+const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = false }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:768px)');
@@ -198,17 +185,13 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
   
   return (
     <>
-      <AppBar position="fixed" className={classes.appBar} elevation={2}>
+      <AppBar 
+        position="fixed" 
+        className={`${classes.appBar} ${hideLogo ? classes.navbarWithSidebar : ''}`} 
+        elevation={2}
+      >
         <Container maxWidth="xl">
           <Toolbar className={classes.toolbar} disableGutters>
-            {/* Company Logo */}
-            <Box className={classes.logo}>
-              <img src={GigaLogo} alt="Gigaversity Logo" style={{ width: '32px' }} className={classes.logoIcon} />
-              <Typography variant="h6" className={classes.logoText}>
-                Gigaversity
-              </Typography>
-            </Box>
-            
             {/* Desktop Navigation */}
             {!isSmallScreen && (
               <Box className={classes.navButtons}>
@@ -218,7 +201,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                     <Button 
                       className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
                       onClick={() => navigateTo('/resume-builder')}
-                      startIcon={<CreateIcon />} // Added Create icon here
+                      startIcon={<CreateIcon />}
                     >
                       Create Resume
                     </Button>
@@ -242,8 +225,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         </Button> */}
                       </>
                     )}
-                    
-                    {/* Add more navigation buttons here as needed */}
                   </>
                 )}
                 
@@ -276,7 +257,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                       </Avatar>
                     }
                   >
-                    {currentUser.name.split(' ')[0]} {/* Display only first name */}
+                    {currentUser.name.split(' ')[0]}
                   </Button>
                 )}
               </Box>
@@ -317,7 +298,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         <CreateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
                         Create Resume
                       </MenuItem>
-                      {/* Add Choose Template and Load Demo to mobile menu */}
                       {currentPage === 'resume-builder' && (
                         <>
                           <MenuItem onClick={onTemplateClick}>
