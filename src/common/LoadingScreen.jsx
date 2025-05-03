@@ -239,8 +239,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 /**
- * Enhanced LoadingScreen component with cycling quotes and improved UX
- * Merges functionality from both Loading.jsx and LoadingScreen.jsx
+ * Enhanced LoadingScreen component with caching and improved login handling
  */
 const LoadingScreen = () => {
   const classes = useStyles();
@@ -266,8 +265,6 @@ const LoadingScreen = () => {
     message: '',
     severity: 'error',
   });
-  
-  // This function is no longer needed as we're directly using the message in the component
   
   // Handle snackbar close
   const handleCloseSnackbar = () => {
@@ -320,7 +317,7 @@ const LoadingScreen = () => {
     return () => clearInterval(interval);
   }, []);
   
-  // Handle login if credentials are provided
+  // Handle login if credentials are provided - with deduplication
   useEffect(() => {
     let timer;
     
@@ -343,11 +340,10 @@ const LoadingScreen = () => {
               navigate(destination, { replace: true });
             }, 2000);
           } catch (err) {
-            // Silently handle login errors - don't display error message
-            // This prevents the "Login already in progress" from showing
-            console.log("Handling login quietly");
+            // Log error but continue with navigation
+            console.log("Login failed, redirecting anyway:", err.message);
             
-            // Still redirect to destination after a delay to avoid appearing stuck
+            // Still redirect to destination after a delay
             timer = setTimeout(() => {
               navigate(destination, { replace: true });
             }, 2500);
@@ -428,8 +424,6 @@ const LoadingScreen = () => {
           <Typography variant="body1" className={classes.message}>
             {loginData ? 'Logging you in' : 'Getting things ready'}{dots}
           </Typography>
-          
-          {/* Error message display removed */}
           
           <Box className={classes.quoteContainer}>
             <Typography className={classes.quoteHeader}>

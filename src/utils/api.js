@@ -1,5 +1,6 @@
 // Base URL for API requests
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
@@ -80,35 +81,44 @@ export const registerUser = async (userData) => {
 };
 
 /**
- * User login with throttling
+ * User login with improved concurrency handling
  * @param {Object} credentials - User login credentials
  * @returns {Promise} - Login response with token
  */
 export const loginUser = (() => {
-  let isRequesting = false;
+  const pendingRequests = new Map();
   
   return async (credentials) => {
-    // Prevent multiple simultaneous requests
-    if (isRequesting) {
-      console.warn('Login request already in progress');
-      return Promise.reject(new Error('Login already in progress'));
+    // Create a unique key for this login request
+    const requestKey = credentials.email;
+    
+    // If there's already a request for this email, return that promise
+    if (pendingRequests.has(requestKey)) {
+      return pendingRequests.get(requestKey);
     }
     
-    try {
-      isRequesting = true;
-      const response = await apiRequest('/auth/login', {
-        method: 'POST',
-        body: credentials,
-      });
-      return response;
-    } catch (error) {
-      throw new Error(error.message || 'Login failed');
-    } finally {
-      // Reset requesting flag after a small delay
-      setTimeout(() => {
-        isRequesting = false;
-      }, 500);
-    }
+    // Create a new request promise
+    const requestPromise = (async () => {
+      try {
+        const response = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: credentials,
+        });
+        return response;
+      } catch (error) {
+        throw new Error(error.message || 'Login failed');
+      } finally {
+        // Remove this request from pending after a small delay
+        setTimeout(() => {
+          pendingRequests.delete(requestKey);
+        }, 100);
+      }
+    })();
+    
+    // Store the promise in the pending map
+    pendingRequests.set(requestKey, requestPromise);
+    
+    return requestPromise;
   };
 })();
 

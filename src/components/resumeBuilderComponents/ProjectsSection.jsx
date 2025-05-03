@@ -1,232 +1,4 @@
-// import React from 'react';
-// import { Box, Typography, TextField, Paper, IconButton, Button } from '@mui/material';
-// import AddIcon from '@mui/icons-material/Add';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-
-// const useStyles = makeStylesWithTheme((theme) => ({
-//   form: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     gap: '1rem',
-//   },
-//   textField: {
-//     '& .MuiOutlinedInput-root': {
-//       borderRadius: '8px',
-//     },
-//     marginBottom: '1rem',
-//   },
-//   formSubtitle: {
-//     fontWeight: 500,
-//     marginBottom: '0.75rem',
-//     marginTop: '1rem',
-//     color: '#4a5568',
-//   },
-//   paper: {
-//     padding: '1.5rem',
-//     marginBottom: '1.5rem',
-//     borderRadius: '8px',
-//     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-//     position: 'relative',
-//   },
-//   sectionTitle: {
-//     fontWeight: 600,
-//     marginBottom: '1rem',
-//     color: '#2d3748',
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//   },
-//   deleteButton: {
-//     color: '#e53e3e',
-//     position: 'absolute',
-//     top: '1rem',
-//     right: '1rem',
-//   },
-//   addButton: {
-//     backgroundColor: '#ebf8ff',
-//     color: '#3182ce',
-//     borderRadius: '8px',
-//     textTransform: 'none',
-//     marginTop: '1rem',
-//     '&:hover': {
-//       backgroundColor: '#bee3f8',
-//     },
-//   },
-//   helperText: {
-//     marginTop: '-0.5rem',
-//     marginBottom: '1rem',
-//     color: '#718096',
-//     fontSize: '0.75rem',
-//   }
-// }));
-
-// const ProjectsSection = ({ resumeData, setResumeData }) => {
-//   const classes = useStyles();
-
-//   const handleAddProject = () => {
-//     setResumeData({
-//       ...resumeData,
-//       projects: [
-//         ...resumeData.projects,
-//         {
-//           name: '',
-//           skills_used: '',
-//           description: '',
-//           responsibilities: [],
-//           link: '',
-//         },
-//       ],
-//     });
-//   };
-
-//   const handleProjectChange = (index, field, value) => {
-//     const updatedProjects = [...resumeData.projects];
-    
-//     if (field === 'description') {
-//       // Convert description text to responsibilities array
-//       const responsibilities = value.split('\n').filter(item => item.trim());
-      
-//       updatedProjects[index] = {
-//         ...updatedProjects[index],
-//         responsibilities: responsibilities,
-//         description: value,
-//       };
-//     } else if (field === 'skills_used') {
-//       // Handle both fields for technologies/skills
-//       const skills = value;
-      
-//       updatedProjects[index] = {
-//         ...updatedProjects[index],
-//         skills_used: skills,
-//         technologies: skills.split(',').map(s => s.trim()),
-//         [field]: value,
-//       };
-//     } else {
-//       updatedProjects[index] = {
-//         ...updatedProjects[index],
-//         [field]: value,
-//       };
-//     }
-    
-//     setResumeData({
-//       ...resumeData,
-//       projects: updatedProjects,
-//     });
-//   };
-
-//   const handleRemoveProject = (index) => {
-//     // Don't remove if it's the only project and it's empty
-//     if (resumeData.projects.length === 1 && 
-//         !resumeData.projects[0].name && 
-//         !resumeData.projects[0].skills_used && 
-//         !resumeData.projects[0].description) {
-//       return;
-//     }
-    
-//     setResumeData({
-//       ...resumeData,
-//       projects: resumeData.projects.filter((_, i) => i !== index),
-//     });
-    
-//     // If we just removed all projects, add an empty one
-//     if (resumeData.projects.length === 1) {
-//       setResumeData(prev => ({
-//         ...prev,
-//         projects: [{
-//           name: '',
-//           skills_used: '',
-//           description: '',
-//           responsibilities: [],
-//           link: '',
-//         }]
-//       }));
-//     }
-//   };
-
-//   return (
-//     <Box className={classes.form}>
-//       <Typography variant="h6" className={classes.formSubtitle}>
-//         Projects
-//       </Typography>
-      
-//       {resumeData.projects.map((project, index) => (
-//         <Paper key={index} className={classes.paper}>
-//           <Box className={classes.sectionTitle}>
-//             <Typography variant="h6">Project {index + 1}</Typography>
-//           </Box>
-          
-//           <IconButton
-//             className={classes.deleteButton}
-//             onClick={() => handleRemoveProject(index)}
-//           >
-//             <DeleteIcon />
-//           </IconButton>
-          
-//           <TextField
-//             label="Project Name"
-//             value={project.name}
-//             onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
-//             variant="outlined"
-//             fullWidth
-//             className={classes.textField}
-//             required
-//           />
-          
-//           <TextField
-//             label="Skills Used"
-//             value={project.skills_used}
-//             onChange={(e) => handleProjectChange(index, 'skills_used', e.target.value)}
-//             variant="outlined"
-//             fullWidth
-//             className={classes.textField}
-//             placeholder="e.g., React, Node.js, MongoDB"
-//             required
-//           />
-          
-//           <TextField
-//             label="Project Link (Optional)"
-//             value={project.link || ''}
-//             onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
-//             variant="outlined"
-//             fullWidth
-//             className={classes.textField}
-//             placeholder="e.g., https://github.com/yourusername/project"
-//           />
-          
-//           <TextField
-//             label="Description (One per line)"
-//             value={project.description}
-//             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-//             variant="outlined"
-//             fullWidth
-//             multiline
-//             rows={3}
-//             className={classes.textField}
-//             placeholder="Enter project details, one per line"
-//             required
-//           />
-//           <Typography className={classes.helperText}>
-//             Each line will be converted into a bullet point on your resume
-//           </Typography>
-//         </Paper>
-//       ))}
-      
-//       <Button
-//         variant="contained"
-//         startIcon={<AddIcon />}
-//         onClick={handleAddProject}
-//         className={classes.addButton}
-//         fullWidth
-//       >
-//         Add Project
-//       </Button>
-//     </Box>
-//   );
-// };
-
-// export default ProjectsSection;
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Typography, 
@@ -247,8 +19,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getProjectRecommendations, getProjectDetails } from '../../utils/api';
+import { useApiData } from '../../hooks/useApiData';
 
-// Extended styles
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
     display: 'flex',
@@ -305,7 +77,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '0.75rem',
   },
   
-  // New styles for recommended projects
+  // Recommendations styles
   recommendationsSection: {
     marginTop: '2rem',
     marginBottom: '1.5rem',
@@ -364,36 +136,23 @@ const useStyles = makeStylesWithTheme((theme) => ({
 
 const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
-  const [recommendedProjects, setRecommendedProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [loadingProject, setLoadingProject] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-
-  // Fetch recommended projects when target role changes
-  useEffect(() => {
-    const fetchRecommendedProjects = async () => {
-      if (!targetRole) return;
-      
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await getProjectRecommendations(targetRole);
-        if (response.status === 'success') {
-          setRecommendedProjects(response.projects || []);
-        } else {
-          setError(response.message || 'Failed to fetch recommended projects');
-        }
-      } catch (error) {
-        console.error('Error fetching project recommendations:', error);
-        setError(error.message || 'An error occurred while fetching recommendations');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecommendedProjects();
-  }, [targetRole]);
+  const [loadingProject, setLoadingProject] = useState(false);
+  const [projectError, setProjectError] = useState(null);
+  
+  // Use our custom hook for project recommendations
+  const { 
+    data: recommendationsResponse,
+    loading,
+    error
+  } = useApiData(getProjectRecommendations, targetRole, {
+    enabled: !!targetRole,
+    cacheKey: `projectRecommendations_${targetRole}`,
+    cacheTime: 60 * 60 * 1000, // 1 hour
+  });
+  
+  // Extract recommended projects from the response
+  const recommendedProjects = recommendationsResponse?.projects || [];
 
   const handleAddProject = () => {
     setResumeData({
@@ -475,11 +234,11 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
     }
   };
 
-  // New handler for adding a recommended project
+  // Handler for adding a recommended project
   const handleAddRecommendedProject = async (projectKey) => {
     setLoadingProject(true);
     setSuccessMessage('');
-    setError(null);
+    setProjectError(null);
     
     try {
       const response = await getProjectDetails(projectKey);
@@ -519,11 +278,11 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           });
         }, 100);
       } else {
-        setError(response.message || 'Failed to retrieve project details');
+        setProjectError(response.message || 'Failed to retrieve project details');
       }
     } catch (error) {
       console.error('Error adding recommended project:', error);
-      setError(error.message || 'An error occurred while adding the project');
+      setProjectError(error.message || 'An error occurred while adding the project');
     } finally {
       setLoadingProject(false);
       
@@ -643,9 +402,9 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           </Typography>
           
           {/* Error message */}
-          {error && (
+          {(error || projectError) && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {error || projectError}
             </Alert>
           )}
           
