@@ -1,4 +1,3 @@
-// src/common/Navbar.jsx
 import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import {
@@ -20,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TemplateIcon from '@mui/icons-material/Dashboard';
 import CreateIcon from '@mui/icons-material/Create';
+import DataIcon from '@mui/icons-material/Storage';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -34,8 +34,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'flex-end', // Changed to flex-end since we're removing the logo
+    justifyContent: 'flex-end',
     padding: '0.5rem 1rem',
+    '@media (max-width: 600px)': {
+      padding: '0.4rem 0.75rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.3rem 0.5rem',
+    },
   },
   navButtons: {
     display: 'flex',
@@ -49,6 +55,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: 'transparent',
       color: '#3182ce',
+    },
+    '@media (max-width: 960px)': {
+      marginLeft: '0.75rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      marginLeft: '0.5rem',
+      fontSize: '0.85rem',
+      padding: '0.4rem 0.6rem',
     },
   },
   activeNavButton: {
@@ -74,6 +89,36 @@ const useStyles = makeStylesWithTheme((theme) => ({
       backgroundColor: 'transparent',
       color: '#6b46c1',
     },
+    '@media (max-width: 960px)': {
+      marginLeft: '0.75rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      marginLeft: '0.5rem',
+      fontSize: '0.85rem',
+      padding: '0.4rem 0.6rem',
+    },
+  },
+  dummyDataButton: {
+    textTransform: 'none',
+    fontWeight: 600,
+    marginLeft: '1rem',
+    color: '#38a169',
+    '&:hover': {
+      backgroundColor: 'transparent',
+      color: '#2f855a',
+    },
+    '@media (max-width: 960px)': {
+      marginLeft: '0.75rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      marginLeft: '0.5rem',
+      fontSize: '0.85rem',
+      padding: '0.4rem 0.6rem',
+    },
+    // display: 'none', 
+    // Hidden by default as requested
   },
   userButton: {
     textTransform: 'none',
@@ -83,6 +128,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
     border: '1px solid #e2e8f0',
     padding: '0.25rem 0.75rem',
     backgroundColor: '#f7fafc',
+    '@media (max-width: 960px)': {
+      marginLeft: '1rem',
+      padding: '0.25rem 0.5rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      marginLeft: '0.75rem',
+      padding: '0.2rem 0.4rem',
+      fontSize: '0.85rem',
+    },
   },
   avatar: {
     backgroundColor: '#ebf4ff',
@@ -90,9 +145,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
     width: '30px',
     height: '30px',
     marginRight: '0.5rem',
+    '@media (max-width: 600px)': {
+      width: '26px',
+      height: '26px',
+      marginRight: '0.3rem',
+    },
   },
   mobileMenuButton: {
     color: '#2d3748',
+    padding: '0.4rem',
+    '@media (max-width: 480px)': {
+      padding: '0.3rem',
+    },
   },
   logoutButton: {
     textTransform: 'none',
@@ -106,12 +170,54 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   contentOffset: {
     minHeight: '64px',
+    '@media (max-width: 600px)': {
+      minHeight: '56px',
+    },
   },
   navbarWithSidebar: {
     paddingLeft: '64px',
     width: 'calc(100% - 64px)',
     transition: 'padding-left 0.3s ease-in-out, width 0.3s ease-in-out',
-  }
+    '@media (max-width: 600px)': {
+      paddingLeft: '56px',
+      width: 'calc(100% - 56px)',
+    },
+    '@media (max-width: 480px)': {
+      paddingLeft: '48px',
+      width: 'calc(100% - 48px)',
+    },
+    '@media (max-width: 375px)': {
+      paddingLeft: '42px',
+      width: 'calc(100% - 42px)',
+    },
+  },
+  buttonIcon: {
+    marginRight: '0.5rem',
+    '@media (max-width: 600px)': {
+      marginRight: '0.3rem',
+      fontSize: '1.1rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1rem',
+    },
+  },
+  menuItem: {
+    '@media (max-width: 480px)': {
+      minHeight: '40px',
+      fontSize: '0.9rem',
+    },
+  },
+  menuItemIcon: {
+    marginRight: '0.5rem',
+    '@media (max-width: 600px)': {
+      marginRight: '0.4rem',
+      fontSize: '1.2rem',
+    },
+    '@media (max-width: 480px)': {
+      marginRight: '0.3rem',
+      fontSize: '1.1rem',
+    },
+  },
 }));
 
 // Hide on scroll functionality
@@ -180,6 +286,15 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
   const handleTemplateClick = () => {
     if (onTemplateClick) {
       onTemplateClick();
+      handleMobileMenuClose();
+    }
+  };
+  
+  // Handle load dummy data button click
+  const handleLoadDummyData = () => {
+    if (onLoadDummyData) {
+      onLoadDummyData();
+      handleMobileMenuClose();
     }
   };
   
@@ -201,7 +316,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                     <Button 
                       className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
                       onClick={() => navigateTo('/resume-builder')}
-                      startIcon={<CreateIcon />}
+                      startIcon={<CreateIcon className={classes.buttonIcon} />}
                     >
                       Create Resume
                     </Button>
@@ -212,17 +327,17 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                         <Button
                           className={classes.templateButton}
                           onClick={onTemplateClick}
-                          startIcon={<TemplateIcon />}
+                          startIcon={<TemplateIcon className={classes.buttonIcon} />}
                         >
                           Choose Template
                         </Button>
-                        {/* <Button
-                          className={classes.templateButton}
+                        <Button
+                          className={classes.dummyDataButton}
                           onClick={onLoadDummyData}
-                          startIcon={<TemplateIcon />}
+                          startIcon={<DataIcon className={classes.buttonIcon} />}
                         >
                           Load Demo Data
-                        </Button> */}
+                        </Button>
                       </>
                     )}
                   </>
@@ -284,33 +399,33 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                   {!currentUser ? (
                     // Menu items for logged out users
                     <>
-                      <MenuItem onClick={() => navigateTo('/login')}>
+                      <MenuItem onClick={() => navigateTo('/login')} className={classes.menuItem}>
                         Log In
                       </MenuItem>
-                      <MenuItem onClick={() => navigateTo('/')}>
+                      <MenuItem onClick={() => navigateTo('/')} className={classes.menuItem}>
                         Sign Up
                       </MenuItem>
                     </>
                   ) : (
                     // Menu items for logged in users
                     <>
-                      <MenuItem onClick={() => navigateTo('/resume-builder')}>
-                        <CreateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                      <MenuItem onClick={() => navigateTo('/resume-builder')} className={classes.menuItem}>
+                        <CreateIcon fontSize="small" className={classes.menuItemIcon} />
                         Create Resume
                       </MenuItem>
                       {currentPage === 'resume-builder' && (
                         <>
-                          <MenuItem onClick={onTemplateClick}>
-                            <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                          <MenuItem onClick={handleTemplateClick} className={classes.menuItem}>
+                            <TemplateIcon fontSize="small" className={classes.menuItemIcon} />
                             Choose Template
                           </MenuItem>
-                          {/* <MenuItem onClick={onLoadDummyData}>
-                            <TemplateIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+                          <MenuItem onClick={handleLoadDummyData} className={classes.menuItem} style={{ display: 'none' }}>
+                            <DataIcon fontSize="small" className={classes.menuItemIcon} />
                             Load Demo Data
-                          </MenuItem> */}
+                          </MenuItem>
                         </>
                       )}
-                      <MenuItem onClick={handleLogout}>
+                      <MenuItem onClick={handleLogout} className={classes.menuItem}>
                         Logout
                       </MenuItem>
                     </>
@@ -326,11 +441,11 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
               onClose={handleUserMenuClose}
               keepMounted
             >
-              <MenuItem>
-                <AccountCircleIcon fontSize="small" style={{ marginRight: '0.5rem' }} />
+              <MenuItem className={classes.menuItem}>
+                <AccountCircleIcon fontSize="small" className={classes.menuItemIcon} />
                 My Profile
               </MenuItem>
-              <MenuItem onClick={handleLogout}>
+              <MenuItem onClick={handleLogout} className={classes.menuItem}>
                 Logout
               </MenuItem>
             </Menu>

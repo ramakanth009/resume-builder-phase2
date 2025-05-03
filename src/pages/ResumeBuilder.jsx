@@ -11,9 +11,12 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import Alert from '@mui/material/Alert';
+import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { generateResume, getResumeById, updateResume } from '../utils/api';
@@ -42,6 +45,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minHeight: '100vh',
     padding: '2rem 0',
     backgroundColor: '#f9f9f9',
+    '@media (max-width: 600px)': {
+      padding: '1rem 0',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.5rem 0',
+    },
   },
   container: {
     height: '100%',
@@ -50,6 +59,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginLeft: '64px',
     width: 'calc(100% - 64px)',
     transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
+    '@media (max-width: 600px)': {
+      marginLeft: '56px',
+      width: 'calc(100% - 56px)',
+    },
+    '@media (max-width: 480px)': {
+      marginLeft: '48px',
+      width: 'calc(100% - 48px)',
+    },
   },
   formColumn: {
     padding: '1.5rem',
@@ -60,6 +77,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
       xs: 'none',
       md: '1px solid #e2e8f0'
     },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.75rem',
+    },
   },
   previewColumn: {
     padding: '1.5rem',
@@ -67,18 +90,69 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minHeight: '80vh',
     maxHeight: '100%',
     backgroundColor: '#ffffff',
+    '@media (max-width: 960px)': {
+      display: 'none', // Hide preview on tablets and mobile
+    },
+  },
+  previewNotice: {
+    display: 'none', // Hidden by default (on desktop)
+    '@media (max-width: 960px)': {
+      display: 'flex', // Show on tablets and mobile
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      margin: '1.5rem 0',
+      backgroundColor: '#ebf8ff',
+      color: '#3182ce',
+      borderRadius: '8px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.75rem',
+      margin: '1rem 0',
+      fontSize: '0.85rem',
+    },
+  },
+  noticeIcon: {
+    marginRight: '0.5rem',
+    '@media (max-width: 480px)': {
+      fontSize: '1.2rem',
+    },
   },
   sectionHeader: {
     textAlign: 'center',
     marginBottom: '1.5rem',
     fontWeight: 600,
     color: '#2d3748',
+    fontSize: '1.5rem',
+    '@media (max-width: 1200px)': {
+      fontSize: '1.4rem',
+      marginBottom: '1.25rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1.3rem',
+      marginBottom: '1rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '1.2rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1.1rem',
+    },
   },
   paper: {
     padding: '1.5rem',
     marginBottom: '1.5rem',
     borderRadius: '8px',
     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+    '@media (max-width: 600px)': {
+      padding: '1.25rem',
+      marginBottom: '1.25rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '1rem',
+      marginBottom: '1rem',
+    },
   },
   sectionTitle: {
     fontWeight: 600,
@@ -87,6 +161,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    '@media (max-width: 480px)': {
+      fontSize: '1rem',
+      marginBottom: '0.75rem',
+    },
   },
   saveButton: {
     backgroundColor: '#3182ce',
@@ -95,6 +173,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      padding: '0.5rem 1rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.4rem 0.8rem',
+      fontSize: '0.85rem',
+    },
     '&:hover': {
       backgroundColor: '#2b6cb0',
     },
@@ -103,6 +189,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: '2rem',
+    '@media (max-width: 600px)': {
+      marginTop: '1.5rem',
+      flexDirection: 'column',
+      gap: '1rem',
+    },
   },
   buttonNext: {
     backgroundColor: '#3182ce',
@@ -111,6 +202,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      padding: '0.5rem 1rem',
+      width: '100%',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.4rem 0.8rem',
+      fontSize: '0.85rem',
+    },
     '&:hover': {
       backgroundColor: '#2b6cb0',
     },
@@ -122,23 +222,32 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      padding: '0.5rem 1rem',
+      width: '100%',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.4rem 0.8rem',
+      fontSize: '0.85rem',
+    },
     '&:hover': {
       backgroundColor: '#f7fafc',
     },
   },
   mainContainer: {
     display: 'flex',
-    flexDirection: {
-      xs: 'column',
-      md: 'row'
-    },
+    flexDirection: 'row', // Default side-by-side on desktop
     paddingTop: '1rem',
+    '@media (max-width: 960px)': {
+      flexDirection: 'column', // Stack vertically on tablets and mobile
+    },
   },
   columnBox: {
     flex: 1,
-    width: {
-      xs: '100%',
-      md: '50%'
+    width: '50%', // Default 50% on desktop
+    '@media (max-width: 960px)': {
+      width: '100%', // Full width on tablets and mobile
     },
   },
   loader: {
@@ -156,6 +265,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
     marginLeft: '1rem',
+    '@media (max-width: 600px)': {
+      padding: '0.5rem 1rem',
+      fontSize: '0.9rem',
+      marginLeft: '0.5rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.4rem 0.8rem',
+      fontSize: '0.85rem',
+      marginLeft: '0.25rem',
+    },
     '&:hover': {
       backgroundColor: '#2f855a',
     },
@@ -168,6 +287,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
     marginLeft: '1rem',
+    '@media (max-width: 600px)': {
+      padding: '0.5rem 1rem',
+      fontSize: '0.9rem',
+      marginLeft: '0.5rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.4rem 0.8rem',
+      fontSize: '0.85rem',
+      marginLeft: '0.25rem',
+    },
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
@@ -181,12 +310,20 @@ const useStyles = makeStylesWithTheme((theme) => ({
     justifyContent: 'flex-end',
     gap: '1rem',
     marginBottom: '1rem',
+    '@media (max-width: 600px)': {
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      gap: '0.5rem',
+    },
   },
   viewModeToggle: {
     display: 'flex',
     marginBottom: '1rem',
     justifyContent: 'center',
     gap: '1rem',
+    '@media (max-width: 960px)': {
+      display: 'none', // Hide on tablets and mobile since preview is hidden
+    },
   },
   editModeButton: {
     backgroundColor: '#805ad5',
@@ -195,6 +332,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      padding: '0.4rem 1rem',
+      fontSize: '0.9rem',
+    },
     '&:hover': {
       backgroundColor: '#6b46c1',
     },
@@ -206,6 +347,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     padding: '0.5rem 1.5rem',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      padding: '0.4rem 1rem',
+      fontSize: '0.9rem',
+    },
     '&:hover': {
       backgroundColor: '#3182ce',
     },
@@ -219,6 +364,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginBottom: '1rem',
     textAlign: 'center',
     fontStyle: 'italic',
+    '@media (max-width: 480px)': {
+      fontSize: '0.8rem',
+    },
   },
   templateSelectorWrapper: {
     marginTop: '1rem',
@@ -229,17 +377,26 @@ const useStyles = makeStylesWithTheme((theme) => ({
     justifyContent: 'flex-end',
     marginTop: '1rem',
     gap: '1rem',
+    '@media (max-width: 600px)': {
+      justifyContent: 'center',
+    },
   },
   templateDialog: {
     '& .MuiDialog-paper': {
       maxWidth: '1000px',
       width: '90%',
+      '@media (max-width: 600px)': {
+        width: '95%',
+      },
     },
   },
   templateButtonContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
     marginBottom: '1rem',
+    '@media (max-width: 600px)': {
+      justifyContent: 'center',
+    },
   },
   previewWrapper: {
     display: 'flex',
@@ -328,6 +485,8 @@ const ResumeBuilder = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery('(max-width:960px)');
   
   // Get resumeId from URL params if editing an existing resume
   const { resumeId } = useParams();
@@ -1062,6 +1221,14 @@ const ResumeBuilder = () => {
               {isEditingExisting ? 'Edit Your Resume' : hasGeneratedResume ? 'Edit Your Resume' : 'Build Your Resume'}
             </Typography>
             
+            {/* Preview notice for tablet and mobile */}
+            <Box className={classes.previewNotice}>
+              <InfoIcon className={classes.noticeIcon} />
+              <Typography variant="body2">
+                To access the Live Preview, please open this site on a desktop.
+              </Typography>
+            </Box>
+            
             {/* Current Step Content */}
             <Paper className={classes.paper} elevation={0}>
               {getStepContent(activeStep)}
@@ -1077,49 +1244,28 @@ const ResumeBuilder = () => {
                   Back
                 </Button>
                 
-                {isEditingExisting ? (
-                  // If editing existing resume, show "Next" or "Save Changes" button
-                  <Button
-                    variant="contained"
-                    onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
-                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                  >
-                    {activeStep === steps.length - 1 ? 'Save Changes' : 'Next'}
-                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
-                  </Button>
-                ) : hasGeneratedResume ? (
-                  // If resume has been generated, show "Next" or "Update" button
-                  <Button
-                    variant="contained"
-                    onClick={activeStep === steps.length - 1 ? handleUpdateResume : handleNext}
-                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                  >
-                    {activeStep === steps.length - 1 ? 'Update Resume' : 'Next'}
-                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
-                  </Button>
-                ) : (
-                  // If creating new resume, show "Next" or "Generate" button
-                  <Button
-                    variant="contained"
-                    onClick={activeStep === steps.length - 1 ? handleGenerateResume : handleNext}
-                    className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
-                    disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
-                  >
-                    {activeStep === steps.length - 1 ? 'Generate Resume' : 'Next'}
-                    {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
-                  </Button>
-                )}
+                <Button
+                  variant="contained"
+                  onClick={activeStep === steps.length - 1 ? 
+                    (isEditingExisting || hasGeneratedResume ? handleUpdateResume : handleGenerateResume) 
+                    : handleNext}
+                  className={`${classes.buttonNext} ${(activeStep === steps.length - 1 && !areTermsAccepted) ? classes.disabledButton : ''}`}
+                  disabled={(activeStep === steps.length - 1 && !areTermsAccepted)}
+                  fullWidth={isMobile}
+                >
+                  {activeStep === steps.length - 1 ? 
+                    (isEditingExisting ? 'Save Changes' : hasGeneratedResume ? 'Update Resume' : 'Generate Resume') 
+                    : 'Next'}
+                  {loading && activeStep === steps.length - 1 && <CircularProgress size={20} className={classes.loader} />}
+                </Button>
               </Box>
             </Paper>
           </Box>
         )}
 
-        {/* Preview Column - Adjust width based on edit/preview mode */}
+        {/* Preview Column - Hidden on tablet/mobile */}
         <Box 
-          className={`${isEditMode ? classes.columnBox : ''} ${classes.previewColumn}`} 
-          sx={{ width: isEditMode ? '50%' : '100%' }}
+          className={`${classes.columnBox} ${classes.previewColumn}`}
         >
           <Box className={classes.previewWrapper}>
             {/* Section Header */}

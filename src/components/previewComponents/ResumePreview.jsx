@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Box, Typography, Chip, Link, Divider } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Chip, Link, Divider, useMediaQuery, useTheme } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 // Import styles from separate files
@@ -8,7 +8,6 @@ import useModernStyles from '../../styles/previewStyles/modernStyles';
 import useCreativeStyles from '../../styles/previewStyles/creativeStyles';
 import useExecutiveStyles from '../../styles/previewStyles/executiveStyles';
 import useProfessionalStyles from '../../styles/previewStyles/professionalStyles';
-// import useCreativeBlueStyles from '../../styles/previewStyles/CreativeBlueStyles';
 
 // Base styles for all templates
 const useBaseStyles = makeStylesWithTheme((theme) => ({
@@ -24,13 +23,58 @@ const useBaseStyles = makeStylesWithTheme((theme) => ({
     position: 'relative',
     overflow: 'hidden', // Prevents text overflow
     fontFamily: 'Helvetica, Arial, sans-serif', // Consistent font family for PDF generation
+    '@media (max-width: 1200px)': {
+      padding: '1.75rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.5rem',
+      minHeight: '700px',
+    },
   },
   generatedNotice: {
     marginTop: '2rem',
     textAlign: 'center',
     color: '#718096',
     fontSize: '0.875rem',
-  }
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+      marginTop: '1.5rem',
+    },
+  },
+  resumeName: {
+    '@media (max-width: 1200px)': {
+      fontSize: '1.6rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1.4rem',
+    },
+  },
+  resumeContact: {
+    '@media (max-width: 1200px)': {
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+    },
+  },
+  resumeSectionTitle: {
+    '@media (max-width: 1200px)': {
+      fontSize: '1.1rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1rem',
+    },
+  },
+  resumeDate: {
+    '@media (max-width: 1200px)': {
+      fontSize: '0.8rem',
+    },
+  },
+  resumeBullet: {
+    '@media (max-width: 1200px)': {
+      fontSize: '0.8rem',
+    },
+  },
 }));
 
 const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
@@ -40,7 +84,8 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
   const creativeClasses = useCreativeStyles();
   const executiveClasses = useExecutiveStyles();
   const professionalClasses = useProfessionalStyles();
-  // const creativeBlueClasses = useCreativeBlueStyles();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   
   // Select the appropriate styles based on template
   const getTemplateClasses = () => {
@@ -53,8 +98,6 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
         return executiveClasses;
       case 'professional':
         return professionalClasses;
-      // case 'creativeBlue':
-      //   return creativeBlueClasses;
       case 'classic':
       default:
         return classicClasses;
@@ -140,15 +183,20 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
     );
   };
 
+  // If on small screens, don't render preview (handled in parent)
+  if (isSmallScreen) {
+    return null;
+  }
+
   return (
     <Box className={`${baseClasses.resumeContainer} resume-container`}>
       {/* Header Section */}
       <Box className={classes.resumeHeader}>
-        <Typography variant="h4" className={`${classes.resumeName} resume-name`}>
+        <Typography variant="h4" className={`${classes.resumeName} ${baseClasses.resumeName} resume-name`}>
           {data.header.name || "Your Name"}
         </Typography>
         
-        <Box className={classes.resumeContact}>
+        <Box className={`${classes.resumeContact} ${baseClasses.resumeContact}`}>
           {data.header.email && (
             <Typography variant="body2" className={classes.resumeContactItem}>
               Email: {renderLink(null, data.header.email, 'email')}
@@ -193,7 +241,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {/* Summary Section */}
       {data.summary && data.summary.trim() !== '' && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Professional Summary
           </Typography>
           <Typography variant="body2" className={classes.resumeSummary}>
@@ -205,7 +253,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {/* Skills Section */}
       {data.skills && data.skills.length > 0 && data.skills.some(skill => skill && skill.trim() !== '') && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Skills
           </Typography>
           <Box className={classes.resumeSkills}>
@@ -224,7 +272,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {/* Education Section */}
       {hasEducationData() && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Education
           </Typography>
           {Array.isArray(data.education) ? (
@@ -238,7 +286,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                   {edu.institution || ''}
                 </Typography>
                 {(edu.graduation_year || edu.graduationYear) && (
-                  <Typography variant="body2" className={classes.resumeDate}>
+                  <Typography variant="body2" className={`${classes.resumeDate} ${baseClasses.resumeDate}`}>
                     Graduated: {edu.graduation_year || edu.graduationYear}
                   </Typography>
                 )}
@@ -254,7 +302,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                 {data.education.institution || ''}
               </Typography>
               {data.education.graduation_year && (
-                <Typography variant="body2" className={classes.resumeDate}>
+                <Typography variant="body2" className={`${classes.resumeDate} ${baseClasses.resumeDate}`}>
                   Graduated: {data.education.graduation_year}
                 </Typography>
               )}
@@ -266,7 +314,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {/* Work Experience Section */}
       {hasWorkExperienceData() && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Work Experience
           </Typography>
           
@@ -282,7 +330,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                       ` | ${experience.company_name}` : ""}
                   </Typography>
                   {experience.duration && experience.duration.trim() !== '' && (
-                    <Typography variant="body2" className={classes.resumeDate}>
+                    <Typography variant="body2" className={`${classes.resumeDate} ${baseClasses.resumeDate}`}>
                       {experience.duration}
                     </Typography>
                   )}
@@ -292,7 +340,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                       {experience.responsibilities
                         .filter(r => r && r.trim() !== '')
                         .map((responsibility, idx) => (
-                          <li key={idx} className={classes.resumeBullet}>
+                          <li key={idx} className={`${classes.resumeBullet} ${baseClasses.resumeBullet}`}>
                             {responsibility}
                           </li>
                       ))}
@@ -312,14 +360,14 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                       ` | ${experience.companyName}` : ""}
                   </Typography>
                   {experience.duration && experience.duration.trim() !== '' && (
-                    <Typography variant="body2" className={classes.resumeDate}>
+                    <Typography variant="body2" className={`${classes.resumeDate} ${baseClasses.resumeDate}`}>
                       {experience.duration}
                     </Typography>
                   )}
                   {experience.responsibilities && experience.responsibilities.length > 0 && (
                     <Box component="ul" className={classes.resumeBullets}>
                       {experience.responsibilities.map((responsibility, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
+                        <li key={idx} className={`${classes.resumeBullet} ${baseClasses.resumeBullet}`}>
                           {responsibility}
                         </li>
                       ))}
@@ -334,7 +382,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {/* Projects Section */}
       {hasProjectsData() && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Projects
           </Typography>
           
@@ -354,7 +402,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                   {project.responsibilities && project.responsibilities.length > 0 && (
                     <Box component="ul" className={classes.resumeBullets}>
                       {project.responsibilities.map((responsibility, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
+                        <li key={idx} className={`${classes.resumeBullet} ${baseClasses.resumeBullet}`}>
                           {responsibility}
                         </li>
                       ))}
@@ -370,14 +418,14 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       {data.certifications && data.certifications.length > 0 && 
         data.certifications.some(cert => cert && cert.trim() !== '') && (
         <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
             Certifications
           </Typography>
           <Box component="ul" className={classes.resumeBullets}>
             {data.certifications
               .filter(cert => cert && cert.trim() !== '')
               .map((cert, index) => (
-                <li key={index} className={classes.resumeBullet}>
+                <li key={index} className={`${classes.resumeBullet} ${baseClasses.resumeBullet}`}>
                   {cert}
                 </li>
             ))}
@@ -396,7 +444,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
           })
           .map(([sectionName, content]) => (
             <Box key={sectionName} className={classes.resumeSection}>
-              <Typography variant="h6" className={classes.resumeSectionTitle}>
+              <Typography variant="h6" className={`${classes.resumeSectionTitle} ${baseClasses.resumeSectionTitle}`}>
                 {sectionName.replace(/_/g, ' ')}
               </Typography>
               
@@ -405,7 +453,7 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                   {content
                     .filter(item => item && item.trim() !== '')
                     .map((item, index) => (
-                      <li key={index} className={classes.resumeBullet}>
+                      <li key={index} className={`${classes.resumeBullet} ${baseClasses.resumeBullet}`}>
                         {item}
                       </li>
                   ))}

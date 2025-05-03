@@ -1,6 +1,5 @@
-// src/components/Sidebar.jsx
 import React, { useState } from 'react';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 
 // Icons for each section
@@ -25,12 +24,45 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    '@media (max-width: 1200px)': {
+      width: '64px !important',
+    },
+    '@media (max-width: 600px)': {
+      width: '56px !important',
+    },
+    '@media (max-width: 480px)': {
+      width: '48px !important',
+    },
+    '@media (max-width: 375px)': {
+      width: '42px !important',
+    },
   },
   sidebarCollapsed: {
     width: '64px',
+    '@media (max-width: 600px)': {
+      width: '56px',
+    },
+    '@media (max-width: 480px)': {
+      width: '48px',
+    },
+    '@media (max-width: 375px)': {
+      width: '42px',
+    },
   },
   sidebarExpanded: {
     width: '220px',
+    '@media (max-width: 1200px)': {
+      width: '64px',
+    },
+    '@media (max-width: 600px)': {
+      width: '56px',
+    },
+    '@media (max-width: 480px)': {
+      width: '48px',
+    },
+    '@media (max-width: 375px)': {
+      width: '42px',
+    },
   },
   logoContainer: {
     display: 'flex',
@@ -38,10 +70,34 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '1.25rem 1rem',
     borderBottom: '1px solid #e2e8f0',
     height: '64px',
+    '@media (max-width: 600px)': {
+      height: '56px',
+      padding: '1rem 0.75rem',
+    },
+    '@media (max-width: 480px)': {
+      height: '48px',
+      padding: '0.75rem 0.5rem',
+    },
+    '@media (max-width: 375px)': {
+      height: '42px',
+      padding: '0.5rem 0.4rem',
+    },
   },
   logo: {
     width: '32px',
     height: '32px',
+    '@media (max-width: 600px)': {
+      width: '28px',
+      height: '28px',
+    },
+    '@media (max-width: 480px)': {
+      width: '24px',
+      height: '24px',
+    },
+    '@media (max-width: 375px)': {
+      width: '20px',
+      height: '20px',
+    },
   },
   logoText: {
     marginLeft: '1rem',
@@ -49,9 +105,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '1.2rem',
     color: '#2d3748',
     whiteSpace: 'nowrap',
+    '@media (max-width: 1200px)': {
+      display: 'none',
+    },
   },
   navList: {
     padding: '1rem 0',
+    '@media (max-width: 480px)': {
+      padding: '0.75rem 0',
+    },
   },
   listItem: {
     padding: '0.75rem 1rem',
@@ -59,6 +121,17 @@ const useStyles = makeStylesWithTheme((theme) => ({
     transition: 'all 0.2s ease',
     '&:hover': {
       backgroundColor: '#f7fafc',
+    },
+    '@media (max-width: 600px)': {
+      padding: '0.6rem 0.75rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.5rem 0.6rem',
+      margin: '0.2rem 0',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.4rem 0.5rem',
+      margin: '0.15rem 0',
     },
   },
   activeListItem: {
@@ -71,6 +144,24 @@ const useStyles = makeStylesWithTheme((theme) => ({
   listItemIcon: {
     minWidth: '40px',
     color: '#718096',
+    '@media (max-width: 600px)': {
+      minWidth: '36px',
+      '& .MuiSvgIcon-root': {
+        fontSize: '1.3rem',
+      },
+    },
+    '@media (max-width: 480px)': {
+      minWidth: '32px',
+      '& .MuiSvgIcon-root': {
+        fontSize: '1.2rem',
+      },
+    },
+    '@media (max-width: 375px)': {
+      minWidth: '28px',
+      '& .MuiSvgIcon-root': {
+        fontSize: '1.1rem',
+      },
+    },
   },
   activeIcon: {
     color: '#3182ce',
@@ -79,16 +170,30 @@ const useStyles = makeStylesWithTheme((theme) => ({
     margin: 0,
     fontWeight: 500,
     transition: 'opacity 0.2s ease',
+    '@media (max-width: 1200px)': {
+      display: 'none',
+    },
   },
   contentShift: {
     marginLeft: '64px',
     transition: 'margin-left 0.3s ease-in-out',
+    '@media (max-width: 600px)': {
+      marginLeft: '56px',
+    },
+    '@media (max-width: 480px)': {
+      marginLeft: '48px',
+    },
+    '@media (max-width: 375px)': {
+      marginLeft: '42px',
+    },
   },
 }));
 
 const Sidebar = ({ activeStep, steps, onStepClick }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
+  const isDesktop = useMediaQuery('(min-width:1200px)');
   
   // Map icons to each section
   const stepIcons = [
@@ -100,13 +205,17 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
     <SettingsIcon />     // Custom Sections & Terms
   ];
   
-  // Handle mouse events for expand/collapse
+  // Handle mouse events for expand/collapse (only on desktop)
   const handleMouseEnter = () => {
-    setExpanded(true);
+    if (isDesktop) {
+      setExpanded(true);
+    }
   };
   
   const handleMouseLeave = () => {
-    setExpanded(false);
+    if (isDesktop) {
+      setExpanded(false);
+    }
   };
   
   // Handle navigation and collapse sidebar
@@ -116,14 +225,14 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
   
   return (
     <Box 
-      className={`${classes.sidebar} ${expanded ? classes.sidebarExpanded : classes.sidebarCollapsed}`}
+      className={`${classes.sidebar} ${expanded && isDesktop ? classes.sidebarExpanded : classes.sidebarCollapsed}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {/* Logo area */}
       <Box className={classes.logoContainer}>
         <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
-        {expanded && (
+        {expanded && isDesktop && (
           <Typography className={classes.logoText}>
             Gigaversity
           </Typography>
@@ -144,7 +253,7 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
               {stepIcons[index]}
             </ListItemIcon>
             
-            {!expanded ? (
+            {!expanded || !isDesktop ? (
               <Tooltip title={label} placement="right">
                 <span></span>
               </Tooltip>
