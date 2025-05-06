@@ -117,7 +117,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
       padding: '0.4rem 0.6rem',
     },
-    // display: 'none', 
+    display: 'none', 
     // Hidden by default as requested
   },
   userButton: {
@@ -441,10 +441,10 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
               onClose={handleUserMenuClose}
               keepMounted
             >
-              <MenuItem className={classes.menuItem}>
+              {/* <MenuItem className={classes.menuItem}>
                 <AccountCircleIcon fontSize="small" className={classes.menuItemIcon} />
                 My Profile
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={handleLogout} className={classes.menuItem}>
                 Logout
               </MenuItem>
