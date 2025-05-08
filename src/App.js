@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import './App.css';
 import LandingPage from './pages/landingpage/LandingPage';
-import LoadingScreen from './common/LoadingScreen';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';
@@ -15,14 +14,9 @@ const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
 const ProtectedRoute = ({ children }) => {
-  const { currentUser, loading } = useAuth();
+  const { currentUser } = useAuth();
   
-  // Show loading screen while checking authentication
-  if (loading) {
-    return <LoadingScreen />;
-  }
-  
-  // Redirect to login only after we've confirmed no user exists
+  // Redirect to login if no user exists
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
@@ -36,8 +30,8 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
   
-  // Only show navbar when user is authenticated and not on auth/loading pages
-  const isAuthPage = ['/login', '/', '/loading'].includes(currentPath);
+  // Only show navbar when user is authenticated and not on auth pages
+  const isAuthPage = ['/login', '/'].includes(currentPath);
   const shouldShowNavbar = currentUser && !isAuthPage;
   
   // If we should show navbar, determine which tab should be active
@@ -55,16 +49,13 @@ function App() {
           <TemplateProvider>
             <Router>
               <NavbarWrapper />
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                   {/* Landing page (Registration) is the root route */}
                   <Route path="/" element={<LandingPage />} />
                   
                   {/* Login page */}
                   <Route path="/login" element={<Login />} />
-                  
-                  {/* Loading screen as transition between auth and app */}
-                  <Route path="/loading" element={<LoadingScreen />} />
                   
                   {/* Protected route for resume builder */}
                   <Route 

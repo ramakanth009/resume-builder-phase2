@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
+  Typography, 
+  TextField, 
+  Button, 
+  CircularProgress,
+  Fade,
+  IconButton,
+  InputAdornment,
   Snackbar,
   Alert
 } from '@mui/material';
@@ -8,27 +15,30 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
 import { useStyles } from './Login.styles';
-import LoginLeftSection from './LoginLeftSection';
 import LoginRightSection from './LoginRightSection';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import GigaLogo from '../../assets/giga-loogo.svg';
 
 const Login = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { login, error: authError, loading: authLoading } = useAuth();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
-  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'success',
+    severity: 'error',
   });
   
   // Feature items with staggered animation
@@ -43,7 +53,7 @@ const Login = () => {
   const [visibleFeatures, setVisibleFeatures] = useState([]);
 
   // Set up staggered animation for features
-  useEffect(() => {
+  React.useEffect(() => {
     const timer = setTimeout(() => {
       featureItems.forEach((_, index) => {
         setTimeout(() => {
@@ -54,51 +64,48 @@ const Login = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      });
+    
+    // Clear login error when user modifies form
+    if (loginError) {
+      setLoginError(null);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    setIsLoading(true);
+    setLoginError(null);
     
-    // Navigate directly to loading screen with login credentials
-    navigate('/loading', { 
-      state: { 
-        destination: '/resume-builder',
-        loginData: {
-          email: formData.email,
-          password: formData.password
-        } 
+    try {
+      // Attempt to login with credentials
+      const response = await login(formData.email, formData.password);
+      
+      if (response && response.status === 'success') {
+        // Navigate to resume builder on successful login
+        navigate('/resume-builder');
+      } else {
+        // Handle unexpected response format
+        throw new Error(response?.message || 'Login failed. Please try again.');
       }
-    });
+    } catch (error) {
+      // Set error message from backend
+      setLoginError(error.message || 'Invalid email or password. Please try again.');
+      
+      setSnackbar({
+        open: true,
+        message: error.message || 'Invalid email or password. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCloseSnackbar = () => {
@@ -118,22 +125,109 @@ const Login = () => {
 
   return (
     <Box className={classes.root}>
-      <LoginLeftSection
-        classes={classes}
-        formData={formData}
-        setFormData={setFormData}
-        errors={errors}
-        setErrors={setErrors}
-        showPassword={showPassword}
-        setShowPassword={setShowPassword}
-        snackbar={snackbar}
-        setSnackbar={setSnackbar}
-        authLoading={authLoading}
-        handleSubmit={handleSubmit}
-        handleChange={handleChange}
-        handleTogglePasswordVisibility={handleTogglePasswordVisibility}
-        navigateToRegister={navigateToRegister}
-      />
+      <Fade in={true} timeout={600}>
+        <Box className={classes.leftSection}>
+          <Box className={classes.formContainer}>
+            <Box className={classes.logoContainer}>
+              <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
+              <Typography className={classes.logoText}>
+                Gigaversity
+              </Typography>
+            </Box>
+            
+            <Typography className={classes.welcomeText}>
+              Welcome Back!
+            </Typography>
+            
+            <Typography className={classes.subtitle}>
+              Log in to continue to your account
+            </Typography>
+            
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Email Address"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!loginError}
+                placeholder="Enter your email"
+                disabled={isLoading}
+              />
+              
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                error={!!loginError}
+                placeholder="Enter your password"
+                disabled={isLoading}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                        disabled={isLoading}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              
+              {/* Display login error message from backend */}
+              {loginError && (
+                <Typography color="error" variant="body2" sx={{ mt: 1, mb: 1 }}>
+                  {loginError}
+                </Typography>
+              )}
+              
+              <Button
+                className={classes.button}
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    Logging In
+                    <CircularProgress size={20} className={classes.loader} />
+                  </>
+                ) : (
+                  'Log In'
+                )}
+              </Button>
+              
+              <Typography className={classes.formDivider}>or</Typography>
+              
+              <Box className={classes.signupLink}>
+                <Typography className={classes.signupText} variant="body2" display="inline">
+                  Don't have an account?
+                </Typography>
+                <Button
+                  className={classes.signupButton}
+                  onClick={navigateToRegister}
+                  disabled={isLoading}
+                >
+                  Sign up
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Box>
+      </Fade>
+      
       {!isMobile && (
         <LoginRightSection
           classes={classes}
@@ -141,6 +235,7 @@ const Login = () => {
           visibleFeatures={visibleFeatures}
         />
       )}
+      
       <Snackbar 
         open={snackbar.open} 
         autoHideDuration={6000} 

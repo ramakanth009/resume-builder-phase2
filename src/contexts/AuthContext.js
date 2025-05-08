@@ -8,7 +8,6 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   
   // Check for existing user session on app load
   useEffect(() => {
@@ -34,13 +33,10 @@ export const AuthProvider = ({ children }) => {
             }
           } catch (err) {
             // If user data is invalid, clear localStorage
-            console.error('Error parsing user data:', err);
             localStorage.removeItem('token');
             localStorage.removeItem('user');
           }
         }
-      } catch (err) {
-        console.error('Auth check error:', err);
       } finally {
         setLoading(false);
       }
@@ -62,20 +58,13 @@ export const AuthProvider = ({ children }) => {
       const currentTime = Math.floor(Date.now() / 1000);
       return tokenData.exp > currentTime;
     } catch (error) {
-      console.error('Token verification error:', error);
       return false; // If we can't verify, consider invalid
     }
   };
   
-  // Login function with improved error handling
+  // Login function that passes through backend errors
   const login = async (email, password) => {
-    // Prevent multiple simultaneous login attempts
-    if (loading) {
-      return Promise.reject(new Error('Login already in progress'));
-    }
-    
     setLoading(true);
-    setError('');
     
     try {
       const response = await loginUser({ email, password });
@@ -91,24 +80,17 @@ export const AuthProvider = ({ children }) => {
       } else {
         throw new Error(response.message || 'Login failed');
       }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError(err.message || 'Failed to login');
-      throw err;
+    } catch (error) {
+      // Pass through the backend error directly
+      throw error;
     } finally {
       setLoading(false);
     }
   };
   
-  // Register function with improved error handling
+  // Register function that passes through backend errors
   const register = async (name, email, password) => {
-    // Prevent multiple simultaneous registration attempts
-    if (loading) {
-      return Promise.reject(new Error('Registration already in progress'));
-    }
-    
     setLoading(true);
-    setError('');
     
     try {
       const response = await registerUser({ name, email, password });
@@ -118,24 +100,17 @@ export const AuthProvider = ({ children }) => {
       } else {
         throw new Error(response.message || 'Registration failed');
       }
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError(err.message || 'Failed to register');
-      throw err;
+    } catch (error) {
+      // Pass through the backend error directly
+      throw error;
     } finally {
       setLoading(false);
     }
   };
   
-  // Logout function with improved error handling
+  // Logout function
   const logout = async () => {
-    // Prevent multiple simultaneous logout attempts
-    if (loading) {
-      return Promise.reject(new Error('Logout already in progress'));
-    }
-    
     setLoading(true);
-    setError('');
     
     try {
       // Call the logoutUser function to make API request
@@ -147,15 +122,13 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(null);
       
       return { status: 'success', message: 'Logged out successfully' };
-    } catch (err) {
-      console.error('Logout error:', err);
-      
+    } catch (error) {
       // Still clear localStorage even if there's an error with the API call
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setCurrentUser(null);
       
-      setError(err.message || 'Failed to logout');
+      // Pass through the backend error
       return { status: 'success', message: 'Logged out locally' };
     } finally {
       setLoading(false);
@@ -166,7 +139,6 @@ export const AuthProvider = ({ children }) => {
   const value = {
     currentUser,
     loading,
-    error,
     login,
     register,
     logout

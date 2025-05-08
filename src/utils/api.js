@@ -1,7 +1,7 @@
 // Base URL for API requests
-// const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
 // const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
@@ -35,18 +35,6 @@ export const apiRequest = async (endpoint, options = {}) => {
     // Make the API request
     const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
     
-    // Check for 401 Unauthorized before parsing JSON
-    if (response.status === 401) {
-      // Token is invalid, clear auth data
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      // Force redirect to login page - use hash router format
-      window.location.href = '/#/login';
-      
-      throw new Error('Session expired. Please login again.');
-    }
-    
     // Parse the JSON response
     const data = await response.json();
     
@@ -55,11 +43,22 @@ export const apiRequest = async (endpoint, options = {}) => {
       throw new Error(data.message || 'Something went wrong');
     }
     
+    // Check for 401 Unauthorized
+    if (response.status === 401) {
+      // Token is invalid, clear auth data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // Force redirect to login page - use hash router format
+      window.location.href = '/#/login';
+      
+      throw new Error(data.message || 'Session expired. Please login again.');
+    }
+    
     // Return the data
     return data;
   } catch (error) {
-    console.error(`API Error (${endpoint}):`, error);
-    // Re-throw the error to be handled by the calling function
+    // Pass through the error message directly from the backend
     throw error;
   }
 };
@@ -77,7 +76,7 @@ export const registerUser = async (userData) => {
     });
     return response;
   } catch (error) {
-    throw new Error(error.message || 'Registration failed');
+    throw error; // Pass through backend error
   }
 };
 
@@ -107,7 +106,7 @@ export const loginUser = (() => {
         });
         return response;
       } catch (error) {
-        throw new Error(error.message || 'Login failed');
+        throw error; // Pass through backend error
       } finally {
         // Remove this request from pending after a small delay
         setTimeout(() => {
@@ -153,7 +152,7 @@ export const generateResume = async (resumeData) => {
     });
     return response;
   } catch (error) {
-    throw new Error(error.message || 'Failed to generate resume');
+    throw error; // Pass through backend error
   }
 };
 
@@ -165,7 +164,7 @@ export const getUserResumes = async () => {
   try {
     return await apiRequest('/user/resumes');
   } catch (error) {
-    throw new Error(error.message || 'Failed to fetch resumes');
+    throw error; // Pass through backend error
   }
 };
 
@@ -184,14 +183,9 @@ export const getResumeById = async (resumeId) => {
       }
     });
 
-    if (!response || response.status === 'error') {
-      throw new Error(response?.message || 'Failed to fetch resume for editing');
-    }
-
     return response;
   } catch (error) {
-    console.error('Error fetching resume for edit:', error);
-    throw new Error(error.message || 'Failed to fetch resume for editing');
+    throw error; // Pass through backend error
   }
 };
 
@@ -214,7 +208,7 @@ export const updateResume = async (resumeId, resumeData) => {
       companyName: exp.company_name || exp.companyName || '',
       duration: exp.duration || '',
       responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : 
-                        (exp.description ? exp.description.split('\n').filter(Boolean) : [])
+                      (exp.description ? exp.description.split('\n').filter(Boolean) : [])
     })) || [];
     
     // Format the data for the API - ensure proper structure and fields
@@ -252,14 +246,9 @@ export const updateResume = async (resumeId, resumeData) => {
       body: formattedData,
     });
 
-    if (!response || response.status === 'error') {
-      throw new Error(response?.message || 'Failed to update resume');
-    }
-
     return response;
   } catch (error) {
-    console.error('Error updating resume:', error);
-    throw new Error(error.message || 'Failed to update resume');
+    throw error; // Pass through backend error
   }
 };
 
@@ -274,7 +263,7 @@ export const deleteResume = async (resumeId) => {
       method: 'DELETE',
     });
   } catch (error) {
-    throw new Error(error.message || 'Failed to delete resume');
+    throw error; // Pass through backend error
   }
 };
 
@@ -299,8 +288,7 @@ export const logoutUser = async () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
-    console.error('Logout error:', error);
-    return { status: 'success', message: 'Logged out locally' };
+    throw error; // Pass through backend error
   }
 };
 
@@ -312,7 +300,7 @@ export const getTargetRoles = async () => {
   try {
     return await apiRequest('/target_roles');
   } catch (error) {
-    throw new Error(error.message || 'Failed to fetch target roles');
+    throw error; // Pass through backend error
   }
 };
 
@@ -325,7 +313,7 @@ export const getProjectRecommendations = async (role) => {
   try {
     return await apiRequest(`/project_recommendations/${encodeURIComponent(role)}`);
   } catch (error) {
-    throw new Error(error.message || 'Failed to fetch project recommendations');
+    throw error; // Pass through backend error
   }
 };
 
@@ -338,7 +326,7 @@ export const getProjectDetails = async (projectKey) => {
   try {
     return await apiRequest(`/project_details/${encodeURIComponent(projectKey)}`);
   } catch (error) {
-    throw new Error(error.message || 'Failed to fetch project details');
+    throw error; // Pass through backend error
   }
 };
 
