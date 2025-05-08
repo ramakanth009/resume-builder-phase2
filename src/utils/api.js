@@ -41,8 +41,11 @@ export const apiRequest = async (endpoint, options = {}) => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
-      // Force redirect to login page - use hash router format
-      window.location.href = '/#/login';
+      // Only redirect if this is not already a login/register request
+      if (!endpoint.includes('/auth/login') && !endpoint.includes('/auth/register')) {
+        // Force redirect to login page - use hash router format
+        window.location.href = '/#/login';
+      }
       
       // Try to parse the response for error message
       try {
@@ -58,6 +61,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     try {
       data = await response.json();
     } catch (parseError) {
+      console.error('JSON parsing error:', parseError);
       throw new Error('Invalid response from server');
     }
     

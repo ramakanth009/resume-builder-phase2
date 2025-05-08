@@ -62,9 +62,24 @@ export const AuthProvider = ({ children }) => {
       // Decode base64 (handle padding properly)
       const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
       const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
-      const decodedPayload = atob(padded);
       
+      // Use safe decoding
+      let decodedPayload;
+      try {
+        decodedPayload = atob(padded);
+      } catch (e) {
+        console.error('Base64 decode error:', e);
+        return false;
+      }
+      
+      // Parse the JSON
       const tokenData = JSON.parse(decodedPayload);
+      
+      // Check if token has expiration claim
+      if (!tokenData.exp) {
+        console.warn('Token has no expiration claim');
+        return false;
+      }
       
       // Check if token has expired
       const currentTime = Math.floor(Date.now() / 1000);
@@ -89,6 +104,10 @@ export const AuthProvider = ({ children }) => {
         
         // Update current user state
         setCurrentUser(response.user);
+        
+        // Log success for debugging
+        console.log('Login successful, session established');
+        
         return response;
       } else {
         throw new Error(response.message || 'Login failed');

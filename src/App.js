@@ -1,7 +1,9 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import theme from './theme';
 import './App.css';
 import LandingPage from './pages/landingpage/LandingPage';
@@ -13,11 +15,32 @@ import { TemplateProvider } from './contexts/TemplateContext';
 const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
+// Loading component with spinner
+const LoadingComponent = () => (
+  <Box 
+    display="flex" 
+    justifyContent="center" 
+    alignItems="center" 
+    minHeight="100vh"
+  >
+    <CircularProgress />
+  </Box>
+);
+
+// ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
+  const location = useLocation();
+  
+  // Show loading state while checking authentication
+  if (loading) {
+    return <LoadingComponent />;
+  }
   
   // Redirect to login if no user exists
   if (!currentUser) {
+    // Save the attempted URL for redirecting after login
+    sessionStorage.setItem('redirectUrl', location.pathname);
     return <Navigate to="/login" replace />;
   }
   
@@ -41,6 +64,22 @@ const NavbarWrapper = () => {
 };
 
 function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  // Add this useEffect to ensure we don't render routes until auth is checked
+  useEffect(() => {
+    // Wait a small amount of time to ensure localStorage is checked
+    const timer = setTimeout(() => {
+      setAppIsReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!appIsReady) {
+    return <LoadingComponent />;
+  }
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -49,7 +88,7 @@ function App() {
           <TemplateProvider>
             <Router>
               <NavbarWrapper />
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingComponent />}>
                 <Routes>
                   {/* Landing page (Registration) is the root route */}
                   <Route path="/" element={<LandingPage />} />
