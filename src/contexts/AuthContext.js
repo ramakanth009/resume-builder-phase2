@@ -21,22 +21,26 @@ export const AuthProvider = ({ children }) => {
             // Parse user data
             const user = JSON.parse(userData);
             
-            // Optional: Verify token expiration if using JWT
+            // Verify token expiration
             const isTokenValid = verifyTokenExpiration(token);
             
             if (user && user.id && isTokenValid) {
               setCurrentUser(user);
             } else {
+              console.log('Invalid user data or expired token, clearing session');
               // Invalid user data or expired token
               localStorage.removeItem('token');
               localStorage.removeItem('user');
             }
           } catch (err) {
+            console.error('Error parsing user data:', err);
             // If user data is invalid, clear localStorage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
           }
         }
+      } catch (error) {
+        console.error('Auth status check error:', error);
       } finally {
         setLoading(false);
       }
@@ -47,17 +51,26 @@ export const AuthProvider = ({ children }) => {
   
   // Function to check if JWT token is expired
   const verifyTokenExpiration = (token) => {
+    if (!token) return false;
+    
     try {
       // For JWT: Split the token to get payload part
-      const payload = token.split('.')[1];
-      // Decode base64
-      const decodedPayload = atob(payload);
+      const parts = token.split('.');
+      if (parts.length !== 3) return false; // Invalid token format
+      
+      const payload = parts[1];
+      // Decode base64 (handle padding properly)
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+      const decodedPayload = atob(padded);
+      
       const tokenData = JSON.parse(decodedPayload);
       
       // Check if token has expired
       const currentTime = Math.floor(Date.now() / 1000);
       return tokenData.exp > currentTime;
     } catch (error) {
+      console.error('Error verifying token:', error);
       return false; // If we can't verify, consider invalid
     }
   };

@@ -117,7 +117,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
       padding: '0.4rem 0.6rem',
     },
-    display: 'none', 
+    // display: 'none', 
     // Hidden by default as requested
   },
   userButton: {

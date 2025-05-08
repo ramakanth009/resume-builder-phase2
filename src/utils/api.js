@@ -35,30 +35,46 @@ export const apiRequest = async (endpoint, options = {}) => {
     // Make the API request
     const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
     
-    // Parse the JSON response
-    const data = await response.json();
-    
-    // If response is not ok, throw an error with the message from the server
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
-    }
-    
-    // Check for 401 Unauthorized
+    // Check for 401 Unauthorized immediately before parsing the response
     if (response.status === 401) {
-      // Token is invalid, clear auth data
+      // Token is invalid or expired, clear auth data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
       // Force redirect to login page - use hash router format
       window.location.href = '/#/login';
       
-      throw new Error(data.message || 'Session expired. Please login again.');
+      // Try to parse the response for error message
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Session expired. Please login again.');
+      } catch (parseError) {
+        throw new Error('Session expired. Please login again.');
+      }
+    }
+    
+    // Parse the JSON response for other cases
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      throw new Error('Invalid response from server');
+    }
+    
+    // If response is not ok, throw an error with the message from the server
+    if (!response.ok) {
+      throw new Error(data.message || 'Something went wrong');
     }
     
     // Return the data
     return data;
   } catch (error) {
-    // Pass through the error message directly from the backend
+    // Check if this is a network error (offline)
+    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+      throw new Error('Network error. Please check your connection.');
+    }
+    
+    // Pass through the error message
     throw error;
   }
 };
