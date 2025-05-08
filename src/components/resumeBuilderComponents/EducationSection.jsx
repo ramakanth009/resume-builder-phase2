@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, TextField } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import DatePickerField from '../../common/DatePickerField';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
@@ -33,6 +34,18 @@ const EducationSection = ({ resumeData, setResumeData }) => {
       education: {
         ...prev.education,
         [name]: value,
+      },
+    }));
+  };
+
+  // Handle graduation year change from DatePicker
+  const handleGraduationYearChange = (value) => {
+    setResumeData(prev => ({
+      ...prev,
+      education: {
+        ...prev.education,
+        graduation_year: value,
+        graduationYear: value, // Update both formats for compatibility
       },
     }));
   };
@@ -79,16 +92,16 @@ const EducationSection = ({ resumeData, setResumeData }) => {
         required
       />
       
-      <TextField
+      {/* Year picker for graduation year */}
+      <DatePickerField
         label="Graduation Year"
-        name="graduation_year"
-        value={resumeData.education.graduation_year}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., 2023"
+        value={resumeData.education.graduation_year || resumeData.education.graduationYear || ''}
+        onChange={handleGraduationYearChange}
+        views={['year']} // Only show year picker
         required
+        helperText="Select your graduation year"
+        minYear={1950}
+        maxYear={new Date().getFullYear() + 10} // Allow future dates for students
       />
     </Box>
   );
