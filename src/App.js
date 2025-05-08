@@ -1,6 +1,8 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -83,46 +85,48 @@ function App() {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <TemplateProvider>
-            <Router>
-              <NavbarWrapper />
-              <Suspense fallback={<LoadingComponent />}>
-                <Routes>
-                  {/* Landing page (Registration) is the root route */}
-                  <Route path="/" element={<LandingPage />} />
-                  
-                  {/* Login page */}
-                  <Route path="/login" element={<Login />} />
-                  
-                  {/* Protected route for resume builder */}
-                  <Route 
-                    path="/resume-builder" 
-                    element={
-                      <ProtectedRoute>
-                        <ResumeBuilder />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Protected route for editing existing resume */}
-                  <Route 
-                    path="/resume-builder/edit/:resumeId" 
-                    element={
-                      <ProtectedRoute>
-                        <ResumeBuilder />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Redirect any unknown routes to the landing page */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Suspense>
-            </Router>
-          </TemplateProvider>
-        </AuthProvider>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <CssBaseline />
+          <AuthProvider>
+            <TemplateProvider>
+              <Router>
+                <NavbarWrapper />
+                <Suspense fallback={<LoadingComponent />}>
+                  <Routes>
+                    {/* Landing page (Registration) is the root route */}
+                    <Route path="/" element={<LandingPage />} />
+                    
+                    {/* Login page */}
+                    <Route path="/login" element={<Login />} />
+                    
+                    {/* Protected route for resume builder */}
+                    <Route 
+                      path="/resume-builder" 
+                      element={
+                        <ProtectedRoute>
+                          <ResumeBuilder />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Protected route for editing existing resume */}
+                    <Route 
+                      path="/resume-builder/edit/:resumeId" 
+                      element={
+                        <ProtectedRoute>
+                          <ResumeBuilder />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Redirect any unknown routes to the landing page */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </TemplateProvider>
+          </AuthProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   );
