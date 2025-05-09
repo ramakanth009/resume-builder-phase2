@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Chip, InputAdornment, IconButton, Divider, Alert, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
@@ -15,7 +15,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '& .MuiOutlinedInput-root': {
       borderRadius: '8px',
     },
-    marginBottom: '0.5rem', // reduced spacing
+    marginBottom: '0.5rem',
   },
   formSubtitle: {
     fontWeight: 500,
@@ -63,23 +63,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontStyle: 'italic',
     marginBottom: '0.5rem',
   },
-  recommendedPill: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    padding: '2px 10px',
-    borderRadius: '12px',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    marginLeft: '0.5rem',
-  },
 }));
 
 const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [newSkill, setNewSkill] = useState('');
   const [newCertification, setNewCertification] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
+  const [filteredRecommendations, setFilteredRecommendations] = useState([]);
+  
   // Use custom hook for skill recommendations
   const { 
     data: recommendationsResponse,
@@ -92,7 +83,16 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   });
   
   // Extract recommended skills from the response
-  const recommendedSkills = recommendationsResponse?.skills || [];
+  const originalRecommendations = recommendationsResponse?.skills || [];
+  
+  // Update filtered recommendations when original recommendations change or when selected skills change
+  useEffect(() => {
+    if (originalRecommendations.length > 0) {
+      const userSkills = new Set(resumeData.skills.filter(Boolean));
+      const filtered = originalRecommendations.filter(skill => !userSkills.has(skill));
+      setFilteredRecommendations(filtered);
+    }
+  }, [originalRecommendations, resumeData.skills]);
 
   // Skills handlers
   const handleAddSkill = () => {
@@ -110,6 +110,9 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove),
     }));
+    
+    // If the removed skill was from our recommendations, it will be added back 
+    // automatically via the useEffect that updates filteredRecommendations
   };
 
   const handleKeyDown = (e, action) => {
@@ -128,10 +131,7 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         ...prev,
         skills: [...prev.skills.filter(Boolean), skill],
       }));
-      
-      // Show success message
-      setSuccessMessage(`Added "${skill}" to your skills!`);
-      setTimeout(() => setSuccessMessage(''), 3000);
+      // The skill will be removed from filteredRecommendations via useEffect
     }
   };
 
@@ -158,13 +158,6 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       <Typography variant="h6" className={classes.formSubtitle}>
         Skills
       </Typography>
-      
-      {/* Success message */}
-      {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {successMessage}
-        </Alert>
-      )}
       
       <Box className={classes.chipContainer}>
         {resumeData.skills.filter(Boolean).map((skill, index) => (
@@ -206,7 +199,7 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         <Box className={classes.recommendationsContainer}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography className={classes.recommendationsLabel}>
-              Recommended for {targetRole}:
+              Popular skills in high demand:
             </Typography>
           </Box>
           
@@ -221,9 +214,9 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
             <Box className={classes.loadingContainer}>
               <CircularProgress size={20} />
             </Box>
-          ) : recommendedSkills.length > 0 ? (
+          ) : filteredRecommendations.length > 0 ? (
             <Box className={classes.chipContainer}>
-              {recommendedSkills.map((skill, index) => (
+              {filteredRecommendations.map((skill, index) => (
                 <Chip
                   key={index}
                   label={skill}
@@ -233,9 +226,13 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
                 />
               ))}
             </Box>
+          ) : originalRecommendations.length > 0 ? (
+            <Typography variant="body2" color="textSecondary" sx={{ my: 1 }}>
+              All related skills have been added.
+            </Typography>
           ) : (
             <Typography variant="body2" color="textSecondary" sx={{ my: 1 }}>
-              No skill recommendations available.
+              No related skills available.
             </Typography>
           )}
         </Box>
