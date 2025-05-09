@@ -10,6 +10,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GigaLogo from '../assets/giga-loogo.svg';
+import VerifiedIcon from '@mui/icons-material/Verified'; // Add this import for certifications
 
 const useStyles = makeStylesWithTheme((theme) => ({
   sidebar: {
@@ -200,6 +201,7 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
     <PersonIcon />,      // Personal Info
     <SchoolIcon />,      // Education
     <ExtensionIcon />,   // Skills
+    <VerifiedIcon />,    // Certifications
     <CodeIcon />,        // Projects
     <WorkIcon />,        // Experience
     <SettingsIcon />     // Custom Sections & Terms

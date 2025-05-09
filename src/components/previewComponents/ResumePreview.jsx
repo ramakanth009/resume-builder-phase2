@@ -351,39 +351,51 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       )}
       
       {/* Projects Section */}
-      {hasProjectsData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
-            Projects
-          </Typography>
-          
-          {data.projects && data.projects.length > 0 &&
-            data.projects
-              .filter(p => p.name && p.name.trim() !== '')
-              .map((project, index) => (
-                <Box key={`project-${index}`} className={classes.resumeItem}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                    {project.name || "Project Name"}
-                  </Typography>
-                  {project.skills_used && project.skills_used.trim() !== '' && (
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                      Skills: {project.skills_used}
-                    </Typography>
-                  )}
-                  {project.responsibilities && project.responsibilities.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets}>
-                      {project.responsibilities.map((responsibility, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
-                          {responsibility}
-                        </li>
-                      ))}
-                    </Box>
-                  )}
+{hasProjectsData() && (
+  <Box className={classes.resumeSection}>
+    <Typography variant="h6" className={classes.resumeSectionTitle}>
+      Projects
+    </Typography>
+    
+    {data.projects && data.projects.length > 0 &&
+      data.projects
+        .filter(p => p.name && p.name.trim() !== '')
+        .map((project, index) => (
+          <Box key={`project-${index}`} className={classes.resumeItem}>
+            <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+              {project.name || "Project Name"}
+              {project.link && project.link.trim() !== '' && (
+                <Box component="span" ml={1}>
+                  <Link 
+                    href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={classes.contactLink}
+                  >
+                    View Project
+                  </Link>
                 </Box>
-              ))}
-              
-        </Box>
-      )}
+              )}
+            </Typography>
+            {project.skills_used && project.skills_used.trim() !== '' && (
+              <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                Skills: {project.skills_used}
+              </Typography>
+            )}
+            {project.responsibilities && project.responsibilities.length > 0 && (
+              <Box component="ul" className={classes.resumeBullets}>
+                {project.responsibilities.map((responsibility, idx) => (
+                  <li key={idx} className={classes.resumeBullet}>
+                    {responsibility}
+                  </li>
+                ))}
+              </Box>
+            )}
+          </Box>
+        ))}
+        
+  </Box>
+)}
       
       {/* Certifications Section */}
       {data.certifications && data.certifications.length > 0 && 
