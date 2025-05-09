@@ -6,14 +6,10 @@ import {
   Paper, 
   IconButton, 
   Button, 
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  Chip,
+  Alert,
   CircularProgress,
-  Alert
+  Badge,
+  Zoom
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +17,7 @@ import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getProjectRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
+import ProjectRecommendationsModal from './ProjectRecommendationsModal';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
@@ -36,7 +33,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   formSubtitle: {
     fontWeight: 500,
-    marginBottom: '0.75rem',
+    marginBottom: '0.25rem', // Reduced to bring recommendation button closer
     marginTop: '1rem',
     color: '#4a5568',
   },
@@ -77,81 +74,51 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#718096',
     fontSize: '0.75rem',
   },
-  
-  // Recommendations styles
-  recommendationsSection: {
-    marginTop: '2rem',
-    marginBottom: '1.5rem',
-  },
-  recommendationsList: {
-    backgroundColor: '#f7fafc',
-    borderRadius: '8px',
-    border: '1px solid #e2e8f0',
-    marginTop: '0.5rem',
-    maxHeight: '400px',
-    overflow: 'auto',
-  },
-  recommendationItem: {
-    borderBottom: '1px solid #e2e8f0',
-    '&:last-child': {
-      borderBottom: 'none',
-    },
-  },
-  recommendationTitle: {
-    fontWeight: 600,
-    color: '#3182ce',
-  },
-  recommendationChip: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    fontSize: '0.7rem',
-    marginRight: '0.5rem',
-    marginTop: '0.5rem',
-  },
-  loadingContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '1.5rem',
-  },
-  recommendationsHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  recommendedPill: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    padding: '2px 10px',
-    borderRadius: '12px',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-  },
-  clickPrompt: {
-    fontSize: '0.85rem',
-    color: '#718096',
-    fontStyle: 'italic',
-    marginTop: '0.5rem',
-    marginBottom: '1rem',
-  },
-  // New styles for recommendation notification
+  // Enhanced prominence for recommendation button
   recommendationButton: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: '0.5rem',
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    padding: '0.5rem 1rem',
+    backgroundColor: '#4299e1', // Brighter blue
+    color: 'white',
+    padding: '0.75rem 1rem',
     borderRadius: '8px',
-    marginBottom: '1rem',
+    marginBottom: '1.25rem',
+    marginTop: '0.25rem',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    boxShadow: '0 2px 4px rgba(66, 153, 225, 0.3)',
+    border: '1px solid #3182ce',
+    fontWeight: 600,
     '&:hover': {
-      backgroundColor: '#bee3f8',
+      backgroundColor: '#3182ce',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 6px rgba(66, 153, 225, 0.4)',
     },
   },
   recommendationIcon: {
-    color: '#3182ce',
+    color: 'white',
   },
+  recommendationContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    position: 'relative',
+  },
+  recommendationsCount: {
+    backgroundColor: '#F97316',
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  headerRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: '0.5rem',
+  }
 }));
 
 const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
@@ -159,6 +126,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [loadingProject, setLoadingProject] = useState(false);
   const [projectError, setProjectError] = useState(null);
+  const [recommendationsModalOpen, setRecommendationsModalOpen] = useState(false);
   
   // Use our custom hook for project recommendations
   const { 
@@ -174,11 +142,12 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
   // Extract recommended projects from the response
   const recommendedProjects = recommendationsResponse?.projects || [];
 
-  const handleScrollToRecommendations = () => {
-    document.getElementById('recommendations-section')?.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'start'
-    });
+  const handleOpenRecommendationsModal = () => {
+    setRecommendationsModalOpen(true);
+  };
+
+  const handleCloseRecommendationsModal = () => {
+    setRecommendationsModalOpen(false);
   };
 
   const handleAddProject = () => {
@@ -305,6 +274,9 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           
           setSuccessMessage(`Added "${projectDetails.name}" to Project ${emptyProjectIndex + 1}`);
           
+          // Close the modal after selection
+          setRecommendationsModalOpen(false);
+          
           // Scroll to the updated project
           setTimeout(() => {
             const projectElement = document.getElementById(`project-${emptyProjectIndex}`);
@@ -321,6 +293,9 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           }));
           
           setSuccessMessage(`Added "${projectDetails.name}" as a new project`);
+          
+          // Close the modal after selection
+          setRecommendationsModalOpen(false);
           
           // Scroll to bottom to see the new project
           setTimeout(() => {
@@ -350,19 +325,40 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
 
   return (
     <Box className={classes.form}>
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Projects
-      </Typography>
+      <Box className={classes.headerRow}>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Projects
+        </Typography>
+      </Box>
       
-      {/* Recommendations notification */}
-      {targetRole && recommendedProjects.length > 0 && !loading && (
-        <Box 
-          className={classes.recommendationButton}
-          onClick={handleScrollToRecommendations}
-        >
-          <LightbulbIcon className={classes.recommendationIcon} />
-          <Typography variant="body2">
-            {recommendedProjects.length} project recommendations available for {targetRole} - Click to view
+      {/* Enhanced recommendations button - more prominent at top */}
+      {targetRole && !loading && (
+        <Box className={classes.recommendationContainer}>
+          <Zoom in={recommendedProjects.length > 0} timeout={500}>
+            <Badge badgeContent={recommendedProjects.length} color="warning" 
+                   classes={{ badge: classes.recommendationsCount }}>
+              <Box 
+                className={classes.recommendationButton}
+                onClick={handleOpenRecommendationsModal}
+                role="button"
+                aria-label="View project recommendations"
+              >
+                <LightbulbIcon className={classes.recommendationIcon} />
+                <Typography variant="body1" component="span" fontWeight="medium">
+                  Discover Project Ideas for {targetRole}
+                </Typography>
+              </Box>
+            </Badge>
+          </Zoom>
+        </Box>
+      )}
+      
+      {/* Loading indicator for recommendations */}
+      {loading && targetRole && (
+        <Box display="flex" justifyContent="center" my={2}>
+          <CircularProgress size={24} color="primary" />
+          <Typography variant="body2" ml={1} color="textSecondary">
+            Loading project recommendations...
           </Typography>
         </Box>
       )}
@@ -451,86 +447,17 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
         Add Project
       </Button>
       
-      {/* Recommended Projects Section */}
-      {targetRole && (
-        <Box className={classes.recommendationsSection} id="recommendations-section">
-          <Divider sx={{ my: 3 }} />
-          
-          <Box className={classes.recommendationsHeader}>
-            <Typography variant="h6" className={classes.formSubtitle}>
-              Recommended Projects
-            </Typography>
-            {targetRole && (
-              <Typography className={classes.recommendedPill}>
-                {targetRole}
-              </Typography>
-            )}
-          </Box>
-          
-          <Typography className={classes.clickPrompt}>
-            Click on a project to add it to your resume
-          </Typography>
-          
-          {/* Error message */}
-          {(error || projectError) && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error || projectError}
-            </Alert>
-          )}
-          
-          {loading ? (
-            <Box className={classes.loadingContainer}>
-              <CircularProgress size={30} />
-            </Box>
-          ) : recommendedProjects.length > 0 ? (
-            <List className={classes.recommendationsList}>
-              {recommendedProjects.map((project) => (
-                <ListItem 
-                  key={project.project_key || project.id}
-                  className={classes.recommendationItem}
-                  disablePadding
-                >
-                  <ListItemButton 
-                    onClick={() => handleAddRecommendedProject(project.project_key || project.id)}
-                    disabled={loadingProject}
-                  >
-                    <ListItemText
-                      primary={
-                        <Typography className={classes.recommendationTitle}>
-                          {project.name}
-                        </Typography>
-                      }
-                      secondary={
-                        <>
-                          <Typography variant="body2" color="textSecondary">
-                            {project.description}
-                          </Typography>
-                          {project.skills_used && (
-                            <Box mt={1}>
-                              {project.skills_used.split(',').map((skill, idx) => (
-                                <Chip
-                                  key={idx}
-                                  label={skill.trim()}
-                                  className={classes.recommendationChip}
-                                  size="small"
-                                />
-                              ))}
-                            </Box>
-                          )}
-                        </>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Alert severity="info">
-              No project recommendations available for {targetRole}.
-            </Alert>
-          )}
-        </Box>
-      )}
+      {/* Project Recommendations Modal */}
+      <ProjectRecommendationsModal
+        open={recommendationsModalOpen}
+        onClose={handleCloseRecommendationsModal}
+        recommendations={recommendedProjects}
+        loading={loading}
+        error={error}
+        onSelectProject={handleAddRecommendedProject}
+        targetRole={targetRole}
+        loadingProject={loadingProject}
+      />
     </Box>
   );
 };

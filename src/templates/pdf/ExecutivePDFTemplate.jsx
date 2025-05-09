@@ -107,6 +107,12 @@ const styles = StyleSheet.create({
   bulletText: {
     flex: 1,
   },
+  linkText: {
+    fontSize: 9,
+    color: '#1a202c',
+    textDecoration: 'none',
+    marginTop: 2,
+  },
 });
 
 // Helper component for bullet points
@@ -203,16 +209,17 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
           <Text style={styles.summary}>{resumeData.summary}</Text>
         </View>
       )}
+      
       {/* Skills Section */}
       {resumeData.skills && resumeData.skills.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Skills</Text>
           <View style={styles.skillsContainer}>
-            {resumeData.skills.map((skill, index) => 
-              skill && skill.trim() !== '' ? (
+            {resumeData.skills
+              .filter(skill => skill && skill.trim() !== '')
+              .map((skill, index) => (
                 <Text key={index} style={styles.skillChip}>{skill}</Text>
-              ) : null
-            )}
+              ))}
           </View>
         </View>
       )}
@@ -222,12 +229,16 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Experience</Text>
           
-          {getWorkExperience().map((experience, index) => 
-            (experience.position || experience.company_name) ? (
+          {getWorkExperience()
+            .filter(exp => (exp.position && exp.position.trim() !== '') || 
+                           (exp.company_name && exp.company_name.trim() !== '') ||
+                           (exp.companyName && exp.companyName.trim() !== ''))
+            .map((experience, index) => (
               <View key={index} style={styles.experienceItem}>
                 <Text style={styles.itemTitle}>
                   {experience.position || ''}
-                  {experience.company_name ? ` | ${experience.company_name}` : ''}
+                  {(experience.company_name || experience.companyName) ? 
+                    ` | ${experience.company_name || experience.companyName}` : ''}
                 </Text>
                 
                 {experience.duration && (
@@ -237,22 +248,21 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
                 <View style={styles.bulletList}>
                   {/* Handle responsibilities from array or from description string */}
                   {experience.responsibilities && Array.isArray(experience.responsibilities) ? (
-                    experience.responsibilities.map((resp, idx) => 
-                      resp && resp.trim() !== '' ? (
+                    experience.responsibilities
+                      .filter(resp => resp && resp.trim() !== '')
+                      .map((resp, idx) => (
                         <Bullet key={idx}>{resp}</Bullet>
-                      ) : null
-                    )
+                      ))
                   ) : experience.description ? (
-                    experience.description.split('\n').map((line, idx) => 
-                      line && line.trim() !== '' ? (
+                    experience.description.split('\n')
+                      .filter(line => line && line.trim() !== '')
+                      .map((line, idx) => (
                         <Bullet key={idx}>{line}</Bullet>
-                      ) : null
-                    )
+                      ))
                   ) : null}
                 </View>
               </View>
-            ) : null
-          )}
+            ))}
         </View>
       )}
       
@@ -262,19 +272,21 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
           <Text style={styles.sectionTitle}>Education</Text>
           
           {Array.isArray(resumeData.education) ? (
-            resumeData.education.map((edu, index) => edu.degree || edu.institution ? (
-              <View key={index} style={styles.experienceItem}>
-                <Text style={styles.itemTitle}>
-                  {edu.degree}{edu.specialization ? ` in ${edu.specialization}` : ''}
-                </Text>
-                <Text style={styles.itemSubtitle}>{edu.institution}</Text>
-                {(edu.graduation_year || edu.graduationYear) && (
-                  <Text style={styles.duration}>
-                    {edu.graduation_year || edu.graduationYear}
+            resumeData.education
+              .filter(edu => (edu.degree && edu.degree.trim() !== '') || (edu.institution && edu.institution.trim() !== ''))
+              .map((edu, index) => (
+                <View key={index} style={styles.experienceItem}>
+                  <Text style={styles.itemTitle}>
+                    {edu.degree}{edu.specialization ? ` in ${edu.specialization}` : ''}
                   </Text>
-                )}
-              </View>
-            ) : null)
+                  <Text style={styles.itemSubtitle}>{edu.institution}</Text>
+                  {(edu.graduation_year || edu.graduationYear) && (
+                    <Text style={styles.duration}>
+                      {edu.graduation_year || edu.graduationYear}
+                    </Text>
+                  )}
+                </View>
+              ))
           ) : (
             <View style={styles.experienceItem}>
               <Text style={styles.itemTitle}>
@@ -282,17 +294,15 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
                 {resumeData.education.specialization ? ` in ${resumeData.education.specialization}` : ''}
               </Text>
               <Text style={styles.itemSubtitle}>{resumeData.education.institution}</Text>
-              {resumeData.education.graduation_year && (
+              {(resumeData.education.graduation_year || resumeData.education.graduationYear) && (
                 <Text style={styles.duration}>
-                  {resumeData.education.graduation_year}
+                  {resumeData.education.graduation_year || resumeData.education.graduationYear}
                 </Text>
               )}
             </View>
           )}
         </View>
       )}
-      
-      
       
       {/* Projects Section */}
       {resumeData.projects && resumeData.projects.length > 0 && 
@@ -310,39 +320,58 @@ const ExecutivePDFTemplate = ({ resumeData }) => {
                   <Text style={styles.itemSubtitle}>Technologies: {project.skills_used}</Text>
                 )}
                 
+                {project.link && project.link.trim() !== '' && (
+                  <Text style={styles.linkText}>
+                    Link: {project.link.replace('https://', '')}
+                  </Text>
+                )}
+                
                 <View style={styles.bulletList}>
                   {/* Handle responsibilities from array or from description string */}
-                  {project.responsibilities && Array.isArray(project.responsibilities) ? (
-                    project.responsibilities.map((resp, idx) => 
-                      resp && resp.trim() !== '' ? (
+                  {project.responsibilities && Array.isArray(project.responsibilities) && project.responsibilities.length > 0 ? (
+                    project.responsibilities
+                      .filter(resp => resp && resp.trim() !== '')
+                      .map((resp, idx) => (
                         <Bullet key={idx}>{resp}</Bullet>
-                      ) : null
-                    )
+                      ))
                   ) : project.description ? (
-                    project.description.split('\n').map((line, idx) => 
-                      line && line.trim() !== '' ? (
+                    project.description.split('\n')
+                      .filter(line => line && line.trim() !== '')
+                      .map((line, idx) => (
                         <Bullet key={idx}>{line}</Bullet>
-                      ) : null
-                    )
+                      ))
                   ) : null}
                 </View>
               </View>
-            ))
-          }
+            ))}
         </View>
       )}
       
       {/* Certifications Section */}
       {resumeData.certifications && resumeData.certifications.length > 0 && 
-       resumeData.certifications.some(cert => cert && cert.trim() !== '') && (
+       resumeData.certifications.some(cert => 
+         (typeof cert === 'string' && cert.trim() !== '') || 
+         (typeof cert === 'object' && cert.name && cert.name.trim() !== '')
+       ) && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Credentials & Certifications</Text>
           
           <View style={styles.bulletList}>
             {resumeData.certifications
-              .filter(cert => cert && cert.trim() !== '')
+              .filter(cert => 
+                (typeof cert === 'string' && cert.trim() !== '') || 
+                (typeof cert === 'object' && cert.name && cert.name.trim() !== '')
+              )
               .map((cert, index) => (
-                <Bullet key={index}>{cert}</Bullet>
+                <Bullet key={index}>
+                  {typeof cert === 'string' ? cert : 
+                   cert.name + (cert.issuer ? ` | ${cert.issuer}` : '')}
+                  {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
+                    <Text style={styles.linkText}>
+                      {' '}- {cert.url.replace('https://', '')}
+                    </Text>
+                  )}
+                </Bullet>
               ))}
           </View>
         </View>

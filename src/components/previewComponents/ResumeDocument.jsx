@@ -12,29 +12,20 @@ Font.register({
 });
 
 // Base styles
-const baseStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Roboto',
     fontSize: 11,
     lineHeight: 1.5,
     color: '#2d3748',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    fontSize: 8,
-    color: '#718096',
-  },
+  }
 });
 
 const ResumeDocument = ({ resumeData, PDFComponent }) => {
   return (
     <Document title={`${resumeData.header.name || 'Resume'}`} author={resumeData.header.name || 'Applicant'}>
-      <Page size="A4" style={baseStyles.page}>
+      <Page size="A4" style={styles.page}>
         <PDFComponent resumeData={resumeData} />
       </Page>
     </Document>
