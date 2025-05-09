@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Chip, InputAdornment, IconButton, Divider, Alert, CircularProgress } from '@mui/material';
+import { 
+  Box, 
+  Typography, 
+  TextField, 
+  Chip, 
+  InputAdornment, 
+  IconButton, 
+  Divider, 
+  Alert, 
+  CircularProgress,
+  Paper,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getSkillRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
@@ -35,6 +52,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '16px',
     margin: '0.25rem',
   },
+  certChip: {
+    backgroundColor: '#ebf3ff',
+    color: '#3182ce',
+    borderRadius: '16px',
+    margin: '0.25rem',
+  },
   divider: {
     margin: '2rem 0 1rem',
   },
@@ -63,13 +86,48 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontStyle: 'italic',
     marginBottom: '0.5rem',
   },
+  addCertButton: {
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+    textTransform: 'none',
+    fontWeight: 600,
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: '#bee3f8',
+    },
+  },
+  certDialog: {
+    '& .MuiDialog-paper': {
+      borderRadius: '12px',
+    },
+  },
+  dialogTitle: {
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+  },
+  dialogContent: {
+    paddingTop: '16px !important',
+  },
+  certMetadata: {
+    fontSize: '0.75rem',
+    color: '#718096',
+    marginLeft: '0.5rem',
+  },
 }));
 
 const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [newSkill, setNewSkill] = useState('');
-  const [newCertification, setNewCertification] = useState('');
   const [filteredRecommendations, setFilteredRecommendations] = useState([]);
+  
+  // Certificate state
+  const [certDialogOpen, setCertDialogOpen] = useState(false);
+  const [editingCertIndex, setEditingCertIndex] = useState(-1);
+  const [certFormData, setCertFormData] = useState({
+    name: '',
+    issuer: '',
+    url: ''
+  });
   
   // Use custom hook for skill recommendations
   const { 
@@ -135,22 +193,112 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
     }
   };
 
-  // Certifications handlers
-  const handleAddCertification = () => {
-    if (newCertification.trim() !== '' && !resumeData.certifications.includes(newCertification.trim())) {
+  // Certificate handlers
+  const openAddCertDialog = () => {
+    setCertFormData({
+      name: '',
+      issuer: '',
+      url: ''
+    });
+    setEditingCertIndex(-1);
+    setCertDialogOpen(true);
+  };
+  
+  const openEditCertDialog = (certIndex) => {
+    const cert = resumeData.certifications[certIndex];
+    
+    // Handle both string and object formats
+    if (typeof cert === 'string') {
+      setCertFormData({
+        name: cert,
+        issuer: '',
+        url: ''
+      });
+    } else {
+      setCertFormData({
+        name: cert.name || '',
+        issuer: cert.issuer || '',
+        url: cert.url || ''
+      });
+    }
+    
+    setEditingCertIndex(certIndex);
+    setCertDialogOpen(true);
+  };
+  
+  const handleCloseCertDialog = () => {
+    setCertDialogOpen(false);
+  };
+  
+  const handleCertFormChange = (e) => {
+    const { name, value } = e.target;
+    setCertFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
+  const handleSaveCertificate = () => {
+    // Ensure the name field is filled
+    if (!certFormData.name.trim()) {
+      return;
+    }
+    
+    // Create certificate object
+    const newCert = {
+      name: certFormData.name.trim(),
+      issuer: certFormData.issuer.trim(),
+      url: certFormData.url.trim()
+    };
+    
+    // If we're editing an existing certificate
+    if (editingCertIndex >= 0) {
+      const updatedCerts = [...resumeData.certifications];
+      updatedCerts[editingCertIndex] = newCert;
+      
       setResumeData(prev => ({
         ...prev,
-        certifications: [...prev.certifications.filter(Boolean), newCertification.trim()],
+        certifications: updatedCerts
       }));
-      setNewCertification('');
+    } else {
+      // Adding a new certificate
+      setResumeData(prev => ({
+        ...prev,
+        certifications: [...prev.certifications.filter(Boolean), newCert]
+      }));
     }
+    
+    // Close the dialog
+    handleCloseCertDialog();
   };
-
-  const handleRemoveCertification = (certToRemove) => {
+  
+  const handleRemoveCertificate = (certIndex) => {
     setResumeData(prev => ({
       ...prev,
-      certifications: prev.certifications.filter(cert => cert !== certToRemove),
+      certifications: prev.certifications.filter((_, index) => index !== certIndex)
     }));
+  };
+  
+  // Helper function to get certificate display text
+  const getCertificateDisplayText = (cert) => {
+    if (typeof cert === 'string') {
+      return cert;
+    }
+    
+    return cert.name;
+  };
+  
+  // Helper function to get certificate metadata
+  const getCertificateMetadata = (cert) => {
+    if (typeof cert === 'string') {
+      return '';
+    }
+    
+    if (cert.issuer && cert.issuer.trim() !== '') {
+      return `| ${cert.issuer}`;
+    }
+    
+    return '';
   };
 
   return (
@@ -240,44 +388,98 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       
       <Divider className={classes.divider} />
       
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Certifications
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Certifications
+        </Typography>
+        
+        <Button
+          startIcon={<AddIcon />}
+          className={classes.addCertButton}
+          onClick={openAddCertDialog}
+        >
+          Add Certification
+        </Button>
+      </Box>
       
       <Box className={classes.chipContainer}>
         {resumeData.certifications.filter(Boolean).map((cert, index) => (
           <Chip
             key={index}
-            label={cert}
-            className={classes.chip}
-            onDelete={() => handleRemoveCertification(cert)}
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {getCertificateDisplayText(cert)}
+                <Typography className={classes.certMetadata}>
+                  {getCertificateMetadata(cert)}
+                </Typography>
+              </Box>
+            }
+            className={classes.certChip}
+            onDelete={() => handleRemoveCertificate(index)}
+            onClick={() => openEditCertDialog(index)}
+            deleteIcon={<EditIcon />}
           />
         ))}
       </Box>
       
-      <TextField
-        label="Add Certification"
-        value={newCertification}
-        onChange={(e) => setNewCertification(e.target.value)}
-        variant="outlined"
+      {/* Certificate Dialog */}
+      <Dialog
+        open={certDialogOpen}
+        onClose={handleCloseCertDialog}
+        maxWidth="sm"
         fullWidth
-        placeholder="e.g., AWS Certified Developer"
-        onKeyDown={(e) => handleKeyDown(e, handleAddCertification)}
-        className={classes.textField}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton 
-                onClick={handleAddCertification}
-                edge="end"
-                color="primary"
-              >
-                <AddIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+        className={classes.certDialog}
+      >
+        <DialogTitle className={classes.dialogTitle}>
+          {editingCertIndex >= 0 ? 'Edit Certification' : 'Add Certification'}
+        </DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <TextField
+            label="Certification Name"
+            name="name"
+            value={certFormData.name}
+            onChange={handleCertFormChange}
+            variant="outlined"
+            fullWidth
+            required
+            placeholder="e.g., AWS Certified Developer"
+            className={classes.textField}
+          />
+          <TextField
+            label="Issuing Organization"
+            name="issuer"
+            value={certFormData.issuer}
+            onChange={handleCertFormChange}
+            variant="outlined"
+            fullWidth
+            placeholder="e.g., Amazon Web Services"
+            className={classes.textField}
+          />
+          <TextField
+            label="Certificate URL (Optional)"
+            name="url"
+            value={certFormData.url}
+            onChange={handleCertFormChange}
+            variant="outlined"
+            fullWidth
+            placeholder="e.g., https://aws.amazon.com/certification/..."
+            className={classes.textField}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCertDialog} color="inherit">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveCertificate}
+            color="primary"
+            variant="contained"
+            disabled={!certFormData.name.trim()}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

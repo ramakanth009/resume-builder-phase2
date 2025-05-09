@@ -37,8 +37,8 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     // Keep skills as is
     skills: generatedResume.skills || [],
     
-    // Keep certifications as is
-    certifications: generatedResume.certifications || [],
+    // Normalize certifications
+    certifications: normalizeCertifications(generatedResume.certifications || []),
     
     // Keep customSections as is
     customSections: generatedResume.customSections || {}
@@ -150,6 +150,46 @@ const normalizeProjects = (projects) => {
       technologies,
     };
   });
+};
+
+/**
+ * Normalizes certification data to support both string and object formats
+ * @param {Array} certifications - Certifications data from API
+ * @returns {Array} - Normalized certifications array
+ */
+const normalizeCertifications = (certifications) => {
+  if (!certifications || !Array.isArray(certifications)) return [];
+  
+  return certifications.map(cert => {
+    // If it's already a string, return it as is
+    if (typeof cert === 'string') {
+      return cert;
+    }
+    
+    // If it's an object with a name, return the full object
+    if (typeof cert === 'object' && cert.name) {
+      return {
+        name: cert.name || '',
+        issuer: cert.issuer || '',
+        url: cert.url || ''
+      };
+    }
+    
+    // If it has no name but has other properties, use those
+    if (typeof cert === 'object') {
+      if (cert.issuer) {
+        return {
+          name: cert.issuer, // Use issuer as name if available
+          issuer: cert.issuer,
+          url: cert.url || ''
+        };
+      }
+      
+      return JSON.stringify(cert); // Fallback to string representation
+    }
+    
+    return ''; // Fallback empty string
+  }).filter(Boolean); // Remove any empty entries
 };
 
 export default {

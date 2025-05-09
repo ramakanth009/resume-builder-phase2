@@ -139,6 +139,25 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       </Link>
     );
   };
+  
+  // Helper function to format certification display
+  const formatCertification = (cert) => {
+    if (typeof cert === 'string') {
+      return cert;
+    }
+    
+    if (typeof cert === 'object' && cert.name) {
+      let displayText = cert.name;
+      
+      if (cert.issuer && cert.issuer.trim() !== '') {
+        displayText += ` | ${cert.issuer}`;
+      }
+      
+      return displayText;
+    }
+    
+    return JSON.stringify(cert);
+  };
 
   return (
     <Box className={`${baseClasses.resumeContainer} resume-container`}>
@@ -368,19 +387,37 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
       
       {/* Certifications Section */}
       {data.certifications && data.certifications.length > 0 && 
-        data.certifications.some(cert => cert && cert.trim() !== '') && (
+        data.certifications.some(cert => 
+          (typeof cert === 'string' && cert.trim() !== '') || 
+          (typeof cert === 'object' && cert.name && cert.name.trim() !== '')
+        ) && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             Certifications
           </Typography>
           <Box component="ul" className={classes.resumeBullets}>
             {data.certifications
-              .filter(cert => cert && cert.trim() !== '')
+              .filter(cert => 
+                (typeof cert === 'string' && cert.trim() !== '') || 
+                (typeof cert === 'object' && cert.name && cert.name.trim() !== '')
+              )
               .map((cert, index) => (
                 <li key={index} className={classes.resumeBullet}>
-                  {cert}
+                  {formatCertification(cert)}
+                  {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
+                    <Box component="span" ml={1}>
+                      (<Link 
+                        href={cert.url.startsWith('http') ? cert.url : `https://${cert.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={classes.contactLink}
+                      >
+                        View
+                      </Link>)
+                    </Box>
+                  )}
                 </li>
-            ))}
+              ))}
           </Box>
         </Box>
       )}
