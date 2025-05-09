@@ -18,7 +18,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-import { getProjectRecommendations, getProjectDetails } from '../../utils/api';
+import { getProjectRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -234,18 +234,19 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
     }
   };
 
-  // Handler for adding a recommended project
-  const handleAddRecommendedProject = async (projectKey) => {
+  // Handler for adding a recommended project - MODIFIED TO ELIMINATE API CALL
+  const handleAddRecommendedProject = (projectKey) => {
     setLoadingProject(true);
     setSuccessMessage('');
     setProjectError(null);
     
     try {
-      const response = await getProjectDetails(projectKey);
+      // Find the project from already loaded recommendations
+      const projectDetails = recommendedProjects.find(
+        project => project.project_key === projectKey || project.id === projectKey
+      );
       
-      if (response.status === 'success' && response.project) {
-        const projectDetails = response.project;
-        
+      if (projectDetails) {
         // Create a new project object
         const newProject = {
           name: projectDetails.name || '',
@@ -278,7 +279,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           });
         }, 100);
       } else {
-        setProjectError(response.message || 'Failed to retrieve project details');
+        setProjectError('Project not found in recommendations');
       }
     } catch (error) {
       console.error('Error adding recommended project:', error);
