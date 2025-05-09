@@ -113,7 +113,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "1rem",
+    // gap: "1rem",
     '@media (max-width: 480px)': {
       gap: '0.75rem',
     }
@@ -167,16 +167,36 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     }
   },
   signupLink: {
-    textAlign: "center",
+    width: '100%',
+    marginTop: '0.5rem',
+    textAlign: 'center',
   },
   signupText: {
     color: colors.midBlue,
+    marginBottom: '0.5rem',
   },
   signupButton: {
-    color: colors.royalBlue, 
+    padding: '0.75rem',
+    borderRadius: '8px',
     fontWeight: 600,
-    textTransform: "none",
-    padding: "0 4px",
+    textTransform: 'none',
+    fontSize: '1rem',
+    width: '100%',
+    backgroundColor: colors.white,
+    color: colors.royalBlue,
+    border: `1px solid ${colors.royalBlue}`,
+    "&:hover": {
+      backgroundColor: colors.royalBlue,
+      color: colors.white,
+    },
+    '@media (max-width: 600px)': {
+      padding: '0.6rem',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.5rem',
+      fontSize: '0.85rem',
+    }
   },
   loader: {
     marginLeft: "8px",

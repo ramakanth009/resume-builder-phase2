@@ -64,7 +64,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     gap: '1rem',
-    marginBottom: '1rem',
+    // marginBottom: '1rem',
     '@media (max-width: 600px)': {
       flexDirection: 'column',
       gap: '0.5rem',
@@ -287,7 +287,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
           </Button>
           
           <TextField
-            label="Description (One per line)"
+            label="Description"
             value={experience.description}
             onChange={(e) => handleWorkExperienceChange(index, 'description', e.target.value)}
             variant="outlined"
@@ -295,7 +295,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
             multiline
             rows={3}
             className={classes.textField}
-            placeholder="Enter your responsibilities, one per line"
+            placeholder="Describe your work in a 2 - 3 sentences"
             required
           />
           <Typography className={classes.helperText}>

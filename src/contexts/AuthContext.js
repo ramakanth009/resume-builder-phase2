@@ -21,26 +21,22 @@ export const AuthProvider = ({ children }) => {
             // Parse user data
             const user = JSON.parse(userData);
             
-            // Verify token expiration
+            // Optional: Verify token expiration if using JWT
             const isTokenValid = verifyTokenExpiration(token);
             
             if (user && user.id && isTokenValid) {
               setCurrentUser(user);
             } else {
-              console.log('Invalid user data or expired token, clearing session');
               // Invalid user data or expired token
               localStorage.removeItem('token');
               localStorage.removeItem('user');
             }
           } catch (err) {
-            console.error('Error parsing user data:', err);
             // If user data is invalid, clear localStorage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
           }
         }
-      } catch (error) {
-        console.error('Auth status check error:', error);
       } finally {
         setLoading(false);
       }
@@ -51,41 +47,17 @@ export const AuthProvider = ({ children }) => {
   
   // Function to check if JWT token is expired
   const verifyTokenExpiration = (token) => {
-    if (!token) return false;
-    
     try {
       // For JWT: Split the token to get payload part
-      const parts = token.split('.');
-      if (parts.length !== 3) return false; // Invalid token format
-      
-      const payload = parts[1];
-      // Decode base64 (handle padding properly)
-      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
-      
-      // Use safe decoding
-      let decodedPayload;
-      try {
-        decodedPayload = atob(padded);
-      } catch (e) {
-        console.error('Base64 decode error:', e);
-        return false;
-      }
-      
-      // Parse the JSON
+      const payload = token.split('.')[1];
+      // Decode base64
+      const decodedPayload = atob(payload);
       const tokenData = JSON.parse(decodedPayload);
-      
-      // Check if token has expiration claim
-      if (!tokenData.exp) {
-        console.warn('Token has no expiration claim');
-        return false;
-      }
       
       // Check if token has expired
       const currentTime = Math.floor(Date.now() / 1000);
       return tokenData.exp > currentTime;
     } catch (error) {
-      console.error('Error verifying token:', error);
       return false; // If we can't verify, consider invalid
     }
   };
@@ -104,10 +76,6 @@ export const AuthProvider = ({ children }) => {
         
         // Update current user state
         setCurrentUser(response.user);
-        
-        // Log success for debugging
-        console.log('Login successful, session established');
-        
         return response;
       } else {
         throw new Error(response.message || 'Login failed');

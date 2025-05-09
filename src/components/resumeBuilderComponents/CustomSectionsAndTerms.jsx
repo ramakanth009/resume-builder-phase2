@@ -381,7 +381,7 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
                 className={classes.checkbox}
               />
             }
-            label="I accept to receive updates from Gigaversity about new courses and future products."
+            label="I accept to receive future updates from Gigaversity."
             className={classes.checkboxLabel}
           />
           
@@ -394,7 +394,7 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
                 className={classes.checkbox}
               />
             }
-            label="I accept to share my data to be used for AI-generated resume creation."
+            label="I acknowledge that the information provided above is accurate and consent to its use for AI-generated resume creation."
             className={classes.checkboxLabel}
           />
         </Box>

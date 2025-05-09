@@ -132,7 +132,7 @@ const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
         fullWidth
         className={classes.textField}
         required
-        placeholder="e.g., +1 123 456 7890"
+        placeholder="e.g., 9999955555"
       />
       
       <TextField

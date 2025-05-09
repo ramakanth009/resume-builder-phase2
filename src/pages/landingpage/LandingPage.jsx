@@ -120,7 +120,6 @@ const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "1rem",
   },
   textField: {
     "& .MuiOutlinedInput-root": {
@@ -163,16 +162,28 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   loginLink: {
+    width: "100%",
+    marginTop: "0.5rem",
     textAlign: "center",
   },
   loginText: {
     color: colors.midBlue,
+    marginBottom: "0.5rem",
   },
   loginButton: {
-    color: colors.royalBlue,
+    padding: "0.75rem",
+    borderRadius: "8px",
     fontWeight: 600,
     textTransform: "none",
-    padding: "0 4px",
+    fontSize: "1rem",
+    width: "100%",
+    backgroundColor: colors.white,
+    color: colors.royalBlue,
+    border: `1px solid ${colors.royalBlue}`,
+    "&:hover": {
+      backgroundColor: colors.royalBlue,
+      color: colors.white,
+    },
   },
   loader: {
     marginLeft: "8px",
@@ -647,16 +658,13 @@ const LandingPage = () => {
               <Typography className={classes.formDivider}>or</Typography>
 
               <Box className={classes.loginLink}>
-                <Typography
-                  className={classes.loginText}
-                  variant="body2"
-                  display="inline"
-                >
+                <Typography className={classes.loginText} variant="body2">
                   Already have an account?
                 </Typography>
                 <Button
                   className={classes.loginButton}
                   onClick={() => navigate("/login")}
+                  fullWidth
                 >
                   Log in
                 </Button>

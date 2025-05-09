@@ -1,7 +1,7 @@
 // Base URL for API requests
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
 // const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
@@ -35,50 +35,30 @@ export const apiRequest = async (endpoint, options = {}) => {
     // Make the API request
     const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
     
-    // Check for 401 Unauthorized immediately before parsing the response
-    if (response.status === 401) {
-      // Token is invalid or expired, clear auth data
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      // Only redirect if this is not already a login/register request
-      if (!endpoint.includes('/auth/login') && !endpoint.includes('/auth/register')) {
-        // Force redirect to login page - use hash router format
-        window.location.href = '/#/login';
-      }
-      
-      // Try to parse the response for error message
-      try {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Session expired. Please login again.');
-      } catch (parseError) {
-        throw new Error('Session expired. Please login again.');
-      }
-    }
-    
-    // Parse the JSON response for other cases
-    let data;
-    try {
-      data = await response.json();
-    } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
-      throw new Error('Invalid response from server');
-    }
+    // Parse the JSON response
+    const data = await response.json();
     
     // If response is not ok, throw an error with the message from the server
     if (!response.ok) {
       throw new Error(data.message || 'Something went wrong');
     }
     
+    // Check for 401 Unauthorized
+    if (response.status === 401) {
+      // Token is invalid, clear auth data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // Force redirect to login page - use hash router format
+      window.location.href = '/#/login';
+      
+      throw new Error(data.message || 'Session expired. Please login again.');
+    }
+    
     // Return the data
     return data;
   } catch (error) {
-    // Check if this is a network error (offline)
-    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      throw new Error('Network error. Please check your connection.');
-    }
-    
-    // Pass through the error message
+    // Pass through the error message directly from the backend
     throw error;
   }
 };

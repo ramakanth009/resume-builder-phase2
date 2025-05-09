@@ -169,7 +169,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   contentOffset: {
-    minHeight: '64px',
+    minHeight: '20px',
     '@media (max-width: 600px)': {
       minHeight: '56px',
     },

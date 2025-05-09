@@ -212,13 +212,14 @@ const Login = () => {
               <Typography className={classes.formDivider}>or</Typography>
               
               <Box className={classes.signupLink}>
-                <Typography className={classes.signupText} variant="body2" display="inline">
+                <Typography className={classes.signupText} variant="body2">
                   Don't have an account?
                 </Typography>
                 <Button
                   className={classes.signupButton}
                   onClick={navigateToRegister}
                   disabled={isLoading}
+                  fullWidth
                 >
                   Sign up
                 </Button>

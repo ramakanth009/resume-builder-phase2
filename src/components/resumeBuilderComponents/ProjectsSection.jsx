@@ -354,7 +354,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
           />
           
           <TextField
-            label="Description (One per line)"
+            label="Description"
             value={project.description}
             onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
             variant="outlined"
@@ -362,7 +362,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
             multiline
             rows={3}
             className={classes.textField}
-            placeholder="Enter project details, one per line"
+            placeholder="Describe your work in a 2 - 3 sentences"
             required
           />
           <Typography className={classes.helperText}>
