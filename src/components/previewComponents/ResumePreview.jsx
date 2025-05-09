@@ -406,14 +406,14 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
                   {formatCertification(cert)}
                   {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
                     <Box component="span" ml={1}>
-                      (<Link 
+                      <Link 
                         href={cert.url.startsWith('http') ? cert.url : `https://${cert.url}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={classes.contactLink}
                       >
                         View
-                      </Link>)
+                      </Link>
                     </Box>
                   )}
                 </li>

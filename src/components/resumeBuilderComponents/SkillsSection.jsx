@@ -9,15 +9,12 @@ import {
   Divider, 
   Alert, 
   CircularProgress,
-  Paper,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
+  Button
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getSkillRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
@@ -86,33 +83,46 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontStyle: 'italic',
     marginBottom: '0.5rem',
   },
-  addCertButton: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-    textTransform: 'none',
-    fontWeight: 600,
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#bee3f8',
-    },
-  },
-  certDialog: {
-    '& .MuiDialog-paper': {
-      borderRadius: '12px',
-    },
-  },
-  dialogTitle: {
-    backgroundColor: '#ebf8ff',
-    color: '#3182ce',
-  },
-  dialogContent: {
-    paddingTop: '16px !important',
-  },
   certMetadata: {
     fontSize: '0.75rem',
     color: '#718096',
     marginLeft: '0.5rem',
   },
+  certInputs: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: '1rem',
+    marginBottom: '1rem',
+  },
+  certActions: {
+    display: 'flex',
+    gap: '0.5rem',
+    justifyContent: 'flex-end',
+    marginBottom: '1rem'
+  },
+  certField: {
+    marginBottom: '0.5rem',
+  },
+  addButton: {
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+    borderRadius: '8px',
+    textTransform: 'none',
+    fontWeight: 600,
+    '&:hover': {
+      backgroundColor: '#bee3f8',
+    },
+  },
+  cancelButton: {
+    color: '#718096',
+    borderColor: '#e2e8f0',
+    textTransform: 'none',
+    fontWeight: 600,
+    '&:hover': {
+      backgroundColor: '#f7fafc',
+    },
+  }
 }));
 
 const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
@@ -121,13 +131,10 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const [filteredRecommendations, setFilteredRecommendations] = useState([]);
   
   // Certificate state
-  const [certDialogOpen, setCertDialogOpen] = useState(false);
+  const [newCertName, setNewCertName] = useState('');
+  const [newCertIssuer, setNewCertIssuer] = useState('');
+  const [newCertUrl, setNewCertUrl] = useState('');
   const [editingCertIndex, setEditingCertIndex] = useState(-1);
-  const [certFormData, setCertFormData] = useState({
-    name: '',
-    issuer: '',
-    url: ''
-  });
   
   // Use custom hook for skill recommendations
   const { 
@@ -168,9 +175,6 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove),
     }));
-    
-    // If the removed skill was from our recommendations, it will be added back 
-    // automatically via the useEffect that updates filteredRecommendations
   };
 
   const handleKeyDown = (e, action) => {
@@ -189,67 +193,24 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         ...prev,
         skills: [...prev.skills.filter(Boolean), skill],
       }));
-      // The skill will be removed from filteredRecommendations via useEffect
     }
   };
 
   // Certificate handlers
-  const openAddCertDialog = () => {
-    setCertFormData({
-      name: '',
-      issuer: '',
-      url: ''
-    });
-    setEditingCertIndex(-1);
-    setCertDialogOpen(true);
-  };
-  
-  const openEditCertDialog = (certIndex) => {
-    const cert = resumeData.certifications[certIndex];
+  const handleAddCertificate = () => {
+    if (!newCertName.trim()) return;
     
-    // Handle both string and object formats
-    if (typeof cert === 'string') {
-      setCertFormData({
-        name: cert,
-        issuer: '',
-        url: ''
-      });
-    } else {
-      setCertFormData({
-        name: cert.name || '',
-        issuer: cert.issuer || '',
-        url: cert.url || ''
-      });
+    // Create a certificate object or string based on available info
+    let newCert = newCertName.trim();
+    
+    // If we have issuer or URL, create an object
+    if (newCertIssuer.trim() || newCertUrl.trim()) {
+      newCert = {
+        name: newCertName.trim(),
+        issuer: newCertIssuer.trim(),
+        url: newCertUrl.trim()
+      };
     }
-    
-    setEditingCertIndex(certIndex);
-    setCertDialogOpen(true);
-  };
-  
-  const handleCloseCertDialog = () => {
-    setCertDialogOpen(false);
-  };
-  
-  const handleCertFormChange = (e) => {
-    const { name, value } = e.target;
-    setCertFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-  
-  const handleSaveCertificate = () => {
-    // Ensure the name field is filled
-    if (!certFormData.name.trim()) {
-      return;
-    }
-    
-    // Create certificate object
-    const newCert = {
-      name: certFormData.name.trim(),
-      issuer: certFormData.issuer.trim(),
-      url: certFormData.url.trim()
-    };
     
     // If we're editing an existing certificate
     if (editingCertIndex >= 0) {
@@ -260,6 +221,9 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         ...prev,
         certifications: updatedCerts
       }));
+      
+      // Reset editing state
+      setEditingCertIndex(-1);
     } else {
       // Adding a new certificate
       setResumeData(prev => ({
@@ -268,15 +232,47 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       }));
     }
     
-    // Close the dialog
-    handleCloseCertDialog();
+    // Clear the form
+    setNewCertName('');
+    setNewCertIssuer('');
+    setNewCertUrl('');
   };
   
-  const handleRemoveCertificate = (certIndex) => {
+  const handleEditCertificate = (index) => {
+    const cert = resumeData.certifications[index];
+    
+    // Set editing index
+    setEditingCertIndex(index);
+    
+    // Fill the form with certificate data
+    if (typeof cert === 'string') {
+      setNewCertName(cert);
+      setNewCertIssuer('');
+      setNewCertUrl('');
+    } else {
+      setNewCertName(cert.name || '');
+      setNewCertIssuer(cert.issuer || '');
+      setNewCertUrl(cert.url || '');
+    }
+  };
+  
+  const handleCancelEdit = () => {
+    setEditingCertIndex(-1);
+    setNewCertName('');
+    setNewCertIssuer('');
+    setNewCertUrl('');
+  };
+  
+  const handleRemoveCertificate = (index) => {
     setResumeData(prev => ({
       ...prev,
-      certifications: prev.certifications.filter((_, index) => index !== certIndex)
+      certifications: prev.certifications.filter((_, i) => i !== index)
     }));
+    
+    // If we were editing this cert, cancel the edit
+    if (editingCertIndex === index) {
+      handleCancelEdit();
+    }
   };
   
   // Helper function to get certificate display text
@@ -388,20 +384,11 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       
       <Divider className={classes.divider} />
       
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6" className={classes.formSubtitle}>
-          Certifications
-        </Typography>
-        
-        <Button
-          startIcon={<AddIcon />}
-          className={classes.addCertButton}
-          onClick={openAddCertDialog}
-        >
-          Add Certification
-        </Button>
-      </Box>
+      <Typography variant="h6" className={classes.formSubtitle}>
+        Certifications
+      </Typography>
       
+      {/* Certificate section */}
       <Box className={classes.chipContainer}>
         {resumeData.certifications.filter(Boolean).map((cert, index) => (
           <Chip
@@ -416,70 +403,68 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
             }
             className={classes.certChip}
             onDelete={() => handleRemoveCertificate(index)}
-            onClick={() => openEditCertDialog(index)}
-            deleteIcon={<EditIcon />}
+            deleteIcon={<DeleteIcon />}
+            onClick={() => handleEditCertificate(index)}
           />
         ))}
       </Box>
       
-      {/* Certificate Dialog */}
-      <Dialog
-        open={certDialogOpen}
-        onClose={handleCloseCertDialog}
-        maxWidth="sm"
-        fullWidth
-        className={classes.certDialog}
-      >
-        <DialogTitle className={classes.dialogTitle}>
-          {editingCertIndex >= 0 ? 'Edit Certification' : 'Add Certification'}
-        </DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          <TextField
-            label="Certification Name"
-            name="name"
-            value={certFormData.name}
-            onChange={handleCertFormChange}
+      {/* Certificate input fields */}
+      <Box className={classes.certInputs}>
+        <TextField
+          label="Certification Name"
+          value={newCertName}
+          onChange={(e) => setNewCertName(e.target.value)}
+          variant="outlined"
+          fullWidth
+          placeholder="e.g., AWS Certified Developer"
+          onKeyDown={(e) => handleKeyDown(e, handleAddCertificate)}
+          className={classes.certField}
+          required
+        />
+        <TextField
+          label="Issuing Organization (Optional)"
+          value={newCertIssuer}
+          onChange={(e) => setNewCertIssuer(e.target.value)}
+          variant="outlined"
+          fullWidth
+          placeholder="e.g., Amazon Web Services"
+          className={classes.certField}
+        />
+        <TextField
+          label="Certificate URL (Optional)"
+          value={newCertUrl}
+          onChange={(e) => setNewCertUrl(e.target.value)}
+          variant="outlined"
+          fullWidth
+          placeholder="e.g., https://aws.amazon.com/certification/..."
+          className={classes.certField}
+        />
+      </Box>
+      
+      {/* Certificate action buttons */}
+      <Box className={classes.certActions}>
+        {editingCertIndex >= 0 && (
+          <Button
             variant="outlined"
-            fullWidth
-            required
-            placeholder="e.g., AWS Certified Developer"
-            className={classes.textField}
-          />
-          <TextField
-            label="Issuing Organization"
-            name="issuer"
-            value={certFormData.issuer}
-            onChange={handleCertFormChange}
-            variant="outlined"
-            fullWidth
-            placeholder="e.g., Amazon Web Services"
-            className={classes.textField}
-          />
-          <TextField
-            label="Certificate URL (Optional)"
-            name="url"
-            value={certFormData.url}
-            onChange={handleCertFormChange}
-            variant="outlined"
-            fullWidth
-            placeholder="e.g., https://aws.amazon.com/certification/..."
-            className={classes.textField}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCertDialog} color="inherit">
+            className={classes.cancelButton}
+            onClick={handleCancelEdit}
+            startIcon={<CancelIcon />}
+          >
             Cancel
           </Button>
-          <Button 
-            onClick={handleSaveCertificate}
-            color="primary"
-            variant="contained"
-            disabled={!certFormData.name.trim()}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+        )}
+        <Button
+          variant="contained"
+          className={classes.addButton}
+          onClick={handleAddCertificate}
+          startIcon={editingCertIndex >= 0 ? <EditIcon /> : <AddIcon />}
+          disabled={!newCertName.trim()}
+          fullWidth
+        >
+          {editingCertIndex >= 0 ? 'Update Certification' : 'Add Certification'}
+        </Button>
+      </Box>
     </Box>
   );
 };
