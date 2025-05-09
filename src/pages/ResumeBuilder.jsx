@@ -1129,6 +1129,7 @@ const ResumeBuilder = () => {
           <SkillsSection 
             resumeData={resumeData} 
             setResumeData={setResumeData} 
+            targetRole={targetRole}
           />
         );
       case 3:

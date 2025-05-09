@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Chip, InputAdornment, IconButton, Divider } from '@mui/material';
+import { Box, Typography, TextField, Chip, InputAdornment, IconButton, Divider, Alert, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import { getSkillRecommendations } from '../../utils/api';
+import { useApiData } from '../../hooks/useApiData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
@@ -13,7 +15,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '& .MuiOutlinedInput-root': {
       borderRadius: '8px',
     },
-    marginBottom: '1rem',
+    marginBottom: '0.5rem', // reduced spacing
   },
   formSubtitle: {
     fontWeight: 500,
@@ -35,13 +37,62 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   divider: {
     margin: '2rem 0 1rem',
-  }
+  },
+  recommendationsContainer: {
+    marginTop: '0.5rem',
+    marginBottom: '1.5rem',
+  },
+  recommendationChip: {
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+    fontSize: '0.75rem',
+    margin: '0.25rem',
+    '&:hover': {
+      backgroundColor: '#bee3f8',
+    },
+    cursor: 'pointer',
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '0.5rem',
+  },
+  recommendationsLabel: {
+    fontSize: '0.85rem',
+    color: '#718096',
+    fontStyle: 'italic',
+    marginBottom: '0.5rem',
+  },
+  recommendedPill: {
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+    padding: '2px 10px',
+    borderRadius: '12px',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    marginLeft: '0.5rem',
+  },
 }));
 
-const SkillsSection = ({ resumeData, setResumeData }) => {
+const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [newSkill, setNewSkill] = useState('');
   const [newCertification, setNewCertification] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  // Use custom hook for skill recommendations
+  const { 
+    data: recommendationsResponse,
+    loading,
+    error
+  } = useApiData(getSkillRecommendations, targetRole, {
+    enabled: !!targetRole,
+    cacheKey: `skillRecommendations_${targetRole}`,
+    cacheTime: 60 * 60 * 1000, // 1 hour
+  });
+  
+  // Extract recommended skills from the response
+  const recommendedSkills = recommendationsResponse?.skills || [];
 
   // Skills handlers
   const handleAddSkill = () => {
@@ -70,6 +121,20 @@ const SkillsSection = ({ resumeData, setResumeData }) => {
     }
   };
 
+  // Add handler for recommended skills
+  const handleAddRecommendedSkill = (skill) => {
+    if (skill && !resumeData.skills.includes(skill)) {
+      setResumeData(prev => ({
+        ...prev,
+        skills: [...prev.skills.filter(Boolean), skill],
+      }));
+      
+      // Show success message
+      setSuccessMessage(`Added "${skill}" to your skills!`);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    }
+  };
+
   // Certifications handlers
   const handleAddCertification = () => {
     if (newCertification.trim() !== '' && !resumeData.certifications.includes(newCertification.trim())) {
@@ -93,6 +158,13 @@ const SkillsSection = ({ resumeData, setResumeData }) => {
       <Typography variant="h6" className={classes.formSubtitle}>
         Skills
       </Typography>
+      
+      {/* Success message */}
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {successMessage}
+        </Alert>
+      )}
       
       <Box className={classes.chipContainer}>
         {resumeData.skills.filter(Boolean).map((skill, index) => (
@@ -128,6 +200,46 @@ const SkillsSection = ({ resumeData, setResumeData }) => {
           ),
         }}
       />
+      
+      {/* Recommended Skills - integrated directly after input */}
+      {targetRole && (
+        <Box className={classes.recommendationsContainer}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography className={classes.recommendationsLabel}>
+              Recommended for {targetRole}:
+            </Typography>
+          </Box>
+          
+          {/* Error message */}
+          {error && (
+            <Alert severity="error" sx={{ my: 1 }}>
+              {error}
+            </Alert>
+          )}
+          
+          {loading ? (
+            <Box className={classes.loadingContainer}>
+              <CircularProgress size={20} />
+            </Box>
+          ) : recommendedSkills.length > 0 ? (
+            <Box className={classes.chipContainer}>
+              {recommendedSkills.map((skill, index) => (
+                <Chip
+                  key={index}
+                  label={skill}
+                  className={classes.recommendationChip}
+                  onClick={() => handleAddRecommendedSkill(skill)}
+                  clickable
+                />
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body2" color="textSecondary" sx={{ my: 1 }}>
+              No skill recommendations available.
+            </Typography>
+          )}
+        </Box>
+      )}
       
       <Divider className={classes.divider} />
       
