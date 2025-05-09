@@ -89,7 +89,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     height: '100%',
     minHeight: '80vh',
     maxHeight: '100%',
-    backgroundColor: '#ffffff',
     '@media (max-width: 960px)': {
       display: 'none', // Hide preview on tablets and mobile
     },
@@ -1340,12 +1339,12 @@ const ResumeBuilder = () => {
         <Box 
           className={`${classes.columnBox} ${classes.previewColumn}`}
         >
-          <Box className={classes.previewWrapper}>
-            {/* Section Header */}
             <Typography variant="h5" className={classes.sectionHeader}>
               {hasGeneratedResume || isEditingExisting ? 'Resume Preview' : 'Live Preview'}
             </Typography>
             
+          <Box className={classes.previewWrapper}>
+            {/* Section Header */}
             {/* Preview Content */}
             <Box className={classes.previewContent}>
               <ResumePreview 

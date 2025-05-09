@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getProjectRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
@@ -132,6 +133,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginTop: '0.5rem',
     marginBottom: '1rem',
   },
+  // New styles for recommendation notification
+  recommendationButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    backgroundColor: '#ebf8ff',
+    color: '#3182ce',
+    padding: '0.5rem 1rem',
+    borderRadius: '8px',
+    marginBottom: '1rem',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#bee3f8',
+    },
+  },
+  recommendationIcon: {
+    color: '#3182ce',
+  },
 }));
 
 const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
@@ -153,6 +173,13 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
   
   // Extract recommended projects from the response
   const recommendedProjects = recommendationsResponse?.projects || [];
+
+  const handleScrollToRecommendations = () => {
+    document.getElementById('recommendations-section')?.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'start'
+    });
+  };
 
   const handleAddProject = () => {
     setResumeData({
@@ -234,7 +261,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
     }
   };
 
-  // Handler for adding a recommended project - MODIFIED TO ELIMINATE API CALL
+  // Updated handler for adding a recommended project
   const handleAddRecommendedProject = (projectKey) => {
     setLoadingProject(true);
     setSuccessMessage('');
@@ -263,21 +290,46 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
               projectDetails.skills_used.split(',').map(s => s.trim()) : []),
         };
         
-        // Add the project to the existing projects
-        setResumeData(prev => ({
-          ...prev,
-          projects: [...prev.projects, newProject],
-        }));
+        // Check if there's any empty project entry
+        const emptyProjectIndex = resumeData.projects.findIndex(project => !project.name);
         
-        setSuccessMessage(`Added "${projectDetails.name}" to your projects!`);
-        
-        // Scroll to the bottom of the form to show the new project
-        setTimeout(() => {
-          window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-          });
-        }, 100);
+        if (emptyProjectIndex !== -1) {
+          // Update the first empty project entry
+          const updatedProjects = [...resumeData.projects];
+          updatedProjects[emptyProjectIndex] = newProject;
+          
+          setResumeData(prev => ({
+            ...prev,
+            projects: updatedProjects,
+          }));
+          
+          setSuccessMessage(`Added "${projectDetails.name}" to Project ${emptyProjectIndex + 1}`);
+          
+          // Scroll to the updated project
+          setTimeout(() => {
+            const projectElement = document.getElementById(`project-${emptyProjectIndex}`);
+            if (projectElement) {
+              projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 100);
+          
+        } else {
+          // Add a new project entry
+          setResumeData(prev => ({
+            ...prev,
+            projects: [...prev.projects, newProject],
+          }));
+          
+          setSuccessMessage(`Added "${projectDetails.name}" as a new project`);
+          
+          // Scroll to bottom to see the new project
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: 'smooth'
+            });
+          }, 100);
+        }
       } else {
         setProjectError('Project not found in recommendations');
       }
@@ -302,6 +354,19 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
         Projects
       </Typography>
       
+      {/* Recommendations notification */}
+      {targetRole && recommendedProjects.length > 0 && !loading && (
+        <Box 
+          className={classes.recommendationButton}
+          onClick={handleScrollToRecommendations}
+        >
+          <LightbulbIcon className={classes.recommendationIcon} />
+          <Typography variant="body2">
+            {recommendedProjects.length} project recommendations available for {targetRole} - Click to view
+          </Typography>
+        </Box>
+      )}
+      
       {/* Success message */}
       {successMessage && (
         <Alert severity="success" sx={{ mb: 2 }}>
@@ -311,7 +376,11 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
       
       {/* Project forms */}
       {resumeData.projects.map((project, index) => (
-        <Paper key={index} className={classes.paper}>
+        <Paper 
+          key={index} 
+          className={classes.paper} 
+          id={`project-${index}`}
+        >
           <Box className={classes.sectionTitle}>
             <Typography variant="h6">Project {index + 1}</Typography>
           </Box>
@@ -384,7 +453,7 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
       
       {/* Recommended Projects Section */}
       {targetRole && (
-        <Box className={classes.recommendationsSection}>
+        <Box className={classes.recommendationsSection} id="recommendations-section">
           <Divider sx={{ my: 3 }} />
           
           <Box className={classes.recommendationsHeader}>
