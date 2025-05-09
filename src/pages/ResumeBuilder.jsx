@@ -30,6 +30,7 @@ import EducationSection from '../components/resumeBuilderComponents/EducationSec
 import SkillsSection from '../components/resumeBuilderComponents/SkillsSection';
 import ProjectsSection from '../components/resumeBuilderComponents/ProjectsSection';
 import ExperienceSection from '../components/resumeBuilderComponents/ExperienceSection';
+import CertificationsSection from '../components/resumeBuilderComponents/CertificationsSection';
 import CustomSectionsAndTerms from '../components/resumeBuilderComponents/CustomSectionsAndTerms';
 import ResumePreview from '../components/previewComponents/ResumePreview';
 import TemplateSelector from '../components/previewComponents/TemplateSelector';
@@ -452,13 +453,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
 }));
 
-// Step labels for sidebar navigation
+// Update the steps array in ResumeBuilder.jsx
 const steps = [
   'Personal Info',
   'Education',
   'Skills',
   'Projects',
   'Experience',
+  'Certifications',
   'Custom Sections & Terms'
 ];
 
@@ -1107,59 +1109,67 @@ const ResumeBuilder = () => {
   };
 
   // Render current step content
-  const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <PersonalInfoSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            onRoleSelect={handleRoleSelect}
-          />
-        );
-      case 1:
-        return (
-          <EducationSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
-        );
-      case 2:
-        return (
-          <SkillsSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-            targetRole={targetRole}
-          />
-        );
-      case 3:
-        return (
-          <ProjectsSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            targetRole={targetRole}
-          />
-        );
-      case 4:
-        return (
-          <ExperienceSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
-        );
-      case 5:
-        return (
-          <CustomSectionsAndTerms 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            termsAccepted={termsAccepted}
-            setTermsAccepted={setTermsAccepted}
-          />
-        );
-      default:
-        return 'Unknown step';
-    }
-  };
+  // Update the getStepContent function in ResumeBuilder.jsx
+const getStepContent = (step) => {
+  switch (step) {
+    case 0:
+      return (
+        <PersonalInfoSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          onRoleSelect={handleRoleSelect}
+        />
+      );
+    case 1:
+      return (
+        <EducationSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+        />
+      );
+    case 2:
+      return (
+        <SkillsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+          targetRole={targetRole}
+        />
+      );
+    case 3:
+      return (
+        <ProjectsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          targetRole={targetRole}
+        />
+      );
+    case 4:
+      return (
+        <ExperienceSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+        />
+      );
+    case 5:
+      return (
+        <CertificationsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+        />
+      );
+    case 6:
+      return (
+        <CustomSectionsAndTerms 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          termsAccepted={termsAccepted}
+          setTermsAccepted={setTermsAccepted}
+        />
+      );
+    default:
+      return 'Unknown step';
+  }
+};
 
   // If the resume is still loading, show a loading indicator
   if (loadingResume) {
