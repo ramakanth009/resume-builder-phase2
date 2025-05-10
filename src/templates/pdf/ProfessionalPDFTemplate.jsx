@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
   contactLink: {
     color: '#3182ce',
     textDecoration: 'none',
+    fontWeight: 'bold',
   },
   targetRole: {
     fontSize: 11,
@@ -86,11 +87,28 @@ const styles = StyleSheet.create({
     borderLeftWidth: 2,
     borderLeftColor: '#e2e8f0',
   },
+  projectTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
   itemTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 2,
     color: '#2d3748',
+  },
+  projectTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2d3748',
+  },
+  projectLink: {
+    fontSize: 10,
+    color: '#3182ce',
+    textDecoration: 'none',
+    marginLeft: 8,
+    fontWeight: 'bold',
   },
   itemSubtitle: {
     fontSize: 10,
@@ -120,12 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#4a5568',
   },
-  linkText: {
-    fontSize: 9,
-    color: '#3182ce',
-    textDecoration: 'none',
-    marginTop: 2,
-  },
 });
 
 // Helper component for bullet points
@@ -135,6 +147,12 @@ const Bullet = ({ children }) => (
     <Text style={styles.bulletText}>{children}</Text>
   </View>
 );
+
+// Helper function to format URLs properly
+const formatUrl = (url) => {
+  if (!url) return '';
+  return url.startsWith('http') ? url : `https://${url}`;
+};
 
 const ProfessionalPDFTemplate = ({ resumeData }) => {
   // Helper function to check if education data exists
@@ -185,7 +203,9 @@ const ProfessionalPDFTemplate = ({ resumeData }) => {
         <View style={styles.contactInfo}>
           {resumeData.header.email && (
             <Text style={styles.contactItem}>
-              Email: {resumeData.header.email}
+              Email: <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
+                {resumeData.header.email}
+              </Link>
             </Text>
           )}
           
@@ -197,19 +217,25 @@ const ProfessionalPDFTemplate = ({ resumeData }) => {
           
           {resumeData.header.github && (
             <Text style={styles.contactItem}>
-              GitHub: {resumeData.header.github.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.github)} style={styles.contactLink}>
+                GitHub
+              </Link>
             </Text>
           )}
           
           {resumeData.header.linkedin && (
             <Text style={styles.contactItem}>
-              LinkedIn: {resumeData.header.linkedin.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.linkedin)} style={styles.contactLink}>
+                LinkedIn
+              </Link>
             </Text>
           )}
           
           {resumeData.header.portfolio && (
             <Text style={styles.contactItem}>
-              Portfolio: {resumeData.header.portfolio.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.portfolio)} style={styles.contactLink}>
+                Portfolio
+              </Link>
             </Text>
           )}
         </View>
@@ -327,16 +353,17 @@ const ProfessionalPDFTemplate = ({ resumeData }) => {
             .filter(project => project.name && project.name.trim() !== '')
             .map((project, index) => (
               <View key={index} style={styles.experienceItem}>
-                <Text style={styles.itemTitle}>{project.name}</Text>
+                <View style={styles.projectTitleContainer}>
+                  <Text style={styles.projectTitle}>{project.name}</Text>
+                  {project.link && project.link.trim() !== '' && (
+                    <Link src={formatUrl(project.link)} style={styles.projectLink}>
+                      View
+                    </Link>
+                  )}
+                </View>
                 
                 {project.skills_used && project.skills_used.trim() !== '' && (
                   <Text style={styles.itemSubtitle}>Skills: {project.skills_used}</Text>
-                )}
-                
-                {project.link && project.link.trim() !== '' && (
-                  <Text style={styles.linkText}>
-                    Link: {project.link.replace('https://', '')}
-                  </Text>
                 )}
                 
                 <View style={styles.bulletList}>
@@ -380,9 +407,9 @@ const ProfessionalPDFTemplate = ({ resumeData }) => {
                   {typeof cert === 'string' ? cert : 
                    cert.name + (cert.issuer ? ` | ${cert.issuer}` : '')}
                   {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
-                    <Text style={styles.linkText}>
-                      {' '}- {cert.url.replace('https://', '')}
-                    </Text>
+                    <Text> <Link src={formatUrl(cert.url)} style={styles.contactLink}>
+                      View
+                    </Link></Text>
                   )}
                 </Bullet>
               ))}

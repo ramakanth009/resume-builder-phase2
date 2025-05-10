@@ -79,11 +79,28 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: '#5a67d8',
   },
+  projectTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
   itemTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 2,
     color: '#1a202c',
+  },
+  projectTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1a202c',
+  },
+  projectLink: {
+    fontSize: 10,
+    color: '#5a67d8',
+    textDecoration: 'none',
+    marginLeft: 8,
+    fontWeight: 'bold',
   },
   itemSubtitle: {
     fontSize: 10,
@@ -111,13 +128,6 @@ const styles = StyleSheet.create({
   bulletText: {
     flex: 1,
   },
-  linkText: {
-    fontSize: 9,
-    color: '#5a67d8',
-    textDecoration: 'none',
-    marginTop: 2,
-    fontWeight: 'bold',
-  },
 });
 
 // Helper component for bullet points
@@ -127,6 +137,12 @@ const Bullet = ({ children }) => (
     <Text style={styles.bulletText}>{children}</Text>
   </View>
 );
+
+// Helper function to format URLs properly
+const formatUrl = (url) => {
+  if (!url) return '';
+  return url.startsWith('http') ? url : `https://${url}`;
+};
 
 const CreativePDFTemplate = ({ resumeData }) => {
   // Helper function to check if education data exists
@@ -177,7 +193,9 @@ const CreativePDFTemplate = ({ resumeData }) => {
         <View style={styles.contactInfo}>
           {resumeData.header.email && (
             <Text style={styles.contactItem}>
-              {resumeData.header.email}
+              <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
+                {resumeData.header.email}
+              </Link>
             </Text>
           )}
           
@@ -189,19 +207,25 @@ const CreativePDFTemplate = ({ resumeData }) => {
           
           {resumeData.header.github && (
             <Text style={styles.contactItem}>
-              GitHub: {resumeData.header.github.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.github)} style={styles.contactLink}>
+                GitHub
+              </Link>
             </Text>
           )}
           
           {resumeData.header.linkedin && (
             <Text style={styles.contactItem}>
-              LinkedIn: {resumeData.header.linkedin.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.linkedin)} style={styles.contactLink}>
+                LinkedIn
+              </Link>
             </Text>
           )}
           
           {resumeData.header.portfolio && (
             <Text style={styles.contactItem}>
-              Portfolio: {resumeData.header.portfolio.replace('https://', '')}
+              <Link src={formatUrl(resumeData.header.portfolio)} style={styles.contactLink}>
+                Portfolio
+              </Link>
             </Text>
           )}
         </View>
@@ -281,16 +305,17 @@ const CreativePDFTemplate = ({ resumeData }) => {
             .filter(project => project.name && project.name.trim() !== '')
             .map((project, index) => (
               <View key={index} style={styles.experienceItem}>
-                <Text style={styles.itemTitle}>{project.name}</Text>
+                <View style={styles.projectTitleContainer}>
+                  <Text style={styles.projectTitle}>{project.name}</Text>
+                  {project.link && project.link.trim() !== '' && (
+                    <Link src={formatUrl(project.link)} style={styles.projectLink}>
+                      View
+                    </Link>
+                  )}
+                </View>
                 
                 {project.skills_used && project.skills_used.trim() !== '' && (
                   <Text style={styles.itemSubtitle}>Skills: {project.skills_used}</Text>
-                )}
-                
-                {project.link && project.link.trim() !== '' && (
-                  <Text style={styles.linkText}>
-                    Link: {project.link.replace('https://', '')}
-                  </Text>
                 )}
                 
                 <View style={styles.bulletList}>
@@ -372,9 +397,9 @@ const CreativePDFTemplate = ({ resumeData }) => {
                   {typeof cert === 'string' ? cert : 
                    cert.name + (cert.issuer ? ` | ${cert.issuer}` : '')}
                   {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
-                    <Text style={styles.linkText}>
-                      {' '}- {cert.url.replace('https://', '')}
-                    </Text>
+                    <Text> <Link src={formatUrl(cert.url)} style={styles.contactLink}>
+                      View
+                    </Link></Text>
                   )}
                 </Bullet>
               ))}
