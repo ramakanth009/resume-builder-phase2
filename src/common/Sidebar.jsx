@@ -201,9 +201,9 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
     <PersonIcon />,      // Personal Info
     <SchoolIcon />,      // Education
     <ExtensionIcon />,   // Skills
-    <VerifiedIcon />,    // Certifications
-    <CodeIcon />,        // Projects
     <WorkIcon />,        // Experience
+    <CodeIcon />,        // Projects
+    <VerifiedIcon />,    // Certifications
     <SettingsIcon />     // Custom Sections & Terms
   ];
   
