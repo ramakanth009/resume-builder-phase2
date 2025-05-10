@@ -70,6 +70,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 2,
+    flexDirection: 'row',
+    display: 'flex',
+  },
+  projectTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  projectTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  projectLink: {
+    fontSize: 10,
+    color: '#3182ce',
+    textDecoration: 'none',
+    marginLeft: 8,
   },
   itemSubtitle: {
     fontSize: 10,
@@ -111,6 +128,12 @@ const Bullet = ({ children }) => (
     <Text style={styles.bulletText}>{children}</Text>
   </View>
 );
+
+// Helper function to format URLs properly
+const formatUrl = (url) => {
+  if (!url) return '';
+  return url.startsWith('http') ? url : `https://${url}`;
+};
 
 const ClassicPDFTemplate = ({ resumeData }) => {
   // Helper function to check if education data exists
@@ -157,7 +180,9 @@ const ClassicPDFTemplate = ({ resumeData }) => {
         <View style={styles.contactInfo}>
           {resumeData.header.email && (
             <Text style={styles.contactItem}>
-              Email: {resumeData.header.email}
+              Email: <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
+                {resumeData.header.email}
+              </Link>
             </Text>
           )}
           
@@ -169,19 +194,25 @@ const ClassicPDFTemplate = ({ resumeData }) => {
           
           {resumeData.header.github && (
             <Text style={styles.contactItem}>
-              GitHub: {resumeData.header.github.replace('https://', '')}
+              GitHub: <Link src={formatUrl(resumeData.header.github)} style={styles.contactLink}>
+                {resumeData.header.github.replace(/^https?:\/\//, '')}
+              </Link>
             </Text>
           )}
           
           {resumeData.header.linkedin && (
             <Text style={styles.contactItem}>
-              LinkedIn: {resumeData.header.linkedin.replace('https://', '')}
+              LinkedIn: <Link src={formatUrl(resumeData.header.linkedin)} style={styles.contactLink}>
+                {resumeData.header.linkedin.replace(/^https?:\/\//, '')}
+              </Link>
             </Text>
           )}
           
           {resumeData.header.portfolio && (
             <Text style={styles.contactItem}>
-              Portfolio: {resumeData.header.portfolio.replace('https://', '')}
+              Portfolio: <Link src={formatUrl(resumeData.header.portfolio)} style={styles.contactLink}>
+                {resumeData.header.portfolio.replace(/^https?:\/\//, '')}
+              </Link>
             </Text>
           )}
         </View>
@@ -303,18 +334,19 @@ const ClassicPDFTemplate = ({ resumeData }) => {
             .filter(project => project.name && project.name.trim() !== '')
             .map((project, index) => (
               <View key={index} style={styles.experienceItem}>
-                <Text style={styles.itemTitle}>{project.name}</Text>
-                
+                <View style={styles.projectTitleContainer}>
+                  <Text style={styles.projectTitle}>{project.name}</Text>
+                  {project.link && project.link.trim() !== '' && (
+                    <Link src={formatUrl(project.link)} style={styles.projectLink}>
+                      View Project
+                    </Link>
+                  )}
+                </View>
+
                 {project.skills_used && project.skills_used.trim() !== '' && (
                   <Text style={styles.itemSubtitle}>Skills: {project.skills_used}</Text>
                 )}
-                
-                {project.link && project.link.trim() !== '' && (
-                  <Text style={styles.linkText}>
-                    Link: {project.link.replace('https://', '')}
-                  </Text>
-                )}
-                
+
                 <View style={styles.bulletList}>
                   {/* Handle responsibilities from array or from description string */}
                   {project.responsibilities && Array.isArray(project.responsibilities) && project.responsibilities.length > 0 ? (
@@ -356,9 +388,9 @@ const ClassicPDFTemplate = ({ resumeData }) => {
                   {typeof cert === 'string' ? cert : 
                    cert.name + (cert.issuer ? ` | ${cert.issuer}` : '')}
                   {typeof cert === 'object' && cert.url && cert.url.trim() !== '' && (
-                    <Text style={styles.linkText}>
-                      {' '}- {cert.url.replace('https://', '')}
-                    </Text>
+                    <Text> - <Link src={formatUrl(cert.url)} style={styles.contactLink}>
+                      View
+                    </Link></Text>
                   )}
                 </Bullet>
               ))}
