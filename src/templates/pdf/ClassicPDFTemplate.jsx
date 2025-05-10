@@ -180,7 +180,7 @@ const ClassicPDFTemplate = ({ resumeData }) => {
         <View style={styles.contactInfo}>
           {resumeData.header.email && (
             <Text style={styles.contactItem}>
-              Email: <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
+              <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
                 {resumeData.header.email}
               </Link>
             </Text>
