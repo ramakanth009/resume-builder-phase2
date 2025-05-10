@@ -322,7 +322,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
    },
    animatedShape: {
      position: "absolute",
-     borderRadius: "30% 70% 70% 30% 0% 70%",
+     borderRadius: "50%",
      background: "rgba(255,255,255,0.1)",
      animation: "$float 20s infinite",
    },

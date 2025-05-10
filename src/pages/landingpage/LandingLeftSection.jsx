@@ -5,11 +5,11 @@ const LandingLeftSection = ({ classes, statsData, featureData, visibleFeatures }
   <Box className={classes.leftSection}>
     <Box
       className={classes.animatedShape}
-      sx={{ top: "-100px", left: "-50px", width: "300px", height: "300px" }}
+      sx={{ top: "-50px", left: "-50px", width: "200px", height: "200px" }}
     />
     <Box
       className={classes.animatedShape}
-      sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
+      sx={{ bottom: "-100px", right: "-100px", width: "300px", height: "300px" }}
     />
 
     <Fade in timeout={1000}>
