@@ -23,6 +23,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { useStyles } from "./LandingPage.styles";
+import LandingLeftSection from './LandingLeftSection';
 
 const LandingPage = () => {
   const classes = useStyles();
@@ -147,73 +148,12 @@ const LandingPage = () => {
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.leftSection}>
-        {/* Background decorative elements */}
-        <Box
-          className={classes.animatedShape}
-          sx={{ top: "-100px", left: "-50px", width: "300px", height: "300px" }}
-        />
-        <Box
-          className={classes.animatedShape}
-          sx={{ bottom: "-150px", right: "-100px", width: "400px", height: "400px" }}
-        />
-
-        {/* Enhanced left content */}
-        <Fade in timeout={1000}>
-          <Box className={classes.leftContentContainer}>
-            {/* Enhanced headline */}
-            <Typography variant="h2" className={classes.mainHeadline}>
-              Launch Your Career
-              <span className={classes.highlightedText}> With Confidence</span>
-            </Typography>
-
-            <Typography variant="subtitle1" className={classes.tagline}>
-              The professional resume builder designed for students
-            </Typography>
-
-            {/* Enhanced statistics */}
-            <Box className={classes.statsGridContainer}>
-              {statsData.map((stat, index) => (
-                <Fade in timeout={1200 + index * 200} key={index}>
-                  <Box className={classes.statCard}>
-                    <Typography variant="h3" className={classes.statNumber}>
-                      {stat.number}
-                    </Typography>
-                    <Typography variant="body2" className={classes.statDescription}>
-                      {stat.description}
-                    </Typography>
-                  </Box>
-                </Fade>
-              ))}
-            </Box>
-
-            {/* Enhanced features section - now using Box instead of Grid */}
-            <Box className={classes.featuresContainer}>
-              <Typography variant="h6" className={classes.featuresHeading}>
-                Why Choose Us?
-              </Typography>
-
-              <Box className={classes.featuresGrid}>
-                {featureData.map((feature, index) => (
-                  <Fade in={visibleFeatures.includes(index)} timeout={600} key={index}>
-                    <Box className={classes.featureItem}>
-                      <Box className={classes.featureIcon}>{feature.icon}</Box>
-                      <Box className={classes.featureContent}>
-                        <Typography variant="subtitle2" className={classes.featureTitle}>
-                          {feature.title}
-                        </Typography>
-                        <Typography variant="body2" className={classes.featureDescription}>
-                          {feature.description}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Fade>
-                ))}
-              </Box>
-            </Box>
-          </Box>
-        </Fade>
-      </Box>
+      <LandingLeftSection 
+        classes={classes}
+        statsData={statsData}
+        featureData={featureData}
+        visibleFeatures={visibleFeatures}
+      />
 
       <Fade in timeout={800}>
         <Box className={classes.rightSection}>
