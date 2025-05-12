@@ -392,29 +392,42 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                   )}
                   
                   {currentUser && (
-                    <Button 
-                      className={classes.userButton}
-                      onClick={handleUserMenuOpen}
-                      onMouseEnter={() => setMenuHovered(true)}
-                      onMouseLeave={() => setMenuHovered(false)}
-                    >
-                      <Badge 
-                        variant="dot" 
-                        invisible={true}
-                        className={classes.notificationBadge}
+                    <>
+                      <Button 
+                        className={classes.userButton}
+                        onClick={handleUserMenuOpen}
+                        onMouseEnter={() => setMenuHovered(true)}
+                        onMouseLeave={() => setMenuHovered(false)}
                       >
-                        <Avatar className={classes.avatar} style={{
-                          transform: menuHovered ? 'scale(1.1)' : 'scale(1)'
-                        }}>
-                          {getInitial()}
-                        </Avatar>
-                      </Badge>
-                      <Box className={classes.userInfo}>
-                        <Typography className={classes.userName}>
-                          {currentUser.name.split(' ')[0]}
-                        </Typography>
-                      </Box>
-                    </Button>
+                        <Badge 
+                          variant="dot" 
+                          invisible={true}
+                          className={classes.notificationBadge}
+                        >
+                          <Avatar className={classes.avatar} style={{
+                            transform: menuHovered ? 'scale(1.1)' : 'scale(1)'
+                          }}>
+                            {getInitial()}
+                          </Avatar>
+                        </Badge>
+                        <Box className={classes.userInfo}>
+                          <Typography className={classes.userName}>
+                            {currentUser.name.split(' ')[0]}
+                          </Typography>
+                        </Box>
+                      </Button>
+                      {!isSmallScreen && (
+                        <Tooltip title="Logout" arrow>
+                          <Button 
+                            className={classes.logoutButton}
+                            onClick={handleLogout}
+                            startIcon={<LogoutIcon />}
+                          >
+                            Logout
+                          </Button>
+                        </Tooltip>
+                      )}
+                    </>
                   )}
                 </Box>
               )}
@@ -492,7 +505,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                 </>
               )}
               
-              {/* User Menu */}
+              {/* User Menu - Now empty or can be removed */}
               <Menu
                 anchorEl={userMenuAnchor}
                 open={Boolean(userMenuAnchor)}
@@ -506,10 +519,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                   }
                 }}
               >
-                <MenuItem onClick={handleLogout} className={classes.menuItem}>
-                  <LogoutIcon fontSize="small" className={classes.menuItemIcon} />
-                  Logout
-                </MenuItem>
               </Menu>
             </Toolbar>
           </Container>
