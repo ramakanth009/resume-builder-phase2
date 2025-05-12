@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import {
   AppBar,
@@ -13,20 +13,23 @@ import {
   Container,
   useMediaQuery,
   Slide,
-  useScrollTrigger
+  useScrollTrigger,
+  Tooltip,
+  Badge
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TemplateIcon from '@mui/icons-material/Dashboard';
 import CreateIcon from '@mui/icons-material/Create';
 import DataIcon from '@mui/icons-material/Storage';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
     backgroundColor: '#ffffff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
     position: 'fixed',
     top: 0,
     width: '100%',
@@ -39,9 +42,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '@media (max-width: 600px)': {
       padding: '0.4rem 0.75rem',
     },
-    '@media (max-width: 480px)': {
-      padding: '0.3rem 0.5rem',
-    },
   },
   navButtons: {
     display: 'flex',
@@ -52,32 +52,41 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     marginLeft: '1rem',
     color: '#718096',
+    borderRadius: '8px',
+    padding: '0.5rem 1rem',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: 'transparent',
+      backgroundColor: '#f7fafc',
       color: '#3182ce',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 2px 5px rgba(49, 130, 206, 0.1)',
+      '& .MuiSvgIcon-root': {
+        transform: 'scale(1.1)',
+      },
     },
     '@media (max-width: 960px)': {
       marginLeft: '0.75rem',
       fontSize: '0.9rem',
     },
-    '@media (max-width: 600px)': {
-      marginLeft: '0.5rem',
-      fontSize: '0.85rem',
-      padding: '0.4rem 0.6rem',
-    },
   },
   activeNavButton: {
     color: '#3182ce',
+    backgroundColor: '#ebf8ff',
     position: 'relative',
+    fontWeight: 700,
     '&::after': {
       content: '""',
       position: 'absolute',
-      bottom: '0.25rem',
-      left: '0.5rem',
-      right: '0.5rem',
+      bottom: '0',
+      left: '10%',
+      width: '80%',
       height: '3px',
       backgroundColor: '#3182ce',
       borderRadius: '3px',
+      transition: 'all 0.3s ease',
+    },
+    '&:hover': {
+      backgroundColor: '#ebf8ff',
     },
   },
   templateButton: {
@@ -85,18 +94,20 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     marginLeft: '1rem',
     color: '#805ad5',
+    borderRadius: '8px',
+    padding: '0.5rem 1rem',
+    background: 'linear-gradient(135deg, #ebf4ff 0%, #e9d8fd 100%)',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: 'transparent',
-      color: '#6b46c1',
+      boxShadow: '0 3px 8px rgba(128, 90, 213, 0.2)',
+      transform: 'translateY(-2px)',
+      '& .MuiSvgIcon-root': {
+        transform: 'rotate(10deg) scale(1.1)',
+      },
     },
     '@media (max-width: 960px)': {
       marginLeft: '0.75rem',
       fontSize: '0.9rem',
-    },
-    '@media (max-width: 600px)': {
-      marginLeft: '0.5rem',
-      fontSize: '0.85rem',
-      padding: '0.4rem 0.6rem',
     },
   },
   dummyDataButton: {
@@ -104,39 +115,37 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     marginLeft: '1rem',
     color: '#38a169',
+    borderRadius: '8px',
+    padding: '0.5rem 1rem',
+    background: 'linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%)',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: 'transparent',
-      color: '#2f855a',
+      boxShadow: '0 3px 8px rgba(56, 161, 105, 0.2)',
+      transform: 'translateY(-2px)',
+      '& .MuiSvgIcon-root': {
+        transform: 'scale(1.1)',
+      },
     },
-    '@media (max-width: 960px)': {
-      marginLeft: '0.75rem',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 600px)': {
-      marginLeft: '0.5rem',
-      fontSize: '0.85rem',
-      padding: '0.4rem 0.6rem',
-    },
-    display: 'none', 
-    // Hidden by default as requested
   },
   userButton: {
     textTransform: 'none',
     marginLeft: '1.5rem',
-    borderRadius: '8px',
+    borderRadius: '24px',
     fontWeight: 600,
     border: '1px solid #e2e8f0',
-    padding: '0.25rem 0.75rem',
-    backgroundColor: '#f7fafc',
+    padding: '0.3rem 1rem 0.3rem 0.75rem',
+    backgroundColor: '#f8fafc',
+    transition: 'all 0.25s ease',
+    display: 'flex',
+    alignItems: 'center',
+    '&:hover': {
+      backgroundColor: '#ebf8ff',
+      borderColor: '#bee3f8',
+      boxShadow: '0 2px 8px rgba(66, 153, 225, 0.2)',
+    },
     '@media (max-width: 960px)': {
       marginLeft: '1rem',
-      padding: '0.25rem 0.5rem',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 600px)': {
-      marginLeft: '0.75rem',
-      padding: '0.2rem 0.4rem',
-      fontSize: '0.85rem',
+      padding: '0.25rem 0.75rem 0.25rem 0.5rem',
     },
   },
   avatar: {
@@ -145,6 +154,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     width: '30px',
     height: '30px',
     marginRight: '0.5rem',
+    transition: 'all 0.25s ease',
+    fontWeight: 'bold',
+    boxShadow: '0 2px 5px rgba(49, 130, 206, 0.2)',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
     '@media (max-width: 600px)': {
       width: '26px',
       height: '26px',
@@ -154,8 +169,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
   mobileMenuButton: {
     color: '#2d3748',
     padding: '0.4rem',
-    '@media (max-width: 480px)': {
-      padding: '0.3rem',
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: '#f7fafc',
     },
   },
   logoutButton: {
@@ -164,7 +180,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginLeft: '1rem',
     color: '#e53e3e',
     '&:hover': {
-      backgroundColor: 'transparent',
+      backgroundColor: '#fff5f5',
       color: '#c53030',
     },
   },
@@ -182,45 +198,60 @@ const useStyles = makeStylesWithTheme((theme) => ({
       paddingLeft: '56px',
       width: 'calc(100% - 56px)',
     },
-    '@media (max-width: 480px)': {
-      paddingLeft: '48px',
-      width: 'calc(100% - 48px)',
-    },
-    '@media (max-width: 375px)': {
-      paddingLeft: '42px',
-      width: 'calc(100% - 42px)',
-    },
   },
   buttonIcon: {
-    marginRight: '0.5rem',
+    marginRight: '0.6rem',
+    transition: 'transform 0.3s ease',
+    color: 'inherit',
     '@media (max-width: 600px)': {
       marginRight: '0.3rem',
       fontSize: '1.1rem',
     },
-    '@media (max-width: 480px)': {
-      fontSize: '1rem',
-    },
   },
   menuItem: {
+    transition: 'background-color 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#f7fafc',
+    },
     '@media (max-width: 480px)': {
       minHeight: '40px',
       fontSize: '0.9rem',
     },
   },
   menuItemIcon: {
-    marginRight: '0.5rem',
+    marginRight: '0.6rem',
+    color: '#4a5568',
     '@media (max-width: 600px)': {
       marginRight: '0.4rem',
       fontSize: '1.2rem',
     },
-    '@media (max-width: 480px)': {
-      marginRight: '0.3rem',
-      fontSize: '1.1rem',
+  },
+  userInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    transition: 'all 0.2s ease',
+  },
+  userName: {
+    fontWeight: 600,
+    color: '#2d3748',
+    '@media (max-width: 600px)': {
+      fontSize: '0.9rem',
+    },
+  },
+  userRole: {
+    fontSize: '0.7rem',
+    color: '#718096',
+    marginTop: '-2px',
+  },
+  notificationBadge: {
+    '& .MuiBadge-badge': {
+      backgroundColor: '#38a169',
+      color: 'white',
+      fontWeight: 'bold',
     },
   },
 }));
 
-// Hide on scroll functionality
 function HideOnScroll(props) {
   const { children } = props;
   const trigger = useScrollTrigger({
@@ -241,11 +272,10 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
   const isSmallScreen = useMediaQuery('(max-width:768px)');
   const { currentUser, logout } = useAuth();
   
-  // States for mobile menu and user menu
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+  const [menuHovered, setMenuHovered] = useState(false);
   
-  // Menu handlers
   const handleMobileMenuOpen = (event) => {
     setMobileMenuAnchor(event.currentTarget);
   };
@@ -262,27 +292,23 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
     setUserMenuAnchor(null);
   };
   
-  // Navigation handlers
   const navigateTo = (path) => {
     navigate(path);
     handleMobileMenuClose();
   };
   
-  // Logout handler
   const handleLogout = () => {
     logout();
     navigate('/login');
     handleUserMenuClose();
   };
   
-  // Get first letter of user's name for avatar
   const getInitial = () => {
     return currentUser && currentUser.name 
       ? currentUser.name.charAt(0).toUpperCase() 
       : 'U';
   };
 
-  // Handle template button click
   const handleTemplateClick = () => {
     if (onTemplateClick) {
       onTemplateClick();
@@ -290,7 +316,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
     }
   };
   
-  // Handle load dummy data button click
   const handleLoadDummyData = () => {
     if (onLoadDummyData) {
       onLoadDummyData();
@@ -300,159 +325,196 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
   
   return (
     <>
-      <AppBar 
-        position="fixed" 
-        className={`${classes.appBar} ${hideLogo ? classes.navbarWithSidebar : ''}`} 
-        elevation={2}
-      >
-        <Container maxWidth="xl">
-          <Toolbar className={classes.toolbar} disableGutters>
-            {/* Desktop Navigation */}
-            {!isSmallScreen && (
-              <Box className={classes.navButtons}>
-                {/* Navigation Links - Shown only when user is logged in */}
-                {currentUser && (
-                  <>
-                    <Button 
-                      className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
-                      onClick={() => navigateTo('/resume-builder')}
-                      startIcon={<CreateIcon className={classes.buttonIcon} />}
-                    >
-                      Create Resume
-                    </Button>
-                    
-                    {/* Add Choose Template and Load Demo buttons when on resume-builder */}
-                    {currentPage === 'resume-builder' && (
-                      <>
-                        <Button
-                          className={classes.templateButton}
-                          onClick={onTemplateClick}
-                          startIcon={<TemplateIcon className={classes.buttonIcon} />}
-                        >
-                          Choose Template
-                        </Button>
-                        <Button
-                          className={classes.dummyDataButton}
-                          onClick={onLoadDummyData}
-                          startIcon={<DataIcon className={classes.buttonIcon} />}
-                        >
-                          Load Demo Data
-                        </Button>
-                      </>
-                    )}
-                  </>
-                )}
-                
-                {/* Login/Register Buttons - Shown when user is not logged in */}
-                {!currentUser && (
-                  <>
-                    <Button 
-                      className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
-                      onClick={() => navigateTo('/login')}
-                    >
-                      Log In
-                    </Button>
-                    <Button 
-                      className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
-                      onClick={() => navigateTo('/')}
-                    >
-                      Sign Up
-                    </Button>
-                  </>
-                )}
-                
-                {/* User Button - Shown when user is logged in */}
-                {currentUser && (
-                  <Button 
-                    className={classes.userButton}
-                    onClick={handleUserMenuOpen}
-                    startIcon={
-                      <Avatar className={classes.avatar}>
-                        {getInitial()}
-                      </Avatar>
-                    }
-                  >
-                    {currentUser.name.split(' ')[0]}
-                  </Button>
-                )}
-              </Box>
-            )}
-            
-            {/* Mobile Navigation */}
-            {isSmallScreen && (
-              <>
-                <IconButton
-                  edge="end"
-                  className={classes.mobileMenuButton}
-                  onClick={handleMobileMenuOpen}
-                >
-                  <MenuIcon />
-                </IconButton>
-                
-                {/* Mobile Menu */}
-                <Menu
-                  anchorEl={mobileMenuAnchor}
-                  open={Boolean(mobileMenuAnchor)}
-                  onClose={handleMobileMenuClose}
-                  keepMounted
-                >
-                  {!currentUser ? (
-                    // Menu items for logged out users
+      <HideOnScroll>
+        <AppBar 
+          position="fixed" 
+          className={`${classes.appBar} ${hideLogo ? classes.navbarWithSidebar : ''}`} 
+          elevation={2}
+        >
+          <Container maxWidth="xl">
+            <Toolbar className={classes.toolbar} disableGutters>
+              {/* Desktop Navigation */}
+              {!isSmallScreen && (
+                <Box className={classes.navButtons}>
+                  {currentUser && (
                     <>
-                      <MenuItem onClick={() => navigateTo('/login')} className={classes.menuItem}>
-                        Log In
-                      </MenuItem>
-                      <MenuItem onClick={() => navigateTo('/')} className={classes.menuItem}>
-                        Sign Up
-                      </MenuItem>
-                    </>
-                  ) : (
-                    // Menu items for logged in users
-                    <>
-                      <MenuItem onClick={() => navigateTo('/resume-builder')} className={classes.menuItem}>
-                        <CreateIcon fontSize="small" className={classes.menuItemIcon} />
-                        Create Resume
-                      </MenuItem>
+                      <Tooltip title="Create or edit your resume" arrow>
+                        <Button 
+                          className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
+                          onClick={() => navigateTo('/resume-builder')}
+                          startIcon={<CreateIcon className={classes.buttonIcon} />}
+                        >
+                          Create Resume
+                        </Button>
+                      </Tooltip>
+                      
                       {currentPage === 'resume-builder' && (
                         <>
-                          <MenuItem onClick={handleTemplateClick} className={classes.menuItem}>
-                            <TemplateIcon fontSize="small" className={classes.menuItemIcon} />
-                            Choose Template
-                          </MenuItem>
-                          <MenuItem onClick={handleLoadDummyData} className={classes.menuItem}>
-                            <DataIcon fontSize="small" className={classes.menuItemIcon} />
-                            Load Demo Data
-                          </MenuItem>
+                          <Tooltip title="Choose a resume template" arrow>
+                            <Button
+                              className={classes.templateButton}
+                              onClick={onTemplateClick}
+                              startIcon={<TemplateIcon className={classes.buttonIcon} />}
+                            >
+                              Choose Template
+                            </Button>
+                          </Tooltip>
+                          
+                          <Tooltip title="Load sample resume data" arrow>
+                            <Button
+                              className={classes.dummyDataButton}
+                              onClick={onLoadDummyData}
+                              startIcon={<DataIcon className={classes.buttonIcon} />}
+                            >
+                              Load Demo Data
+                            </Button>
+                          </Tooltip>
                         </>
                       )}
-                      <MenuItem onClick={handleLogout} className={classes.menuItem}>
-                        Logout
-                      </MenuItem>
                     </>
                   )}
-                </Menu>
-              </>
-            )}
-            
-            {/* User Menu */}
-            <Menu
-              anchorEl={userMenuAnchor}
-              open={Boolean(userMenuAnchor)}
-              onClose={handleUserMenuClose}
-              keepMounted
-            >
-              {/* <MenuItem className={classes.menuItem}>
-                <AccountCircleIcon fontSize="small" className={classes.menuItemIcon} />
-                My Profile
-              </MenuItem> */}
-              <MenuItem onClick={handleLogout} className={classes.menuItem}>
-                Logout
-              </MenuItem>
-            </Menu>
-          </Toolbar>
-        </Container>
-      </AppBar>
-      {/* Add spacing to prevent content from being hidden under the fixed navbar */}
+                  
+                  {!currentUser && (
+                    <>
+                      <Button 
+                        className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
+                        onClick={() => navigateTo('/login')}
+                      >
+                        Log In
+                      </Button>
+                      <Button 
+                        className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
+                        onClick={() => navigateTo('/')}
+                      >
+                        Sign Up
+                      </Button>
+                    </>
+                  )}
+                  
+                  {currentUser && (
+                    <Button 
+                      className={classes.userButton}
+                      onClick={handleUserMenuOpen}
+                      onMouseEnter={() => setMenuHovered(true)}
+                      onMouseLeave={() => setMenuHovered(false)}
+                    >
+                      <Badge 
+                        variant="dot" 
+                        invisible={true}
+                        className={classes.notificationBadge}
+                      >
+                        <Avatar className={classes.avatar} style={{
+                          transform: menuHovered ? 'scale(1.1)' : 'scale(1)'
+                        }}>
+                          {getInitial()}
+                        </Avatar>
+                      </Badge>
+                      <Box className={classes.userInfo}>
+                        <Typography className={classes.userName}>
+                          {currentUser.name.split(' ')[0]}
+                        </Typography>
+                      </Box>
+                    </Button>
+                  )}
+                </Box>
+              )}
+              
+              {/* Mobile Navigation */}
+              {isSmallScreen && (
+                <>
+                  <IconButton
+                    edge="end"
+                    className={classes.mobileMenuButton}
+                    onClick={handleMobileMenuOpen}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  
+                  <Menu
+                    anchorEl={mobileMenuAnchor}
+                    open={Boolean(mobileMenuAnchor)}
+                    onClose={handleMobileMenuClose}
+                    keepMounted
+                    PaperProps={{
+                      elevation: 3,
+                      style: {
+                        borderRadius: '8px',
+                        marginTop: '8px'
+                      }
+                    }}
+                  >
+                    {!currentUser ? (
+                      <>
+                        <MenuItem 
+                          onClick={() => navigateTo('/login')} 
+                          className={classes.menuItem}
+                          selected={currentPage === 'login'}
+                        >
+                          Log In
+                        </MenuItem>
+                        <MenuItem 
+                          onClick={() => navigateTo('/')} 
+                          className={classes.menuItem}
+                          selected={currentPage === 'home'}
+                        >
+                          Sign Up
+                        </MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem 
+                          onClick={() => navigateTo('/resume-builder')} 
+                          className={classes.menuItem}
+                          selected={currentPage === 'resume-builder'}
+                        >
+                          <CreateIcon fontSize="small" className={classes.menuItemIcon} />
+                          Create Resume
+                        </MenuItem>
+                        {currentPage === 'resume-builder' && (
+                          <>
+                            <MenuItem onClick={handleTemplateClick} className={classes.menuItem}>
+                              <TemplateIcon fontSize="small" className={classes.menuItemIcon} />
+                              Choose Template
+                            </MenuItem>
+                            <MenuItem onClick={handleLoadDummyData} className={classes.menuItem}>
+                              <DataIcon fontSize="small" className={classes.menuItemIcon} />
+                              Load Demo Data
+                            </MenuItem>
+                          </>
+                        )}
+                        <MenuItem onClick={handleLogout} className={classes.menuItem}>
+                          <LogoutIcon fontSize="small" className={classes.menuItemIcon} />
+                          Logout
+                        </MenuItem>
+                      </>
+                    )}
+                  </Menu>
+                </>
+              )}
+              
+              {/* User Menu */}
+              <Menu
+                anchorEl={userMenuAnchor}
+                open={Boolean(userMenuAnchor)}
+                onClose={handleUserMenuClose}
+                keepMounted
+                PaperProps={{
+                  elevation: 3,
+                  style: {
+                    borderRadius: '8px',
+                    marginTop: '8px'
+                  }
+                }}
+              >
+                <MenuItem onClick={handleLogout} className={classes.menuItem}>
+                  <LogoutIcon fontSize="small" className={classes.menuItemIcon} />
+                  Logout
+                </MenuItem>
+              </Menu>
+            </Toolbar>
+          </Container>
+        </AppBar>
+      </HideOnScroll>
       <div className={classes.contentOffset} />
     </>
   );
