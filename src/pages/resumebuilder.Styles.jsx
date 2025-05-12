@@ -29,7 +29,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   formColumn: {
-    padding: '1.5rem',
+    padding: '1rem',
     height: '100%',
     minHeight: '80vh',
     maxHeight: '100%',
@@ -45,7 +45,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   previewColumn: {
-    padding: '1.5rem',
+    padding: '1rem',
     height: '100%',
     minHeight: '80vh',
     maxHeight: '100%',
@@ -80,7 +80,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   },
   sectionHeader: {
     textAlign: 'center',
-    marginBottom: '1.5rem',
+    marginBottom: '0.8rem',
     fontWeight: 600,
     color: '#2d3748',
     fontSize: '1.5rem',
@@ -197,7 +197,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   mainContainer: {
     display: 'flex',
     flexDirection: 'row', // Default side-by-side on desktop
-    paddingTop: '1rem',
     '@media (max-width: 960px)': {
       flexDirection: 'column', // Stack vertically on tablets and mobile
     },
@@ -268,7 +267,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
     gap: '1rem',
-    marginBottom: '1rem',
     '@media (max-width: 600px)': {
       justifyContent: 'center',
       flexWrap: 'wrap',
