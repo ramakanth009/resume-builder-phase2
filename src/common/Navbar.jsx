@@ -646,7 +646,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   dummyDataButton: {
-    display: 'none',
+    // display: 'none',
     textTransform: 'none',
     fontWeight: 600,
     marginLeft: '1rem',

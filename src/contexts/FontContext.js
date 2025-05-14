@@ -10,6 +10,32 @@ const availableFonts = [
   { name: 'Poppins', value: "'Poppins', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap' },
   { name: 'Montserrat', value: "'Montserrat', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap' },
   { name: 'Lato', value: "'Lato', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap' },
+  { name: 'Raleway', value: "'Raleway', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap' },
+  { name: 'Source Sans Pro', value: "'Source Sans Pro', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap' },
+  { name: 'Nunito', value: "'Nunito', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap' },
+  { name: 'Merriweather', value: "'Merriweather', serif", url: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap' },
+  { name: 'PT Sans', value: "'PT Sans', sans-serif", url: 'https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap' },
+  { name: 'Work Sans', value: "'Work Sans', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap' },
+  { name: 'Playfair Display', value: "'Playfair Display', serif", url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap' },
+  { name: 'IBM Plex Sans', value: "'IBM Plex Sans', sans-serif", url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap' },
+  { name: 'Crimson Text', value: "'Crimson Text', serif", url: 'https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap' },
+  { name: 'Inter', value: "'Inter', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap' },
+  // Additional distinctive fonts
+{ name: 'Cormorant Garamond', value: "'Cormorant Garamond', serif", url: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap' },
+{ name: 'Josefin Sans', value: "'Josefin Sans', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap' },
+{ name: 'Quicksand', value: "'Quicksand', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap' },
+{ name: 'Spectral', value: "'Spectral', serif", url: 'https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500;600;700&display=swap' },
+{ name: 'Abril Fatface', value: "'Abril Fatface', cursive", url: 'https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap' },
+{ name: 'Space Grotesk', value: "'Space Grotesk', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap' },
+{ name: 'DM Serif Display', value: "'DM Serif Display', serif", url: 'https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap' },
+{ name: 'Outfit', value: "'Outfit', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap' },
+{ name: 'Manrope', value: "'Manrope', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap' },
+{ name: 'Bellota', value: "'Bellota', cursive", url: 'https://fonts.googleapis.com/css2?family=Bellota:wght@300;400;700&display=swap' },
+{ name: 'Comfortaa', value: "'Comfortaa', cursive", url: 'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap' },
+{ name: 'Tenor Sans', value: "'Tenor Sans', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap' },
+{ name: 'Marcellus', value: "'Marcellus', serif", url: 'https://fonts.googleapis.com/css2?family=Marcellus&display=swap' },
+{ name: 'Syne', value: "'Syne', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap' },
+{ name: 'Questrial', value: "'Questrial', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Questrial&display=swap' }
 ];
 
 // Get PDF font family from value
