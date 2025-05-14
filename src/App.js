@@ -147,7 +147,6 @@ import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';
 import { FontProvider, useFont } from './contexts/FontContext';
-import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
 import { createDynamicTheme } from './theme/dynamicTheme';
 
 // Lazy load components
@@ -171,11 +170,14 @@ const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
   
+  // Show loading state while checking authentication
   if (loading) {
     return <LoadingComponent />;
   }
   
+  // Redirect to login if no user exists
   if (!currentUser) {
+    // Save the attempted URL for redirecting after login
     sessionStorage.setItem('redirectUrl', location.pathname);
     return <Navigate to="/login" replace />;
   }
@@ -189,33 +191,30 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
   
+  // Only show navbar when user is authenticated and not on auth pages
   const isAuthPage = ['/login', '/'].includes(currentPath);
   const shouldShowNavbar = currentUser && !isAuthPage;
   
+  // If we should show navbar, determine which tab should be active
   const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
   
   return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
 
-// Fallback theme for initial render or errors
-const fallbackTheme = createDynamicTheme(
-  undefined, 
-  { palette: { primary: { main: '#3182ce' } } }
-);
-
-// ThemedApp component that uses FontContext and ThemeContext
+// ThemedApp component that uses FontContext
 const ThemedApp = () => {
   const [appIsReady, setAppIsReady] = useState(false);
   const { selectedFont } = useFont();
-  const { themeObject } = useTheme();
   
-  // Create a memoized theme that updates when the selected font or theme changes
+  // Create a memoized theme that updates when the selected font changes
   const dynamicTheme = useMemo(() => 
-    createDynamicTheme(selectedFont, themeObject),
-    [selectedFont, themeObject]
+    createDynamicTheme(selectedFont),
+    [selectedFont]
   );
 
+  // Add this useEffect to ensure we don't render routes until auth is checked
   useEffect(() => {
+    // Wait a small amount of time to ensure localStorage is checked
     const timer = setTimeout(() => {
       setAppIsReady(true);
     }, 100);
@@ -229,17 +228,22 @@ const ThemedApp = () => {
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={dynamicTheme || fallbackTheme}>
-        <CssBaseline />
+      <ThemeProvider theme={dynamicTheme}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <CssBaseline />
           <AuthProvider>
             <TemplateProvider>
               <Router>
                 <NavbarWrapper />
                 <Suspense fallback={<LoadingComponent />}>
                   <Routes>
+                    {/* Landing page (Registration) is the root route */}
                     <Route path="/" element={<LandingPage />} />
+                    
+                    {/* Login page */}
                     <Route path="/login" element={<Login />} />
+                    
+                    {/* Protected route for resume builder */}
                     <Route 
                       path="/resume-builder" 
                       element={
@@ -248,6 +252,8 @@ const ThemedApp = () => {
                         </ProtectedRoute>
                       } 
                     />
+                    
+                    {/* Protected route for editing existing resume */}
                     <Route 
                       path="/resume-builder/edit/:resumeId" 
                       element={
@@ -256,6 +262,8 @@ const ThemedApp = () => {
                         </ProtectedRoute>
                       } 
                     />
+                    
+                    {/* Redirect any unknown routes to the landing page */}
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Suspense>
@@ -268,13 +276,11 @@ const ThemedApp = () => {
   );
 };
 
-// Main App component with FontProvider and ThemeProvider
+// Main App component with FontProvider outside
 function App() {
   return (
     <FontProvider>
-      <CustomThemeProvider>
-        <ThemedApp />
-      </CustomThemeProvider>
+      <ThemedApp />
     </FontProvider>
   );
 }

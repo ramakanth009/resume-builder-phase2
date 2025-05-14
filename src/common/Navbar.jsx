@@ -560,7 +560,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import FontSwitcher from '../components/FontSwitcher';
-import ThemeSelector from '../components/ThemeSelector';  
 
 const useStyles = makeStylesWithTheme((theme) => ({
   appBar: {
@@ -875,7 +874,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
                 <Box className={classes.navButtons}>
                   {/* Add FontSwitcher */}
                   <FontSwitcher />
-                  <ThemeSelector />
                   
                   {currentUser && (
                     <>
