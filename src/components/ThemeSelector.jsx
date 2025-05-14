@@ -13,7 +13,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '8px',
     padding: '0.4rem 0.8rem',
     backgroundColor: '#f0f4f8',
-    color: theme.palette.primary.main,
+    color: theme?.palette?.primary?.main || '#3182ce',
     border: '1px solid #e2e8f0',
     transition: 'all 0.2s ease',
     minWidth: 'auto',

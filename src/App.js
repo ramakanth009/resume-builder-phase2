@@ -197,6 +197,12 @@ const NavbarWrapper = () => {
   return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
 
+// Fallback theme for initial render or errors
+const fallbackTheme = createDynamicTheme(
+  undefined, 
+  { palette: { primary: { main: '#3182ce' } } }
+);
+
 // ThemedApp component that uses FontContext and ThemeContext
 const ThemedApp = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -223,9 +229,9 @@ const ThemedApp = () => {
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={dynamicTheme}>
+      <ThemeProvider theme={dynamicTheme || fallbackTheme}>
+        <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <CssBaseline />
           <AuthProvider>
             <TemplateProvider>
               <Router>
