@@ -133,7 +133,7 @@
 // }
 
 // export default App;
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useMemo } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -141,13 +141,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import theme from './theme';
 import './App.css';
 import LandingPage from './pages/landingpage/LandingPage';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';
-import { FontProvider } from './contexts/FontContext';
+import { FontProvider, useFont } from './contexts/FontContext';
+import { createDynamicTheme } from './theme/dynamicTheme';
 
 // Lazy load components
 const Login = React.lazy(() => import('./pages/login/Login'));
@@ -201,8 +201,16 @@ const NavbarWrapper = () => {
   return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
 
-function App() {
+// ThemedApp component that uses FontContext
+const ThemedApp = () => {
   const [appIsReady, setAppIsReady] = useState(false);
+  const { selectedFont } = useFont();
+  
+  // Create a memoized theme that updates when the selected font changes
+  const dynamicTheme = useMemo(() => 
+    createDynamicTheme(selectedFont),
+    [selectedFont]
+  );
 
   // Add this useEffect to ensure we don't render routes until auth is checked
   useEffect(() => {
@@ -220,53 +228,60 @@ function App() {
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={dynamicTheme}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <CssBaseline />
-          <FontProvider>
-            <AuthProvider>
-              <TemplateProvider>
-                <Router>
-                  <NavbarWrapper />
-                  <Suspense fallback={<LoadingComponent />}>
-                    <Routes>
-                      {/* Landing page (Registration) is the root route */}
-                      <Route path="/" element={<LandingPage />} />
-                      
-                      {/* Login page */}
-                      <Route path="/login" element={<Login />} />
-                      
-                      {/* Protected route for resume builder */}
-                      <Route 
-                        path="/resume-builder" 
-                        element={
-                          <ProtectedRoute>
-                            <ResumeBuilder />
-                          </ProtectedRoute>
-                        } 
-                      />
-                      
-                      {/* Protected route for editing existing resume */}
-                      <Route 
-                        path="/resume-builder/edit/:resumeId" 
-                        element={
-                          <ProtectedRoute>
-                            <ResumeBuilder />
-                          </ProtectedRoute>
-                        } 
-                      />
-                      
-                      {/* Redirect any unknown routes to the landing page */}
-                      <Route path="*" element={<Navigate to="/" replace />} />
-                    </Routes>
-                  </Suspense>
-                </Router>
-              </TemplateProvider>
-            </AuthProvider>
-          </FontProvider>
+          <AuthProvider>
+            <TemplateProvider>
+              <Router>
+                <NavbarWrapper />
+                <Suspense fallback={<LoadingComponent />}>
+                  <Routes>
+                    {/* Landing page (Registration) is the root route */}
+                    <Route path="/" element={<LandingPage />} />
+                    
+                    {/* Login page */}
+                    <Route path="/login" element={<Login />} />
+                    
+                    {/* Protected route for resume builder */}
+                    <Route 
+                      path="/resume-builder" 
+                      element={
+                        <ProtectedRoute>
+                          <ResumeBuilder />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Protected route for editing existing resume */}
+                    <Route 
+                      path="/resume-builder/edit/:resumeId" 
+                      element={
+                        <ProtectedRoute>
+                          <ResumeBuilder />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Redirect any unknown routes to the landing page */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </TemplateProvider>
+          </AuthProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </StyledEngineProvider>
+  );
+};
+
+// Main App component with FontProvider outside
+function App() {
+  return (
+    <FontProvider>
+      <ThemedApp />
+    </FontProvider>
   );
 }
 

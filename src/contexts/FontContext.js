@@ -12,6 +12,14 @@ const availableFonts = [
   { name: 'Lato', value: "'Lato', sans-serif", url: 'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap' },
 ];
 
+// Get PDF font family from value
+const getPdfFontFamily = (fontValue) => {
+  // Extract just the first font name without quotes
+  if (!fontValue) return 'Roboto';
+  const match = fontValue.match(/'([^']+)'/);
+  return match ? match[1] : 'Roboto';
+};
+
 // FontProvider component
 export const FontProvider = ({ children }) => {
   // Get default font from localStorage or use first font in list
@@ -23,12 +31,18 @@ export const FontProvider = ({ children }) => {
   // Get font name for display
   const selectedFontName = availableFonts.find(font => font.value === selectedFont)?.name || 'Roboto';
   
+  // Get pdf font family (for PDF generation)
+  const pdfFontFamily = getPdfFontFamily(selectedFont);
+  
   // Save selected font to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('selectedFont', selectedFont);
     
     // Apply font to document root
     document.documentElement.style.fontFamily = selectedFont;
+    
+    // Apply font to body as well for better cascade
+    document.body.style.fontFamily = selectedFont;
   }, [selectedFont]);
   
   // Load font stylesheet
@@ -53,6 +67,7 @@ export const FontProvider = ({ children }) => {
       selectedFont, 
       setSelectedFont, 
       selectedFontName,
+      pdfFontFamily,
       availableFonts 
     }}>
       {children}
