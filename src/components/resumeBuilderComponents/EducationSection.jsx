@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, TextField } from '@mui/material';
+import { Box, Typography, TextField, Autocomplete } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import DatePickerField from '../../common/DatePickerField';
 
@@ -23,6 +23,42 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
 }));
 
+// Degree options for the dropdown
+const degreeOptions = [
+  // Bachelor's Degrees
+  "Bachelor of Arts (BA)",
+  "Bachelor of Fine Arts (BFA)",
+  "Bachelor of Social Work (BSW)",
+  "Bachelor of Music (BM/BMus)",
+  "Bachelor of Performing Arts (BPA)",
+  "Bachelor of Science (BSc)",
+  "Bachelor of Computer Applications (BCA)",
+  "Bachelor of Science in Agriculture (B.Sc. Ag.)",
+  "Bachelor of Commerce (BCom)",
+  "Bachelor of Business Administration (BBA)",
+  "Bachelor of Technology (BTech)",
+  "Bachelor of Engineering (BE)",
+  "Bachelor of Medicine and Bachelor of Surgery (MBBS)",
+  "Bachelor of Dental Surgery (BDS)",
+  "Bachelor of Pharmacy (BPharm)",
+  "Bachelor of Laws (LLB)",
+  "Bachelor of Education (BEd)",
+  "Bachelor of Architecture (BArch)",
+  "Bachelor of Design (BDes)",
+  // Master's Degrees
+  "Master of Arts (MA)",
+  "Master of Science (MSc)",
+  "Master of Business Administration (MBA)",
+  "Master of Technology (MTech)",
+  "Master of Engineering (ME)",
+  "Master of Commerce (MCom)",
+  "Master of Computer Applications (MCA)",
+  "Master of Laws (LLM)",
+  // Doctoral Degrees
+  "Doctor of Philosophy (PhD)",
+  "Doctor of Medicine (MD)",
+];
+
 const EducationSection = ({ resumeData, setResumeData }) => {
   const classes = useStyles();
 
@@ -34,6 +70,17 @@ const EducationSection = ({ resumeData, setResumeData }) => {
       education: {
         ...prev.education,
         [name]: value,
+      },
+    }));
+  };
+
+  // Handle degree change from Autocomplete
+  const handleDegreeChange = (event, newValue) => {
+    setResumeData(prev => ({
+      ...prev,
+      education: {
+        ...prev.education,
+        degree: newValue || '',
       },
     }));
   };
@@ -56,16 +103,24 @@ const EducationSection = ({ resumeData, setResumeData }) => {
         Education Information
       </Typography>
       
-      <TextField
-        label="Degree"
-        name="degree"
-        value={resumeData.education.degree}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., Bachelor of Science"
-        required
+      {/* Degree Autocomplete Dropdown */}
+      <Autocomplete
+        options={degreeOptions}
+        value={resumeData.education.degree || null}
+        onChange={handleDegreeChange}
+        freeSolo
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Degree"
+            name="degree"
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+            placeholder="e.g., Bachelor of Science"
+            required
+          />
+        )}
       />
       
       <TextField

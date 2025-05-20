@@ -179,7 +179,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   itemText: {
     margin: 0,
     fontWeight: 500,
-    whiteSpace: 'nowrap',
+    whiteSpace: 'normal',
     transition: 'opacity 220ms ease, transform 220ms ease',
     transform: 'translateX(0)',
     opacity: 1,
