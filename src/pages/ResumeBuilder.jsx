@@ -26,6 +26,7 @@ import { dummyResumes } from '../data/dummyResumeData';
 
 // Section Components
 import PersonalInfoSection from '../components/resumeBuilderComponents/PersonalInfoSection';
+import SocialLinksSection from '../components/resumeBuilderComponents/SocialLinksSection';
 import EducationSection from '../components/resumeBuilderComponents/EducationSection';
 import SkillsSection from '../components/resumeBuilderComponents/SkillsSection';
 import ProjectsSection from '../components/resumeBuilderComponents/ProjectsSection';
@@ -43,6 +44,7 @@ import { useStyles } from './resumebuilder.Styles';
 
 const steps = [
   'Personal Info',
+  'Social Links',
   'Education',
   'Skills',
   'Projects',
@@ -133,7 +135,7 @@ const ResumeBuilder = () => {
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
-  const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false); // New state for mobile preview
+  const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState({
     updates: false,
     dataSharing: false
@@ -351,7 +353,7 @@ const ResumeBuilder = () => {
         message: 'Please fill in education information',
         severity: 'error',
       });
-      setActiveStep(1); // Switch to education step
+      setActiveStep(2); // Switch to education step (now index 2)
       return false;
     }
     
@@ -361,7 +363,7 @@ const ResumeBuilder = () => {
         message: 'Please add at least one skill',
         severity: 'error',
       });
-      setActiveStep(2); // Switch to skills step
+      setActiveStep(3); // Switch to skills step (now index 3)
       return false;
     }
     
@@ -371,7 +373,7 @@ const ResumeBuilder = () => {
         message: 'Please add at least one project',
         severity: 'error',
       });
-      setActiveStep(3); // Switch to projects step
+      setActiveStep(4); // Switch to projects step (now index 4)
       return false;
     }
     
@@ -386,7 +388,7 @@ const ResumeBuilder = () => {
         message: 'Please accept both terms and policies to continue',
         severity: 'error',
       });
-      setActiveStep(5); // Switch to combined Custom Sections & Terms step
+      setActiveStep(7); // Switch to Custom Sections & Terms step (now index 7)
       return false;
     }
     return true;
@@ -696,67 +698,73 @@ const ResumeBuilder = () => {
   };
 
   // Render current step content
-  // Update the getStepContent function in ResumeBuilder.jsx
-const getStepContent = (step) => {
-  switch (step) {
-    case 0:
-      return (
-        <PersonalInfoSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData}
-          onRoleSelect={handleRoleSelect}
-        />
-      );
-    case 1:
-      return (
-        <EducationSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData} 
-        />
-      );
-    case 2:
-      return (
-        <SkillsSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData} 
-          targetRole={targetRole}
-        />
-      );
-    case 3:
-      return (
-        <ProjectsSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData}
-          targetRole={targetRole}
-        />
-      );
-    case 4:
-      return (
-        <ExperienceSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData} 
-        />
-      );
-    case 5:
-      return (
-        <CertificationsSection 
-          resumeData={resumeData} 
-          setResumeData={setResumeData}
-        />
-      );
-    case 6:
-      return (
-        <CustomSectionsAndTerms 
-          resumeData={resumeData} 
-          setResumeData={setResumeData}
-          termsAccepted={termsAccepted}
-          setTermsAccepted={setTermsAccepted}
-        />
-      );
-    default:
-      return 'Unknown step';
-  }
-};
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <PersonalInfoSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData}
+            onRoleSelect={handleRoleSelect}
+          />
+        );
+      case 1:
+        return (
+          <SocialLinksSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData}
+          />
+        );
+      case 2:
+        return (
+          <EducationSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      case 3:
+        return (
+          <SkillsSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+            targetRole={targetRole}
+          />
+        );
+      case 4:
+        return (
+          <ProjectsSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData}
+            targetRole={targetRole}
+          />
+        );
+      case 5:
+        return (
+          <ExperienceSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData} 
+          />
+        );
+      case 6:
+        return (
+          <CertificationsSection 
+            resumeData={resumeData} 
+            setResumeData={setResumeData}
+          />
+        );
+      case 7:
+        return (
+          <CustomSectionsAndTerms 
+            resumeData={resumeData} 
+            setResumeData={setResumeData}
+            termsAccepted={termsAccepted}
+            setTermsAccepted={setTermsAccepted}
+          />
+        );
+      default:
+        return 'Unknown step';
+    }
+  };
 
   // If the resume is still loading, show a loading indicator
   if (loadingResume) {
@@ -942,7 +950,6 @@ const getStepContent = (step) => {
             </Typography>
             
           <Box className={classes.previewWrapper}>
-            {/* Section Header */}
             {/* Preview Content */}
             <Box className={classes.previewContent}>
               <ResumePreview 
