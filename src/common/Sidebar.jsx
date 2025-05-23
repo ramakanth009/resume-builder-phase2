@@ -11,6 +11,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GigaLogo from '../assets/giga-loogo.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import LinkIcon from '@mui/icons-material/Link';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   sidebar: {
@@ -225,15 +226,16 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
   }, [expanded]);
   
   // Icon mapping for steps
-  const stepIcons = [
-    <PersonIcon />,
-    <SchoolIcon />,
-    <ExtensionIcon />,
-    <WorkIcon />,
-    <CodeIcon />,
-    <VerifiedIcon />,
-    <SettingsIcon />
-  ];
+const stepIcons = [
+  <PersonIcon />,      // Personal Info
+  <LinkIcon />,        // Social Links  
+  <SchoolIcon />,      // Education
+  <ExtensionIcon />,   // Skills
+  <WorkIcon />,        // Projects
+  <CodeIcon />,        // Experience
+  <VerifiedIcon />,    // Certifications
+  <SettingsIcon />     // Custom Sections & Terms
+];
   
   // Expand sidebar on hover (desktop only)
   const handleMouseEnter = () => {

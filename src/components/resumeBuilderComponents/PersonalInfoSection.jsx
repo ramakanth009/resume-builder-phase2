@@ -135,39 +135,6 @@ const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
         placeholder="e.g., 9999955555"
       />
       
-      <TextField
-        label="GitHub URL"
-        name="header.github"
-        value={resumeData.header.github}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., https://github.com/yourusername"
-      />
-      
-      <TextField
-        label="LinkedIn URL"
-        name="header.linkedin"
-        value={resumeData.header.linkedin}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., https://linkedin.com/in/yourusername"
-      />
-      
-      <TextField
-        label="Portfolio URL"
-        name="header.portfolio"
-        value={resumeData.header.portfolio}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., https://yourportfolio.com"
-      />
-      
       {/* Target Role with Autocomplete using cached data */}
       <Autocomplete
         freeSolo
