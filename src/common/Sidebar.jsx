@@ -186,9 +186,13 @@ const useStyles = makeStylesWithTheme((theme) => ({
     pointerEvents: 'none', // Prevent text from capturing events
   },
   itemTextHidden: {
-    opacity: 0,
-    transform: 'translateX(-10px)',
-  },
+  opacity: 0,
+  transform: 'translateX(-10px)',
+  position: 'absolute', // Add this
+  visibility: 'hidden', // Add this
+  width: 0,             // Add this
+  overflow: 'hidden',   // Add this
+},
 }));
 
 const Sidebar = ({ activeStep, steps, onStepClick }) => {
