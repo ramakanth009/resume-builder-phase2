@@ -646,7 +646,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   dummyDataButton: {
-    // display: 'none',
+    display: 'none',
     textTransform: 'none',
     fontWeight: 600,
     marginLeft: '1rem',
@@ -873,7 +873,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
               {!isSmallScreen && (
                 <Box className={classes.navButtons}>
                   {/* Add FontSwitcher */}
-                  <FontSwitcher />
+                  {/* <FontSwitcher /> */}
                   
                   {currentUser && (
                     <>
