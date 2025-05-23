@@ -68,6 +68,13 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#718096',
     fontStyle: 'italic',
     marginBottom: '0.5rem',
+  },
+  selectedSkillsLabel: {
+    fontSize: '0.9rem',
+    color: '#4a5568',
+    fontWeight: 500,
+    marginBottom: '0.5rem',
+    marginTop: '1rem',
   }
 }));
 
@@ -142,42 +149,7 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         Skills
       </Typography>
       
-      <Box className={classes.chipContainer}>
-        {resumeData.skills.filter(Boolean).map((skill, index) => (
-          <Chip
-            key={index}
-            label={skill}
-            className={classes.chip}
-            onDelete={() => handleRemoveSkill(skill)}
-          />
-        ))}
-      </Box>
-      
-      <TextField
-        label="Add Skill"
-        value={newSkill}
-        onChange={(e) => setNewSkill(e.target.value)}
-        variant="outlined"
-        fullWidth
-        placeholder="e.g., React.js"
-        onKeyDown={(e) => handleKeyDown(e, handleAddSkill)}
-        className={classes.textField}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton 
-                onClick={handleAddSkill}
-                edge="end"
-                color="primary"
-              >
-                <AddIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-      
-      {/* Recommended Skills - integrated directly after input */}
+      {/* Recommended Skills Section - Now at the top */}
       {targetRole && (
         <Box className={classes.recommendationsContainer}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -219,6 +191,50 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
             </Typography>
           )}
         </Box>
+      )}
+      
+      {/* Add Skill Input Field */}
+      <TextField
+        label="Add Skill"
+        value={newSkill}
+        onChange={(e) => setNewSkill(e.target.value)}
+        variant="outlined"
+        fullWidth
+        placeholder="e.g., React.js"
+        onKeyDown={(e) => handleKeyDown(e, handleAddSkill)}
+        className={classes.textField}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton 
+                onClick={handleAddSkill}
+                edge="end"
+                color="primary"
+              >
+                <AddIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+      
+      {/* Selected Skills Section - Now at the bottom */}
+      {resumeData.skills.filter(Boolean).length > 0 && (
+        <>
+          <Typography className={classes.selectedSkillsLabel}>
+            Your selected skills:
+          </Typography>
+          <Box className={classes.chipContainer}>
+            {resumeData.skills.filter(Boolean).map((skill, index) => (
+              <Chip
+                key={index}
+                label={skill}
+                className={classes.chip}
+                onDelete={() => handleRemoveSkill(skill)}
+              />
+            ))}
+          </Box>
+        </>
       )}
     </Box>
   );
