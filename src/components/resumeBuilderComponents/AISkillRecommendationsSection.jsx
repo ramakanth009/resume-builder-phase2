@@ -7,23 +7,24 @@ import {
   Paper, 
   Alert, 
   CircularProgress,
-  Divider,
-  Fade,
-  Tooltip
+  Card,
+  CardContent,
+  CardActions,
+  Switch,
+  FormControlLabel
 } from '@mui/material';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-import { getSkillRecommendations } from '../../utils/api';
+import { getSkillRecommendations, apiRequest } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
+    gap: '1.5rem',
   },
   formSubtitle: {
     fontWeight: 500,
@@ -31,18 +32,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginTop: '1rem',
     color: '#4a5568',
   },
-  skillsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  },
   sectionPaper: {
     padding: '1.5rem',
     borderRadius: '8px',
     border: '1px solid #e2e8f0',
     boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
     backgroundColor: '#fafafa',
-    marginBottom: '1.5rem',
   },
   recommendationHeader: {
     display: 'flex',
@@ -53,13 +48,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
   headerIcon: {
     marginRight: '0.75rem',
     color: '#3182ce',
-  },
-  recommendationsContainer: {
-    padding: '1rem',
-    backgroundColor: '#f0f9ff',
-    borderRadius: '8px',
-    border: '1px solid #bee3f8',
-    marginBottom: '1rem',
   },
   recommendationChip: {
     backgroundColor: '#ebf8ff',
@@ -98,19 +86,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     gap: '1rem',
   },
-  categoryTitle: {
-    fontSize: '1rem',
-    fontWeight: 600,
-    marginBottom: '0.75rem',
-    color: '#2d3748',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  categoryIcon: {
-    marginRight: '0.5rem',
-    fontSize: '1.2rem',
-    color: '#4a5568',
-  },
   infoAlert: {
     marginBottom: '1.5rem',
   },
@@ -134,9 +109,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     border: '1px solid #b2f5ea',
     marginTop: '1rem',
   },
-  skillCategorySection: {
-    marginBottom: '1.5rem',
-  },
   skillCount: {
     backgroundColor: '#4299e1', 
     color: 'white',
@@ -145,57 +117,82 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '0.75rem',
     marginLeft: '0.5rem',
   },
-  skillLabel: {
-    fontSize: '0.85rem',
-    fontWeight: 500,
-    color: '#2d3748',
-    marginLeft: '0.5rem',
+  genaiToolCard: {
+    margin: '0.5rem',
+    border: '1px solid #e2e8f0',
+    '&:hover': {
+      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      transform: 'translateY(-2px)',
+      transition: 'all 0.2s ease',
+    },
+  },
+  selectedToolCard: {
+    border: '2px solid #3182ce',
+    backgroundColor: '#f0f9ff',
+  },
+  toolsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '1rem',
+    marginTop: '1rem',
+  },
+  toolIcon: {
+    color: '#3182ce',
+    marginRight: '0.5rem',
+  },
+  sectionToggle: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1rem',
   }
 }));
 
-// Skill categories for organization
-const skillCategories = {
-  technical: {
-    title: "Technical Skills",
-    icon: <AutoAwesomeIcon />,
-    keywords: ['javascript', 'python', 'java', 'react', 'angular', 'vue', 'node', 'express', 'mongodb', 'sql', 'html', 'css', 'git', 'docker', 'kubernetes', 'aws', 'azure', 'cloud', 'database', 'api', 'rest', 'graphql', 'redux', 'typescript', 'golang', 'php', 'ruby', 'c#', 'c++', '.net']
-  },
-  soft: {
-    title: "Soft Skills",
-    icon: <TipsAndUpdatesIcon />,
-    keywords: ['communication', 'teamwork', 'leadership', 'problem-solving', 'time management', 'adaptability', 'collaboration', 'critical thinking', 'creativity', 'presentation', 'negotiation', 'decision making', 'conflict resolution', 'emotional intelligence', 'interpersonal']
-  },
-  tools: {
-    title: "Tools & Platforms",
-    icon: <LightbulbIcon />,
-    keywords: ['figma', 'adobe', 'photoshop', 'illustrator', 'sketch', 'invision', 'jira', 'confluence', 'trello', 'asana', 'slack', 'github', 'gitlab', 'bitbucket', 'jenkins', 'travis', 'circleci', 'webpack', 'babel', 'vscode', 'intellij', 'eclipse']
-  }
+// API function for GenAI tools
+const getGenAITools = async (role) => {
+  return await apiRequest(`/genai_tools/${encodeURIComponent(role)}`);
 };
 
 const AISkillRecommendationsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedTools, setSelectedTools] = useState([]);
+  const [showSkills, setShowSkills] = useState(true);
+  const [showGenAI, setShowGenAI] = useState(true);
   
-  // Use custom hook for skill recommendations
+  // API calls for skills and GenAI tools
   const { 
-    data: recommendationsResponse,
-    loading,
-    error
+    data: skillsResponse,
+    loading: skillsLoading,
+    error: skillsError
   } = useApiData(getSkillRecommendations, targetRole, {
-    enabled: !!targetRole,
+    enabled: !!targetRole && showSkills,
     cacheKey: `skillRecommendations_${targetRole}`,
-    cacheTime: 60 * 60 * 1000, // 1 hour
+    cacheTime: 60 * 60 * 1000,
   });
   
-  // Extract recommended skills from the response
-  const recommendedSkills = recommendationsResponse?.skills || [];
+  const { 
+    data: genaiResponse,
+    loading: genaiLoading,
+    error: genaiError
+  } = useApiData(getGenAITools, targetRole, {
+    enabled: !!targetRole && showGenAI,
+    cacheKey: `genaiTools_${targetRole}`,
+    cacheTime: 60 * 60 * 1000,
+  });
   
-  // Initialize selected skills from existing resume data
+  const recommendedSkills = skillsResponse?.skills || [];
+  const genaiTools = genaiResponse?.tools || [];
+  
+  // Initialize from existing resume data
   useEffect(() => {
     if (resumeData.skills && resumeData.skills.length > 0) {
       setSelectedSkills(resumeData.skills.filter(Boolean));
     }
-  }, [resumeData.skills]);
+    if (resumeData.genai_tools && resumeData.genai_tools.length > 0) {
+      setSelectedTools(resumeData.genai_tools);
+    }
+  }, [resumeData.skills, resumeData.genai_tools]);
 
   // Toggle skill selection
   const handleToggleSkill = (skill) => {
@@ -206,173 +203,180 @@ const AISkillRecommendationsSection = ({ resumeData, setResumeData, targetRole }
     }
   };
 
-  // Apply selected skills to resume data
-  const handleApplySkills = () => {
+  // Toggle GenAI tool selection
+  const handleToggleTool = (tool) => {
+    const isSelected = selectedTools.some(t => t.tool_id === tool.id);
+    if (isSelected) {
+      setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.id));
+    } else {
+      setSelectedTools(prev => [...prev, { 
+        tool_id: tool.id, 
+        proficiency: 'intermediate' // default proficiency
+      }]);
+    }
+  };
+
+  // Update tool proficiency
+  const handleUpdateProficiency = (toolId, proficiency) => {
+    setSelectedTools(prev => prev.map(tool => 
+      tool.tool_id === toolId ? { ...tool, proficiency } : tool
+    ));
+  };
+
+  // Apply selections to resume data
+  const handleApplyRecommendations = () => {
     setResumeData(prev => ({
       ...prev,
-      skills: [...selectedSkills]
+      skills: [...selectedSkills],
+      genai_tools: [...selectedTools]
     }));
   };
 
-  // Categorize skills
-  const categorizeSkills = (skills) => {
-    const categorized = {
-      technical: [],
-      soft: [],
-      tools: [],
-      other: []
-    };
-    
-    skills.forEach(skill => {
-      const lowerSkill = skill.toLowerCase();
-      let found = false;
-      
-      // Check each category
-      for (const [category, details] of Object.entries(skillCategories)) {
-        if (details.keywords.some(keyword => lowerSkill.includes(keyword))) {
-          categorized[category].push(skill);
-          found = true;
-          break;
-        }
-      }
-      
-      // If not found in any category, add to "other"
-      if (!found) {
-        categorized.other.push(skill);
-      }
-    });
-    
-    return categorized;
+  // Get unselected skills
+  const getUnselectedSkills = () => {
+    return recommendedSkills.filter(skill => !selectedSkills.includes(skill));
   };
 
-  // Get skills that are already selected
-  const getSelectedCategories = () => {
-    return categorizeSkills(selectedSkills);
+  // Check if tool is selected
+  const isToolSelected = (toolId) => {
+    return selectedTools.some(t => t.tool_id === toolId);
   };
 
-  // Get recommended skills that aren't already selected
-  const getRecommendedCategories = () => {
-    const unselectedSkills = recommendedSkills.filter(skill => 
-      !selectedSkills.includes(skill)
-    );
-    return categorizeSkills(unselectedSkills);
+  // Get tool proficiency
+  const getToolProficiency = (toolId) => {
+    const tool = selectedTools.find(t => t.tool_id === toolId);
+    return tool?.proficiency || 'intermediate';
   };
-
-  const selectedCategories = getSelectedCategories();
-  const recommendedCategories = getRecommendedCategories();
 
   return (
     <Box className={classes.form}>
       <Typography variant="h6" className={classes.formSubtitle}>
-        AI Skill Recommendations
+        AI Recommendations
       </Typography>
       
       {!targetRole && (
         <Alert severity="warning" className={classes.noRoleAlert}>
-          Please specify a target role in the Personal Information section to get personalized skill recommendations.
+          Please specify a target role in the Personal Information section to get personalized recommendations.
         </Alert>
       )}
       
       <Alert severity="info" className={classes.infoAlert}>
-        Our AI analyzes top resumes for <strong>{targetRole || "your role"}</strong> and recommends the most relevant skills to include on your resume. Click on skills to select/deselect them.
+        Our AI analyzes top resumes for <strong>{targetRole || "your role"}</strong> and recommends relevant GenAI tools to enhance your profile.
       </Alert>
+
+      <Box className={classes.sectionToggle}>
+        <Typography variant="h6">Customize Recommendations</Typography>
+        <Box>
+          <FormControlLabel
+            control={<Switch checked={showGenAI} onChange={(e) => setShowGenAI(e.target.checked)} />}
+            label="GenAI Tools"
+          />
+        </Box>
+      </Box>
       
-      {loading ? (
-        <Box className={classes.loadingContainer}>
-          <CircularProgress size={24} />
-          <Typography variant="body2">
-            Analyzing skills for {targetRole}...
+      {/* GenAI Tools Recommendations */}
+      {showGenAI && targetRole && (
+        <Paper className={classes.sectionPaper} elevation={0}>
+          <Typography variant="h6" className={classes.recommendationHeader}>
+            <SmartToyIcon className={classes.headerIcon} />
+            Recommended GenAI Tools for {targetRole}
           </Typography>
-        </Box>
-      ) : error ? (
-        <Alert severity="error" sx={{ my: 2 }}>
-          {error}
-        </Alert>
-      ) : (
-        <Box className={classes.skillsContainer}>
-          {/* Recommended Skills Section */}
-          {targetRole && recommendedSkills.length > 0 && (
-            <Paper className={classes.sectionPaper} elevation={0}>
-              <Typography variant="h6" className={classes.recommendationHeader}>
-                <AutoAwesomeIcon className={classes.headerIcon} />
-                Recommended Skills for {targetRole}
-              </Typography>
-              
-              {/* Render recommended skills by category */}
-              {Object.entries(recommendedCategories).map(([category, skills]) => 
-                skills.length > 0 && (
-                  <Box key={category} className={classes.skillCategorySection}>
-                    <Typography className={classes.categoryTitle}>
-                      {skillCategories[category]?.icon || <LightbulbIcon className={classes.categoryIcon} />}
-                      {skillCategories[category]?.title || "Other Skills"}
-                      <span className={classes.skillCount}>{skills.length}</span>
-                    </Typography>
-                    <Box className={classes.chipContainer}>
-                      {skills.map((skill, index) => (
-                        <Tooltip title="Click to add this skill" key={index}>
-                          <Chip
-                            label={skill}
-                            className={classes.recommendationChip}
-                            onClick={() => handleToggleSkill(skill)}
-                            icon={<AddCircleIcon />}
-                          />
-                        </Tooltip>
-                      ))}
-                    </Box>
-                  </Box>
-                )
-              )}
-            </Paper>
-          )}
           
-          {/* Selected Skills Section */}
-          <Paper className={classes.selectedSkillsBox} elevation={0}>
-            <Typography variant="h6" className={classes.categoryTitle}>
-              <LightbulbIcon className={classes.categoryIcon} />
-              Selected Skills <span className={classes.skillCount}>{selectedSkills.length}</span>
-            </Typography>
-            
-            {selectedSkills.length > 0 ? (
-              <Box>
-                {/* Render selected skills by category */}
-                {Object.entries(selectedCategories).map(([category, skills]) => 
-                  skills.length > 0 && (
-                    <Box key={category} className={classes.skillCategorySection}>
-                      <Typography className={classes.skillLabel}>
-                        {skillCategories[category]?.title || "Other Skills"}
-                      </Typography>
-                      <Box className={classes.chipContainer}>
-                        {skills.map((skill, index) => (
-                          <Chip
-                            key={index}
-                            label={skill}
-                            className={classes.selectedChip}
-                            onDelete={() => handleToggleSkill(skill)}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-                  )
-                )}
-              </Box>
-            ) : (
-              <Typography variant="body2" align="center" sx={{ my: 2 }}>
-                No skills selected yet. Click on recommendations above to add skills.
-              </Typography>
-            )}
-            
-            <Button
-              className={classes.addButton}
-              variant="contained"
-              fullWidth
-              onClick={handleApplySkills}
-              disabled={selectedSkills.length === 0}
-            >
-              Apply {selectedSkills.length} Skills to Resume
-            </Button>
-          </Paper>
-        </Box>
+          {genaiLoading ? (
+            <Box className={classes.loadingContainer}>
+              <CircularProgress size={24} />
+              <Typography variant="body2">Loading GenAI tools...</Typography>
+            </Box>
+          ) : genaiError ? (
+            <Alert severity="error">{genaiError}</Alert>
+          ) : (
+            <Box className={classes.toolsGrid}>
+              {genaiTools.map((tool) => (
+                <Card 
+                  key={tool.id} 
+                  className={`${classes.genaiToolCard} ${isToolSelected(tool.id) ? classes.selectedToolCard : ''}`}
+                  onClick={() => handleToggleTool(tool)}
+                >
+                  <CardContent>
+                    <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <SmartToyIcon className={classes.toolIcon} />
+                      {tool.name}
+                      {isToolSelected(tool.id) && <CheckCircleIcon sx={{ ml: 'auto', color: '#3182ce' }} />}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {tool.description}
+                    </Typography>
+                  </CardContent>
+                  {isToolSelected(tool.id) && (
+                    <CardActions>
+                      <Typography variant="caption">Proficiency:</Typography>
+                      {['beginner', 'intermediate', 'expert'].map((level) => (
+                        <Chip
+                          key={level}
+                          label={level}
+                          size="small"
+                          variant={getToolProficiency(tool.id) === level ? "filled" : "outlined"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleUpdateProficiency(tool.id, level);
+                          }}
+                          sx={{ ml: 0.5 }}
+                        />
+                      ))}
+                    </CardActions>
+                  )}
+                </Card>
+              ))}
+            </Box>
+          )}
+        </Paper>
       )}
+      
+      {/* Selected Items Summary */}
+      <Paper className={classes.selectedSkillsBox} elevation={0}>
+        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <LightbulbIcon sx={{ mr: 1 }} />
+          Your Selections
+          <span className={classes.skillCount}>
+            {selectedTools.length}
+          </span>
+        </Typography>
+        
+        {selectedTools.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>GenAI Tools ({selectedTools.length})</Typography>
+            <Box className={classes.chipContainer}>
+              {selectedTools.map((tool) => {
+                const toolData = genaiTools.find(t => t.id === tool.tool_id);
+                return (
+                  <Chip
+                    key={tool.tool_id}
+                    label={`${toolData?.name} (${tool.proficiency})`}
+                    className={classes.selectedChip}
+                    onDelete={() => handleToggleTool(toolData)}
+                  />
+                );
+              })}
+            </Box>
+          </Box>
+        )}
+        
+        {selectedTools.length === 0 && (
+          <Typography variant="body2" align="center" sx={{ my: 2 }}>
+            No items selected yet. Choose from recommendations above.
+          </Typography>
+        )}
+        
+        <Button
+          className={classes.addButton}
+          variant="contained"
+          fullWidth
+          onClick={handleApplyRecommendations}
+          disabled={selectedTools.length === 0}
+        >
+          Apply {selectedTools.length} Recommendations to Resume
+        </Button>
+      </Paper>
     </Box>
   );
 };

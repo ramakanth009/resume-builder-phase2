@@ -1,7 +1,7 @@
 // Base URL for API requests
 // const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
@@ -329,6 +329,7 @@ export const getProjectDetails = async (projectKey) => {
     throw error; // Pass through backend error
   }
 };
+
 /**
  * Get skill recommendations for a role
  * @param {string} role - Role name or display name
@@ -342,8 +343,20 @@ export const getSkillRecommendations = async (role) => {
   }
 };
 
+/**
+ * Get GenAI tools for a specific role
+ * @param {string} role - Role name or display name
+ * @returns {Promise} - List of GenAI tools
+ */
+export const getGenAITools = async (role) => {
+  try {
+    return await apiRequest(`/genai_tools/${encodeURIComponent(role)}`);
+  } catch (error) {
+    throw error; // Pass through backend error
+  }
+};
 
-// Update the default export to include the new functions
+// Update the default export to include the new function
 export default {
   apiRequest,
   registerUser,
@@ -357,5 +370,6 @@ export default {
   getTargetRoles,
   getProjectRecommendations, 
   getProjectDetails,
-  getSkillRecommendations
+  getSkillRecommendations,
+  getGenAITools
 };

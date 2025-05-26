@@ -256,83 +256,65 @@ const SocialLinksSection = ({ resumeData, setResumeData }) => {
         These are optional but highly recommended for better visibility.
       </Alert>
       
-      <Tooltip title="Your GitHub profile URL" placement="top">
-        <TextField
-          label="GitHub Profile"
-          name="github"
-          value={resumeData.header.github || ''}
-          onChange={handleInputChange}
-          onBlur={(e) => handleUrlBlur('github', e.target.value)}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="https://github.com/yourusername"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <GitHubIcon className={`${classes.socialIcon} ${classes.githubIcon}`} />
-              </InputAdornment>
-            ),
-          }}
-          helperText={
-            <Typography className={classes.helperText}>
-              Showcase your coding projects and contributions
-            </Typography>
-          }
-        />
-      </Tooltip>
-      
-      <Tooltip title="Your LinkedIn profile URL" placement="top">
-        <TextField
-          label="LinkedIn Profile"
-          name="linkedin"
-          value={resumeData.header.linkedin || ''}
-          onChange={handleInputChange}
-          onBlur={(e) => handleUrlBlur('linkedin', e.target.value)}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="https://linkedin.com/in/yourusername"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LinkedInIcon className={`${classes.socialIcon} ${classes.linkedinIcon}`} />
-              </InputAdornment>
-            ),
-          }}
-          helperText={
-            <Typography className={classes.helperText}>
-              Professional network and career achievements
-            </Typography>
-          }
-        />
-      </Tooltip>
-      
-      <Tooltip title="Your portfolio or personal website URL" placement="top">
-        <TextField
-          label="Portfolio/Website"
-          name="portfolio"
-          value={resumeData.header.portfolio || ''}
-          onChange={handleInputChange}
-          onBlur={(e) => handleUrlBlur('portfolio', e.target.value)}
-          variant="outlined"
-          fullWidth
-          className={classes.textField}
-          placeholder="https://yourportfolio.com"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LanguageIcon className={`${classes.socialIcon} ${classes.portfolioIcon}`} />
-              </InputAdornment>
-            ),
-          }}
-          helperText={
-            <Typography className={classes.helperText}>
-              Personal website, portfolio, or professional blog
-            </Typography>
-          }
-        />
-      </Tooltip>
+      <TextField
+  label="GitHub Profile"
+  name="github"
+  value={resumeData.header.github || ''}
+  onChange={handleInputChange}
+  onBlur={(e) => handleUrlBlur('github', e.target.value)}
+  variant="outlined"
+  fullWidth
+  className={classes.textField}
+  placeholder="https://github.com/yourusername"
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <GitHubIcon className={`${classes.socialIcon} ${classes.githubIcon}`} />
+      </InputAdornment>
+    ),
+  }}
+  helperText="Showcase your coding projects and contributions"
+/>
+
+<TextField
+  label="LinkedIn Profile"
+  name="linkedin"
+  value={resumeData.header.linkedin || ''}
+  onChange={handleInputChange}
+  onBlur={(e) => handleUrlBlur('linkedin', e.target.value)}
+  variant="outlined"
+  fullWidth
+  className={classes.textField}
+  placeholder="https://linkedin.com/in/yourusername"
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <LinkedInIcon className={`${classes.socialIcon} ${classes.linkedinIcon}`} />
+      </InputAdornment>
+    ),
+  }}
+  helperText="Professional network and career achievements"
+/>
+
+<TextField
+  label="Portfolio/Website"
+  name="portfolio"
+  value={resumeData.header.portfolio || ''}
+  onChange={handleInputChange}
+  onBlur={(e) => handleUrlBlur('portfolio', e.target.value)}
+  variant="outlined"
+  fullWidth
+  className={classes.textField}
+  placeholder="https://yourportfolio.com"
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <LanguageIcon className={`${classes.socialIcon} ${classes.portfolioIcon}`} />
+      </InputAdornment>
+    ),
+  }}
+  helperText="Personal website, portfolio, or professional blog"
+/>
     </Box>
   );
 };
