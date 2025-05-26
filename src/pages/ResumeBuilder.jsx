@@ -35,6 +35,7 @@ import CertificationsSection from '../components/resumeBuilderComponents/Certifi
 import CustomSectionsAndTerms from '../components/resumeBuilderComponents/CustomSectionsAndTerms';
 import ResumePreview from '../components/previewComponents/ResumePreview';
 import TemplateSelector from '../components/previewComponents/TemplateSelector';
+import AISkillRecommendationsSection from '../components/resumeBuilderComponents/AISkillRecommendationsSection';
 import templatesData from '../data/templatesData';
 import Navbar from '../common/Navbar';
 import Sidebar from '../common/Sidebar';
@@ -47,6 +48,7 @@ const steps = [
   'Social Links',
   'Education',
   'Skills',
+  'AI Skill Recommendations', // New step added here
   'Projects',
   'Experience',
   'Certifications',
@@ -699,72 +701,80 @@ const ResumeBuilder = () => {
 
   // Render current step content
   const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <PersonalInfoSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            onRoleSelect={handleRoleSelect}
-          />
-        );
-      case 1:
-        return (
-          <SocialLinksSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-          />
-        );
-      case 2:
-        return (
-          <EducationSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
-        );
-      case 3:
-        return (
-          <SkillsSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-            targetRole={targetRole}
-          />
-        );
-      case 4:
-        return (
-          <ProjectsSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            targetRole={targetRole}
-          />
-        );
-      case 5:
-        return (
-          <ExperienceSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
-        );
-      case 6:
-        return (
-          <CertificationsSection 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-          />
-        );
-      case 7:
-        return (
-          <CustomSectionsAndTerms 
-            resumeData={resumeData} 
-            setResumeData={setResumeData}
-            termsAccepted={termsAccepted}
-            setTermsAccepted={setTermsAccepted}
-          />
-        );
-      default:
-        return 'Unknown step';
-    }
-  };
+  switch (step) {
+    case 0:
+      return (
+        <PersonalInfoSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          onRoleSelect={handleRoleSelect}
+        />
+      );
+    case 1:
+      return (
+        <SocialLinksSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+        />
+      );
+    case 2:
+      return (
+        <EducationSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+        />
+      );
+    case 3:
+      return (
+        <SkillsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+          targetRole={targetRole}
+        />
+      );
+    case 4:
+      return (
+        <AISkillRecommendationsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          targetRole={targetRole}
+        />
+      );
+    case 5:
+      return (
+        <ProjectsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          targetRole={targetRole}
+        />
+      );
+    case 6:
+      return (
+        <ExperienceSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData} 
+        />
+      );
+    case 7:
+      return (
+        <CertificationsSection 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+        />
+      );
+    case 8:
+      return (
+        <CustomSectionsAndTerms 
+          resumeData={resumeData} 
+          setResumeData={setResumeData}
+          termsAccepted={termsAccepted}
+          setTermsAccepted={setTermsAccepted}
+        />
+      );
+    default:
+      return 'Unknown step';
+  }
+};
 
   // If the resume is still loading, show a loading indicator
   if (loadingResume) {
