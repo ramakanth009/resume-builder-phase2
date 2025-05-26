@@ -21,6 +21,24 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginTop: '1rem',
     color: '#4a5568',
   },
+  fieldRow: {
+    display: 'flex',
+    gap: '1rem',
+    marginBottom: '1rem',
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      gap: '0.5rem',
+    },
+  },
+  fieldContainer: {
+    flex: 1,
+  },
+  institutionContainer: {
+    flex: 2, // Takes more space
+  },
+  yearContainer: {
+    flex: 1, // Takes less space
+  },
 }));
 
 // Degree options for the dropdown
@@ -103,61 +121,73 @@ const EducationSection = ({ resumeData, setResumeData }) => {
         Education Information
       </Typography>
       
-      {/* Degree Autocomplete Dropdown */}
-      <Autocomplete
-        options={degreeOptions}
-        value={resumeData.education.degree || null}
-        onChange={handleDegreeChange}
-        freeSolo
-        renderInput={(params) => (
+      {/* Degree and Specialization side by side */}
+      <Box className={classes.fieldRow}>
+        <Box className={classes.fieldContainer}>
+          {/* Degree Autocomplete Dropdown */}
+          <Autocomplete
+            options={degreeOptions}
+            value={resumeData.education.degree || null}
+            onChange={handleDegreeChange}
+            freeSolo
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Degree"
+                name="degree"
+                variant="outlined"
+                fullWidth
+                className={classes.textField}
+                placeholder="e.g., Bachelor of Science"
+                required
+              />
+            )}
+          />
+        </Box>
+        <Box className={classes.fieldContainer}>
           <TextField
-            {...params}
-            label="Degree"
-            name="degree"
+            label="Specialization"
+            name="specialization"
+            value={resumeData.education.specialization}
+            onChange={handleInputChange}
             variant="outlined"
             fullWidth
             className={classes.textField}
-            placeholder="e.g., Bachelor of Science"
+            placeholder="e.g., Computer Science"
             required
           />
-        )}
-      />
+        </Box>
+      </Box>
       
-      <TextField
-        label="Specialization"
-        name="specialization"
-        value={resumeData.education.specialization}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., Computer Science"
-        required
-      />
-      
-      <TextField
-        label="Institution"
-        name="institution"
-        value={resumeData.education.institution}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        placeholder="e.g., Stanford University"
-        required
-      />
-      
-      {/* Year picker for graduation year */}
-      <DatePickerField
-        label="Graduation Year"
-        value={resumeData.education.graduation_year || resumeData.education.graduationYear || ''}
-        onChange={handleGraduationYearChange}
-        views={['year']} // Only show year picker
-        required
-        helperText="Select your graduation year"
-        minYear={1950}
-        maxYear={new Date().getFullYear() + 10} // Allow future dates for students
-      />
+      {/* Institution and Graduation Year side by side with different proportions */}
+      <Box className={classes.fieldRow}>
+        <Box className={classes.institutionContainer}>
+          <TextField
+            label="Institution"
+            name="institution"
+            value={resumeData.education.institution}
+            onChange={handleInputChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+            placeholder="e.g., Stanford University"
+            required
+          />
+        </Box>
+        <Box className={classes.yearContainer}>
+          {/* Year picker for graduation year */}
+          <DatePickerField
+            label="Graduation Year"
+            value={resumeData.education.graduation_year || resumeData.education.graduationYear || ''}
+            onChange={handleGraduationYearChange}
+            views={['year']} // Only show year picker
+            required
+            helperText="Select graduation year"
+            minYear={1950}
+            maxYear={new Date().getFullYear() + 10} // Allow future dates for students
+          />
+        </Box>
+      </Box>
     </Box>
   );
 };

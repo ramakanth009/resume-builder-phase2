@@ -4,7 +4,8 @@ import {
   Typography, 
   TextField, 
   Autocomplete,
-  CircularProgress 
+  CircularProgress,
+  Grid
 } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getTargetRoles } from '../../utils/api';
@@ -30,6 +31,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   loadingIndicator: {
     color: '#3182ce',
+  },
+  fieldRow: {
+    display: 'flex',
+    gap: '1rem',
+    marginBottom: '1rem',
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      gap: '0.5rem',
+    },
+  },
+  fieldContainer: {
+    flex: 1,
   },
 }));
 
@@ -101,81 +114,93 @@ const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
         Personal Information
       </Typography>
       
-      <TextField
-        label="Full Name"
-        name="header.name"
-        value={resumeData.header.name}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        required
-      />
-      
-      <TextField
-        label="Email"
-        name="header.email"
-        value={resumeData.header.email}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        required
-      />
-      
-      <TextField
-        label="Phone"
-        name="header.phone"
-        value={resumeData.header.phone}
-        onChange={handleInputChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        required
-        placeholder="e.g., 9999955555"
-      />
-      
-      {/* Target Role with Autocomplete using cached data */}
-      <Autocomplete
-        freeSolo
-        value={resumeData.target_role || null}
-        onChange={handleRoleSelect}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-        }}
-        options={targetRoles}
-        getOptionLabel={(option) => {
-          if (typeof option === 'string') {
-            return option;
-          }
-          return option.display_name || option.name || '';
-        }}
-        loading={loading}
-        renderInput={(params) => (
+      {/* Full Name and Phone side by side */}
+      <Box className={classes.fieldRow}>
+        <Box className={classes.fieldContainer}>
           <TextField
-            {...params}
-            label="Target Role"
-            name="target_role"
+            label="Full Name"
+            name="header.name"
+            value={resumeData.header.name}
+            onChange={handleInputChange}
             variant="outlined"
             fullWidth
-            required
             className={classes.textField}
-            placeholder="e.g., Front-end Developer, Data Scientist"
-            error={!!error}
-            helperText={error || "Select your target job role"}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {loading ? <CircularProgress color="inherit" size={20} className={classes.loadingIndicator} /> : null}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            }}
+            required
           />
-        )}
-      />
+        </Box>
+        <Box className={classes.fieldContainer}>
+          <TextField
+            label="Phone"
+            name="header.phone"
+            value={resumeData.header.phone}
+            onChange={handleInputChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+            required
+            placeholder="e.g., 9999955555"
+          />
+        </Box>
+      </Box>
+      
+      {/* Email and Target Role side by side */}
+      <Box className={classes.fieldRow}>
+        <Box className={classes.fieldContainer}>
+          <TextField
+            label="Email"
+            name="header.email"
+            value={resumeData.header.email}
+            onChange={handleInputChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+            required
+          />
+        </Box>
+        <Box className={classes.fieldContainer}>
+          {/* Target Role with Autocomplete using cached data */}
+          <Autocomplete
+            freeSolo
+            value={resumeData.target_role || null}
+            onChange={handleRoleSelect}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            options={targetRoles}
+            getOptionLabel={(option) => {
+              if (typeof option === 'string') {
+                return option;
+              }
+              return option.display_name || option.name || '';
+            }}
+            loading={loading}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Target Role"
+                name="target_role"
+                variant="outlined"
+                fullWidth
+                required
+                className={classes.textField}
+                placeholder="e.g., Front-end Developer"
+                error={!!error}
+                helperText={error || "Select your target job role"}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loading ? <CircularProgress color="inherit" size={20} className={classes.loadingIndicator} /> : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
+          />
+        </Box>
+      </Box>
       
       <TextField
         label="Professional Summary"

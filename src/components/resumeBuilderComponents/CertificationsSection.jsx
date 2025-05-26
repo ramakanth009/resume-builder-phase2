@@ -273,7 +273,7 @@ const CertificationsSection = ({ resumeData, setResumeData }) => {
           disabled={!newCertName.trim()}
           fullWidth
         >
-          {editingCertIndex >= 0 ? 'Update Certification' : 'Add Certification'}
+          {editingCertIndex >= 0 ? 'Update Certification' : 'Click Here To Add Certification'}
         </Button>
       </Box>
     </Box>
