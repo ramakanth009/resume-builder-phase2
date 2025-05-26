@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
+import React from 'react';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 
 // Icons
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
 import ExtensionIcon from '@mui/icons-material/Extension';
-import CodeIcon from '@mui/icons-material/Code';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GigaLogo from '../assets/giga-loogo.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LinkIcon from '@mui/icons-material/Link';
+import CodeIcon from '@mui/icons-material/Code';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   sidebar: {
@@ -19,52 +20,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
     top: 0,
     left: 0,
     height: '100vh',
+    width: '220px',
     backgroundColor: '#ffffff',
     boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-    transition: 'width 250ms cubic-bezier(0.4, 0, 0.2, 1)',
     zIndex: 1200,
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
-    willChange: 'width', // Optimize animation performance
-    '@media (max-width: 1200px)': {
-      width: '64px !important',
+    overflowX: 'hidden', // Changed from overflow: 'auto'
+    '@media (max-width: 960px)': {
+      width: '180px',
     },
     '@media (max-width: 600px)': {
-      width: '56px !important',
-    },
-    '@media (max-width: 480px)': {
-      width: '48px !important',
-    },
-    '@media (max-width: 375px)': {
-      width: '42px !important',
-    },
-  },
-  sidebarCollapsed: {
-    width: '64px',
-    '@media (max-width: 600px)': {
-      width: '56px',
-    },
-    '@media (max-width: 480px)': {
-      width: '48px',
-    },
-    '@media (max-width: 375px)': {
-      width: '42px',
-    },
-  },
-  sidebarExpanded: {
-    width: '220px',
-    '@media (max-width: 1200px)': {
       width: '64px',
-    },
-    '@media (max-width: 600px)': {
-      width: '56px',
-    },
-    '@media (max-width: 480px)': {
-      width: '48px',
-    },
-    '@media (max-width: 375px)': {
-      width: '42px',
     },
   },
   logoContainer: {
@@ -73,35 +40,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '1.25rem 1rem',
     borderBottom: '1px solid #e2e8f0',
     height: '64px',
-    overflow: 'hidden',
     '@media (max-width: 600px)': {
-      height: '56px',
-      padding: '1rem 0.75rem',
-    },
-    '@media (max-width: 480px)': {
-      height: '48px',
-      padding: '0.75rem 0.5rem',
-    },
-    '@media (max-width: 375px)': {
-      height: '42px',
-      padding: '0.5rem 0.4rem',
+      justifyContent: 'center',
+      padding: '1rem 0.5rem',
     },
   },
   logo: {
     width: '32px',
     height: '32px',
-    flexShrink: 0, // Prevent logo from shrinking
+    flexShrink: 0,
     '@media (max-width: 600px)': {
       width: '28px',
       height: '28px',
-    },
-    '@media (max-width: 480px)': {
-      width: '24px',
-      height: '24px',
-    },
-    '@media (max-width: 375px)': {
-      width: '20px',
-      height: '20px',
     },
   },
   logoText: {
@@ -109,21 +59,13 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 700,
     fontSize: '1.2rem',
     color: '#2d3748',
-    whiteSpace: 'nowrap',
-    transition: 'opacity 220ms ease, transform 220ms ease',
-    transform: 'translateX(0)',
-    opacity: 1,
-    pointerEvents: 'none', // Prevent text from capturing events
-  },
-  logoTextHidden: {
-    opacity: 0,
-    transform: 'translateX(-10px)',
+    '@media (max-width: 600px)': {
+      display: 'none',
+    },
   },
   navList: {
     padding: '1rem 0',
-    '@media (max-width: 480px)': {
-      padding: '0.75rem 0',
-    },
+    flexGrow: 1,
   },
   listItem: {
     padding: '0.75rem 1rem',
@@ -134,15 +76,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
     position: 'relative',
     '@media (max-width: 600px)': {
-      padding: '0.6rem 0.75rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.5rem 0.6rem',
-      margin: '0.2rem 0',
-    },
-    '@media (max-width: 375px)': {
-      padding: '0.4rem 0.5rem',
-      margin: '0.15rem 0',
+      padding: '0.75rem 0.5rem',
+      justifyContent: 'center',
     },
   },
   activeListItem: {
@@ -156,22 +91,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minWidth: '40px',
     color: '#718096',
     '@media (max-width: 600px)': {
-      minWidth: '36px',
-      '& .MuiSvgIcon-root': {
-        fontSize: '1.3rem',
-      },
-    },
-    '@media (max-width: 480px)': {
-      minWidth: '32px',
-      '& .MuiSvgIcon-root': {
-        fontSize: '1.2rem',
-      },
-    },
-    '@media (max-width: 375px)': {
-      minWidth: '28px',
-      '& .MuiSvgIcon-root': {
-        fontSize: '1.1rem',
-      },
+      minWidth: '24px',
+      marginRight: 0,
     },
   },
   activeIcon: {
@@ -180,112 +101,46 @@ const useStyles = makeStylesWithTheme((theme) => ({
   itemText: {
     margin: 0,
     fontWeight: 500,
-    whiteSpace: 'normal',
-    transition: 'opacity 220ms ease, transform 220ms ease',
-    transform: 'translateX(0)',
-    opacity: 1,
-    pointerEvents: 'none', // Prevent text from capturing events
+    whiteSpace: 'normal', // Changed from 'nowrap'
+    wordWrap: 'break-word',
+    '@media (max-width: 600px)': {
+      display: 'none',
+    },
   },
-  itemTextHidden: {
-  opacity: 0,
-  transform: 'translateX(-10px)',
-  position: 'absolute', // Add this
-  visibility: 'hidden', // Add this
-  width: 0,             // Add this
-  overflow: 'hidden',   // Add this
-},
+  footerText: {
+    fontSize: '0.75rem',
+    color: '#a0aec0',
+    textAlign: 'center',
+    padding: '0.5rem',
+    borderTop: '1px solid #e2e8f0',
+    '@media (max-width: 600px)': {
+      display: 'none',
+    },
+  },
 }));
 
 const Sidebar = ({ activeStep, steps, onStepClick }) => {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const theme = useTheme();
-  const isDesktop = useMediaQuery('(min-width:1200px)');
-  const sidebarRef = useRef(null);
-  const expandTimeoutRef = useRef(null);
-  const collapseTimeoutRef = useRef(null);
-  
-  // Detect touch device and set up click outside handler
-  useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && expanded) {
-        setExpanded(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      clearTimeout(expandTimeoutRef.current);
-      clearTimeout(collapseTimeoutRef.current);
-    };
-  }, [expanded]);
-  
+
   // Icon mapping for steps
-const stepIcons = [
-  <PersonIcon />,      // Personal Info
-  <LinkIcon />,        // Social Links  
-  <SchoolIcon />,      // Education
-  <ExtensionIcon />,   // Skills
-  <WorkIcon />,        // Projects
-  <CodeIcon />,        // Experience
-  <VerifiedIcon />,    // Certifications
-  <SettingsIcon />     // Custom Sections & Terms
-];
-  
-  // Expand sidebar on hover (desktop only)
-  const handleMouseEnter = () => {
-    if (isDesktop && !isTouchDevice) {
-      clearTimeout(collapseTimeoutRef.current);
-      expandTimeoutRef.current = setTimeout(() => {
-        setExpanded(true);
-      }, 100); // Slight delay to prevent accidental triggers
-    }
-  };
-  
-  // Collapse sidebar on mouse leave
-  const handleMouseLeave = () => {
-    if (isDesktop && !isTouchDevice) {
-      clearTimeout(expandTimeoutRef.current);
-      setExpanded(false);
-    }
-  };
-  
-  // Toggle sidebar for touch devices
-  const handleSidebarToggle = (e) => {
-    if (isTouchDevice) {
-      e.stopPropagation();
-      setExpanded(!expanded);
-    }
-  };
-  
-  // Handle step selection and auto-collapse
-  const handleStepClick = (index, e) => {
-    e.stopPropagation(); // Prevent sidebar toggle
-    onStepClick(index);
-    
-    // Auto-collapse on step selection
-    collapseTimeoutRef.current = setTimeout(() => {
-      setExpanded(false);
-    }, 300);
-  };
-  
+  const stepIcons = [
+    <PersonIcon />,              // Personal Info
+    <LinkIcon />,                // Social Links
+    <SchoolIcon />,              // Education
+    <ExtensionIcon />,           // Skills
+    <SmartToyIcon />,            // AI Skill Recommendations
+    <CodeIcon />,                // Projects
+    <WorkIcon />,                // Experience
+    <VerifiedIcon />,            // Certifications
+    <SettingsIcon />             // Custom Sections & Terms
+  ];
+
   return (
-    <Box 
-      ref={sidebarRef}
-      className={`${classes.sidebar} ${expanded && isDesktop ? classes.sidebarExpanded : classes.sidebarCollapsed}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={isTouchDevice ? handleSidebarToggle : undefined}
-    >
+    <Box className={classes.sidebar}>
       {/* Logo area */}
       <Box className={classes.logoContainer}>
         <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
-        <Typography className={`${classes.logoText} ${(!expanded || !isDesktop) ? classes.logoTextHidden : ''}`}>
+        <Typography className={classes.logoText}>
           Gigaversity
         </Typography>
       </Box>
@@ -296,7 +151,7 @@ const stepIcons = [
           <ListItem
             key={label}
             className={`${classes.listItem} ${activeStep === index ? classes.activeListItem : ''}`}
-            onClick={(e) => handleStepClick(index, e)}
+            onClick={() => onStepClick(index)}
             button
             disableRipple
           >
@@ -304,18 +159,10 @@ const stepIcons = [
               {stepIcons[index]}
             </ListItemIcon>
             
-            {/* Always show tooltip when collapsed */}
-            {(!expanded || !isDesktop) && (
-              <Tooltip title={label} placement="right">
-                <span style={{ display: 'contents' }}></span>
-              </Tooltip>
-            )}
-            
-            {/* Always render text but control visibility with CSS */}
             <ListItemText 
-              primary={label} 
+              primary={label}
               primaryTypographyProps={{ 
-                className: `${classes.itemText} ${(!expanded || !isDesktop) ? classes.itemTextHidden : ''}`,
+                className: classes.itemText,
                 style: { 
                   color: activeStep === index ? '#3182ce' : '#2d3748',
                   fontWeight: activeStep === index ? 600 : 500,
@@ -325,6 +172,11 @@ const stepIcons = [
           </ListItem>
         ))}
       </List>
+      
+      {/* Footer text */}
+      <Typography className={classes.footerText}>
+        Resume Builder v1.0
+      </Typography>
     </Box>
   );
 };

@@ -48,7 +48,7 @@ const steps = [
   'Social Links',
   'Education',
   'Skills',
-  'AI Skill Recommendations', // New step added here
+  'AI Skills', // New step added here
   'Projects',
   'Experience',
   'Certifications',
