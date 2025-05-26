@@ -175,7 +175,7 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
       
       {/* Footer text */}
       <Typography className={classes.footerText}>
-        Resume Builder v1.0
+        Resume Builder v1.0 (beta)
       </Typography>
     </Box>
   );

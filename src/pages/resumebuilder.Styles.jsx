@@ -16,43 +16,44 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     height: '100%',
   },
   mainContentWithSidebar: {
-    marginLeft: '64px',
+  marginLeft: '220px', // Match the sidebar width
+  width: 'calc(100% - 220px)',
+  transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
+  '@media (max-width: 960px)': {
+    marginLeft: '180px', // Match tablet sidebar width
+    width: 'calc(100% - 180px)',
+  },
+  '@media (max-width: 600px)': {
+    marginLeft: '64px', // Match mobile sidebar width
     width: 'calc(100% - 64px)',
-    transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
-    '@media (max-width: 600px)': {
-      marginLeft: '56px',
-      width: 'calc(100% - 56px)',
-    },
-    '@media (max-width: 480px)': {
-      marginLeft: '48px',
-      width: 'calc(100% - 48px)',
-    },
   },
+},
   formColumn: {
-    padding: '1rem',
-    height: '100%',
-    minHeight: '80vh',
-    maxHeight: '100%',
-    borderRight: {
-      xs: 'none',
-      md: '1px solid #e2e8f0'
-    },
-    '@media (max-width: 600px)': {
-      padding: '1rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.75rem',
-    },
+  padding: '1rem',
+  height: '100%',
+  minHeight: '80vh',
+  maxHeight: '100%',
+  borderRight: {
+    xs: 'none',
+    md: '1px solid #e2e8f0'
   },
-  previewColumn: {
-    padding: '1rem',
-    height: '100%',
-    minHeight: '80vh',
-    maxHeight: '100%',
-    '@media (max-width: 960px)': {
-      display: 'none', // Hide preview on tablets and mobile
-    },
+  '@media (max-width: 600px)': {
+    padding: '0.75rem',
   },
+  '@media (max-width: 480px)': {
+    padding: '0.5rem',
+  },
+},
+
+previewColumn: {
+  padding: '1rem',
+  height: '100%',
+  minHeight: '80vh',
+  maxHeight: '100%',
+  '@media (max-width: 960px)': {
+    display: 'none', // Hide preview on tablets and mobile
+  },
+},
   previewNotice: {
     display: 'none', // Hidden by default (on desktop)
     '@media (max-width: 960px)': {
@@ -201,13 +202,13 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       flexDirection: 'column', // Stack vertically on tablets and mobile
     },
   },
-  columnBox: {
-    flex: 1,
-    width: '50%', // Default 50% on desktop
-    '@media (max-width: 960px)': {
-      width: '100%', // Full width on tablets and mobile
-    },
+columnBox: {
+  flex: 1,
+  width: '50%', // Default 50% on desktop
+  '@media (max-width: 960px)': {
+    width: '100%', // Full width on tablets and mobile
   },
+},
   loader: {
     marginLeft: '0.5rem',
     color: 'white',
