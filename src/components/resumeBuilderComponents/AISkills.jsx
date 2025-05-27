@@ -153,7 +153,7 @@ const getGenAITools = async (role) => {
   return await apiRequest(`/genai_tools/${encodeURIComponent(role)}`);
 };
 
-const AISkillRecommendationsSection = ({ resumeData, setResumeData, targetRole }) => {
+const AISkills = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
@@ -381,4 +381,4 @@ const AISkillRecommendationsSection = ({ resumeData, setResumeData, targetRole }
   );
 };
 
-export default AISkillRecommendationsSection;
+export default AISkills;

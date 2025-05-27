@@ -35,7 +35,7 @@ import CertificationsSection from '../components/resumeBuilderComponents/Certifi
 import CustomSectionsAndTerms from '../components/resumeBuilderComponents/CustomSectionsAndTerms';
 import ResumePreview from '../components/previewComponents/ResumePreview';
 import TemplateSelector from '../components/previewComponents/TemplateSelector';
-import AISkillRecommendationsSection from '../components/resumeBuilderComponents/AISkillRecommendationsSection';
+import AISkillRecommendationsSection from '../components/resumeBuilderComponents/AISkills';
 import templatesData from '../data/templatesData';
 import Navbar from '../common/Navbar';
 import Sidebar from '../common/Sidebar';
