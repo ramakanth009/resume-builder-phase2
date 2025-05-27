@@ -232,7 +232,9 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
       setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.id));
     } else {
       setSelectedTools(prev => [...prev, { 
-        tool_id: tool.id, 
+        tool_id: tool.id,
+        name: tool.name, // Store the tool name
+        description: tool.description, // Store description too
         proficiency: 'intermediate' // default proficiency
       }]);
     }
@@ -265,8 +267,15 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
     return tool?.proficiency || 'intermediate';
   };
 
-  // Get tool name by ID
+  // Get tool name by ID - now use stored name first
   const getToolName = (toolId) => {
+    // First check if we have the name stored in selectedTools
+    const selectedTool = selectedTools.find(t => t.tool_id === toolId);
+    if (selectedTool && selectedTool.name) {
+      return selectedTool.name;
+    }
+    
+    // Fallback to looking up in genaiTools
     const tool = genaiTools.find(t => t.id === toolId);
     return tool?.name || 'Unknown Tool';
   };
@@ -438,7 +447,7 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
               {selectedTools.map((tool) => (
                 <Chip
                   key={tool.tool_id}
-                  label={`${getToolName(tool.tool_id)} (${tool.proficiency})`}
+                  label={`${tool.name || getToolName(tool.tool_id)} (${tool.proficiency})`}
                   className={classes.selectionChip}
                   onDelete={() => setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id))}
                 />
