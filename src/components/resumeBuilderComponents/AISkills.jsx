@@ -70,15 +70,19 @@ const useStyles = makeStylesWithTheme((theme) => ({
     position: 'relative',
     transition: 'all 0.2s ease',
     cursor: 'pointer',
+    borderRadius: '12px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #e2e8f0',
+    overflow: 'hidden',
     '&:hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+      borderColor: '#cbd5e0',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
     },
   },
   selectedCard: {
     borderColor: '#3182ce',
     borderWidth: '2px',
-    backgroundColor: 'rgba(49, 130, 206, 0.05)',
+    backgroundColor: '#ebf8ff',
   },
   cardContent: {
     padding: '1.25rem',
@@ -321,50 +325,89 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
               <Box className={classes.toolsGrid}>
                 {genaiTools.map((tool) => {
                   const isSelected = isToolSelected(tool.id);
+                  const proficiency = getToolProficiency(tool.id);
+                  
                   return (
-                    <Box key={tool.id} sx={{ width: 'calc(33.33% - 0.67rem)', mb: 2, '@media (max-width: 900px)': { width: 'calc(50% - 0.5rem)' }, '@media (max-width: 600px)': { width: '100%' } }}>
+                    <Box key={tool.id} sx={{ width: 'calc(50% - 0.5rem)', mb: 2, '@media (max-width: 600px)': { width: '100%' } }}>
                       <Card 
                         className={`${classes.toolCard} ${isSelected ? classes.selectedCard : ''}`}
                         onClick={() => handleToggleTool(tool)}
-                        raised={isSelected}
-                        variant={isSelected ? "outlined" : "elevation"}
+                        elevation={0}
                       >
+                        <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
+                          {isSelected && (
+                            <CheckCircleIcon 
+                              sx={{ 
+                                color: '#38a169',
+                                bgcolor: 'white',
+                                borderRadius: '50%',
+                                fontSize: '24px'
+                              }}
+                            />
+                          )}
+                        </Box>
                         <CardContent className={classes.cardContent}>
                           <Typography variant="h6" className={classes.toolName}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                               <SmartToyIcon className={classes.toolIcon} />
                               {tool.name}
                             </Box>
-                            <CheckCircleIcon 
-                              className={`${classes.checkIcon} ${isSelected ? 'selected' : ''}`}
-                              sx={{ opacity: isSelected ? 1 : 0.2 }}
-                            />
                           </Typography>
                           <Typography variant="body2" className={classes.toolDescription}>
                             {tool.description}
                           </Typography>
-                        </CardContent>
-                        
-                        {isSelected && (
-                          <CardActions className={classes.proficiencySelector}>
-                            <Typography variant="body2" fontWeight={500}>Proficiency:</Typography>
-                            <Box>
-                              {['beginner', 'intermediate', 'expert'].map((level) => {
-                                const isSelectedLevel = getToolProficiency(tool.id) === level;
-                                return (
-                                  <Chip
-                                    key={level}
-                                    label={level}
-                                    size="small"
-                                    className={`${classes.proficiencyChip} ${isSelectedLevel ? classes.selectedChip : ''}`}
-                                    onClick={(e) => handleUpdateProficiency(tool.id, level, e)}
-                                    sx={{ ml: 0.5 }}
-                                  />
-                                );
-                              })}
+                          
+                          {isSelected && (
+                            <Box sx={{ mt: 2 }}>
+                              <Typography variant="body2" fontWeight={500} sx={{ mb: 1 }}>
+                                Proficiency:
+                              </Typography>
+                              
+                              <Box sx={{ 
+                                display: 'flex', 
+                                width: '100%', 
+                                borderRadius: '8px',
+                                border: '1px solid #e2e8f0',
+                                overflow: 'hidden',
+                                height: '32px'
+                              }}>
+                                {['beginner', 'intermediate', 'expert'].map((level) => {
+                                  const isSelectedLevel = proficiency === level;
+                                  
+                                  return (
+                                    <Box 
+                                      key={level}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleUpdateProficiency(tool.id, level, e);
+                                      }}
+                                      sx={{ 
+                                        flex: 1,
+                                        height: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        bgcolor: isSelectedLevel ? '#3182ce' : '#f7fafc',
+                                        color: isSelectedLevel ? 'white' : '#4a5568',
+                                        fontSize: '0.75rem',
+                                        fontWeight: isSelectedLevel ? 600 : 500,
+                                        transition: 'all 0.2s ease',
+                                        textTransform: 'capitalize',
+                                        borderRight: level !== 'expert' ? '1px solid #e2e8f0' : 'none',
+                                        '&:hover': {
+                                          bgcolor: isSelectedLevel ? '#3182ce' : '#edf2f7',
+                                        }
+                                      }}
+                                    >
+                                      {level.charAt(0).toUpperCase() + level.slice(1, 3)}
+                                    </Box>
+                                  );
+                                })}
+                              </Box>
                             </Box>
-                          </CardActions>
-                        )}
+                          )}
+                        </CardContent>
                       </Card>
                     </Box>
                   );
