@@ -182,12 +182,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   noRoleAlert: {
     marginBottom: '1.5rem',
   },
-  toggleContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
-  },
+
   emptyState: {
     textAlign: 'center',
     padding: '2rem',
@@ -308,16 +303,6 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
             Please specify a target role in the Personal Information section to get personalized recommendations.
           </Alert>
         )}
-        
-        {/* Toggle controls */}
-        <Box className={classes.toggleContainer}>
-          <Typography variant="h6">AI Tools Recommendations</Typography>
-          <FormControlLabel
-            control={<Switch checked={showGenAI} onChange={(e) => setShowGenAI(e.target.checked)} />}
-            label="Show Recommendations"
-          />
-        </Box>
-
         {/* GenAI Tools Grid */}
         {showGenAI && targetRole && (
           <>
@@ -383,35 +368,35 @@ const AISkills = ({ resumeData, setResumeData, targetRole }) => {
                                 {['beginner', 'intermediate', 'expert'].map((level) => {
                                   const isSelectedLevel = proficiency === level;
                                   
-                                  return (
+                                    return (
                                     <Box 
                                       key={level}
                                       onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleUpdateProficiency(tool.id, level, e);
+                                      e.stopPropagation();
+                                      handleUpdateProficiency(tool.id, level, e);
                                       }}
                                       sx={{ 
-                                        flex: 1,
-                                        height: '100%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        cursor: 'pointer',
-                                        bgcolor: isSelectedLevel ? '#3182ce' : '#f7fafc',
-                                        color: isSelectedLevel ? 'white' : '#4a5568',
-                                        fontSize: '0.75rem',
-                                        fontWeight: isSelectedLevel ? 600 : 500,
-                                        transition: 'all 0.2s ease',
-                                        textTransform: 'capitalize',
-                                        borderRight: level !== 'expert' ? '1px solid #e2e8f0' : 'none',
-                                        '&:hover': {
-                                          bgcolor: isSelectedLevel ? '#3182ce' : '#edf2f7',
-                                        }
+                                      flex: 1,
+                                      height: '100%',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      cursor: 'pointer',
+                                      bgcolor: isSelectedLevel ? '#3182ce' : '#f7fafc',
+                                      color: isSelectedLevel ? 'white' : '#4a5568',
+                                      fontSize: '0.75rem',
+                                      fontWeight: isSelectedLevel ? 600 : 500,
+                                      transition: 'all 0.2s ease',
+                                      textTransform: 'capitalize',
+                                      borderRight: level !== 'expert' ? '1px solid #e2e8f0' : 'none',
+                                      '&:hover': {
+                                        bgcolor: isSelectedLevel ? '#3182ce' : '#edf2f7',
+                                      }
                                       }}
                                     >
-                                      {level.charAt(0).toUpperCase() + level.slice(1, 3)}
+                                      {level}
                                     </Box>
-                                  );
+                                    );
                                 })}
                               </Box>
                             </Box>

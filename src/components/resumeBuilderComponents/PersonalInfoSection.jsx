@@ -166,6 +166,17 @@ const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
               setInputValue(newInputValue);
+              
+              // Also update resumeData.target_role directly when typing
+              setResumeData(prev => ({
+                ...prev,
+                target_role: newInputValue,
+              }));
+              
+              // Notify parent component to update targetRole state
+              if (onRoleSelect && newInputValue) {
+                onRoleSelect(newInputValue);
+              }
             }}
             options={targetRoles}
             getOptionLabel={(option) => {
