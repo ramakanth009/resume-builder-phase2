@@ -3,7 +3,7 @@ const dummyResumeData = {
   header: {
     name: "Alex Johnson",
     email: "alex.johnson@example.com",
-    phone: "555-123-4567",
+    phone: "9993337772",
     github: "https://github.com/alexjohnson",
     linkedin: "https://linkedin.com/in/alexjohnson",
     portfolio: "https://alexjohnson.dev"
