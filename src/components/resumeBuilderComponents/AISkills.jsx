@@ -264,7 +264,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       }
 
     } catch (error) {
-      console.error('Error applying tool to resume:', error);
+      console.error('Error adding tool to resume:', error);
     } finally {
       setApplyingTool(null);
     }
@@ -294,7 +294,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <InfoIcon sx={{ color: '#3182ce', mr: 1 }} />
             <Typography variant="body1">
-              Select AI tools you've used for <strong>{targetRole}</strong>, describe how you used them, and click "Apply" to add them to your resume.
+              Select AI tools you've used for <strong>{targetRole}</strong>, describe how you used them, and click "Add" to add them to your resume.
             </Typography>
           </Box>
         </Box>
@@ -330,7 +330,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
                       disabled={isApplying}
                       startIcon={isApplying ? <CircularProgress size={14} color="inherit" /> : <AddIcon />}
                     >
-                      {isApplying ? 'Applying...' : 'Apply'}
+                      {isApplying ? 'Adding...' : 'Add'}
                     </Button>
                   )}
                   
