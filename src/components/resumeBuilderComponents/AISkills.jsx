@@ -21,6 +21,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getGenAITools, saveGenAIToolUsage } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
@@ -62,9 +63,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   toolCard: {
     transition: 'all 0.2s ease',
-    cursor: 'pointer',
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
+    position: 'relative',
     '&:hover': {
       borderColor: '#cbd5e0',
       boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
@@ -93,19 +94,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '0.5rem 0',
     borderBottom: '1px solid #f1f5f9',
   },
-  proficiencyButtons: {
-    display: 'flex',
-    gap: '0.5rem',
-    marginTop: '1rem',
-  },
-  proficiencyButton: {
-    flex: 1,
-    textTransform: 'none',
-    borderRadius: '6px',
-  },
-  selectedProficiency: {
+  // New styles for individual tool apply button
+  toolApplyButton: {
+    position: 'absolute',
+    top: '1rem',
+    right: '1rem',
     backgroundColor: '#3182ce',
     color: 'white',
+    fontWeight: 600,
+    padding: '0.4rem 0.8rem',
+    borderRadius: '6px',
+    fontSize: '0.85rem',
+    minWidth: 'auto',
+    zIndex: 10,
+    '&:hover': {
+      backgroundColor: '#2b6cb0',
+    },
+    '&:disabled': {
+      backgroundColor: '#a0aec0',
+    },
   },
   summaryContainer: {
     padding: '1.5rem',
@@ -120,28 +127,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 500,
     margin: '0.25rem',
   },
-  applyButton: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    fontWeight: 600,
-    padding: '0.75rem 1.5rem',
-    borderRadius: '8px',
-    marginTop: '1.5rem',
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
-  },
-  saveButton: {
-    backgroundColor: '#38a169',
-    color: 'white',
-    fontWeight: 600,
-    padding: '0.75rem 1.5rem',
-    borderRadius: '8px',
-    marginLeft: '1rem',
-    '&:hover': {
-      backgroundColor: '#2f855a',
-    },
-  },
   loadingContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -151,6 +136,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   accordionDetails: {
     paddingTop: 0,
+  },
+  // Updated styles - removed the old bottom buttons
+  cardContent: {
+    paddingTop: '3rem', // Add space for the top-right button
   }
 }));
 
@@ -158,7 +147,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [selectedTools, setSelectedTools] = useState([]);
   const [toolUsages, setToolUsages] = useState({});
-  const [saving, setSaving] = useState(false);
+  const [applyingTool, setApplyingTool] = useState(null);
   
   // Fetch GenAI tools
   const { 
@@ -198,6 +187,12 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         delete newUsages[tool.id];
         return newUsages;
       });
+      
+      // Remove from resume data immediately
+      setResumeData(prev => ({
+        ...prev,
+        genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.id)
+      }));
     } else {
       setSelectedTools(prev => [...prev, { 
         tool_id: tool.id,
@@ -226,50 +221,52 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
     return selectedTools.some(t => t.tool_id === toolId);
   };
 
-  // Apply selections to resume data
-  const handleApplyToResume = () => {
-    setResumeData(prev => ({
-      ...prev,
-      genai_tools: [...selectedTools]
-    }));
-  };
-
-  // Save usage to backend
-  const handleSaveUsage = async () => {
-    if (!targetRole) return;
+  // NEW: Apply individual tool to resume
+  const handleApplyToolToResume = async (toolId) => {
+    setApplyingTool(toolId);
     
-    setSaving(true);
     try {
-      const usageData = {
-        used_tools: selectedTools.map(tool => ({
-          tool_id: tool.tool_id,
-          usage_descriptions: toolUsages[tool.tool_id] || []
-        })),
-        not_used_tools: genaiTools
-          .filter(tool => !isToolSelected(tool.id))
-          .map(tool => tool.id)
-      };
-      
-      await saveGenAIToolUsage(targetRole, usageData);
-      
-      // Also update resume data with usage info
-      const updatedTools = selectedTools.map(tool => ({
+      const tool = selectedTools.find(t => t.tool_id === toolId);
+      if (!tool) return;
+
+      const toolWithUsage = {
         ...tool,
-        usage_descriptions: toolUsages[tool.tool_id] || []
-      }));
-      
-      setResumeData(prev => ({
-        ...prev,
-        genai_tools: updatedTools,
-        genai_skills: {
-          used_tools: usageData.used_tools
+        usage_descriptions: toolUsages[toolId] || []
+      };
+
+      // Update resume data with this specific tool
+      setResumeData(prev => {
+        const existingTools = prev.genai_tools || [];
+        const otherTools = existingTools.filter(t => t.tool_id !== toolId);
+        
+        return {
+          ...prev,
+          genai_tools: [...otherTools, toolWithUsage]
+        };
+      });
+
+      // Also save to backend if we have a target role
+      if (targetRole) {
+        const usageData = {
+          used_tools: [{
+            tool_id: toolId,
+            usage_descriptions: toolUsages[toolId] || []
+          }],
+          not_used_tools: []
+        };
+        
+        try {
+          await saveGenAIToolUsage(targetRole, usageData);
+        } catch (error) {
+          console.warn('Failed to save to backend:', error);
+          // Continue anyway since we've updated the local state
         }
-      }));
-      
+      }
+
     } catch (error) {
-      console.error('Error saving GenAI usage:', error);
+      console.error('Error applying tool to resume:', error);
     } finally {
-      setSaving(false);
+      setApplyingTool(null);
     }
   };
 
@@ -297,7 +294,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <InfoIcon sx={{ color: '#3182ce', mr: 1 }} />
             <Typography variant="body1">
-              Select AI tools you've used for <strong>{targetRole}</strong> and describe how you used them.
+              Select AI tools you've used for <strong>{targetRole}</strong>, describe how you used them, and click "Apply" to add them to your resume.
             </Typography>
           </Box>
         </Box>
@@ -316,6 +313,8 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
           <Box className={classes.toolsGrid}>
             {genaiTools.map((tool) => {
               const isSelected = isToolSelected(tool.id);
+              const hasUsages = (toolUsages[tool.id] || []).length > 0;
+              const isApplying = applyingTool === tool.id;
               
               return (
                 <Card 
@@ -323,7 +322,19 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
                   className={`${classes.toolCard} ${isSelected ? classes.selectedCard : ''}`}
                   elevation={0}
                 >
-                  <CardContent>
+                  {/* Apply Button in top-right corner */}
+                  {isSelected && (
+                    <Button
+                      className={classes.toolApplyButton}
+                      onClick={() => handleApplyToolToResume(tool.id)}
+                      disabled={isApplying}
+                      startIcon={isApplying ? <CircularProgress size={14} color="inherit" /> : <AddIcon />}
+                    >
+                      {isApplying ? 'Applying...' : 'Apply'}
+                    </Button>
+                  )}
+                  
+                  <CardContent className={classes.cardContent}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <FormControlLabel
                         control={
@@ -398,46 +409,34 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <LightbulbIcon sx={{ color: '#3182ce', mr: 1 }} />
-          Selected AI Tools ({selectedTools.length})
+          Applied AI Tools ({(resumeData.genai_tools || []).length})
         </Typography>
         
         <Box className={classes.summaryContainer}>
-          {selectedTools.length > 0 ? (
+          {(resumeData.genai_tools || []).length > 0 ? (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
-              {selectedTools.map((tool) => (
+              {(resumeData.genai_tools || []).map((tool) => (
                 <Chip
                   key={tool.tool_id}
-                  label={tool.name}
+                  label={`${tool.name} (${(tool.usage_descriptions || []).length} skills)`}
                   className={classes.selectionChip}
-                  onDelete={() => setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id))}
+                  onDelete={() => {
+                    // Remove from resume data
+                    setResumeData(prev => ({
+                      ...prev,
+                      genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.tool_id)
+                    }));
+                    // Also remove from selected tools
+                    setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id));
+                  }}
                 />
               ))}
             </Box>
           ) : (
             <Typography variant="body1" align="center" sx={{ py: 2 }}>
-              No AI tools selected yet.
+              No AI tools applied to resume yet. Select tools above and click "Apply" to add them.
             </Typography>
           )}
-          
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              className={classes.applyButton}
-              variant="contained"
-              onClick={handleApplyToResume}
-              disabled={selectedTools.length === 0}
-              fullWidth
-            >
-              Apply to Resume
-            </Button>
-            <Button
-              className={classes.saveButton}
-              variant="contained"
-              onClick={handleSaveUsage}
-              disabled={selectedTools.length === 0 || saving}
-            >
-              {saving ? <CircularProgress size={20} color="inherit" /> : 'Save Usage'}
-            </Button>
-          </Box>
         </Box>
       </Paper>
     </Box>
