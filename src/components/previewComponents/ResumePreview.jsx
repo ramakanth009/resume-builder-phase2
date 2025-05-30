@@ -282,148 +282,53 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
           </Box>
         )}
 
-      // In the ResumePreview.jsx file, update the AI Tools & Technologies section:
+      {/* AI Tools & Technologies Section */}
+      {hasAIToolsData() && (
+        <Box className={classes.resumeSection}>
+          <Typography variant="h6" className={classes.resumeSectionTitle}>
+            AI Tools & Technologies
+          </Typography>
 
-{/* AI Tools & Technologies Section */}
-{hasAIToolsData() && (
-  <Box className={classes.resumeSection}>
-    <Typography variant="h6" className={classes.resumeSectionTitle}>
-      AI Tools & Technologies
-    </Typography>
-
-    {/* Display genai_tools format */}
-    {data.genai_tools && data.genai_tools.length > 0 && (
-      <Box className={classes.resumeSkills}>
-        {data.genai_tools.map((tool, index) => (
-          <Chip
-            key={index}
-            label={formatAITool(tool)}
-            size="small"
-            className={classes.resumeSkillChip}
-            sx={{
-              backgroundColor: "#e6f3ff",
-              color: "#1565c0",
-              fontWeight: 500,
-            }}
-          />
-        ))}
-      </Box>
-    )}
-    {/* Display aiExperience format as chips */}
-    {data.aiExperience &&
-      data.aiExperience.length > 0 &&
-      !data.genai_tools && (
-        <Box className={classes.resumeSkills}>
-          {data.aiExperience.map((aiExp, index) => (
-            <Chip
-              key={index}
-              label={aiExp.toolName}
-              size="small"
-              className={classes.resumeSkillChip}
-              sx={{
-                backgroundColor: "#e6f3ff",
-                color: "#1565c0",
-                fontWeight: 500,
-              }}
-            />
-          ))}
+          {/* Display genai_tools format */}
+          {data.genai_tools && data.genai_tools.length > 0 && (
+            <Box className={classes.resumeSkills}>
+              {data.genai_tools.map((tool, index) => (
+                <Chip
+                  key={index}
+                  label={formatAITool(tool)}
+                  size="small"
+                  className={classes.resumeSkillChip}
+                  sx={{
+                    backgroundColor: "#e6f3ff",
+                    color: "#1565c0",
+                    fontWeight: 500,
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+          {/* Display aiExperience format as chips */}
+          {data.aiExperience &&
+            data.aiExperience.length > 0 &&
+            !data.genai_tools && (
+              <Box className={classes.resumeSkills}>
+                {data.aiExperience.map((aiExp, index) => (
+                  <Chip
+                    key={index}
+                    label={aiExp.toolName}
+                    size="small"
+                    className={classes.resumeSkillChip}
+                    sx={{
+                      backgroundColor: "#e6f3ff",
+                      color: "#1565c0",
+                      fontWeight: 500,
+                    }}
+                  />
+                ))}
+              </Box>
+            )}
         </Box>
       )}
-  </Box>
-)}
-
-{/* AI Experience Section - NEW FEATURE */}
-{hasAIExperienceData() && (
-  <Box className={classes.resumeSection}>
-    <Typography variant="h6" className={classes.resumeSectionTitle}>
-      AI & Technology Experience
-    </Typography>
-
-    {data.aiExperience.map((aiExp, index) => (
-      <Box key={`ai-exp-${index}`} className={classes.resumeItem}>
-        <Typography
-          variant="subtitle1"
-          className={classes.resumeSubtitle}
-        >
-          {aiExp.toolName}
-        </Typography>
-
-        {aiExp.impact && (
-          <Typography
-            variant="body2"
-            className={classes.resumeItemSubtitle}
-            sx={{ fontStyle: "italic" }}
-          >
-            {aiExp.impact}
-          </Typography>
-        )}
-
-        {aiExp.usageCases && aiExp.usageCases.length > 0 && (
-          <Box component="ul" className={classes.resumeBullets}>
-            {aiExp.usageCases.map((useCase, idx) => (
-              <li key={idx} className={classes.resumeBullet}>
-                {useCase}
-              </li>
-            ))}
-          </Box>
-        )}
-      </Box>
-    ))}
-  </Box>
-)}
-
-{/* NEW: GenAI Tools Usage Descriptions Section */}
-{data.genai_tools &&
-  data.genai_tools.length > 0 &&
-  data.genai_tools.some(
-    (tool) =>
-      tool.usage_descriptions && tool.usage_descriptions.length > 0
-  ) && (
-    <Box className={classes.resumeSection}>
-      <Typography variant="h6" className={classes.resumeSectionTitle}>
-        AI Tools Experience
-      </Typography>
-
-      {data.genai_tools.map(
-        (tool, index) =>
-          tool.usage_descriptions &&
-          tool.usage_descriptions.length > 0 && (
-            <Box
-              key={`genai-tool-${index}`}
-              className={classes.resumeItem}
-            >
-              <Typography
-                variant="subtitle1"
-                className={classes.resumeSubtitle}
-              >
-                {tool.name || `AI Tool ${tool.tool_id}`}
-              </Typography>
-
-              {tool.description && (
-                <Typography
-                  variant="body2"
-                  className={classes.resumeItemSubtitle}
-                  sx={{ fontStyle: "italic" }}
-                >
-                  {tool.description}
-                </Typography>
-              )}
-
-              {tool.usage_descriptions &&
-                tool.usage_descriptions.length > 0 && (
-                  <Box component="ul" className={classes.resumeBullets}>
-                    {tool.usage_descriptions.map((description, idx) => (
-                      <li key={idx} className={classes.resumeBullet}>
-                        {description}
-                      </li>
-                    ))}
-                  </Box>
-                )}
-            </Box>
-          )
-      )}
-    </Box>
-  )}
 
       {/* Education Section */}
       {hasEducationData() && (

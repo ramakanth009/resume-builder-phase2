@@ -54,7 +54,7 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     customSections: generatedResume.customSections || {}
   };
 
-  // IMPORTANT: Ensure aiExperience data is properly synced with genai_tools
+    // IMPORTANT: Ensure aiExperience data is properly synced with genai_tools
   // If we have aiExperience data but no genai_tools, convert aiExperience to genai_tools format
   if (adaptedResume.aiExperience && adaptedResume.aiExperience.length > 0 && 
       (!adaptedResume.genai_tools || adaptedResume.genai_tools.length === 0)) {
@@ -66,7 +66,6 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     }));
   }
 
-  // If we have genai_tools data but no aiExperience, convert genai_tools to aiExperience format
   if (adaptedResume.genai_tools && adaptedResume.genai_tools.length > 0 && 
       (!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0)) {
     adaptedResume.aiExperience = adaptedResume.genai_tools.map(tool => ({
