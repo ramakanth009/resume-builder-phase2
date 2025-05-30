@@ -1,314 +1,507 @@
 export const dummyResumes = [
   {
     header: {
-      name: 'Priya Sharma',
-      email: 'priya.sharma@example.com',
-      phone: '9845321678',
-      github: 'https://github.com/priyasharma',
-      linkedin: 'https://linkedin.com/in/priyasharma',
-      portfolio: 'https://priyasharma.dev'
+      name: 'Aditi Krishnamurthy',
+      email: 'aditi.krishna@example.com', 
+      phone: '9876543210',
+      github: 'https://github.com/aditikrishna',
+      linkedin: 'https://linkedin.com/in/aditikrishnamurthy',
+      portfolio: 'https://aditikrishna.dev'
     },
-    summary: 'Detail-oriented Computer Science graduate with strong foundation in web development and machine learning. Passionate about building accessible, user-friendly applications that solve real-world problems using cutting-edge AI technologies.',
-    target_role: 'Full Stack Developer',
+    summary: 'Innovative Computer Science graduate specializing in AI/ML and full-stack development. Experienced in leveraging cutting-edge AI tools to accelerate development workflows and build intelligent applications. Passionate about creating scalable solutions that solve real-world problems using modern technologies.',
+    target_role: 'AI/ML Engineer',
     education: {
       degree: 'Bachelor of Technology',
       specialization: 'Computer Science and Engineering',
-      institution: 'Indian Institute of Technology, Hyderabad',
-      graduation_year: '2023',
-      graduationYear: '2023'
+      institution: 'Indian Institute of Technology, Mumbai',
+      graduation_year: '2024',
+      graduationYear: '2024'
     },
     skills: [
-      'JavaScript', 'TypeScript', 'React', 'Node.js', 'Express', 
-      'MongoDB', 'Python', 'Django', 'Flask', 'PostgreSQL', 
-      'Docker', 'AWS', 'Git', 'CI/CD', 'RESTful APIs', 'GraphQL',
-      'Machine Learning', 'TensorFlow', 'PyTorch'
+      'Python', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'JavaScript', 'React', 
+      'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Docker', 'Kubernetes', 
+      'AWS', 'GCP', 'Git', 'CI/CD', 'RESTful APIs', 'GraphQL', 'FastAPI',
+      'Computer Vision', 'Natural Language Processing', 'Deep Learning'
     ],
-    // NEW: AI Tools section with proficiency levels
+    
+    // NEW FEATURE: AI Experience Section - showcases how AI tools were used
+    aiExperience: [
+      {
+        toolName: 'GitHub Copilot',
+        impact: 'Increased coding productivity by 40% and reduced debugging time significantly.',
+        usageCases: [
+          'Accelerated Python and JavaScript development with intelligent code completion',
+          'Generated comprehensive unit tests for machine learning models',
+          'Automated API endpoint creation with proper error handling',
+          'Enhanced CSS styling workflows with responsive design suggestions'
+        ]
+      },
+      {
+        toolName: 'ChatGPT (GPT-4)',
+        impact: 'Enhanced problem-solving capabilities and improved code quality through AI-assisted debugging.',
+        usageCases: [
+          'Advanced machine learning algorithm design and optimization',
+          'Complex data structure implementation and performance tuning',
+          'API documentation generation and technical writing assistance',
+          'Code review and best practices implementation guidance'
+        ]
+      },
+      {
+        toolName: 'Claude AI',
+        impact: 'Streamlined research processes and improved technical documentation quality.',
+        usageCases: [
+          'Deep technical analysis and research paper summarization',
+          'Complex system architecture planning and documentation',
+          'Data preprocessing pipeline optimization strategies',
+          'Advanced debugging for multi-threaded applications'
+        ]
+      }
+    ],
+    
+    // Enhanced GenAI tools with usage descriptions
     genai_tools: [
       {
-        tool_id: 'chatgpt',
+        tool_id: 1,
+        name: 'GitHub Copilot',
+        description: 'AI-powered code completion and pair programming assistant',
+        usage_descriptions: [
+          'Accelerated React component development with intelligent code completion',
+          'Generated comprehensive unit tests for machine learning models',
+          'Enhanced CSS styling workflows with responsive design suggestions',
+          'Automated API endpoint creation with proper error handling'
+        ]
+      },
+      {
+        tool_id: 5,
         name: 'ChatGPT',
         description: 'Advanced AI assistant for code generation and problem-solving',
-        proficiency: 'expert'
+        usage_descriptions: [
+          'Advanced machine learning algorithm design and optimization',
+          'Complex data structure implementation and performance tuning',
+          'API documentation generation and technical writing assistance'
+        ]
       },
       {
-        tool_id: 'github-copilot',
-        name: 'GitHub Copilot',
-        description: 'AI-powered code completion and pair programming',
-        proficiency: 'intermediate'
-      },
-      {
-        tool_id: 'claude',
+        tool_id: 8,
         name: 'Claude AI',
-        description: 'AI assistant for complex reasoning and analysis',
-        proficiency: 'intermediate'
-      },
-      {
-        tool_id: 'cursor',
-        name: 'Cursor IDE',
-        description: 'AI-powered code editor with intelligent suggestions',
-        proficiency: 'beginner'
+        description: 'AI assistant for complex reasoning and technical analysis',
+        usage_descriptions: [
+          'Deep technical analysis and research paper summarization',
+          'Complex system architecture planning and documentation',
+          'Data preprocessing pipeline optimization strategies'
+        ]
       }
     ],
+    
     projects: [
       {
-        name: 'AI-Powered E-Learning Platform',
-        skills_used: 'React, Node.js, MongoDB, AWS S3, OpenAI API',
-        description: 'Built a full-featured online learning platform with AI-powered content recommendations\nImplemented video streaming functionality with adaptive quality\nCreated interactive quiz system with real-time feedback\nDeveloped user authentication and progress tracking\nIntegrated ChatGPT API for personalized learning assistance',
-        technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'AWS S3', 'OpenAI API'],
+        name: 'Smart Resume Analyzer using NLP',
+        skills_used: 'Python, TensorFlow, NLTK, spaCy, Flask, React, MongoDB',
+        description: 'Developed an AI-powered resume analysis platform with real-time feedback\nImplemented natural language processing for skill extraction and matching\nBuilt machine learning models for ATS compatibility scoring\nCreated interactive dashboard for resume optimization recommendations\nIntegrated with multiple ATS systems for comprehensive testing',
+        technologies: ['Python', 'TensorFlow', 'NLTK', 'spaCy', 'Flask', 'React', 'MongoDB'],
         responsibilities: [
-          'Developed a responsive front-end using React and Material-UI',
-          'Built RESTful API with Node.js and Express',
-          'Implemented video streaming functionality using AWS S3',
-          'Created interactive quiz system with instant feedback',
-          'Designed MongoDB schema for content and user management',
-          'Integrated OpenAI API for AI-powered learning recommendations'
+          'Developed NLP models for automatic skill extraction from resumes using TensorFlow and spaCy',
+          'Implemented ATS compatibility scoring algorithm with 85% accuracy',
+          'Built real-time resume analysis API using Flask and MongoDB',
+          'Created responsive React dashboard for resume optimization feedback',
+          'Integrated with 5+ major ATS systems for comprehensive compatibility testing',
+          'Deployed on AWS with Docker containerization and CI/CD pipeline'
         ],
-        link: 'https://github.com/priyasharma/ai-elearning'
+        link: 'https://github.com/aditikrishna/smart-resume-analyzer'
       },
       {
-        name: 'Smart Healthcare Management System',
-        skills_used: 'Python, Django, PostgreSQL, Docker, TensorFlow',
-        description: 'Designed and implemented a hospital management system with AI diagnostics\nCreated appointment scheduling with conflict resolution\nBuilt patient records database with HIPAA compliance\nImplemented role-based access control\nDeveloped ML model for symptom analysis',
-        technologies: ['Python', 'Django', 'PostgreSQL', 'Docker', 'Bootstrap', 'TensorFlow'],
+        name: 'AI-Powered E-Commerce Recommendation System',
+        skills_used: 'Python, Scikit-learn, Pandas, FastAPI, PostgreSQL, Redis',
+        description: 'Built a collaborative filtering recommendation engine for e-commerce platform\nImplemented real-time product recommendations using machine learning\nDeveloped user behavior tracking and analysis system\nCreated A/B testing framework for recommendation algorithms\nOptimized system performance to handle 10K+ concurrent users',
+        technologies: ['Python', 'Scikit-learn', 'Pandas', 'FastAPI', 'PostgreSQL', 'Redis'],
         responsibilities: [
-          'Designed database schema for patient and doctor information',
-          'Implemented appointment scheduling system with conflict resolution',
-          'Created secure patient records management with HIPAA compliance',
-          'Built authentication system with role-based access control',
-          'Containerized application with Docker for easy deployment',
-          'Developed machine learning model for preliminary symptom analysis'
+          'Designed and implemented collaborative filtering algorithms using Scikit-learn',
+          'Built real-time recommendation API with FastAPI achieving <100ms response time',
+          'Developed user behavior tracking system with PostgreSQL and Redis caching',
+          'Created A/B testing framework for algorithm performance comparison',
+          'Optimized system to handle 10,000+ concurrent users with 99.9% uptime',
+          'Increased user engagement by 35% and conversion rates by 22%'
         ],
-        link: 'https://github.com/priyasharma/smart-healthcare'
+        link: 'https://github.com/aditikrishna/ai-ecommerce-recommender'
       },
       {
-        name: 'Real-time Chat Application',
-        skills_used: 'React, Socket.io, Node.js, Redis, JWT',
-        description: 'Built a real-time messaging application with advanced features\nImplemented end-to-end encryption for secure communication\nAdded file sharing and media upload capabilities\nCreated group chat functionality with admin controls',
-        technologies: ['React', 'Socket.io', 'Node.js', 'Redis', 'JWT', 'Multer'],
+        name: 'Computer Vision Medical Diagnostic Tool',
+        skills_used: 'Python, PyTorch, OpenCV, Streamlit, Docker, AWS S3',
+        description: 'Developed CNN-based medical image analysis tool for diagnostic assistance\nImplemented transfer learning for X-ray and MRI image classification\nBuilt secure web application for healthcare professionals\nCreated data pipeline for medical image preprocessing\nEnsured HIPAA compliance and data security standards',
+        technologies: ['Python', 'PyTorch', 'OpenCV', 'Streamlit', 'Docker', 'AWS S3'],
         responsibilities: [
-          'Developed real-time messaging using Socket.io',
-          'Implemented end-to-end encryption for secure communication',
-          'Built file sharing and media upload system',
-          'Created group chat with admin controls and permissions',
-          'Used Redis for session management and caching'
+          'Developed CNN models using PyTorch for medical image classification with 92% accuracy',
+          'Implemented transfer learning techniques for X-ray and MRI analysis',
+          'Built secure Streamlit web application with role-based access control',
+          'Created automated data pipeline for medical image preprocessing and augmentation',
+          'Ensured HIPAA compliance with encrypted data storage and transmission',
+          'Deployed on AWS with Docker containerization and S3 for secure image storage'
         ],
-        link: 'https://chatapp-priya.netlify.app'
+        link: 'https://github.com/aditikrishna/medical-cv-diagnostic'
       }
     ],
+    
     work_experience: [
       {
+        position: 'Machine Learning Engineering Intern',
+        company_name: 'Microsoft Research India',
+        companyName: 'Microsoft Research India',
+        duration: 'May 2023 - August 2023',
+        start_date: 'May 2023',
+        end_date: 'August 2023',
+        description: 'Developed machine learning models for natural language understanding in conversational AI\nImplemented transformer architectures for improved dialogue systems\nCollaborated with senior researchers on cutting-edge NLP projects\nOptimized model performance reducing inference time by 30%\nContributed to research paper published in NeurIPS 2023',
+        responsibilities: [
+          'Developed transformer-based models for conversational AI with 15% improvement in BLEU scores',
+          'Implemented advanced NLP preprocessing pipelines using Python and TensorFlow',
+          'Collaborated with senior researchers on dialogue system optimization projects',
+          'Optimized model inference time by 30% through quantization and pruning techniques',
+          'Contributed to research paper accepted at NeurIPS 2023 conference',
+          'Mentored 2 junior interns on machine learning best practices'
+        ]
+      },
+      {
         position: 'Full Stack Developer Intern',
-        company_name: 'TechSolutions India',
-        companyName: 'TechSolutions India',
-        duration: 'May 2022 - August 2022',
-        start_date: 'May 2022',
-        end_date: 'August 2022',
-        description: 'Developed and maintained web applications using modern technologies\nImplemented new features based on user feedback and business requirements\nCollaborated with senior developers on architecture decisions\nFixed critical bugs in production environment\nParticipated in agile development processes and code reviews',
+        company_name: 'Flipkart Labs',
+        companyName: 'Flipkart Labs',
+        duration: 'December 2022 - April 2023',
+        start_date: 'December 2022',
+        end_date: 'April 2023',
+        description: 'Built scalable microservices for e-commerce recommendation system\nDeveloped React-based admin dashboard for data analytics\nImplemented real-time data processing pipelines using Apache Kafka\nOptimized database queries resulting in 40% performance improvement\nParticipated in agile development processes and code reviews',
         responsibilities: [
-          'Developed and maintained web applications using React and Node.js',
-          'Implemented new features based on user feedback and requirements',
-          'Collaborated with senior developers on architecture decisions',
-          'Fixed critical bugs in production environment',
-          'Participated in code reviews and testing',
-          'Contributed to API documentation and technical specifications'
+          'Built microservices architecture using Node.js and Express for recommendation engine',
+          'Developed responsive React dashboard for real-time analytics and data visualization',
+          'Implemented Apache Kafka data streaming for processing 1M+ daily transactions',
+          'Optimized PostgreSQL database queries achieving 40% performance improvement',
+          'Participated in agile development with daily standups and sprint planning',
+          'Wrote comprehensive unit tests achieving 85% code coverage'
         ]
       },
       {
-        position: 'AI Research Assistant',
-        company_name: 'AI Research Lab, IIT Hyderabad',
-        companyName: 'AI Research Lab, IIT Hyderabad',
-        duration: 'January 2022 - April 2022',
-        start_date: 'January 2022',
-        end_date: 'April 2022',
-        description: 'Assisted in developing machine learning models for natural language processing\nCollected and preprocessed large-scale dataset for NLP research\nImplemented various neural network architectures using PyTorch\nContributed to research paper published in EMNLP 2022\nPresented findings at weekly research seminars',
+        position: 'Research Assistant',
+        company_name: 'AI Research Lab, IIT Mumbai',
+        companyName: 'AI Research Lab, IIT Mumbai',
+        duration: 'August 2022 - November 2022',
+        start_date: 'August 2022',
+        end_date: 'November 2022',
+        description: 'Assisted in developing deep learning models for computer vision applications\nConducted literature review on state-of-the-art CNN architectures\nImplemented various neural network architectures using PyTorch\nCollected and annotated large-scale image datasets\nPresented research findings at weekly lab seminars',
         responsibilities: [
-          'Assisted in developing and testing machine learning models',
-          'Collected and preprocessed large-scale dataset for NLP research',
-          'Implemented various neural network architectures using PyTorch',
-          'Contributed to research paper published in EMNLP 2022',
-          'Presented weekly updates to the research team',
-          'Collaborated on data visualization and analysis tasks'
-        ]
-      },
-      {
-        position: 'Teaching Assistant',
-        company_name: 'IIT Hyderabad - Computer Science Department',
-        companyName: 'IIT Hyderabad - Computer Science Department',
-        duration: 'August 2021 - December 2021',
-        start_date: 'August 2021',
-        end_date: 'December 2021',
-        description: 'Assisted professor in Data Structures and Algorithms course\nConducted tutorial sessions for 50+ students\nGraded assignments and provided detailed feedback\nHelped students with programming concepts and debugging',
-        responsibilities: [
-          'Conducted tutorial sessions for Data Structures and Algorithms',
-          'Graded assignments and provided detailed feedback to students',
-          'Helped students with programming concepts and debugging',
-          'Assisted in creating course materials and practice problems',
-          'Maintained office hours for student consultations'
+          'Conducted comprehensive literature review on state-of-the-art computer vision models',
+          'Implemented and trained CNN architectures including ResNet, EfficientNet, and Vision Transformers',
+          'Collected and annotated 10,000+ images for custom computer vision datasets',
+          'Developed data augmentation techniques improving model generalization by 12%',
+          'Presented weekly research updates to faculty and graduate students',
+          'Collaborated on grant proposal that secured ₹15 lakhs in research funding'
         ]
       }
     ],
+    
     // Enhanced certifications with mixed formats
     certifications: [
       {
-        name: 'AWS Certified Developer - Associate',
+        name: 'AWS Certified Machine Learning - Specialty',
         issuer: 'Amazon Web Services',
-        url: 'https://aws.amazon.com/certification/certified-developer-associate/'
+        url: 'https://aws.amazon.com/certification/certified-machine-learning-specialty/'
       },
       {
         name: 'Google Professional Machine Learning Engineer',
         issuer: 'Google Cloud',
         url: 'https://cloud.google.com/certification/machine-learning-engineer'
       },
-      'Microsoft Certified: Azure AI Engineer Associate',
-      'IBM Data Science Professional Certificate',
+      'TensorFlow Developer Certificate',
+      'Microsoft Azure AI Engineer Associate',
       {
         name: 'Deep Learning Specialization',
         issuer: 'Coursera - Andrew Ng',
         url: 'https://coursera.org/specializations/deep-learning'
       },
-      'GitHub Advanced Security Certification',
+      'PyTorch Certified Developer',
       {
         name: 'Certified Kubernetes Application Developer (CKAD)',
         issuer: 'Cloud Native Computing Foundation',
         url: 'https://www.cncf.io/certification/ckad/'
+      },
+      'NVIDIA Deep Learning Institute - Computer Vision',
+      {
+        name: 'MongoDB Certified Developer',
+        issuer: 'MongoDB University',
+        url: 'https://university.mongodb.com/certification'
       }
     ],
+    
     customSections: {
       Languages: [
         'English (Professional)',
         'Hindi (Native)',
-        'Telugu (Conversational)',
-        'Spanish (Basic)'
+        'Marathi (Native)',
+        'Sanskrit (Intermediate)',
+        'German (Basic)'
       ],
-      Strengths: [
-        'Problem-solving and analytical thinking',
-        'Team collaboration and leadership',
-        'Quick learner and adaptable',
-        'Attention to detail and quality-focused',
-        'Time management and project organization',
-        'Cross-functional communication'
+      Technical_Strengths: [
+        'Machine Learning algorithm design and optimization',
+        'Computer Vision and Image Processing',
+        'Natural Language Processing and NLP',
+        'Full-stack web development with modern frameworks',
+        'Cloud architecture and containerization',
+        'Data pipeline design and ETL processes',
+        'AI model deployment and MLOps practices'
       ],
-      Volunteer_Experience: [
-        'Coding mentor at local high school (2021-2023)',
-        'Open source contributor to Django documentation',
-        'Technical writer for DEV Community',
-        'Women in Tech mentor program participant',
-        'Organized coding bootcamp for underprivileged students'
+      Research_Publications: [
+        'Krishnamurthy, A. et al. "Advanced Dialogue Systems using Transformer Architecture" - NeurIPS 2023',
+        'Co-authored "Optimizing Computer Vision Models for Medical Diagnostics" - ICML Workshop 2023',
+        'Contributing author to "AI in E-commerce: Recommendation Systems" - IEEE Transactions on AI 2023'
       ],
-      Achievements: [
-        'Winner - Smart India Hackathon 2022 (Healthcare Category)',
-        'Best Project Award - IIT Hyderabad Tech Fest 2023',
-        'Google Summer of Code participant 2022',
-        'Published research paper in EMNLP 2022 conference',
-        'Dean\'s List for academic excellence (2021-2023)'
+      Awards_and_Achievements: [
+        'Winner - Microsoft AI Challenge 2023 (National Level)',
+        'Best Innovation Award - IIT Mumbai Tech Fest 2023',
+        'Google Summer of Code 2022 - TensorFlow Project',
+        'Dean\'s List for Academic Excellence (2021-2024)',
+        'Secured AIR 156 in JEE Advanced 2020',
+        'KVPY Scholar (2019-2020)',
+        'Published 3 research papers in top-tier AI conferences'
       ],
-      Technical_Projects: [
-        'Contributing to open-source React libraries',
-        'Building AI-powered developer tools',
-        'Creating educational content on YouTube (5K+ subscribers)',
-        'Developing mobile apps using React Native'
+      Leadership_Experience: [
+        'Technical Lead - IIT Mumbai AI Society (2022-2024)',
+        'Organized National Machine Learning Workshop with 500+ participants',
+        'Mentored 15+ junior students in competitive programming and AI research',
+        'Founded and led "Women in AI" chapter at IIT Mumbai',
+        'Event coordinator for Inter-IIT Tech Meet 2023'
       ],
-      Interests: [
-        'Artificial Intelligence and Machine Learning',
-        'Open Source Development',
-        'Technical Writing and Blogging',
-        'Photography and Digital Art',
-        'Sustainable Technology Solutions'
+      Open_Source_Contributions: [
+        'Core contributor to TensorFlow Model Garden (500+ commits)',
+        'Maintainer of popular PyTorch computer vision library (2K+ GitHub stars)',
+        'Created open-source medical image analysis toolkit used by 50+ hospitals',
+        'Regular contributor to Hugging Face Transformers library',
+        'Published 5+ machine learning tutorials with 100K+ combined views'
+      ],
+      Volunteer_Work: [
+        'AI/ML instructor at rural coding bootcamp (2022-2024)',
+        'Technical mentor for underprivileged students through NGO partnership',
+        'Volunteer data scientist for environmental conservation projects',
+        'STEM educator at local government schools',
+        'Organized free AI literacy workshops for senior citizens'
+      ],
+      Interests_and_Hobbies: [
+        'Artificial Intelligence research and applications',
+        'Competitive Programming (CodeChef 5-star, Codeforces Expert)',
+        'Photography and Digital Art using AI tools',
+        'Classical Indian dance (Bharatanatyam) - Grade 8 certified',
+        'Sustainable technology and green computing initiatives',
+        'Chess (State-level player, rated 1800+ FIDE)'
       ]
     }
   },
   
-  // Additional dummy resume for variety
+  // Second dummy resume with different focus
   {
     header: {
-      name: 'Arjun Patel',
-      email: 'arjun.dev@example.com',
-      phone: '9876543210',
-      github: 'https://github.com/arjunpatel',
-      linkedin: 'https://linkedin.com/in/arjunpatel',
-      portfolio: 'https://arjunpatel.tech'
+      name: 'Rohit Sharma',
+      email: 'rohit.dev@example.com',
+      phone: '9988776655',
+      github: 'https://github.com/rohitsharma-dev',
+      linkedin: 'https://linkedin.com/in/rohitsharmadev',
+      portfolio: 'https://rohitsharma.tech'
     },
-    summary: 'Innovative software engineer specializing in mobile app development and cloud architecture. Experienced in building scalable applications with modern frameworks and AI integration.',
-    target_role: 'Mobile App Developer',
+    summary: 'Passionate Full-Stack Developer and UI/UX enthusiast with expertise in modern web technologies and AI-assisted development. Experienced in building scalable applications using React, Node.js, and cloud technologies. Strong advocate for clean code, user-centered design, and AI-enhanced development workflows.',
+    target_role: 'Full Stack Developer',
     education: {
-      degree: 'Bachelor of Engineering',
-      specialization: 'Information Technology',
-      institution: 'Delhi Technological University',
+      degree: 'Bachelor of Computer Applications',
+      specialization: 'Software Development',
+      institution: 'Pune University',
       graduation_year: '2024',
       graduationYear: '2024'
     },
     skills: [
-      'React Native', 'Flutter', 'Swift', 'Kotlin', 'Java',
-      'Firebase', 'AWS', 'Node.js', 'MongoDB', 'PostgreSQL',
-      'RESTful APIs', 'GraphQL', 'Git', 'CI/CD', 'Jest'
+      'JavaScript', 'TypeScript', 'React', 'Next.js', 'Vue.js', 'Node.js', 
+      'Express', 'NestJS', 'MongoDB', 'PostgreSQL', 'MySQL', 'Redis',
+      'Docker', 'Kubernetes', 'AWS', 'Firebase', 'Git', 'CI/CD',
+      'GraphQL', 'RESTful APIs', 'Tailwind CSS', 'Material-UI', 'Figma'
     ],
-    genai_tools: [
+    
+    aiExperience: [
       {
-        tool_id: 'github-copilot',
-        name: 'GitHub Copilot',
-        description: 'AI pair programming assistant',
-        proficiency: 'expert'
+        toolName: 'v0 by Vercel',
+        impact: 'Accelerated UI development by 60% and improved design consistency across projects.',
+        usageCases: [
+          'Rapid UI component generation from design specifications',
+          'AI-assisted responsive design implementation',
+          'Automated component documentation and testing',
+          'Interactive prototype development from wireframes'
+        ]
       },
       {
-        tool_id: 'tabnine',
-        name: 'Tabnine',
-        description: 'AI code completion tool',
-        proficiency: 'intermediate'
-      }
-    ],
-    projects: [
+        toolName: 'GitHub Copilot',
+        impact: 'Enhanced coding efficiency and reduced boilerplate code writing time by 45%.',
+        usageCases: [
+          'Intelligent code completion for React and Node.js development',
+          'Automated test case generation for frontend components',
+          'API endpoint creation with proper validation and error handling',
+          'Database query optimization and ORM implementation assistance'
+        ]
+      },
       {
-        name: 'FitTrack - Fitness Mobile App',
-        skills_used: 'React Native, Firebase, Google Fit API',
-        description: 'Developed a comprehensive fitness tracking mobile application\nIntegrated with wearable devices and health APIs\nImplemented social features for workout sharing\nBuilt custom workout planner with AI recommendations',
-        technologies: ['React Native', 'Firebase', 'Google Fit API', 'Redux'],
-        responsibilities: [
-          'Designed and developed cross-platform mobile app',
-          'Integrated with Google Fit and Apple Health APIs',
-          'Implemented real-time data synchronization',
-          'Built social networking features for fitness enthusiasts'
-        ],
-        link: 'https://github.com/arjunpatel/fittrack'
-      }
-    ],
-    work_experience: [
-      {
-        position: 'Mobile Developer Intern',
-        company_name: 'StartupXYZ',
-        companyName: 'StartupXYZ',
-        duration: 'June 2023 - Present',
-        start_date: 'June 2023',
-        end_date: 'Present',
-        description: 'Currently working on mobile app development using React Native\nBuilding features for e-commerce mobile application\nCollaborating with design team on UI/UX improvements',
-        responsibilities: [
-          'Developing mobile features using React Native',
-          'Collaborating with cross-functional teams',
-          'Implementing responsive UI components',
-          'Writing unit tests and ensuring code quality'
+        toolName: 'Figma AI',
+        impact: 'Streamlined design-to-code workflow and improved design system consistency.',
+        usageCases: [
+          'AI-powered design system creation and maintenance',
+          'Automated design token generation from mockups',
+          'Smart layout suggestions for responsive design',
+          'Component variant generation and optimization'
         ]
       }
     ],
-    certifications: [
-      'Google Associate Android Developer',
+    
+    genai_tools: [
       {
-        name: 'AWS Certified Cloud Practitioner',
-        issuer: 'Amazon Web Services',
-        url: 'https://aws.amazon.com/certification/certified-cloud-practitioner/'
+        tool_id: 14,
+        name: 'v0 by Vercel',
+        description: 'Generate UI components and designs from prompts',
+        usage_descriptions: [
+          'Rapid UI component generation from design specifications',
+          'AI-assisted wireframe to high-fidelity design conversion',
+          'Intelligent responsive design implementation and testing'
+        ]
       },
-      'Firebase Certified Developer'
+      {
+        tool_id: 1,
+        name: 'GitHub Copilot',
+        description: 'AI-powered code completion and pair programming',
+        usage_descriptions: [
+          'Intelligent code completion for React and Node.js development',
+          'Automated test case generation for frontend components',
+          'API endpoint creation with proper validation and error handling'
+        ]
+      },
+      {
+        tool_id: 11,
+        name: 'Figma AI',
+        description: 'Smart design suggestions and layout assist',
+        usage_descriptions: [
+          'AI-powered design system creation with intelligent component generation',
+          'Automated layout suggestions and responsive design optimization',
+          'Smart color palette and typography recommendations'
+        ]
+      }
     ],
+    
+    projects: [
+      {
+        name: 'AI-Enhanced Task Management Platform',
+        skills_used: 'React, TypeScript, Node.js, Express, MongoDB, Socket.io, JWT',
+        description: 'Built a collaborative task management platform with AI-powered features\nImplemented real-time collaboration using WebSocket connections\nDeveloped intelligent task prioritization using machine learning\nCreated responsive design with dark/light theme support\nIntegrated with popular third-party tools via REST APIs',
+        technologies: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Socket.io'],
+        responsibilities: [
+          'Developed responsive React frontend with TypeScript and Material-UI',
+          'Built scalable Node.js backend with Express and MongoDB',
+          'Implemented real-time collaboration features using Socket.io',
+          'Created AI-powered task prioritization algorithm with 80% accuracy',
+          'Integrated with Google Calendar, Slack, and Trello APIs',
+          'Deployed on AWS with Docker containerization and load balancing'
+        ],
+        link: 'https://github.com/rohitsharma-dev/ai-task-manager'
+      },
+      {
+        name: 'E-Learning Platform with Video Streaming',
+        skills_used: 'Next.js, TypeScript, Prisma, PostgreSQL, AWS S3, Stripe',
+        description: 'Developed a comprehensive e-learning platform with video streaming capabilities\nImplemented secure payment integration using Stripe\nBuilt adaptive video streaming for optimal user experience\nCreated course management system for instructors\nDeveloped analytics dashboard for tracking student progress',
+        technologies: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'AWS S3', 'Stripe'],
+        responsibilities: [
+          'Built full-stack application using Next.js and TypeScript',
+          'Implemented secure user authentication and authorization system',
+          'Developed adaptive video streaming with AWS S3 and CloudFront',
+          'Integrated Stripe for secure payment processing and subscription management',
+          'Created comprehensive course management system for instructors',
+          'Built analytics dashboard with charts and progress tracking'
+        ],
+        link: 'https://github.com/rohitsharma-dev/elearning-platform'
+      }
+    ],
+    
+    work_experience: [
+      {
+        position: 'Frontend Developer Intern',
+        company_name: 'Zomato',
+        companyName: 'Zomato',
+        duration: 'June 2023 - Present',
+        start_date: 'June 2023',
+        end_date: 'Present',
+        description: 'Currently working on improving user experience for Zomato\'s web platform\nDeveloping new features using React and TypeScript\nCollaborating with design team on UI/UX improvements\nOptimizing application performance and accessibility\nParticipating in code reviews and agile development processes',
+        responsibilities: [
+          'Developing responsive web components using React and TypeScript',
+          'Collaborating with UX team to implement pixel-perfect designs',
+          'Optimizing application performance achieving 20% faster load times',
+          'Implementing accessibility features following WCAG guidelines',
+          'Participating in sprint planning and daily standups',
+          'Writing comprehensive unit tests with Jest and React Testing Library'
+        ]
+      },
+      {
+        position: 'Web Development Intern',
+        company_name: 'StartupXYZ',
+        companyName: 'StartupXYZ',
+        duration: 'January 2023 - May 2023',
+        start_date: 'January 2023',
+        end_date: 'May 2023',
+        description: 'Worked on full-stack development for early-stage fintech startup\nBuilt responsive web applications using React and Node.js\nImplemented secure authentication and payment systems\nDeveloped RESTful APIs with comprehensive documentation\nCollaborated closely with founders on product development',
+        responsibilities: [
+          'Built full-stack web application using React and Node.js',
+          'Implemented secure JWT-based authentication system',
+          'Developed RESTful APIs with Express.js and MongoDB',
+          'Integrated payment gateway for secure financial transactions',
+          'Created comprehensive API documentation using Swagger',
+          'Participated in product planning and user feedback sessions'
+        ]
+      }
+    ],
+    
+    certifications: [
+      {
+        name: 'AWS Certified Developer - Associate',
+        issuer: 'Amazon Web Services',
+        url: 'https://aws.amazon.com/certification/certified-developer-associate/'
+      },
+      'Meta React Developer Certificate',
+      {
+        name: 'Google UX Design Certificate',
+        issuer: 'Google Career Certificates',
+        url: 'https://grow.google/certificates/ux-design/'
+      },
+      'MongoDB Node.js Developer Path',
+      {
+        name: 'Advanced React and Redux',
+        issuer: 'Udemy',
+        url: 'https://udemy.com/course/react-redux/'
+      }
+    ],
+    
     customSections: {
       Languages: [
-        'English (Fluent)',
+        'English (Professional)',
         'Hindi (Native)',
-        'Gujarati (Native)'
+        'Punjabi (Conversational)',
+        'Spanish (Basic)'
       ],
-      Strengths: [
-        'Mobile-first development approach',
-        'User experience focused design',
-        'Performance optimization',
-        'Cross-platform development expertise'
+      Technical_Strengths: [
+        'Frontend development with React ecosystem',
+        'Backend API development with Node.js',
+        'Database design and optimization',
+        'UI/UX design and prototyping',
+        'Cloud deployment and DevOps practices',
+        'Performance optimization and testing'
+      ],
+      Design_Skills: [
+        'User Interface (UI) Design',
+        'User Experience (UX) Research',
+        'Wireframing and Prototyping',
+        'Design Systems and Component Libraries',
+        'Responsive Web Design',
+        'Accessibility and Inclusive Design'
+      ],
+      Achievements: [
+        'Winner - Zomato Internal Hackathon 2023',
+        'Best Frontend Project - College Tech Fest 2023',
+        'Open Source Contributor - 500+ commits to React libraries',
+        'Built and launched 3 web applications with 1000+ users each',
+        'Technical blogger with 50K+ monthly readers'
       ]
     }
   }

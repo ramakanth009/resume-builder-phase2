@@ -1,6 +1,6 @@
 // Base URL for API requests
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
 // const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
@@ -349,7 +349,7 @@ export const getSkillRecommendations = async (role) => {
  */
 export const getGenAITools = async (role) => {
   try {
-    return await apiRequest(`/genai_tools/${encodeURIComponent(role)}`);
+    return await apiRequest(`/genai_skills/${encodeURIComponent(role)}`);
   } catch (error) {
     throw error; // Pass through backend error
   }
