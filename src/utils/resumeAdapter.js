@@ -44,8 +44,8 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     aiExperience: normalizeAIExperience(generatedResume.aiExperience || []),
     
     // Handle GenAI tools - NEW FEATURE
-    genai_skills: normalizeGenAITools(
-      generatedResume.genai_skills || 
+    genai_tools: normalizeGenAITools(
+      generatedResume.genai_tools || 
       generatedResume.used_tools || 
       generatedResume.aiExperience || 
       []

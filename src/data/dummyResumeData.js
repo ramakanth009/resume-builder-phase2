@@ -26,7 +26,7 @@ export const dummyResumes = [
     
 
     // Enhanced GenAI tools with usage descriptions
-    genai_skills: [
+    genai_tools: [
       {
         tool_id: 1,
         name: 'GitHub Copilot',

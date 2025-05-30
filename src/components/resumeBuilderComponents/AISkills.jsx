@@ -160,22 +160,22 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
     cacheTime: 60 * 60 * 1000,
   });
   
-  const genaiTools = genaiResponse?.genai_skills || [];
+  const genaiTools = genaiResponse?.genai_tools || [];
   
   // Initialize from existing resume data
   useEffect(() => {
-    if (resumeData.genai_skills && resumeData.genai_skills.length > 0) {
-      setSelectedTools(resumeData.genai_skills);
+    if (resumeData.genai_tools && resumeData.genai_tools.length > 0) {
+      setSelectedTools(resumeData.genai_tools);
       // Initialize tool usages from existing data
       const usages = {};
-      resumeData.genai_skills.forEach(tool => {
+      resumeData.genai_tools.forEach(tool => {
         if (tool.usage_descriptions) {
           usages[tool.tool_id] = tool.usage_descriptions;
         }
       });
       setToolUsages(usages);
     }
-  }, [resumeData.genai_skills]);
+  }, [resumeData.genai_tools]);
 
   // Toggle tool selection
   const handleToggleTool = (tool) => {
@@ -191,7 +191,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       // Remove from resume data immediately
       setResumeData(prev => ({
         ...prev,
-        genai_skills: prev.genai_skills.filter(t => t.tool_id !== tool.id)
+        genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.id)
       }));
     } else {
       setSelectedTools(prev => [...prev, { 
@@ -236,12 +236,12 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
 
       // Update resume data with this specific tool
       setResumeData(prev => {
-        const existingTools = prev.genai_skills || [];
+        const existingTools = prev.genai_tools || [];
         const otherTools = existingTools.filter(t => t.tool_id !== toolId);
         
         return {
           ...prev,
-          genai_skills: [...otherTools, toolWithUsage]
+          genai_tools: [...otherTools, toolWithUsage]
         };
       });
 
@@ -409,13 +409,13 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <LightbulbIcon sx={{ color: '#3182ce', mr: 1 }} />
-          Applied AI Tools ({(resumeData.genai_skills || []).length})
+          Applied AI Tools ({(resumeData.genai_tools || []).length})
         </Typography>
         
         <Box className={classes.summaryContainer}>
-          {(resumeData.genai_skills || []).length > 0 ? (
+          {(resumeData.genai_tools || []).length > 0 ? (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
-              {(resumeData.genai_skills || []).map((tool) => (
+              {(resumeData.genai_tools || []).map((tool) => (
                 <Chip
                   key={tool.tool_id}
                   label={`${tool.name} (${(tool.usage_descriptions || []).length} skills)`}
@@ -424,7 +424,7 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
                     // Remove from resume data
                     setResumeData(prev => ({
                       ...prev,
-                      genai_skills: prev.genai_skills.filter(t => t.tool_id !== tool.tool_id)
+                      genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.tool_id)
                     }));
                     // Also remove from selected tools
                     setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id));

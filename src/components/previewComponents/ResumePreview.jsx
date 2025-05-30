@@ -119,7 +119,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
   // Helper function to check if AI tools data exists
   const hasAIToolsData = () => {
     return (
-      (data.genai_skills && data.genai_skills.length > 0) ||
+      (data.genai_tools && data.genai_tools.length > 0) ||
       (data.aiExperience && data.aiExperience.length > 0)
     );
   };
@@ -289,10 +289,10 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
             AI Tools & Technologies
           </Typography>
 
-          {/* Display genai_skills format */}
-          {data.genai_skills && data.genai_skills.length > 0 && (
+          {/* Display genai_tools format */}
+          {data.genai_tools && data.genai_tools.length > 0 && (
             <Box className={classes.resumeSkills}>
-              {data.genai_skills.map((tool, index) => (
+              {data.genai_tools.map((tool, index) => (
                 <Chip
                   key={index}
                   label={formatAITool(tool)}
@@ -310,7 +310,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
           {/* Display aiExperience format as chips */}
           {data.aiExperience &&
             data.aiExperience.length > 0 &&
-            !data.genai_skills && (
+            !data.genai_tools && (
               <Box className={classes.resumeSkills}>
                 {data.aiExperience.map((aiExp, index) => (
                   <Chip
@@ -371,9 +371,9 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
       )}
 
       {/* NEW: GenAI Tools Usage Descriptions Section */}
-      {data.genai_skills &&
-        data.genai_skills.length > 0 &&
-        data.genai_skills.some(
+      {data.genai_tools &&
+        data.genai_tools.length > 0 &&
+        data.genai_tools.some(
           (tool) =>
             tool.usage_descriptions && tool.usage_descriptions.length > 0
         ) && (
@@ -382,7 +382,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
               AI Tools Experience
             </Typography>
 
-            {data.genai_skills.map(
+            {data.genai_tools.map(
               (tool, index) =>
                 tool.usage_descriptions &&
                 tool.usage_descriptions.length > 0 && (
