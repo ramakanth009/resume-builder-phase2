@@ -196,47 +196,48 @@ const ResumeBuilder = () => {
   };
 
   // Initialize resumeData with empty structure and fields for both formats
-  const [resumeData, setResumeData] = useState({
-    header: {
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phone: '',
-      github: '',
-      linkedin: '',
-      portfolio: '',
-    },
-    summary: '',
-    education: {
-      degree: '',
-      specialization: '',
-      institution: '',
-      graduation_year: '',
-      // Also include graduationYear for update format compatibility
-      graduationYear: '',
-    },
-    skills: [''],
-    projects: [{   
-      name: '',
-      skills_used: '',
-      description: '',
-      // Add fields for update format
-      responsibilities: [],
-      link: '',
-      technologies: [],
-    }],
-    certifications: [''],
-    work_experience: [{
-      position: '',
-      company_name: '',
-      // Add field for update format
-      companyName: '',
-      duration: '',
-      description: '',
-      responsibilities: [],
-    }],
-    target_role: '',
-    customSections: {}
-  });
+const [resumeData, setResumeData] = useState({
+  header: {
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    phone: '',
+    github: '',
+    linkedin: '',
+    portfolio: '',
+  },
+  summary: '',
+  education: {
+    degree: '',
+    specialization: '',
+    institution: '',
+    graduation_year: '',
+    // Also include graduationYear for update format compatibility
+    graduationYear: '',
+  },
+  skills: [''],
+  projects: [{   
+    name: '',
+    skills_used: '',
+    description: '',
+    // Add fields for update format
+    responsibilities: [],
+    link: '',
+    technologies: [],
+  }],
+  certifications: [''],
+  work_experience: [{
+    position: '',
+    company_name: '',
+    // Add field for update format
+    companyName: '',
+    duration: '',
+    description: '',
+    responsibilities: [],
+  }],
+  target_role: '',
+  genai_tools: [], // ← ADD THIS LINE
+  customSections: {}
+});
 
   // Handler for role selection
   const handleRoleSelect = (role) => {

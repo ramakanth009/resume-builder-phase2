@@ -63,13 +63,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 9,
   },
+  aiSkillChip: {
+    backgroundColor: '#e6f3ff',
+    color: '#1565c0',
+    padding: '3 6',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
   experienceItem: {
     marginBottom: 12,
-  },
-  itemTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 2,
   },
   projectTitleContainer: {
     flexDirection: 'row',
@@ -85,6 +88,11 @@ const styles = StyleSheet.create({
     color: '#3182ce',
     textDecoration: 'none',
     marginLeft: 8,
+  },
+  itemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 2,
   },
   itemSubtitle: {
     fontSize: 10,
@@ -169,6 +177,37 @@ const ClassicPDFTemplate = ({ resumeData }) => {
     return [];
   };
 
+  // Helper function to check if AI Tools data exists
+  const hasAIToolsData = () => {
+    return (
+      (resumeData.genai_tools && resumeData.genai_tools.length > 0) ||
+      (resumeData.aiExperience && resumeData.aiExperience.length > 0)
+    );
+  };
+
+  // Helper function to get AI Tools for display
+  const getAITools = () => {
+    // Try genai_tools format first
+    if (resumeData.genai_tools && resumeData.genai_tools.length > 0) {
+      return resumeData.genai_tools.map(tool => ({
+        name: tool.name || `AI Tool ${tool.tool_id}`,
+        usageCases: tool.usage_descriptions || [],
+        impact: tool.description || ''
+      }));
+    }
+    
+    // Fallback to aiExperience format
+    if (resumeData.aiExperience && resumeData.aiExperience.length > 0) {
+      return resumeData.aiExperience.map(aiExp => ({
+        name: aiExp.toolName || '',
+        usageCases: aiExp.usageCases || [],
+        impact: aiExp.impact || ''
+      }));
+    }
+    
+    return [];
+  };
+
   return (
     <>
       {/* Header */}
@@ -239,6 +278,45 @@ const ClassicPDFTemplate = ({ resumeData }) => {
                 <Text key={index} style={styles.skillChip}>{skill}</Text>
               ))}
           </View>
+        </View>
+      )}
+
+      {/* AI Tools & Technologies Section - NEW */}
+      {hasAIToolsData() && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>AI Tools & Technologies</Text>
+          <View style={styles.skillsContainer}>
+            {getAITools().map((tool, index) => (
+              <Text key={index} style={styles.aiSkillChip}>{tool.name}</Text>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* AI Tools Experience Section - NEW */}
+      {hasAIToolsData() && getAITools().some(tool => tool.usageCases && tool.usageCases.length > 0) && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>AI Tools Experience</Text>
+          
+          {getAITools()
+            .filter(tool => tool.usageCases && tool.usageCases.length > 0)
+            .map((tool, index) => (
+              <View key={index} style={styles.experienceItem}>
+                <Text style={styles.itemTitle}>{tool.name}</Text>
+                
+                {tool.impact && (
+                  <Text style={styles.itemSubtitle} style={{fontStyle: 'italic'}}>
+                    {tool.impact}
+                  </Text>
+                )}
+                
+                <View style={styles.bulletList}>
+                  {tool.usageCases.map((useCase, idx) => (
+                    <Bullet key={idx}>{useCase}</Bullet>
+                  ))}
+                </View>
+              </View>
+            ))}
         </View>
       )}
       
