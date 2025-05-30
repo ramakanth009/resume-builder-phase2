@@ -40,6 +40,12 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     // Normalize certifications
     certifications: normalizeCertifications(generatedResume.certifications || []),
     
+    // Handle AI Experience - NEW FEATURE
+    aiExperience: normalizeAIExperience(generatedResume.aiExperience || []),
+    
+    // Handle GenAI tools - NEW FEATURE
+    genai_tools: normalizeGenAITools(generatedResume.genai_tools || []),
+    
     // Keep customSections as is
     customSections: generatedResume.customSections || {}
   };
@@ -192,6 +198,43 @@ const normalizeCertifications = (certifications) => {
   }).filter(Boolean); // Remove any empty entries
 };
 
+/**
+ * Normalizes AI Experience data from API response
+ * @param {Array} aiExperience - AI experience data from API
+ * @returns {Array} - Normalized AI experience array
+ */
+const normalizeAIExperience = (aiExperience) => {
+  if (!aiExperience || !Array.isArray(aiExperience)) return [];
+  
+  return aiExperience.map(aiExp => ({
+    toolName: aiExp.toolName || '',
+    impact: aiExp.impact || '',
+    usageCases: Array.isArray(aiExp.usageCases) ? aiExp.usageCases : []
+  }));
+};
+
+/**
+ * Normalizes GenAI tools data from API response
+ * @param {Array} genaiTools - GenAI tools data from API
+ * @returns {Array} - Normalized GenAI tools array
+ */
+const normalizeGenAITools = (genaiTools) => {
+  if (!genaiTools || !Array.isArray(genaiTools)) return [];
+  
+  return genaiTools.map(tool => ({
+    tool_id: tool.tool_id || tool.id,
+    name: tool.name || '',
+    description: tool.description || '',
+    usage_descriptions: Array.isArray(tool.usage_descriptions) ? tool.usage_descriptions : []
+  }));
+};
+
 export default {
-  adaptGeneratedResume
+  adaptGeneratedResume,
+  normalizeEducation,
+  normalizeWorkExperience,
+  normalizeProjects,
+  normalizeCertifications,
+  normalizeAIExperience,
+  normalizeGenAITools
 };

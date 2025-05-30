@@ -102,7 +102,13 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
 
   // Helper function to check if AI tools data exists
   const hasAIToolsData = () => {
-    return data.genai_tools && data.genai_tools.length > 0;
+    return (data.genai_tools && data.genai_tools.length > 0) || 
+           (data.aiExperience && data.aiExperience.length > 0);
+  };
+
+  // Helper function to check if AI Experience data exists
+  const hasAIExperienceData = () => {
+    return data.aiExperience && data.aiExperience.length > 0;
   };
 
   const renderLink = (label, url, type) => {
@@ -166,16 +172,6 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
     
     // Get the tool name - now stored directly in the tool object
     let displayText = tool.name || `AI Tool ${tool.tool_id || 'Unknown'}`;
-    
-    if (tool.proficiency) {
-      const proficiencyMap = {
-        'beginner': 'Beginner',
-        'intermediate': 'Intermediate', 
-        'expert': 'Expert'
-      };
-      const proficiencyLabel = proficiencyMap[tool.proficiency] || tool.proficiency;
-      displayText += ` (${proficiencyLabel})`;
-    }
     
     return displayText;
   };
@@ -261,27 +257,83 @@ const ResumePreview = ({ userData, generatedData, templateId = 'classic' }) => {
         </Box>
       )}
 
-      {/* AI Tools Section */}
+      {/* Enhanced AI Tools Section */}
       {hasAIToolsData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             AI Tools & Technologies
           </Typography>
-          <Box className={classes.resumeSkills}>
-            {data.genai_tools.map((tool, index) => (
-              <Chip
-                key={index}
-                label={formatAITool(tool)}
-                size="small"
-                className={classes.resumeSkillChip}
-                sx={{
-                  backgroundColor: '#e6f3ff',
-                  color: '#1565c0',
-                  fontWeight: 500,
-                }}
-              />
-            ))}
-          </Box>
+          
+          {/* Display genai_tools format */}
+          {data.genai_tools && data.genai_tools.length > 0 && (
+            <Box className={classes.resumeSkills}>
+              {data.genai_tools.map((tool, index) => (
+                <Chip
+                  key={index}
+                  label={formatAITool(tool)}
+                  size="small"
+                  className={classes.resumeSkillChip}
+                  sx={{
+                    backgroundColor: '#e6f3ff',
+                    color: '#1565c0',
+                    fontWeight: 500,
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+          
+          {/* Display aiExperience format as chips */}
+          {data.aiExperience && data.aiExperience.length > 0 && !data.genai_tools && (
+            <Box className={classes.resumeSkills}>
+              {data.aiExperience.map((aiExp, index) => (
+                <Chip
+                  key={index}
+                  label={aiExp.toolName}
+                  size="small"
+                  className={classes.resumeSkillChip}
+                  sx={{
+                    backgroundColor: '#e6f3ff',
+                    color: '#1565c0',
+                    fontWeight: 500,
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {/* AI Experience Section - NEW FEATURE */}
+      {hasAIExperienceData() && (
+        <Box className={classes.resumeSection}>
+          <Typography variant="h6" className={classes.resumeSectionTitle}>
+            AI & Technology Experience
+          </Typography>
+          
+          {data.aiExperience.map((aiExp, index) => (
+            <Box key={`ai-exp-${index}`} className={classes.resumeItem}>
+              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                {aiExp.toolName}
+              </Typography>
+              
+              {aiExp.impact && (
+                <Typography variant="body2" className={classes.resumeItemSubtitle} sx={{ fontStyle: 'italic' }}>
+                  {aiExp.impact}
+                </Typography>
+              )}
+              
+              {aiExp.usageCases && aiExp.usageCases.length > 0 && (
+                <Box component="ul" className={classes.resumeBullets}>
+                  {aiExp.usageCases.map((useCase, idx) => (
+                    <li key={idx} className={classes.resumeBullet}>
+                      {useCase}
+                    </li>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          ))}
         </Box>
       )}
       

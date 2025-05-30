@@ -342,11 +342,10 @@ export const getSkillRecommendations = async (role) => {
     throw error; // Pass through backend error
   }
 };
-
 /**
  * Get GenAI tools for a specific role
  * @param {string} role - Role name or display name
- * @returns {Promise} - List of GenAI tools
+ * @returns {Promise} - List of GenAI tools with usage options
  */
 export const getGenAITools = async (role) => {
   try {
@@ -356,7 +355,24 @@ export const getGenAITools = async (role) => {
   }
 };
 
-// Update the default export to include the new function
+/**
+ * Save GenAI tool usage for a role
+ * @param {string} role - Role name or display name
+ * @param {Object} usageData - Tool usage data
+ * @returns {Promise} - Save response
+ */
+export const saveGenAIToolUsage = async (role, usageData) => {
+  try {
+    return await apiRequest(`/genai_tools/${encodeURIComponent(role)}/save_usage`, {
+      method: 'POST',
+      body: usageData,
+    });
+  } catch (error) {
+    throw error; // Pass through backend error
+  }
+};
+
+// Update the default export to include the new functions
 export default {
   apiRequest,
   registerUser,
@@ -371,5 +387,6 @@ export default {
   getProjectRecommendations, 
   getProjectDetails,
   getSkillRecommendations,
-  getGenAITools
+  getGenAITools,
+  saveGenAIToolUsage
 };

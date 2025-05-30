@@ -113,6 +113,16 @@ const prepareFormDataForApi = (formData) => {
     });
   }
   
+  // Handle GenAI skills - NEW FEATURE
+  if (apiData.genai_tools && Array.isArray(apiData.genai_tools)) {
+    apiData.genai_skills = {
+      used_tools: apiData.genai_tools.map(tool => ({
+        tool_id: tool.tool_id,
+        usage_descriptions: tool.usage_descriptions || []
+      }))
+    };
+  }
+  
   return apiData;
 };
 
@@ -396,134 +406,139 @@ const ResumeBuilder = () => {
     return true;
   };
 
-  // Function to map generated resume data back to form fields
-  const mapGeneratedDataToFormFields = (generatedData) => {
-    // Create a deep copy to avoid mutating the original data
-    const formData = JSON.parse(JSON.stringify(resumeData));
-    
-    // Map header information
-    if (generatedData.header) {
-      formData.header = { ...generatedData.header };
+// Update the mapGeneratedDataToFormFields function to handle aiExperience
+
+const mapGeneratedDataToFormFields = (generatedData) => {
+  // Create a deep copy to avoid mutating the original data
+  const formData = JSON.parse(JSON.stringify(resumeData));
+  
+  // Map header information
+  if (generatedData.header) {
+    formData.header = { ...generatedData.header };
+  }
+  
+  // Map target role
+  if (generatedData.target_role) {
+    formData.target_role = generatedData.target_role;
+  }
+  
+  // Map summary
+  if (generatedData.summary) {
+    formData.summary = generatedData.summary;
+  }
+  
+  // Map education (handle both object and array formats)
+  if (generatedData.education) {
+    if (Array.isArray(generatedData.education) && generatedData.education.length > 0) {
+      const edu = generatedData.education[0];
+      formData.education = {
+        degree: edu.degree || '',
+        specialization: edu.specialization || '',
+        institution: edu.institution || '',
+        graduation_year: edu.graduationYear || edu.graduation_year || '',
+        graduationYear: edu.graduationYear || edu.graduation_year || '',
+      };
+    } else if (typeof generatedData.education === 'object') {
+      formData.education = {
+        degree: generatedData.education.degree || '',
+        specialization: generatedData.education.specialization || '',
+        institution: generatedData.education.institution || '',
+        graduation_year: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
+        graduationYear: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
+      };
     }
-    
-    // Map target role
-    if (generatedData.target_role) {
-      formData.target_role = generatedData.target_role;
-    }
-    
-    // Map summary
-    if (generatedData.summary) {
-      formData.summary = generatedData.summary;
-    }
-    
-    // Map education (handle both object and array formats)
-    if (generatedData.education) {
-      if (Array.isArray(generatedData.education) && generatedData.education.length > 0) {
-        // If first education entry exists, map its values
-        const edu = generatedData.education[0];
-        formData.education = {
-          degree: edu.degree || '',
-          specialization: edu.specialization || '',
-          institution: edu.institution || '',
-          graduation_year: edu.graduationYear || edu.graduation_year || '',
-          graduationYear: edu.graduationYear || edu.graduation_year || '',
-        };
-      } else if (typeof generatedData.education === 'object') {
-        // Map education object directly
-        formData.education = {
-          degree: generatedData.education.degree || '',
-          specialization: generatedData.education.specialization || '',
-          institution: generatedData.education.institution || '',
-          graduation_year: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
-          graduationYear: generatedData.education.graduationYear || generatedData.education.graduation_year || '',
-        };
+  }
+  
+  // Map skills
+  if (generatedData.skills && Array.isArray(generatedData.skills)) {
+    formData.skills = [...generatedData.skills];
+  }
+  
+  // Map certifications
+  if (generatedData.certifications && Array.isArray(generatedData.certifications)) {
+    formData.certifications = [...generatedData.certifications];
+  }
+  
+  // Map GenAI tools - NEW FEATURE
+  if (generatedData.aiExperience && Array.isArray(generatedData.aiExperience)) {
+    formData.genai_tools = generatedData.aiExperience.map(aiExp => ({
+      tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
+      name: aiExp.toolName,
+      description: aiExp.impact,
+      usage_descriptions: aiExp.usageCases || []
+    }));
+  } else if (generatedData.genai_tools && Array.isArray(generatedData.genai_tools)) {
+    formData.genai_tools = [...generatedData.genai_tools];
+  }
+  
+  // Map projects field
+  if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
+    formData.projects = generatedData.projects.map(project => {
+      let description = '';
+      if (project.responsibilities && Array.isArray(project.responsibilities)) {
+        description = project.responsibilities.join('\n');
+      } else if (project.description) {
+        description = project.description;
       }
-    }
-    
-    // Map skills
-    if (generatedData.skills && Array.isArray(generatedData.skills)) {
-      formData.skills = [...generatedData.skills];
-    }
-    
-    // Map certifications
-    if (generatedData.certifications && Array.isArray(generatedData.certifications)) {
-      formData.certifications = [...generatedData.certifications];
-    }
-    
-    // Map projects field
-    if (generatedData.projects && Array.isArray(generatedData.projects) && generatedData.projects.length > 0) {
-      // Convert generated projects format to our projects format
-      formData.projects = generatedData.projects.map(project => {
-        // Extract key info and responsibilities
-        let description = '';
-        if (project.responsibilities && Array.isArray(project.responsibilities)) {
-          description = project.responsibilities.join('\n');
-        } else if (project.description) {
-          description = project.description;
-        }
-        
-        // Extract skills
-        let skills = '';
-        if (project.skills_used) {
-          skills = project.skills_used;
-        } else if (project.technologies) {
-          skills = Array.isArray(project.technologies) 
-            ? project.technologies.join(', ') 
-            : project.technologies;
-        }
-        
-        return {
-          name: project.name || '',
-          skills_used: skills,
-          description: description,
-          responsibilities: Array.isArray(project.responsibilities) ? [...project.responsibilities] : [],
-          technologies: Array.isArray(project.technologies) ? [...project.technologies] : 
-            (skills ? skills.split(',').map(s => s.trim()) : []),
-          link: project.link || '',
-        };
-      });
-    } else {
-      // Initialize with empty array if no projects exist
-      formData.projects = [];
-    }
-    
-    // Map work experience
-    if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
-      formData.work_experience = generatedData.work_experience.map(exp => ({
+      
+      let skills = '';
+      if (project.skills_used) {
+        skills = project.skills_used;
+      } else if (project.technologies) {
+        skills = Array.isArray(project.technologies) 
+          ? project.technologies.join(', ') 
+          : project.technologies;
+      }
+      
+      return {
+        name: project.name || '',
+        skills_used: skills,
+        description: description,
+        responsibilities: Array.isArray(project.responsibilities) ? [...project.responsibilities] : [],
+        technologies: Array.isArray(project.technologies) ? [...project.technologies] : 
+          (skills ? skills.split(',').map(s => s.trim()) : []),
+        link: project.link || '',
+      };
+    });
+  } else {
+    formData.projects = [];
+  }
+  
+  // Map work experience
+  if (generatedData.work_experience && Array.isArray(generatedData.work_experience) && generatedData.work_experience.length > 0) {
+    formData.work_experience = generatedData.work_experience.map(exp => ({
+      position: exp.position || '',
+      company_name: exp.company_name || '',
+      companyName: exp.companyName || exp.company_name || '',
+      duration: exp.duration || '',
+      description: exp.description || (exp.responsibilities ? exp.responsibilities.join('\n') : ''),
+      responsibilities: exp.responsibilities || [],
+    }));
+  } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
+    formData.work_experience = generatedData.workExperience.map(exp => {
+      let description = exp.description || '';
+      if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
+        description = exp.responsibilities.join('\n');
+      }
+      
+      return {
         position: exp.position || '',
-        company_name: exp.company_name || '',
-        companyName: exp.companyName || exp.company_name || '',
+        company_name: exp.companyName || '',
+        companyName: exp.companyName || '',
         duration: exp.duration || '',
-        description: exp.description || (exp.responsibilities ? exp.responsibilities.join('\n') : ''),
+        description: description,
         responsibilities: exp.responsibilities || [],
-      }));
-    } else if (generatedData.workExperience && Array.isArray(generatedData.workExperience) && generatedData.workExperience.length > 0) {
-      // Convert workExperience format to work_experience format
-      formData.work_experience = generatedData.workExperience.map(exp => {
-        // Compile responsibilities into description if needed
-        let description = exp.description || '';
-        if (!description && exp.responsibilities && Array.isArray(exp.responsibilities)) {
-          description = exp.responsibilities.join('\n');
-        }
-        
-        return {
-          position: exp.position || '',
-          company_name: exp.companyName || '',
-          companyName: exp.companyName || '',
-          duration: exp.duration || '',
-          description: description,
-          responsibilities: exp.responsibilities || [],
-        };
-      });
-    }
-    
-    // Map custom sections
-    if (generatedData.customSections) {
-      formData.customSections = { ...generatedData.customSections };
-    }
-    
-    return formData;
-  };
+      };
+    });
+  }
+  
+  // Map custom sections
+  if (generatedData.customSections) {
+    formData.customSections = { ...generatedData.customSections };
+  }
+  
+  return formData;
+};
 
   // API Handlers
   const handleGenerateResume = async () => {
