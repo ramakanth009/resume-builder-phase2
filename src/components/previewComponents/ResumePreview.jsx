@@ -126,7 +126,15 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
   // Helper function to check if AI Experience data exists
   const hasAIExperienceData = () => {
-    return data.aiExperience && data.aiExperience.length > 0;
+    return (
+      data.aiExperience &&
+      data.aiExperience.length > 0 &&
+      data.aiExperience.some(
+        (aiExp) =>
+          aiExp.toolName &&
+          (aiExp.impact || (aiExp.usageCases && aiExp.usageCases.length > 0))
+      )
+    );
   };
 
   const renderLink = (label, url, type) => {
@@ -327,6 +335,39 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                 ))}
               </Box>
             )}
+        </Box>
+      )}
+
+      {/* AI Tools Experience Section - NEW SECTION */}
+      {hasAIExperienceData() && (
+        <Box className={classes.resumeSection}>
+          <Typography variant="h6" className={classes.resumeSectionTitle}>
+            AI Tools Experience
+          </Typography>
+          
+          {data.aiExperience.map((aiExp, index) => (
+            <Box key={index} className={classes.resumeItem}>
+              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                {aiExp.toolName}
+              </Typography>
+              
+              {aiExp.impact && (
+                <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                  {aiExp.impact}
+                </Typography>
+              )}
+              
+              {aiExp.usageCases && aiExp.usageCases.length > 0 && (
+                <Box component="ul" className={classes.resumeBullets}>
+                  {aiExp.usageCases.map((useCase, idx) => (
+                    <li key={idx} className={classes.resumeBullet}>
+                      {useCase}
+                    </li>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          ))}
         </Box>
       )}
 
