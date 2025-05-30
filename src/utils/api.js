@@ -342,6 +342,7 @@ export const getSkillRecommendations = async (role) => {
     throw error; // Pass through backend error
   }
 };
+
 /**
  * Get GenAI tools for a specific role
  * @param {string} role - Role name or display name
@@ -363,7 +364,7 @@ export const getGenAITools = async (role) => {
  */
 export const saveGenAIToolUsage = async (role, usageData) => {
   try {
-    return await apiRequest(`/genai_tools/${encodeURIComponent(role)}/save_usage`, {
+    return await apiRequest(`/genai_skills/${encodeURIComponent(role)}/save_usage`, {
       method: 'POST',
       body: usageData,
     });
