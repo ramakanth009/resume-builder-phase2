@@ -26,24 +26,38 @@ const dummyResumes = [
       {
         name: "E-commerce Platform",
         skills_used: "React, Node.js, Express, MongoDB, Redux",
-        description: "Built a full-stack e-commerce platform with user authentication, product catalog, and payment processing\nImplemented responsive design and mobile optimization\nIntegrated with payment gateway API",
+        technologies: ["React", "Node.js", "Express", "MongoDB", "Redux"],
         link: "github.com/alexjohnson/ecommerce",
         responsibilities: [
           "Built a full-stack e-commerce platform with user authentication, product catalog, and payment processing",
           "Implemented responsive design and mobile optimization",
           "Integrated with payment gateway API"
-        ]
+        ],
+        description: "A full-featured e-commerce platform with authentication, catalog, and payments"
       },
       {
-        name: "Real-time Chat app",
+        name: "Real-time Chat Application",
         skills_used: "React, Socket.io, Express, PostgreSQL",
-        description: "Developed a real-time messaging application with private channels and file sharing capabilities\nImplemented WebSocket connections for instant message delivery\ncreated an intuitive UI with material design",
+        technologies: ["React", "Socket.io", "Express", "PostgreSQL"],
         link: "github.com/alexjohnson/chat-app",
         responsibilities: [
           "Developed a real-time messaging application with private channels and file sharing capabilities",
           "Implemented WebSocket connections for instant message delivery",
-          "created an intuitive UI with material design"
-        ]
+          "Created an intuitive UI with material design"
+        ],
+        description: "Real-time chat platform with private channels and file sharing"
+      },
+      {
+        name: "Task Management Dashboard",
+        skills_used: "TypeScript, React, Material-UI, Node.js",
+        technologies: ["TypeScript", "React", "Material-UI", "Node.js"],
+        link: "github.com/alexjohnson/task-dash",
+        responsibilities: [
+          "Developed a responsive task management system with drag-and-drop interface",
+          "Implemented real-time updates using WebSocket",
+          "Created custom analytics dashboard with data visualization"
+        ],
+        description: "Modern task management system with real-time updates"
       }
     ],
     work_experience: [
