@@ -363,7 +363,7 @@ export const getGenAITools = async (role) => {
  */
 export const saveGenAIToolUsage = async (role, usageData) => {
   try {
-    return await apiRequest(`/genai_tools/${encodeURIComponent(role)}/save_usage`, {
+    return await apiRequest(`/genai_skills/${encodeURIComponent(role)}/save_usage`, {
       method: 'POST',
       body: usageData,
     });

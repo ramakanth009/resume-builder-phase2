@@ -44,7 +44,12 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     aiExperience: normalizeAIExperience(generatedResume.aiExperience || []),
     
     // Handle GenAI tools - NEW FEATURE
-    genai_tools: normalizeGenAITools(generatedResume.genai_tools || []),
+    genai_skills: normalizeGenAITools(
+      generatedResume.genai_skills || 
+      generatedResume.used_tools || 
+      generatedResume.aiExperience || 
+      []
+    ),
     
     // Keep customSections as is
     customSections: generatedResume.customSections || {}
@@ -221,12 +226,39 @@ const normalizeAIExperience = (aiExperience) => {
 const normalizeGenAITools = (genaiTools) => {
   if (!genaiTools || !Array.isArray(genaiTools)) return [];
   
-  return genaiTools.map(tool => ({
-    tool_id: tool.tool_id || tool.id,
-    name: tool.name || '',
-    description: tool.description || '',
-    usage_descriptions: Array.isArray(tool.usage_descriptions) ? tool.usage_descriptions : []
-  }));
+  return genaiTools.map(tool => {
+    // Handle case where tool is from aiExperience format
+    if (tool.toolName) {
+      return {
+        tool_id: tool.toolName.toLowerCase().replace(/\s+/g, '_'),
+        name: tool.toolName,
+        description: tool.impact || '',
+        usage_descriptions: tool.usageCases || []
+      };
+    }
+    
+    // Handle case where tool is from used_tools format
+    if (tool.tool_id && !tool.name) {
+      return {
+        tool_id: tool.tool_id,
+        name: tool.tool_id.split('_').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' '),
+        description: '',
+        usage_descriptions: tool.usage_descriptions || []
+      };
+    }
+    
+    // Default case - standard format
+    return {
+      tool_id: tool.tool_id || tool.id,
+      name: tool.name || '',
+      description: tool.description || '',
+      usage_descriptions: Array.isArray(tool.usage_descriptions) 
+        ? tool.usage_descriptions 
+        : []
+    };
+  }).filter(tool => tool.tool_id); // Only keep tools with valid IDs
 };
 
 export default {

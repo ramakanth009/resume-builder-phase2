@@ -114,9 +114,9 @@ const prepareFormDataForApi = (formData) => {
   }
   
   // Handle GenAI skills - NEW FEATURE
-  if (apiData.genai_tools && Array.isArray(apiData.genai_tools)) {
+  if (apiData.genai_skills && Array.isArray(apiData.genai_skills)) {
     apiData.genai_skills = {
-      used_tools: apiData.genai_tools.map(tool => ({
+      used_tools: apiData.genai_skills.map(tool => ({
         tool_id: tool.tool_id,
         usage_descriptions: tool.usage_descriptions || []
       }))
@@ -461,14 +461,14 @@ const mapGeneratedDataToFormFields = (generatedData) => {
   
   // Map GenAI tools - NEW FEATURE
   if (generatedData.aiExperience && Array.isArray(generatedData.aiExperience)) {
-    formData.genai_tools = generatedData.aiExperience.map(aiExp => ({
+    formData.genai_skills = generatedData.aiExperience.map(aiExp => ({
       tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
       name: aiExp.toolName,
       description: aiExp.impact,
       usage_descriptions: aiExp.usageCases || []
     }));
-  } else if (generatedData.genai_tools && Array.isArray(generatedData.genai_tools)) {
-    formData.genai_tools = [...generatedData.genai_tools];
+  } else if (generatedData.genai_skills && Array.isArray(generatedData.genai_skills)) {
+    formData.genai_skills = [...generatedData.genai_skills];
   }
   
   // Map projects field
