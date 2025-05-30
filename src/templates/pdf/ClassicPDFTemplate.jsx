@@ -305,7 +305,7 @@ const ClassicPDFTemplate = ({ resumeData }) => {
                 <Text style={styles.itemTitle}>{tool.name}</Text>
                 
                 {tool.impact && (
-                  <Text style={styles.itemSubtitle} style={{fontStyle: 'italic'}}>
+                  <Text style={styles.itemSubtitle} >
                     {tool.impact}
                   </Text>
                 )}
