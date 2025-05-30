@@ -542,63 +542,75 @@ const mapGeneratedDataToFormFields = (generatedData) => {
 };
 
   // API Handlers
-  const handleGenerateResume = async () => {
-    // Validate form data first
-    if (!validateResumeData()) {
-      return;
+const handleGenerateResume = async () => {
+  // Validate form data first
+  if (!validateResumeData()) {
+    return;
+  }
+  
+  // Validate terms acceptance
+  if (!validateTermsAcceptance()) {
+    return;
+  }
+  
+  setLoading(true);
+  
+  try {
+    // Prepare form data for API with proper field mapping
+    const apiReadyData = prepareFormDataForApi(resumeData);
+    
+    // Call the generate resume API
+    const response = await generateResume(apiReadyData);
+    
+    setSnackbar({
+      open: true,
+      message: 'Resume generated successfully!',
+      severity: 'success',
+    });
+    
+    // Transform the generated resume data to match frontend structure
+    const adaptedResume = adaptGeneratedResume(response.resume, response.id);
+    
+    // WORKAROUND: If backend returns empty aiExperience, preserve frontend genai_tools
+    if ((!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0) && 
+        resumeData.genai_tools && resumeData.genai_tools.length > 0) {
+      // Convert frontend genai_tools to aiExperience format
+      adaptedResume.aiExperience = resumeData.genai_tools.map(tool => ({
+        toolName: tool.name,
+        usageCases: tool.usage_descriptions || [],
+        impact: tool.description || `Enhanced productivity using ${tool.name}`
+      }));
+      
+      // Also preserve genai_tools format
+      adaptedResume.genai_tools = resumeData.genai_tools;
     }
     
-    // Validate terms acceptance
-    if (!validateTermsAcceptance()) {
-      return;
+    // Store the adapted resume data
+    setGeneratedResume(adaptedResume);
+    
+    // Also update the form data with generated content
+    const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+    setResumeData(updatedFormData);
+    
+    // Switch to preview mode to show the generated resume
+    setIsEditMode(false);
+    
+    // For mobile, show the preview
+    if (isMobile) {
+      setIsMobilePreviewMode(true);
     }
     
-    setLoading(true);
-    
-    try {
-      // Prepare form data for API with proper field mapping
-      const apiReadyData = prepareFormDataForApi(resumeData);
-      
-      // Call the generate resume API
-      const response = await generateResume(apiReadyData);
-      
-      setSnackbar({
-        open: true,
-        message: 'Resume generated successfully!',
-        severity: 'success',
-      });
-      
-      // Transform the generated resume data to match frontend structure
-      // Pass the ID from the API response to the adapter
-      const adaptedResume = adaptGeneratedResume(response.resume, response.id);
-      
-      // Store the adapted resume data
-      setGeneratedResume(adaptedResume);
-      
-      // Also update the form data with generated content
-      // This enables seamless editing by keeping form and preview in sync
-      const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
-      setResumeData(updatedFormData);
-      
-      // Switch to preview mode to show the generated resume
-      setIsEditMode(false);
-      
-      // For mobile, show the preview
-      if (isMobile) {
-        setIsMobilePreviewMode(true);
-      }
-      
-    } catch (error) {
-      console.error('Error generating resume:', error);
-      setSnackbar({
-        open: true,
-        message: error.message || 'An error occurred generating your resume. Please try again.',
-        severity: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.error('Error generating resume:', error);
+    setSnackbar({
+      open: true,
+      message: error.message || 'An error occurred generating your resume. Please try again.',
+      severity: 'error',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle updating the resume after editing
   const handleUpdateResume = async () => {

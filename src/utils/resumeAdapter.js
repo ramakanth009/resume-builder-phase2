@@ -55,6 +55,26 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     customSections: generatedResume.customSections || {}
   };
 
+  // WORKAROUND: If backend returns empty aiExperience but we have genai_tools, convert them
+  if ((!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0) && 
+      generatedResume.genai_tools && generatedResume.genai_tools.length > 0) {
+    adaptedResume.aiExperience = generatedResume.genai_tools.map(tool => ({
+      toolName: tool.name || `AI Tool ${tool.tool_id}`,
+      usageCases: tool.usage_descriptions || [],
+      impact: tool.description || `Enhanced productivity using ${tool.name || 'AI tools'}`
+    }));
+  }
+
+  // ADDITIONAL WORKAROUND: If we still don't have aiExperience but have genai_tools in adapted format
+  if ((!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0) && 
+      adaptedResume.genai_tools && adaptedResume.genai_tools.length > 0) {
+    adaptedResume.aiExperience = adaptedResume.genai_tools.map(tool => ({
+      toolName: tool.name || `AI Tool ${tool.tool_id}`,
+      usageCases: tool.usage_descriptions || [],
+      impact: tool.description || `Enhanced productivity using ${tool.name || 'AI tools'}`
+    }));
+  }
+
   return adaptedResume;
 };
 
