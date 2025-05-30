@@ -47,7 +47,6 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     genai_tools: normalizeGenAITools(
       generatedResume.genai_tools || 
       generatedResume.used_tools || 
-      generatedResume.aiExperience || 
       []
     ),
     
@@ -55,19 +54,21 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
     customSections: generatedResume.customSections || {}
   };
 
-  // WORKAROUND: If backend returns empty aiExperience but we have genai_tools, convert them
-  if ((!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0) && 
-      generatedResume.genai_tools && generatedResume.genai_tools.length > 0) {
-    adaptedResume.aiExperience = generatedResume.genai_tools.map(tool => ({
-      toolName: tool.name || `AI Tool ${tool.tool_id}`,
-      usageCases: tool.usage_descriptions || [],
-      impact: tool.description || `Enhanced productivity using ${tool.name || 'AI tools'}`
+  // IMPORTANT: Ensure aiExperience data is properly synced with genai_tools
+  // If we have aiExperience data but no genai_tools, convert aiExperience to genai_tools format
+  if (adaptedResume.aiExperience && adaptedResume.aiExperience.length > 0 && 
+      (!adaptedResume.genai_tools || adaptedResume.genai_tools.length === 0)) {
+    adaptedResume.genai_tools = adaptedResume.aiExperience.map(aiExp => ({
+      tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
+      name: aiExp.toolName,
+      description: aiExp.impact || '',
+      usage_descriptions: aiExp.usageCases || []
     }));
   }
 
-  // ADDITIONAL WORKAROUND: If we still don't have aiExperience but have genai_tools in adapted format
-  if ((!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0) && 
-      adaptedResume.genai_tools && adaptedResume.genai_tools.length > 0) {
+  // If we have genai_tools data but no aiExperience, convert genai_tools to aiExperience format
+  if (adaptedResume.genai_tools && adaptedResume.genai_tools.length > 0 && 
+      (!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0)) {
     adaptedResume.aiExperience = adaptedResume.genai_tools.map(tool => ({
       toolName: tool.name || `AI Tool ${tool.tool_id}`,
       usageCases: tool.usage_descriptions || [],
@@ -261,7 +262,7 @@ const normalizeGenAITools = (genaiTools) => {
     if (tool.tool_id && !tool.name) {
       return {
         tool_id: tool.tool_id,
-        name: tool.tool_id.split('_').map(word => 
+        name: tool.tool_id.toString().split('_').map(word => 
           word.charAt(0).toUpperCase() + word.slice(1)
         ).join(' '),
         description: '',
@@ -278,7 +279,7 @@ const normalizeGenAITools = (genaiTools) => {
         ? tool.usage_descriptions 
         : []
     };
-  }).filter(tool => tool.tool_id); // Only keep tools with valid IDs
+  }).filter(tool => tool.tool_id || tool.name); // Only keep tools with valid IDs or names
 };
 
 export default {

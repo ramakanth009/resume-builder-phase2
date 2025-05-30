@@ -113,14 +113,23 @@ const prepareFormDataForApi = (formData) => {
     });
   }
   
-  // Handle GenAI skills - NEW FEATURE
-  if (apiData.genai_tools && Array.isArray(apiData.genai_tools)) {
+  // Handle GenAI skills - Format properly for API
+  if (apiData.genai_tools && Array.isArray(apiData.genai_tools) && apiData.genai_tools.length > 0) {
+    // Transform genai_tools to the format expected by the API (genai_skills.used_tools)
     apiData.genai_skills = {
       used_tools: apiData.genai_tools.map(tool => ({
         tool_id: tool.tool_id,
         usage_descriptions: tool.usage_descriptions || []
-      }))
+      })),
+      not_used_tools: [] // Include empty not_used_tools array as expected by API
     };
+    
+    // IMPORTANT: Also convert to aiExperience format for compatibility
+    apiData.aiExperience = apiData.genai_tools.map(tool => ({
+      toolName: tool.name || `AI Tool ${tool.tool_id}`,
+      usageCases: tool.usage_descriptions || [],
+      impact: tool.description || `Enhanced productivity using ${tool.name || 'AI tools'}`
+    }));
   }
   
   return apiData;
@@ -460,15 +469,18 @@ const mapGeneratedDataToFormFields = (generatedData) => {
     formData.certifications = [...generatedData.certifications];
   }
   
-  // Map GenAI tools - NEW FEATURE
-  if (generatedData.aiExperience && Array.isArray(generatedData.aiExperience)) {
+  // Map AI Experience Data - Priority mapping for AI skills/tools
+  // First try aiExperience, then fallback to genai_tools
+  if (generatedData.aiExperience && Array.isArray(generatedData.aiExperience) && generatedData.aiExperience.length > 0) {
+    // Convert aiExperience to genai_tools format for our form
     formData.genai_tools = generatedData.aiExperience.map(aiExp => ({
-      tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
-      name: aiExp.toolName,
-      description: aiExp.impact,
+      tool_id: aiExp.toolName ? aiExp.toolName.toLowerCase().replace(/\s+/g, '_') : `tool_${Math.random().toString(36).substr(2, 5)}`,
+      name: aiExp.toolName || '',
+      description: aiExp.impact || '',
       usage_descriptions: aiExp.usageCases || []
     }));
-  } else if (generatedData.genai_tools && Array.isArray(generatedData.genai_tools)) {
+  } else if (generatedData.genai_tools && Array.isArray(generatedData.genai_tools) && generatedData.genai_tools.length > 0) {
+    // Direct mapping if genai_tools is provided
     formData.genai_tools = [...generatedData.genai_tools];
   }
   

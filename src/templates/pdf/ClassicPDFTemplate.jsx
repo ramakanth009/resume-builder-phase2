@@ -281,44 +281,46 @@ const ClassicPDFTemplate = ({ resumeData }) => {
         </View>
       )}
 
-      {/* AI Tools & Technologies Section - NEW */}
-      {hasAIToolsData() && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>AI Tools & Technologies</Text>
-          <View style={styles.skillsContainer}>
-            {getAITools().map((tool, index) => (
-              <Text key={index} style={styles.aiSkillChip}>{tool.name}</Text>
+      // In ClassicPDFTemplate.jsx, update the AI Tools & Technologies Section:
+
+{/* AI Tools & Technologies Section - NEW */}
+{hasAIToolsData() && (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>AI Tools & Technologies</Text>
+    <View style={styles.skillsContainer}>
+      {getAITools().map((tool, index) => (
+        <Text key={index} style={styles.aiSkillChip}>{tool.name}</Text>
+      ))}
+    </View>
+  </View>
+)}
+
+{/* AI Tools Experience Section - NEW */}
+{hasAIToolsData() && getAITools().some(tool => tool.usageCases && tool.usageCases.length > 0) && (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>AI Tools Experience</Text>
+    
+    {getAITools()
+      .filter(tool => tool.usageCases && tool.usageCases.length > 0)
+      .map((tool, index) => (
+        <View key={index} style={styles.experienceItem}>
+          <Text style={styles.itemTitle}>{tool.name}</Text>
+          
+          {tool.impact && (
+            <Text style={styles.itemSubtitle} >
+              {tool.impact}
+            </Text>
+          )}
+          
+          <View style={styles.bulletList}>
+            {tool.usageCases.map((useCase, idx) => (
+              <Bullet key={idx}>{useCase}</Bullet>
             ))}
           </View>
         </View>
-      )}
-
-      {/* AI Tools Experience Section - NEW */}
-      {hasAIToolsData() && getAITools().some(tool => tool.usageCases && tool.usageCases.length > 0) && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>AI Tools Experience</Text>
-          
-          {getAITools()
-            .filter(tool => tool.usageCases && tool.usageCases.length > 0)
-            .map((tool, index) => (
-              <View key={index} style={styles.experienceItem}>
-                <Text style={styles.itemTitle}>{tool.name}</Text>
-                
-                {tool.impact && (
-                  <Text style={styles.itemSubtitle} >
-                    {tool.impact}
-                  </Text>
-                )}
-                
-                <View style={styles.bulletList}>
-                  {tool.usageCases.map((useCase, idx) => (
-                    <Bullet key={idx}>{useCase}</Bullet>
-                  ))}
-                </View>
-              </View>
-            ))}
-        </View>
-      )}
+      ))}
+  </View>
+)}
       
       {/* Education Section */}
       {hasEducationData() && (
