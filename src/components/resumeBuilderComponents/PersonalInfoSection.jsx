@@ -20,7 +20,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      border: '1px solid rgba(39, 40, 108, 0.08)',
+      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',
@@ -29,7 +29,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
       },
       '&.Mui-focused': {
         background: 'rgba(0, 0, 0, 0.05)',
-        borderColor: '#14b8a6',
+        // borderColor: '#14b8a6',
         boxShadow: '0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)',
         transform: 'translateY(-2px)',
       },
@@ -45,7 +45,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },  textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      border: '1px solid rgba(39, 40, 108, 0.08)',
+      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',

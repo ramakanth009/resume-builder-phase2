@@ -74,7 +74,7 @@ container: {
   paper: {
     background: 'rgba(255, 255, 255, 0.8)',
     backdropFilter: 'blur(20px) saturate(180%)',
-    border: '1px solid rgba(39, 40, 108, 0.08)',
+    // border: '1px solid rgba(39, 40, 108, 0.08)',
     borderRadius: '16px',
     padding: '2rem',
     marginBottom: '2rem',
@@ -144,7 +144,7 @@ container: {
   },
   buttonBack: {
     background: 'rgba(0, 0, 0, 0.03)',
-    border: '1px solid rgba(39, 40, 108, 0.08)',
+    // border: '1px solid rgba(39, 40, 108, 0.08)',
     color: '#233f94',
     padding: '1rem 1.5rem',
     borderRadius: '16px',

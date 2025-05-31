@@ -24,7 +24,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      border: '1px solid rgba(39, 40, 108, 0.08)',
+      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',
@@ -102,7 +102,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginTop: '1rem',
   },
  chip: {
-    background: 'linear-gradient(135deg, #27286c, #60cae6)',
+    background: '#27286c',
     color: 'white',
     padding: '0.5rem 1rem',
     borderRadius: '12px',

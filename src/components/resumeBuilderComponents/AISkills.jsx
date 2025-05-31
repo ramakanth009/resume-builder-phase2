@@ -66,9 +66,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     position: 'relative',
+    backgroundColor: '#E9EBED', // Add this line for default background
     '&:hover': {
       borderColor: '#cbd5e0',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+      // boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+      backgroundColor: '#f8fafc', // Add this line for hover state
+      transform: 'translateY(-4px)',
+      boxShadow: '0 8px 32px rgba(39, 40, 108, 0.16)',
+      border: '1px solid #27286C',
     },
   },
   selectedCard: {

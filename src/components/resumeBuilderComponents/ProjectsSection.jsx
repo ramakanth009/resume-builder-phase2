@@ -14,6 +14,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import LinkIcon from '@mui/icons-material/Link'; // Add this import
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 import { getProjectRecommendations } from '../../utils/api';
 import { useApiData } from '../../hooks/useApiData';
@@ -28,7 +29,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      border: '1px solid rgba(39, 40, 108, 0.08)',
+      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',
@@ -138,7 +139,26 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     width: '100%',
     marginBottom: '0.5rem',
-  }
+  },
+  linkField: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  linkButton: {
+    color: '#4299e1',
+    marginBottom: '0.8rem',
+    '&:hover': {
+      color: '#3182ce',
+    },
+    '&.inactive': {
+      color: '#CBD5E0',
+      cursor: 'default',
+    },
+    '& .MuiSvgIcon-root': {  // Add this style for the icon
+      fontSize: '2rem',     // Increase icon size
+    }
+  },
 }));
 
 const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
@@ -343,6 +363,12 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
     }
   };
 
+  const handleOpenProjectLink = (link) => {
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <Box className={classes.form}>
       <Box className={classes.headerRow}>
@@ -429,15 +455,22 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
             required
           />
           
-          <TextField
-            label="Project Link (Optional)"
-            value={project.link || ''}
-            onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
-            variant="outlined"
-            fullWidth
-            className={classes.textField}
-            placeholder="e.g., https://github.com/yourusername/project"
-          />
+          <Box className={classes.linkField}>
+            <TextField
+              label="Project Link"
+              fullWidth
+              value={project.link}
+              onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
+              className={classes.textField}
+            />
+            <IconButton
+              className={`${classes.linkButton} ${!project.link ? 'inactive' : ''}`}
+              onClick={() => handleOpenProjectLink(project.link)}
+              disabled={!project.link}
+            >
+              <LinkIcon />
+            </IconButton>
+          </Box>
           
           <TextField
             label="Description"

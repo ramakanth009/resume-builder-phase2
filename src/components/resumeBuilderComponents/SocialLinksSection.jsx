@@ -157,7 +157,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      border: '1px solid rgba(39, 40, 108, 0.08)',
+      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',

@@ -16,13 +16,12 @@ import CodeIcon from '@mui/icons-material/Code';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
-// Update src/common/Sidebar.jsx styles
 const useStyles = makeStylesWithTheme((theme) => ({
   sidebar: {
     position: 'fixed',
     left: '0',
-    top: '100px',
-    height: 'calc(97vh - 100px)',
+    top: '90px',
+    height: 'calc(100vh - 100px)',
     width: (props) => props.isCollapsed ? '70px' : '280px',
     background: 'rgba(255, 255, 255, 0.8)',
     backdropFilter: 'blur(20px) saturate(180%)',
@@ -52,12 +51,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   logo: {
     width: (props) => props.isCollapsed ? '32px' : '40px',
     height: (props) => props.isCollapsed ? '32px' : '40px',
-    background: 'linear-gradient(135deg, #27286c, #60cae6)',
     borderRadius: '10px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)',
     flexShrink: 0,
   },
   logoText: {
@@ -95,7 +92,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   listItem: {
-    padding: (props) => props.isCollapsed ? '0.5rem 0.25rem' : '0.75rem 1rem',
+    padding: (props) => props.isCollapsed ? '0.5rem 0.25rem' : '0.30rem 1rem',
     borderRadius: '12px',
     marginBottom: '0.5rem',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -176,7 +173,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
 }));
 
-const Sidebar = ({ activeStep, steps, onStepClick }) => {
+const Sidebar = ({ activeStep, steps, onStepClick, onSidebarToggle }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   
@@ -196,8 +193,14 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
   ];
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-    setHoveredItem(null); // Clear hover state when toggling
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    setHoveredItem(null);
+    
+    // Notify parent component about sidebar state change
+    if (onSidebarToggle) {
+      onSidebarToggle(newCollapsedState);
+    }
   };
 
   const handleItemClick = (index) => {

@@ -37,7 +37,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     height: '60px',
     background: 'rgba(255, 255, 255, 0.8)',
     backdropFilter: 'blur(20px) saturate(180%)',
-    border: '1px solid rgba(39, 40, 108, 0.08)',
+    // border: '1px solid rgba(39, 40, 108, 0.08)',
     borderRadius: '16px',
     boxShadow: '0 2px 8px rgba(39, 40, 108, 0.08)',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -119,7 +119,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   userButton: {
     background: 'rgba(0, 0, 0, 0.03)',
-    border: '1px solid rgba(39, 40, 108, 0.08)',
+    // border: '1px solid rgba(39, 40, 108, 0.08)',
     borderRadius: '12px',
     padding: '8px 12px',
     '&:hover': {
