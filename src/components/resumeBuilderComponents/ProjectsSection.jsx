@@ -27,9 +27,29 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   textField: {
     '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
+      background: 'rgba(0, 0, 0, 0.03)',
+      border: '1px solid rgba(39, 40, 108, 0.08)',
+      borderRadius: '16px',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      backdropFilter: 'blur(10px)',
+      '&:hover': {
+        borderColor: 'rgba(39, 40, 108, 0.12)',
+      },
+      '&.Mui-focused': {
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderColor: '#14b8a6',
+        boxShadow: '0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)',
+        transform: 'translateY(-2px)',
+      },
     },
-    marginBottom: '1rem',
+    '& .MuiInputLabel-root': {
+      color: '#427bbf',
+      fontWeight: 500,
+      fontSize: '0.9rem',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#14b8a6',
+    },
   },
   formSubtitle: {
     fontWeight: 500,

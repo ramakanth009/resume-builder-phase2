@@ -14,108 +14,95 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import LinkIcon from '@mui/icons-material/Link';
 import CodeIcon from '@mui/icons-material/Code';
 
+// Update src/common/Sidebar.jsx styles
 const useStyles = makeStylesWithTheme((theme) => ({
   sidebar: {
     position: 'fixed',
-    top: 0,
-    left: 0,
-    height: '100vh',
-    width: '220px',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-    zIndex: 1200,
+    left: '0',
+    top: '100px',
+    height: 'calc(97vh - 100px)',
+    width: '280px',
+    background: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    borderRight: '1px solid rgba(39, 40, 108, 0.08)',
+    borderRadius: '0 20px 20px 0',
+    boxShadow: '4px 0 16px rgba(39, 40, 108, 0.08)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    zIndex: 900,
     display: 'flex',
     flexDirection: 'column',
-    overflowX: 'hidden', // Changed from overflow: 'auto'
-    '@media (max-width: 960px)': {
-      width: '180px',
-    },
-    '@media (max-width: 600px)': {
-      width: '64px',
+    '@media (max-width: 768px)': {
+      transform: 'translateX(-100%)',
+      '&.show': {
+        transform: 'translateX(0)',
+      },
     },
   },
   logoContainer: {
+    padding: '1.5rem',
+    borderBottom: '1px solid rgba(39, 40, 108, 0.08)',
+    height: '80px',
     display: 'flex',
     alignItems: 'center',
-    padding: '1.25rem 1rem',
-    borderBottom: '1px solid #e2e8f0',
-    height: '64px',
-    '@media (max-width: 600px)': {
-      justifyContent: 'center',
-      padding: '1rem 0.5rem',
-    },
+    gap: '12px',
   },
   logo: {
-    width: '32px',
-    height: '32px',
-    flexShrink: 0,
-    '@media (max-width: 600px)': {
-      width: '28px',
-      height: '28px',
-    },
-  },
-  logoText: {
-    marginLeft: '1rem',
-    fontWeight: 700,
-    fontSize: '1.2rem',
-    color: '#2d3748',
-    '@media (max-width: 600px)': {
-      display: 'none',
-    },
+    width: '40px',
+    height: '40px',
+    background: 'linear-gradient(135deg, #27286c, #60cae6)',
+    borderRadius: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)',
   },
   navList: {
-    padding: '1rem 0',
+    padding: '1rem',
     flexGrow: 1,
+    overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'rgba(39, 40, 108, 0.2)',
+      borderRadius: '3px',
+    },
   },
   listItem: {
     padding: '0.75rem 1rem',
-    margin: '0.25rem 0',
-    transition: 'background-color 0.2s ease',
+    borderRadius: '12px',
+    marginBottom: '0.5rem',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    cursor: 'pointer',
     '&:hover': {
-      backgroundColor: '#f7fafc',
-    },
-    position: 'relative',
-    '@media (max-width: 600px)': {
-      padding: '0.75rem 0.5rem',
-      justifyContent: 'center',
+      background: 'rgba(39, 40, 108, 0.05)',
+      transform: 'translateX(4px)',
     },
   },
   activeListItem: {
-    backgroundColor: '#ebf8ff',
-    borderLeft: '3px solid #3182ce',
-    '&:hover': {
-      backgroundColor: '#ebf8ff',
-    },
+    background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(167, 139, 250, 0.1))',
+    borderLeft: '3px solid #14b8a6',
+    paddingLeft: 'calc(1rem - 3px)',
   },
   listItemIcon: {
     minWidth: '40px',
-    color: '#718096',
-    '@media (max-width: 600px)': {
-      minWidth: '24px',
-      marginRight: 0,
-    },
+    color: '#427bbf',
+    fontSize: '1.2rem',
   },
   activeIcon: {
-    color: '#3182ce',
+    color: '#14b8a6',
   },
   itemText: {
-    margin: 0,
     fontWeight: 500,
-    whiteSpace: 'normal', // Changed from 'nowrap'
-    wordWrap: 'break-word',
-    '@media (max-width: 600px)': {
-      display: 'none',
-    },
+    color: '#233f94',
+    fontSize: '0.9rem',
   },
   footerText: {
     fontSize: '0.75rem',
-    color: '#a0aec0',
+    color: '#427bbf',
     textAlign: 'center',
-    padding: '0.5rem',
-    borderTop: '1px solid #e2e8f0',
-    '@media (max-width: 600px)': {
-      display: 'none',
-    },
+    padding: '1rem',
+    borderTop: '1px solid rgba(39, 40, 108, 0.08)',
   },
 }));
 

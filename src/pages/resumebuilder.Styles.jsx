@@ -3,57 +3,41 @@ import makeStylesWithTheme from '../styles/makeStylesAdapter';
 export const useStyles = makeStylesWithTheme((theme) => ({
   root: {
     minHeight: '100vh',
-    padding: '2rem 0',
-    backgroundColor: '#F8F9FC',
-    '@media (max-width: 600px)': {
-      padding: '1rem 0',
+    background: '#f1f3f5',
+    paddingTop: '100px',
+  },
+container: {
+    display: 'flex',
+    minHeight: 'calc(100vh - 100px)',
+    position: 'relative',
+  },
+ mainContentWithSidebar: {
+    marginLeft: '280px',
+    transition: 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    '@media (max-width: 768px)': {
+      marginLeft: '0',
     },
-    '@media (max-width: 480px)': {
-      padding: '0.5rem 0',
+  },
+    formColumn: {
+    flex: 1,
+    padding: '3rem 2rem',
+    maxWidth: '600px',
+    '@media (max-width: 768px)': {
+      padding: '2rem 1rem',
     },
   },
-  container: {
-    height: '100%',
-  },
-  mainContentWithSidebar: {
-  marginLeft: '220px', // Match the sidebar width
-  width: 'calc(100% - 220px)',
-  transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
-  '@media (max-width: 960px)': {
-    marginLeft: '180px', // Match tablet sidebar width
-    width: 'calc(100% - 180px)',
-  },
-  '@media (max-width: 600px)': {
-    marginLeft: '64px', // Match mobile sidebar width
-    width: 'calc(100% - 64px)',
-  },
-},
-  formColumn: {
-  padding: '1rem',
-  height: '100%',
-  minHeight: '80vh',
-  maxHeight: '100%',
-  borderRight: {
-    xs: 'none',
-    md: '1px solid #e2e8f0'
-  },
-  '@media (max-width: 600px)': {
-    padding: '0.75rem',
-  },
-  '@media (max-width: 480px)': {
-    padding: '0.5rem',
-  },
-},
 
-previewColumn: {
-  padding: '1rem',
-  height: '100%',
-  minHeight: '80vh',
-  maxHeight: '100%',
-  '@media (max-width: 960px)': {
-    display: 'none', // Hide preview on tablets and mobile
+ previewColumn: {
+    flex: 1,
+    padding: '3rem 2rem 3rem 1rem',
+    position: 'sticky',
+    top: '100px',
+    height: 'calc(100vh - 100px)',
+    overflowY: 'auto',
+    '@media (max-width: 960px)': {
+      display: 'none',
+    },
   },
-},
   previewNotice: {
     display: 'none', // Hidden by default (on desktop)
     '@media (max-width: 960px)': {
@@ -79,41 +63,28 @@ previewColumn: {
       fontSize: '1.2rem',
     },
   },
-  sectionHeader: {
-    textAlign: 'center',
-    marginBottom: '0.8rem',
+    sectionHeader: {
+    fontSize: '2.5rem',
     fontWeight: 600,
-    color: '#2d3748',
-    fontSize: '1.5rem',
-    '@media (max-width: 1200px)': {
-      fontSize: '1.4rem',
-      marginBottom: '1.25rem',
-    },
-    '@media (max-width: 960px)': {
-      fontSize: '1.3rem',
-      marginBottom: '1rem',
-    },
-    '@media (max-width: 600px)': {
-      fontSize: '1.2rem',
-    },
-    '@media (max-width: 480px)': {
-      fontSize: '1.1rem',
-    },
+    color: '#27286c',
+    marginBottom: '0.5rem',
+    letterSpacing: '-0.03em',
+    lineHeight: 1.2,
   },
   paper: {
-    padding: '1.5rem',
-    marginBottom: '1.5rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-    '@media (max-width: 600px)': {
-      padding: '1.25rem',
-      marginBottom: '1.25rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '1rem',
-      marginBottom: '1rem',
+    background: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    border: '1px solid rgba(39, 40, 108, 0.08)',
+    borderRadius: '16px',
+    padding: '2rem',
+    marginBottom: '2rem',
+    boxShadow: '0 4px 16px rgba(39, 40, 108, 0.08)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    '&:hover': {
+      boxShadow: '0 8px 32px rgba(39, 40, 108, 0.12)',
     },
   },
+
   sectionTitle: {
     fontWeight: 600,
     marginBottom: '1rem',
@@ -125,6 +96,12 @@ previewColumn: {
       fontSize: '1rem',
       marginBottom: '0.75rem',
     },
+  },
+  sectionSubtitle: {
+    fontSize: '1.125rem',
+    color: '#233f94',
+    fontWeight: 400,
+    marginBottom: '3rem',
   },
   saveButton: {
     backgroundColor: '#3182ce',
@@ -148,51 +125,34 @@ previewColumn: {
   navigationButtons: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginTop: '2rem',
-    '@media (max-width: 600px)': {
-      marginTop: '1.5rem',
-      flexDirection: 'column',
-      gap: '1rem',
-    },
+    marginTop: '3rem',
+    gap: '1rem',
   },
   buttonNext: {
-    backgroundColor: '#3182ce',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '@media (max-width: 600px)': {
-      padding: '0.5rem 1rem',
-      width: '100%',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.4rem 0.8rem',
-      fontSize: '0.85rem',
-    },
+    background: 'linear-gradient(135deg, #27286c 0%, #233f94 100%)',
+    color: '#fff',
+    padding: '1rem 1.5rem',
+    borderRadius: '16px',
+    fontSize: '1rem',
+    fontWeight: 500,
+    boxShadow: '0 4px 12px rgba(39, 40, 108, 0.3)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
-      backgroundColor: '#2b6cb0',
+      transform: 'translateY(-3px)',
+      boxShadow: '0 12px 40px rgba(39, 40, 108, 0.4)',
     },
   },
   buttonBack: {
-    color: '#718096',
-    borderColor: '#e2e8f0',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '@media (max-width: 600px)': {
-      padding: '0.5rem 1rem',
-      width: '100%',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.4rem 0.8rem',
-      fontSize: '0.85rem',
-    },
+    background: 'rgba(0, 0, 0, 0.03)',
+    border: '1px solid rgba(39, 40, 108, 0.08)',
+    color: '#233f94',
+    padding: '1rem 1.5rem',
+    borderRadius: '16px',
+    fontSize: '1rem',
+    fontWeight: 500,
     '&:hover': {
-      backgroundColor: '#f7fafc',
+      background: 'rgba(39, 40, 108, 0.05)',
+      transform: 'translateY(-2px)',
     },
   },
   mainContainer: {

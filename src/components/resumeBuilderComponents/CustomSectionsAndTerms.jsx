@@ -23,15 +23,46 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   textField: {
     '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
+      background: 'rgba(0, 0, 0, 0.03)',
+      border: '1px solid rgba(39, 40, 108, 0.08)',
+      borderRadius: '16px',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      backdropFilter: 'blur(10px)',
+      '&:hover': {
+        borderColor: 'rgba(39, 40, 108, 0.12)',
+      },
+      '&.Mui-focused': {
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderColor: '#14b8a6',
+        boxShadow: '0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)',
+        transform: 'translateY(-2px)',
+      },
     },
-    marginBottom: '1rem',
+    '& .MuiInputLabel-root': {
+      color: '#427bbf',
+      fontWeight: 500,
+      fontSize: '0.9rem',
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#14b8a6',
+    },
   },
   formSubtitle: {
-    fontWeight: 500,
-    marginBottom: '0.75rem',
-    marginTop: '1rem',
-    color: '#4a5568',
+    fontSize: '1.5rem',
+    fontWeight: 600,
+    color: '#27286c',
+    marginBottom: '1.5rem',
+    position: 'relative',
+    paddingBottom: '0.5rem',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      width: '40px',
+      height: '2px',
+      background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
+    },
   },
   paper: {
     padding: '1.5rem',
@@ -67,14 +98,22 @@ const useStyles = makeStylesWithTheme((theme) => ({
   chipContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '0.5rem',
-    marginBottom: '1rem',
+    gap: '0.75rem',
+    marginTop: '1rem',
   },
-  chip: {
-    backgroundColor: '#e6fffa',
-    color: '#319795',
-    borderRadius: '16px',
-    margin: '0.25rem',
+ chip: {
+    background: 'linear-gradient(135deg, #27286c, #60cae6)',
+    color: 'white',
+    padding: '0.5rem 1rem',
+    borderRadius: '12px',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    boxShadow: '0 2px 8px rgba(39, 40, 108, 0.2)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 16px rgba(39, 40, 108, 0.3)',
+    },
   },
   divider: {
     margin: '2rem 0 1.5rem',
