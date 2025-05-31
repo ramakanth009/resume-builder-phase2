@@ -26,38 +26,24 @@ const dummyResumes = [
       {
         name: "E-commerce Platform",
         skills_used: "React, Node.js, Express, MongoDB, Redux",
-        technologies: ["React", "Node.js", "Express", "MongoDB", "Redux"],
+        description: "Built a full-stack e-commerce platform with user authentication, product catalog, and payment processing\nImplemented responsive design and mobile optimization\nIntegrated with payment gateway API",
         link: "github.com/alexjohnson/ecommerce",
         responsibilities: [
           "Built a full-stack e-commerce platform with user authentication, product catalog, and payment processing",
           "Implemented responsive design and mobile optimization",
           "Integrated with payment gateway API"
-        ],
-        description: "A full-featured e-commerce platform with authentication, catalog, and payments"
+        ]
       },
       {
-        name: "Real-time Chat Application",
+        name: "Real-time Chat app",
         skills_used: "React, Socket.io, Express, PostgreSQL",
-        technologies: ["React", "Socket.io", "Express", "PostgreSQL"],
+        description: "Developed a real-time messaging application with private channels and file sharing capabilities\nImplemented WebSocket connections for instant message delivery\ncreated an intuitive UI with material design",
         link: "github.com/alexjohnson/chat-app",
         responsibilities: [
           "Developed a real-time messaging application with private channels and file sharing capabilities",
           "Implemented WebSocket connections for instant message delivery",
-          "Created an intuitive UI with material design"
-        ],
-        description: "Real-time chat platform with private channels and file sharing"
-      },
-      {
-        name: "Task Management Dashboard",
-        skills_used: "TypeScript, React, Material-UI, Node.js",
-        technologies: ["TypeScript", "React", "Material-UI", "Node.js"],
-        link: "github.com/alexjohnson/task-dash",
-        responsibilities: [
-          "Developed a responsive task management system with drag-and-drop interface",
-          "Implemented real-time updates using WebSocket",
-          "Created custom analytics dashboard with data visualization"
-        ],
-        description: "Modern task management system with real-time updates"
+          "created an intuitive UI with material design"
+        ]
       }
     ],
     work_experience: [
@@ -99,49 +85,49 @@ const dummyResumes = [
       }
     ],
     // AI Experience data format
-    aiExperience: [
-      {
-        toolName: "GitHub Copilot",
-        impact: "Reduced development time by 30% and improved code quality",
-        usageCases: [
-          "Generated complex database queries with proper error handling",
-          "Automated repetitive code patterns for React components",
-          "Created comprehensive unit test suites for API endpoints"
-        ]
-      },
-      {
-        toolName: "ChatGPT",
-        impact: "Enhanced problem-solving and technical documentation",
-        usageCases: [
-          "Debugged complex asynchronous workflows in Node.js applications",
-          "Generated comprehensive API documentation based on code structures",
-          "Optimized database schema designs for better performance"
-        ]
-      }
-    ],
+    // aiExperience: [
+    //   {
+    //     toolName: "GitHub Copilot",
+    //     impact: "Reduced development time by 30% and improved code quality",
+    //     usageCases: [
+    //       "Generated complex database queries with proper error handling",
+    //       // "Automated repetitive code patterns for React components",
+    //       // "Created comprehensive unit test suites for API endpoints"
+    //     ]
+    //   },
+    //   {
+    //     toolName: "ChatGPT",
+    //     impact: "Enhanced problem-solving and technical documentation",
+    //     usageCases: [
+    //       "Debugged complex asynchronous workflows in Node.js applications",
+    //       // "Generated comprehensive API documentation based on code structures",
+    //       "Optimized database schema designs for better performance"
+    //     ]
+    //   }
+    // ],
     // GenAI tools data format
-    genai_tools: [
-      {
-        tool_id: "github_copilot",
-        name: "GitHub Copilot",
-        description: "Reduced development time by 30% and improved code quality",
-        usage_descriptions: [
-          "Generated complex database queries with proper error handling",
-          "Automated repetitive code patterns for React components",
-          "Created comprehensive unit test suites for API endpoints"
-        ]
-      },
-      {
-        tool_id: "chatgpt",
-        name: "ChatGPT",
-        description: "Enhanced problem-solving and technical documentation",
-        usage_descriptions: [
-          "Debugged complex asynchronous workflows in Node.js applications",
-          "Generated comprehensive API documentation based on code structures",
-          "Optimized database schema designs for better performance"
-        ]
-      }
-    ],
+    // genai_tools: [
+    //   {
+    //     tool_id: "github_copilot",
+    //     name: "GitHub Copilot",
+    //     description: "Reduced development time by 30% and improved code quality",
+    //     usage_descriptions: [
+    //       "Generated complex database queries with proper error handling",
+    //       "Automated repetitive code patterns for React components",
+    //       "Created comprehensive unit test suites for API endpoints"
+    //     ]
+    //   },
+    //   {
+    //     tool_id: "chatgpt",
+    //     name: "ChatGPT",
+    //     description: "Enhanced problem-solving and technical documentation",
+    //     usage_descriptions: [
+    //       "Debugged complex asynchronous workflows in Node.js applications",
+    //       "Generated comprehensive API documentation based on code structures",
+    //       "Optimized database schema designs for better performance"
+    //     ]
+    //   }
+    // ],
     customSections: {
       "Languages": ["English (Native)", "Spanish (Intermediate)"],
       "Achievements": [
