@@ -56,15 +56,15 @@ export const adaptGeneratedResume = (generatedResume, resumeId = null) => {
 
     // IMPORTANT: Ensure aiExperience data is properly synced with genai_tools
   // If we have aiExperience data but no genai_tools, convert aiExperience to genai_tools format
-  // if (adaptedResume.aiExperience && adaptedResume.aiExperience.length > 0 && 
-  //     (!adaptedResume.genai_tools || adaptedResume.genai_tools.length === 0)) {
-  //   adaptedResume.genai_tools = adaptedResume.aiExperience.map(aiExp => ({
-  //     tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
-  //     name: aiExp.toolName,
-  //     description: aiExp.impact || '',
-  //     usage_descriptions: aiExp.usageCases || []
-  //   }));
-  // }
+  if (adaptedResume.aiExperience && adaptedResume.aiExperience.length > 0 && 
+      (!adaptedResume.genai_tools || adaptedResume.genai_tools.length === 0)) {
+    adaptedResume.genai_tools = adaptedResume.aiExperience.map(aiExp => ({
+      tool_id: aiExp.toolName.toLowerCase().replace(/\s+/g, '_'),
+      name: aiExp.toolName,
+      description: aiExp.impact || '',
+      usage_descriptions: aiExp.usageCases || []
+    }));
+  }
 
   if (adaptedResume.genai_tools && adaptedResume.genai_tools.length > 0 && 
       (!adaptedResume.aiExperience || adaptedResume.aiExperience.length === 0)) {
