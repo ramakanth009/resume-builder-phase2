@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 import {
   AppBar,
@@ -12,8 +12,6 @@ import {
   Box,
   Container,
   useMediaQuery,
-  Slide,
-  useScrollTrigger,
   Tooltip,
   Badge
 } from '@mui/material';
@@ -50,13 +48,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end', // Changed to align items to right
     alignItems: 'center',
     padding: '0 24px',
     height: '100%',
     minHeight: '60px',
   },
   logoContainer: {
+    marginRight: 'auto', // This will push the logo to the left
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
@@ -136,20 +135,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
 }));
 
-function HideOnScroll(props) {
-  const { children } = props;
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 200,
-  });
-
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
-
 const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = false }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -208,216 +193,125 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData, hideLogo = fals
   };
   
   return (
-    <>
-      <HideOnScroll>
-        <AppBar 
-          position="fixed" 
-          className={`${classes.appBar} ${hideLogo ? classes.navbarWithSidebar : ''}`} 
-          elevation={2}
-        >
-          <Container maxWidth="xl">
-            <Toolbar className={classes.toolbar} disableGutters>
-              {/* Desktop Navigation */}
-              {!isSmallScreen && (
-                <Box className={classes.navButtons}>
-                  {/* Add FontSwitcher */}
-                  <FontSwitcher />
-                  
-                  {currentUser && (
-                    <>
-                      <Tooltip title="Create or edit your resume" arrow>
-                        <Button 
-                          className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
-                          onClick={() => navigateTo('/resume-builder')}
-                          startIcon={<CreateIcon className={classes.buttonIcon} />}
-                        >
-                          Create Resume
-                        </Button>
-                      </Tooltip>
-                      
-                      {currentPage === 'resume-builder' && (
-                        <>
-                          <Tooltip title="Choose a resume template" arrow>
-                            <Button
-                              className={classes.templateButton}
-                              onClick={onTemplateClick}
-                              startIcon={<TemplateIcon className={classes.buttonIcon} />}
-                            >
-                              Choose Template
-                            </Button>
-                          </Tooltip>
-                          
-                          <Tooltip title="Load sample resume data" arrow>
-                            <Button
-                              className={classes.dummyDataButton}
-                              onClick={onLoadDummyData}
-                              startIcon={<DataIcon className={classes.buttonIcon} />}
-                            >
-                              Load Demo Data
-                            </Button>
-                          </Tooltip>
-                        </>
-                      )}
-                    </>
-                  )}
-                  
-                  {!currentUser && (
-                    <>
-                      <Button 
-                        className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
-                        onClick={() => navigateTo('/login')}
-                      >
-                        Log In
-                      </Button>
-                      <Button 
-                        className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
-                        onClick={() => navigateTo('/')}
-                      >
-                        Sign Up
-                      </Button>
-                    </>
-                  )}
-                  
-                  {currentUser && (
-                    <>
-                      <Button 
-                        className={classes.userButton}
-                        onClick={handleUserMenuOpen}
-                        onMouseEnter={() => setMenuHovered(true)}
-                        onMouseLeave={() => setMenuHovered(false)}
-                      >
-                        <Badge 
-                          variant="dot" 
-                          invisible={true}
-                          className={classes.notificationBadge}
-                        >
-                          <Avatar className={classes.avatar} style={{
-                            transform: menuHovered ? 'scale(1.1)' : 'scale(1)'
-                          }}>
-                            {getInitial()}
-                          </Avatar>
-                        </Badge>
-                        <Box className={classes.userInfo}>
-                          <Typography className={classes.userName}>
-                            {currentUser.name.split(' ')[0]}
-                          </Typography>
-                        </Box>
-                      </Button>
-                      {!isSmallScreen && (
-                        <Tooltip title="Logout" arrow>
-                          <Button 
-                            className={classes.logoutButton}
-                            onClick={handleLogout}
-                            startIcon={<LogoutIcon />}
-                          >
-                            Logout
-                          </Button>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
-              
-              {/* Mobile Navigation */}
-              {isSmallScreen && (
-                <>
-                  <IconButton
-                    edge="end"
-                    className={classes.mobileMenuButton}
-                    onClick={handleMobileMenuOpen}
+    <AppBar className={classes.appBar}>
+      <Container maxWidth="xl">
+        <Toolbar className={classes.toolbar} disableGutters>
+          {/* Logo Section - Always visible */}
+          {!hideLogo && (
+            <div className={classes.logoContainer}>
+              <div className={classes.logo}>
+                <Typography variant="body2" color="inherit">
+                  RB
+                </Typography>
+              </div>
+              <Typography variant="h6" className={classes.logoText}>
+                Resume Builder
+              </Typography>
+            </div>
+          )}
+          
+          {/* Navigation Buttons - Aligned to the right */}
+          <Box className={classes.navButtons}>
+            {/* Add FontSwitcher */}
+            <FontSwitcher />
+            
+            {currentUser && (
+              <>
+                <Tooltip title="Create or edit your resume" arrow>
+                  <Button 
+                    className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
+                    onClick={() => navigateTo('/resume-builder')}
+                    startIcon={<CreateIcon className={classes.buttonIcon} />}
                   >
-                    <MenuIcon />
-                  </IconButton>
-                  
-                  <Menu
-                    anchorEl={mobileMenuAnchor}
-                    open={Boolean(mobileMenuAnchor)}
-                    onClose={handleMobileMenuClose}
-                    keepMounted
-                    PaperProps={{
-                      elevation: 3,
-                      style: {
-                        borderRadius: '8px',
-                        marginTop: '8px'
-                      }
-                    }}
-                  >
-                    {/* Add FontSwitcher MenuItem for mobile */}
-                    <MenuItem className={classes.menuItem}>
-                      <FontSwitcher />
-                    </MenuItem>
+                    Create Resume
+                  </Button>
+                </Tooltip>
+                
+                {currentPage === 'resume-builder' && (
+                  <>
+                    <Tooltip title="Choose a resume template" arrow>
+                      <Button
+                        className={classes.templateButton}
+                        onClick={onTemplateClick}
+                        startIcon={<TemplateIcon className={classes.buttonIcon} />}
+                      >
+                        Choose Template
+                      </Button>
+                    </Tooltip>
                     
-                    {!currentUser ? (
-                      <>
-                        <MenuItem 
-                          onClick={() => navigateTo('/login')} 
-                          className={classes.menuItem}
-                          selected={currentPage === 'login'}
-                        >
-                          Log In
-                        </MenuItem>
-                        <MenuItem 
-                          onClick={() => navigateTo('/')} 
-                          className={classes.menuItem}
-                          selected={currentPage === 'home'}
-                        >
-                          Sign Up
-                        </MenuItem>
-                      </>
-                    ) : (
-                      <>
-                        <MenuItem 
-                          onClick={() => navigateTo('/resume-builder')} 
-                          className={classes.menuItem}
-                          selected={currentPage === 'resume-builder'}
-                        >
-                          <CreateIcon fontSize="small" className={classes.menuItemIcon} />
-                          Create Resume
-                        </MenuItem>
-                        {currentPage === 'resume-builder' && (
-                          <>
-                            <MenuItem onClick={handleTemplateClick} className={classes.menuItem}>
-                              <TemplateIcon fontSize="small" className={classes.menuItemIcon} />
-                              Choose Template
-                            </MenuItem>
-                            <MenuItem onClick={handleLoadDummyData} className={classes.menuItem}>
-                              <DataIcon fontSize="small" className={classes.menuItemIcon} />
-                              Load Demo Data
-                            </MenuItem>
-                          </>
-                        )}
-                        <MenuItem onClick={handleLogout} className={classes.menuItem}>
-                          <LogoutIcon fontSize="small" className={classes.menuItemIcon} />
-                          Logout
-                        </MenuItem>
-                      </>
-                    )}
-                  </Menu>
-                </>
-              )}
-              
-              {/* User Menu - Now empty or can be removed */}
-              <Menu
-                anchorEl={userMenuAnchor}
-                open={Boolean(userMenuAnchor)}
-                onClose={handleUserMenuClose}
-                keepMounted
-                PaperProps={{
-                  elevation: 3,
-                  style: {
-                    borderRadius: '8px',
-                    marginTop: '8px'
-                  }
-                }}
-              >
-              </Menu>
-            </Toolbar>
-          </Container>
-        </AppBar>
-      </HideOnScroll>
-      <div className={classes.contentOffset} />
-    </>
+                    <Tooltip title="Load sample resume data" arrow>
+                      <Button
+                        className={classes.dummyDataButton}
+                        onClick={onLoadDummyData}
+                        startIcon={<DataIcon className={classes.buttonIcon} />}
+                      >
+                        Load Demo Data
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
+            
+            {!currentUser && (
+              <>
+                <Button 
+                  className={`${classes.navButton} ${currentPage === 'login' ? classes.activeNavButton : ''}`}
+                  onClick={() => navigateTo('/login')}
+                >
+                  Log In
+                </Button>
+                <Button 
+                  className={`${classes.navButton} ${currentPage === 'home' ? classes.activeNavButton : ''}`}
+                  onClick={() => navigateTo('/')}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+            
+            {currentUser && (
+              <>
+                <Button 
+                  className={classes.userButton}
+                  onClick={handleUserMenuOpen}
+                  onMouseEnter={() => setMenuHovered(true)}
+                  onMouseLeave={() => setMenuHovered(false)}
+                >
+                  <Badge 
+                    variant="dot" 
+                    invisible={true}
+                    className={classes.notificationBadge}
+                  >
+                    <Avatar className={classes.avatar} style={{
+                      transform: menuHovered ? 'scale(1.1)' : 'scale(1)'
+                    }}>
+                      {getInitial()}
+                    </Avatar>
+                  </Badge>
+                  <Box className={classes.userInfo}>
+                    <Typography className={classes.userName}>
+                      {currentUser.name.split(' ')[0]}
+                    </Typography>
+                  </Box>
+                </Button>
+                {!isSmallScreen && (
+                  <Tooltip title="Logout" arrow>
+                    <Button 
+                      className={classes.logoutButton}
+                      onClick={handleLogout}
+                      startIcon={<LogoutIcon />}
+                    >
+                      Logout
+                    </Button>
+                  </Tooltip>
+                )}
+              </>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 
