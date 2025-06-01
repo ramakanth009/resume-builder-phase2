@@ -9,7 +9,7 @@ import useCreativeStyles from "../../styles/previewStyles/creativeStyles";
 import useExecutiveStyles from "../../styles/previewStyles/executiveStyles";
 import useProfessionalStyles from "../../styles/previewStyles/professionalStyles";
 
-// Base styles for all templates
+// Base styles for all templates with responsive design
 const useBaseStyles = makeStylesWithTheme((theme) => ({
   resumeContainer: {
     padding: "2rem",
@@ -23,12 +23,48 @@ const useBaseStyles = makeStylesWithTheme((theme) => ({
     position: "relative",
     overflow: "hidden", // Prevents text overflow
     fontFamily: "Helvetica, Arial, sans-serif", // Consistent font family for PDF generation
+    '@media (max-width: 1200px)': {
+      padding: "1.8rem",
+      minHeight: "800px",
+    },
+    '@media (max-width: 960px)': {
+      padding: "1.5rem",
+      minHeight: "auto", // Remove fixed height on mobile
+    },
+    '@media (max-width: 600px)': {
+      padding: "1.2rem",
+      borderRadius: "6px",
+    },
+    '@media (max-width: 480px)': {
+      padding: "1rem",
+      borderRadius: "4px",
+    },
+    '@media (max-width: 375px)': {
+      padding: "0.8rem",
+      borderRadius: "4px",
+    },
   },
   generatedNotice: {
     marginTop: "2rem",
     textAlign: "center",
     color: "#718096",
     fontSize: "0.875rem",
+    '@media (max-width: 960px)': {
+      marginTop: "1.5rem",
+      fontSize: "0.8rem",
+    },
+    '@media (max-width: 600px)': {
+      marginTop: "1.2rem",
+      fontSize: "0.75rem",
+    },
+    '@media (max-width: 480px)': {
+      marginTop: "1rem",
+      fontSize: "0.7rem",
+    },
+    '@media (max-width: 375px)': {
+      marginTop: "0.8rem",
+      fontSize: "0.65rem",
+    },
   },
 }));
 
@@ -160,7 +196,15 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
           target="_blank"
           rel="noopener noreferrer"
           className={classes.contactLink}
-          sx={{ wordBreak: "break-word" }}
+          sx={{ 
+            wordBreak: "break-word",
+            '@media (max-width: 480px)': {
+              fontSize: '0.8rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.75rem',
+            },
+          }}
         >
           {url}
         </Link>
@@ -177,6 +221,14 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
         target="_blank"
         rel="noopener noreferrer"
         className={classes.contactLink}
+        sx={{
+          '@media (max-width: 480px)': {
+            fontSize: '0.8rem',
+          },
+          '@media (max-width: 375px)': {
+            fontSize: '0.75rem',
+          },
+        }}
       >
         {label}
       </Link>
@@ -215,41 +267,133 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
   return (
     <Box className={`${baseClasses.resumeContainer} resume-container`}>
       {/* Header Section */}
-      <Box className={classes.resumeHeader}>
+      <Box className={classes.resumeHeader} sx={{
+        '@media (max-width: 960px)': {
+          marginBottom: '1.5rem',
+        },
+        '@media (max-width: 600px)': {
+          marginBottom: '1.2rem',
+        },
+        '@media (max-width: 480px)': {
+          marginBottom: '1rem',
+        },
+        '@media (max-width: 375px)': {
+          marginBottom: '0.8rem',
+        },
+      }}>
         <Typography
           variant="h4"
           className={`${classes.resumeName} resume-name`}
+          sx={{
+            '@media (max-width: 1200px)': {
+              fontSize: '2rem',
+            },
+            '@media (max-width: 960px)': {
+              fontSize: '1.8rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1.6rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '1.4rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '1.2rem',
+            },
+          }}
         >
           {data.header.name || "Your Name"}
         </Typography>
 
-        <Box className={classes.resumeContact}>
+        <Box className={classes.resumeContact} sx={{
+          '@media (max-width: 960px)': {
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.5rem',
+          },
+          '@media (max-width: 600px)': {
+            gap: '0.4rem',
+          },
+          '@media (max-width: 480px)': {
+            gap: '0.3rem',
+          },
+        }}>
           {data.header.email && (
-            <Typography variant="body2" className={classes.resumeContactItem}>
+            <Typography variant="body2" className={classes.resumeContactItem} sx={{
+              '@media (max-width: 600px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.75rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.7rem',
+              },
+            }}>
               Email: {renderLink(null, data.header.email, "email")}
             </Typography>
           )}
 
           {data.header.phone && (
-            <Typography variant="body2" className={classes.resumeContactItem}>
+            <Typography variant="body2" className={classes.resumeContactItem} sx={{
+              '@media (max-width: 600px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.75rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.7rem',
+              },
+            }}>
               Phone: {data.header.phone}
             </Typography>
           )}
 
           {data.header.github && (
-            <Typography variant="body2" className={classes.resumeContactItem}>
+            <Typography variant="body2" className={classes.resumeContactItem} sx={{
+              '@media (max-width: 600px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.75rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.7rem',
+              },
+            }}>
               {renderLink("GitHub", data.header.github, "github")}
             </Typography>
           )}
 
           {data.header.linkedin && (
-            <Typography variant="body2" className={classes.resumeContactItem}>
+            <Typography variant="body2" className={classes.resumeContactItem} sx={{
+              '@media (max-width: 600px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.75rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.7rem',
+              },
+            }}>
               {renderLink("LinkedIn", data.header.linkedin, "linkedin")}
             </Typography>
           )}
 
           {data.header.portfolio && (
-            <Typography variant="body2" className={classes.resumeContactItem}>
+            <Typography variant="body2" className={classes.resumeContactItem} sx={{
+              '@media (max-width: 600px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.75rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.7rem',
+              },
+            }}>
               {renderLink("Portfolio", data.header.portfolio, "portfolio")}
             </Typography>
           )}
@@ -258,8 +402,28 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* Target Role */}
       {data.target_role && data.target_role.trim() !== "" && (
-        <Box className={classes.resumeSection} textAlign="center">
-          <Typography variant="body1" fontWeight="medium">
+        <Box className={classes.resumeSection} textAlign="center" sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="body1" fontWeight="medium" sx={{
+            '@media (max-width: 600px)': {
+              fontSize: '0.9rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.85rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.8rem',
+            },
+          }}>
             Target Role: {data.target_role}
           </Typography>
         </Box>
@@ -267,11 +431,44 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* Summary Section */}
       {data.summary && data.summary.trim() !== "" && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             Professional Summary
           </Typography>
-          <Typography variant="body2" className={classes.resumeSummary}>
+          <Typography variant="body2" className={classes.resumeSummary} sx={{
+            '@media (max-width: 600px)': {
+              fontSize: '0.85rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.8rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.75rem',
+            },
+          }}>
             {data.summary}
           </Typography>
         </Box>
@@ -281,11 +478,41 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
       {data.skills &&
         data.skills.length > 0 &&
         data.skills.some((skill) => skill && skill.trim() !== "") && (
-          <Box className={classes.resumeSection}>
-            <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Box className={classes.resumeSection} sx={{
+            '@media (max-width: 960px)': {
+              marginBottom: '1.5rem',
+            },
+            '@media (max-width: 600px)': {
+              marginBottom: '1.2rem',
+            },
+            '@media (max-width: 480px)': {
+              marginBottom: '1rem',
+            },
+          }}>
+            <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+              '@media (max-width: 960px)': {
+                fontSize: '1.1rem',
+              },
+              '@media (max-width: 600px)': {
+                fontSize: '1rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.95rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.9rem',
+              },
+            }}>
               Skills
             </Typography>
-            <Box className={classes.resumeSkills}>
+            <Box className={classes.resumeSkills} sx={{
+              '@media (max-width: 600px)': {
+                gap: '0.4rem',
+              },
+              '@media (max-width: 480px)': {
+                gap: '0.3rem',
+              },
+            }}>
               {data.skills
                 .filter((skill) => skill && skill.trim() !== "")
                 .map((skill, index) => (
@@ -294,6 +521,20 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     label={skill}
                     size="small"
                     className={classes.resumeSkillChip}
+                    sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.65rem',
+                        height: '22px',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.6rem',
+                        height: '20px',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.55rem',
+                        height: '18px',
+                      },
+                    }}
                   />
                 ))}
             </Box>
@@ -302,14 +543,44 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* AI Tools & Technologies Section */}
       {hasAIToolsData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             AI Tools & Technologies
           </Typography>
 
           {/* Display genai_tools format */}
           {data.genai_tools && data.genai_tools.length > 0 && (
-            <Box className={classes.resumeSkills}>
+            <Box className={classes.resumeSkills} sx={{
+              '@media (max-width: 600px)': {
+                gap: '0.4rem',
+              },
+              '@media (max-width: 480px)': {
+                gap: '0.3rem',
+              },
+            }}>
               {data.genai_tools.map((tool, index) => (
                 <Chip
                   key={index}
@@ -320,6 +591,18 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     backgroundColor: "#e6f3ff",
                     color: "#1565c0",
                     fontWeight: 500,
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.65rem',
+                      height: '22px',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.6rem',
+                      height: '20px',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.55rem',
+                      height: '18px',
+                    },
                   }}
                 />
               ))}
@@ -329,7 +612,14 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
           {data.aiExperience &&
             data.aiExperience.length > 0 &&
             !data.genai_tools && (
-              <Box className={classes.resumeSkills}>
+              <Box className={classes.resumeSkills} sx={{
+                '@media (max-width: 600px)': {
+                  gap: '0.4rem',
+                },
+                '@media (max-width: 480px)': {
+                  gap: '0.3rem',
+                },
+              }}>
                 {data.aiExperience.map((aiExp, index) => (
                   <Chip
                     key={index}
@@ -340,6 +630,18 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                       backgroundColor: "#e6f3ff",
                       color: "#1565c0",
                       fontWeight: 500,
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.65rem',
+                        height: '22px',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.6rem',
+                        height: '20px',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.55rem',
+                        height: '18px',
+                      },
                     }}
                   />
                 ))}
@@ -350,8 +652,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* AI Tools Experience Section - Shows detailed usage */}
       {hasAIExperienceData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             AI Tools Experience
           </Typography>
           
@@ -360,21 +685,67 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
            data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0) && (
             <>
               {data.aiExperience.map((aiExp, index) => (
-                <Box key={`ai-exp-${index}`} className={classes.resumeItem}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                <Box key={`ai-exp-${index}`} className={classes.resumeItem} sx={{
+                  '@media (max-width: 960px)': {
+                    marginBottom: '1.2rem',
+                  },
+                  '@media (max-width: 600px)': {
+                    marginBottom: '1rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    marginBottom: '0.8rem',
+                  },
+                }}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle} sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.95rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.9rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.85rem',
+                    },
+                  }}>
                     {aiExp.toolName}
                   </Typography>
                   
                   {aiExp.impact && (
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                    <Typography variant="body2" className={classes.resumeItemSubtitle} sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.8rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.75rem',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.7rem',
+                      },
+                    }}>
                       {aiExp.impact}
                     </Typography>
                   )}
                   
                   {aiExp.usageCases && aiExp.usageCases.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets}>
+                    <Box component="ul" className={classes.resumeBullets} sx={{
+                      '@media (max-width: 600px)': {
+                        paddingLeft: '1rem',
+                        marginTop: '0.4rem',
+                        marginBottom: '0.4rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        paddingLeft: '0.8rem',
+                        marginTop: '0.3rem',
+                        marginBottom: '0.3rem',
+                      },
+                    }}>
                       {aiExp.usageCases.map((useCase, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
+                        <li key={idx} className={classes.resumeBullet} style={{
+                          fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                   window.innerWidth <= 480 ? '0.7rem' : 
+                                   window.innerWidth <= 375 ? '0.65rem' : undefined,
+                          marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                        }}>
                           {useCase}
                         </li>
                       ))}
@@ -390,21 +761,67 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
            data.genai_tools.some(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0) && (
             <>
               {data.genai_tools.map((tool, index) => (
-                <Box key={`genai-tool-${index}`} className={classes.resumeItem}>
-                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                <Box key={`genai-tool-${index}`} className={classes.resumeItem} sx={{
+                  '@media (max-width: 960px)': {
+                    marginBottom: '1.2rem',
+                  },
+                  '@media (max-width: 600px)': {
+                    marginBottom: '1rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    marginBottom: '0.8rem',
+                  },
+                }}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle} sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.95rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.9rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.85rem',
+                    },
+                  }}>
                     {tool.name}
                   </Typography>
                   
                   {tool.description && (
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                    <Typography variant="body2" className={classes.resumeItemSubtitle} sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.8rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.75rem',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.7rem',
+                      },
+                    }}>
                       {tool.description}
                     </Typography>
                   )}
                   
                   {tool.usage_descriptions && tool.usage_descriptions.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets}>
+                    <Box component="ul" className={classes.resumeBullets} sx={{
+                      '@media (max-width: 600px)': {
+                        paddingLeft: '1rem',
+                        marginTop: '0.4rem',
+                        marginBottom: '0.4rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        paddingLeft: '0.8rem',
+                        marginTop: '0.3rem',
+                        marginBottom: '0.3rem',
+                      },
+                    }}>
                       {tool.usage_descriptions.map((usage, idx) => (
-                        <li key={idx} className={classes.resumeBullet}>
+                        <li key={idx} className={classes.resumeBullet} style={{
+                          fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                   window.innerWidth <= 480 ? '0.7rem' : 
+                                   window.innerWidth <= 375 ? '0.65rem' : undefined,
+                          marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                        }}>
                           {usage}
                         </li>
                       ))}
@@ -419,44 +836,149 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* Education Section */}
       {hasEducationData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             Education
           </Typography>
           {Array.isArray(data.education) ? (
             data.education.map((edu, index) => (
-              <Box key={index} className={classes.resumeEducation}>
+              <Box key={index} className={classes.resumeEducation} sx={{
+                '@media (max-width: 960px)': {
+                  marginBottom: '1.2rem',
+                },
+                '@media (max-width: 600px)': {
+                  marginBottom: '1rem',
+                },
+                '@media (max-width: 480px)': {
+                  marginBottom: '0.8rem',
+                },
+              }}>
                 <Typography
                   variant="subtitle1"
                   className={classes.resumeSubtitle}
+                  sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.95rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.9rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.85rem',
+                    },
+                  }}
                 >
                   {edu.degree || ""}
                   {edu.specialization ? ` in ${edu.specialization}` : ""}
                 </Typography>
-                <Typography variant="body2">{edu.institution || ""}</Typography>
+                <Typography variant="body2" sx={{
+                  '@media (max-width: 600px)': {
+                    fontSize: '0.8rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.75rem',
+                  },
+                  '@media (max-width: 375px)': {
+                    fontSize: '0.7rem',
+                  },
+                }}>{edu.institution || ""}</Typography>
                 {(edu.graduation_year || edu.graduationYear) && (
-                  <Typography variant="body2" className={classes.resumeDate}>
+                  <Typography variant="body2" className={classes.resumeDate} sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.75rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.7rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.65rem',
+                    },
+                  }}>
                     Graduated: {edu.graduation_year || edu.graduationYear}
                   </Typography>
                 )}
               </Box>
             ))
           ) : (
-            <Box className={classes.resumeEducation}>
+            <Box className={classes.resumeEducation} sx={{
+              '@media (max-width: 960px)': {
+                marginBottom: '1.2rem',
+              },
+              '@media (max-width: 600px)': {
+                marginBottom: '1rem',
+              },
+              '@media (max-width: 480px)': {
+                marginBottom: '0.8rem',
+              },
+            }}>
               <Typography
                 variant="subtitle1"
                 className={classes.resumeSubtitle}
+                sx={{
+                  '@media (max-width: 600px)': {
+                    fontSize: '0.95rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.9rem',
+                  },
+                  '@media (max-width: 375px)': {
+                    fontSize: '0.85rem',
+                  },
+                }}
               >
                 {data.education.degree || ""}
                 {data.education.specialization
                   ? ` in ${data.education.specialization}`
                   : ""}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{
+                '@media (max-width: 600px)': {
+                  fontSize: '0.8rem',
+                },
+                '@media (max-width: 480px)': {
+                  fontSize: '0.75rem',
+                },
+                '@media (max-width: 375px)': {
+                  fontSize: '0.7rem',
+                },
+              }}>
                 {data.education.institution || ""}
               </Typography>
               {data.education.graduation_year && (
-                <Typography variant="body2" className={classes.resumeDate}>
+                <Typography variant="body2" className={classes.resumeDate} sx={{
+                  '@media (max-width: 600px)': {
+                    fontSize: '0.75rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.7rem',
+                  },
+                  '@media (max-width: 375px)': {
+                    fontSize: '0.65rem',
+                  },
+                }}>
                   Graduated: {data.education.graduation_year}
                 </Typography>
               )}
@@ -467,8 +989,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* Work Experience Section */}
       {hasWorkExperienceData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             Work Experience
           </Typography>
 
@@ -480,10 +1025,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     (exp.company_name && exp.company_name.trim() !== "")
                 )
                 .map((experience, index) => (
-                  <Box key={`work-${index}`} className={classes.resumeItem}>
+                  <Box key={`work-${index}`} className={classes.resumeItem} sx={{
+                    '@media (max-width: 960px)': {
+                      marginBottom: '1.2rem',
+                    },
+                    '@media (max-width: 600px)': {
+                      marginBottom: '1rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      marginBottom: '0.8rem',
+                    },
+                  }}>
                     <Typography
                       variant="subtitle1"
                       className={classes.resumeSubtitle}
+                      sx={{
+                        '@media (max-width: 600px)': {
+                          fontSize: '0.95rem',
+                        },
+                        '@media (max-width: 480px)': {
+                          fontSize: '0.9rem',
+                        },
+                        '@media (max-width: 375px)': {
+                          fontSize: '0.85rem',
+                        },
+                      }}
                     >
                       {experience.position || "Position"}
                       {experience.company_name
@@ -495,6 +1061,17 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                         <Typography
                           variant="body2"
                           className={classes.resumeDate}
+                          sx={{
+                            '@media (max-width: 600px)': {
+                              fontSize: '0.75rem',
+                            },
+                            '@media (max-width: 480px)': {
+                              fontSize: '0.7rem',
+                            },
+                            '@media (max-width: 375px)': {
+                              fontSize: '0.65rem',
+                            },
+                          }}
                         >
                           {experience.duration}
                         </Typography>
@@ -504,11 +1081,27 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                       experience.responsibilities.some(
                         (r) => r && r.trim() !== ""
                       ) && (
-                        <Box component="ul" className={classes.resumeBullets}>
+                        <Box component="ul" className={classes.resumeBullets} sx={{
+                          '@media (max-width: 600px)': {
+                            paddingLeft: '1rem',
+                            marginTop: '0.4rem',
+                            marginBottom: '0.4rem',
+                          },
+                          '@media (max-width: 480px)': {
+                            paddingLeft: '0.8rem',
+                            marginTop: '0.3rem',
+                            marginBottom: '0.3rem',
+                          },
+                        }}>
                           {experience.responsibilities
                             .filter((r) => r && r.trim() !== "")
                             .map((responsibility, idx) => (
-                              <li key={idx} className={classes.resumeBullet}>
+                              <li key={idx} className={classes.resumeBullet} style={{
+                                fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                         window.innerWidth <= 480 ? '0.7rem' : 
+                                         window.innerWidth <= 375 ? '0.65rem' : undefined,
+                                marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                              }}>
                                 {responsibility}
                               </li>
                             ))}
@@ -524,10 +1117,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     (exp.companyName && exp.companyName.trim() !== "")
                 )
                 .map((experience, index) => (
-                  <Box key={`workExp-${index}`} className={classes.resumeItem}>
+                  <Box key={`workExp-${index}`} className={classes.resumeItem} sx={{
+                    '@media (max-width: 960px)': {
+                      marginBottom: '1.2rem',
+                    },
+                    '@media (max-width: 600px)': {
+                      marginBottom: '1rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      marginBottom: '0.8rem',
+                    },
+                  }}>
                     <Typography
                       variant="subtitle1"
                       className={classes.resumeSubtitle}
+                      sx={{
+                        '@media (max-width: 600px)': {
+                          fontSize: '0.95rem',
+                        },
+                        '@media (max-width: 480px)': {
+                          fontSize: '0.9rem',
+                        },
+                        '@media (max-width: 375px)': {
+                          fontSize: '0.85rem',
+                        },
+                      }}
                     >
                       {experience.position || "Position"}
                       {experience.companyName
@@ -539,16 +1153,43 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                         <Typography
                           variant="body2"
                           className={classes.resumeDate}
+                          sx={{
+                            '@media (max-width: 600px)': {
+                              fontSize: '0.75rem',
+                            },
+                            '@media (max-width: 480px)': {
+                              fontSize: '0.7rem',
+                            },
+                            '@media (max-width: 375px)': {
+                              fontSize: '0.65rem',
+                            },
+                          }}
                         >
                           {experience.duration}
                         </Typography>
                       )}
                     {experience.responsibilities &&
                       experience.responsibilities.length > 0 && (
-                        <Box component="ul" className={classes.resumeBullets}>
+                        <Box component="ul" className={classes.resumeBullets} sx={{
+                          '@media (max-width: 600px)': {
+                            paddingLeft: '1rem',
+                            marginTop: '0.4rem',
+                            marginBottom: '0.4rem',
+                          },
+                          '@media (max-width: 480px)': {
+                            paddingLeft: '0.8rem',
+                            marginTop: '0.3rem',
+                            marginBottom: '0.3rem',
+                          },
+                        }}>
                           {experience.responsibilities.map(
                             (responsibility, idx) => (
-                              <li key={idx} className={classes.resumeBullet}>
+                              <li key={idx} className={classes.resumeBullet} style={{
+                                fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                         window.innerWidth <= 480 ? '0.7rem' : 
+                                         window.innerWidth <= 375 ? '0.65rem' : undefined,
+                                marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                              }}>
                                 {responsibility}
                               </li>
                             )
@@ -563,8 +1204,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
 
       {/* Projects Section */}
       {hasProjectsData() && (
-        <Box className={classes.resumeSection}>
-          <Typography variant="h6" className={classes.resumeSectionTitle}>
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
             Projects
           </Typography>
 
@@ -573,10 +1237,31 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
             data.projects
               .filter((p) => p.name && p.name.trim() !== "")
               .map((project, index) => (
-                <Box key={`project-${index}`} className={classes.resumeItem}>
+                <Box key={`project-${index}`} className={classes.resumeItem} sx={{
+                  '@media (max-width: 960px)': {
+                    marginBottom: '1.2rem',
+                  },
+                  '@media (max-width: 600px)': {
+                    marginBottom: '1rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    marginBottom: '0.8rem',
+                  },
+                }}>
                   <Typography
                     variant="subtitle1"
                     className={classes.resumeSubtitle}
+                    sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.95rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.9rem',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.85rem',
+                      },
+                    }}
                   >
                     {project.name || "Project Name"}
                     {project.link && project.link.trim() !== "" && (
@@ -590,6 +1275,14 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className={classes.contactLink}
+                          sx={{
+                            '@media (max-width: 480px)': {
+                              fontSize: '0.8rem',
+                            },
+                            '@media (max-width: 375px)': {
+                              fontSize: '0.75rem',
+                            },
+                          }}
                         >
                           View Project
                         </Link>
@@ -600,15 +1293,42 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     <Typography
                       variant="body2"
                       className={classes.resumeItemSubtitle}
+                      sx={{
+                        '@media (max-width: 600px)': {
+                          fontSize: '0.8rem',
+                        },
+                        '@media (max-width: 480px)': {
+                          fontSize: '0.75rem',
+                        },
+                        '@media (max-width: 375px)': {
+                          fontSize: '0.7rem',
+                        },
+                      }}
                     >
                       Skills: {project.skills_used}
                     </Typography>
                   )}
                   {project.responsibilities &&
                     project.responsibilities.length > 0 && (
-                      <Box component="ul" className={classes.resumeBullets}>
+                      <Box component="ul" className={classes.resumeBullets} sx={{
+                        '@media (max-width: 600px)': {
+                          paddingLeft: '1rem',
+                          marginTop: '0.4rem',
+                          marginBottom: '0.4rem',
+                        },
+                        '@media (max-width: 480px)': {
+                          paddingLeft: '0.8rem',
+                          marginTop: '0.3rem',
+                          marginBottom: '0.3rem',
+                        },
+                      }}>
                         {project.responsibilities.map((responsibility, idx) => (
-                          <li key={idx} className={classes.resumeBullet}>
+                          <li key={idx} className={classes.resumeBullet} style={{
+                            fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                     window.innerWidth <= 480 ? '0.7rem' : 
+                                     window.innerWidth <= 375 ? '0.65rem' : undefined,
+                            marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                          }}>
                             {responsibility}
                           </li>
                         ))}
@@ -627,11 +1347,45 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
             (typeof cert === "string" && cert.trim() !== "") ||
             (typeof cert === "object" && cert.name && cert.name.trim() !== "")
         ) && (
-          <Box className={classes.resumeSection}>
-            <Typography variant="h6" className={classes.resumeSectionTitle}>
+          <Box className={classes.resumeSection} sx={{
+            '@media (max-width: 960px)': {
+              marginBottom: '1.5rem',
+            },
+            '@media (max-width: 600px)': {
+              marginBottom: '1.2rem',
+            },
+            '@media (max-width: 480px)': {
+              marginBottom: '1rem',
+            },
+          }}>
+            <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+              '@media (max-width: 960px)': {
+                fontSize: '1.1rem',
+              },
+              '@media (max-width: 600px)': {
+                fontSize: '1rem',
+              },
+              '@media (max-width: 480px)': {
+                fontSize: '0.95rem',
+              },
+              '@media (max-width: 375px)': {
+                fontSize: '0.9rem',
+              },
+            }}>
               Certifications
             </Typography>
-            <Box component="ul" className={classes.resumeBullets}>
+            <Box component="ul" className={classes.resumeBullets} sx={{
+              '@media (max-width: 600px)': {
+                paddingLeft: '1rem',
+                marginTop: '0.4rem',
+                marginBottom: '0.4rem',
+              },
+              '@media (max-width: 480px)': {
+                paddingLeft: '0.8rem',
+                marginTop: '0.3rem',
+                marginBottom: '0.3rem',
+              },
+            }}>
               {data.certifications
                 .filter(
                   (cert) =>
@@ -641,7 +1395,12 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                       cert.name.trim() !== "")
                 )
                 .map((cert, index) => (
-                  <li key={index} className={classes.resumeBullet}>
+                  <li key={index} className={classes.resumeBullet} style={{
+                    fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                             window.innerWidth <= 480 ? '0.7rem' : 
+                             window.innerWidth <= 375 ? '0.65rem' : undefined,
+                    marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                  }}>
                     {formatCertification(cert)}
                     {typeof cert === "object" &&
                       cert.url &&
@@ -656,6 +1415,14 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className={classes.contactLink}
+                            sx={{
+                              '@media (max-width: 480px)': {
+                                fontSize: '0.7rem',
+                              },
+                              '@media (max-width: 375px)': {
+                                fontSize: '0.65rem',
+                              },
+                            }}
                           >
                             View
                           </Link>
@@ -683,23 +1450,72 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
             );
           })
           .map(([sectionName, content]) => (
-            <Box key={sectionName} className={classes.resumeSection}>
-              <Typography variant="h6" className={classes.resumeSectionTitle}>
+            <Box key={sectionName} className={classes.resumeSection} sx={{
+              '@media (max-width: 960px)': {
+                marginBottom: '1.5rem',
+              },
+              '@media (max-width: 600px)': {
+                marginBottom: '1.2rem',
+              },
+              '@media (max-width: 480px)': {
+                marginBottom: '1rem',
+              },
+            }}>
+              <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+                '@media (max-width: 960px)': {
+                  fontSize: '1.1rem',
+                },
+                '@media (max-width: 600px)': {
+                  fontSize: '1rem',
+                },
+                '@media (max-width: 480px)': {
+                  fontSize: '0.95rem',
+                },
+                '@media (max-width: 375px)': {
+                  fontSize: '0.9rem',
+                },
+              }}>
                 {sectionName.replace(/_/g, " ")}
               </Typography>
 
               {Array.isArray(content) ? (
-                <Box component="ul" className={classes.resumeBullets}>
+                <Box component="ul" className={classes.resumeBullets} sx={{
+                  '@media (max-width: 600px)': {
+                    paddingLeft: '1rem',
+                    marginTop: '0.4rem',
+                    marginBottom: '0.4rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    paddingLeft: '0.8rem',
+                    marginTop: '0.3rem',
+                    marginBottom: '0.3rem',
+                  },
+                }}>
                   {content
                     .filter((item) => item && item.trim() !== "")
                     .map((item, index) => (
-                      <li key={index} className={classes.resumeBullet}>
+                      <li key={index} className={classes.resumeBullet} style={{
+                        fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                 window.innerWidth <= 480 ? '0.7rem' : 
+                                 window.innerWidth <= 375 ? '0.65rem' : undefined,
+                        marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                      }}>
                         {item}
                       </li>
                     ))}
                 </Box>
               ) : (
-                <Typography variant="body2">{content}</Typography>
+                <Typography variant="body2" sx={{
+                  '@media (max-width: 600px)': {
+                    fontSize: '0.8rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    fontSize: '0.75rem',
+                  },
+                  '@media (max-width: 375px)': {
+                    fontSize: '0.7rem',
+                  },
+                }}>{content}</Typography>
               )}
             </Box>
           ))}

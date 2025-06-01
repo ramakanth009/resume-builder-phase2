@@ -47,13 +47,38 @@ const useStyles = makeStylesWithTheme((theme) => ({
     boxShadow: '0 2px 8px rgba(39, 40, 108, 0.08)',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     zIndex: 1000,
+    '&:hover': {
+      boxShadow: '0 4px 16px rgba(39, 40, 108, 0.12)',
+    },
+    '@media (max-width: 1200px)': {
+      width: 'calc(92% - 30px)',
+      height: '58px',
+      top: '15px',
+    },
+    '@media (max-width: 960px)': {
+      width: 'calc(95% - 20px)',
+      height: '56px',
+      top: '12px',
+    },
     '@media (max-width: 768px)': {
       width: 'calc(100% - 20px)',
       top: '10px',
       height: '56px',
     },
-    '&:hover': {
-      boxShadow: '0 4px 16px rgba(39, 40, 108, 0.12)',
+    '@media (max-width: 600px)': {
+      width: 'calc(100% - 16px)',
+      height: '54px',
+      top: '8px',
+    },
+    '@media (max-width: 480px)': {
+      width: 'calc(100% - 12px)',
+      height: '52px',
+      top: '6px',
+    },
+    '@media (max-width: 375px)': {
+      width: 'calc(100% - 8px)',
+      height: '50px',
+      top: '4px',
     },
   },
   toolbar: {
@@ -63,9 +88,29 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '0 24px',
     height: '100%',
     minHeight: '60px',
+    '@media (max-width: 1200px)': {
+      padding: '0 20px',
+      minHeight: '58px',
+    },
+    '@media (max-width: 960px)': {
+      padding: '0 18px',
+      minHeight: '56px',
+    },
     '@media (max-width: 768px)': {
       padding: '0 16px',
       minHeight: '56px',
+    },
+    '@media (max-width: 600px)': {
+      padding: '0 14px',
+      minHeight: '54px',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0 12px',
+      minHeight: '52px',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0 10px',
+      minHeight: '50px',
     },
   },
   logoContainer: {
@@ -73,8 +118,17 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     gap: '12px',
     cursor: 'pointer',
-    '@media (max-width: 480px)': {
+    '@media (max-width: 960px)': {
+      gap: '10px',
+    },
+    '@media (max-width: 600px)': {
       gap: '8px',
+    },
+    '@media (max-width: 480px)': {
+      gap: '6px',
+    },
+    '@media (max-width: 375px)': {
+      gap: '4px',
     },
   },
   logo: {
@@ -85,9 +139,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    '@media (max-width: 480px)': {
+    '@media (max-width: 960px)': {
+      width: '30px',
+      height: '30px',
+    },
+    '@media (max-width: 600px)': {
       width: '28px',
       height: '28px',
+    },
+    '@media (max-width: 480px)': {
+      width: '26px',
+      height: '26px',
+    },
+    '@media (max-width: 375px)': {
+      width: '24px',
+      height: '24px',
     },
   },
   logoText: {
@@ -96,8 +162,17 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#27286c',
     letterSpacing: '-0.02em',
     whiteSpace: 'nowrap',
+    '@media (max-width: 1200px)': {
+      fontSize: '15px',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '14px',
+    },
     '@media (max-width: 768px)': {
       fontSize: '14px',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '13px',
     },
     '@media (max-width: 480px)': {
       display: 'none', // Hide text on very small screens
@@ -107,6 +182,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: '16px',
+    '@media (max-width: 1200px)': {
+      gap: '14px',
+    },
     '@media (max-width: 960px)': {
       display: 'none', // Hide on tablet and mobile
     },
@@ -117,6 +195,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     gap: '8px',
     '@media (max-width: 960px)': {
       display: 'flex',
+    },
+    '@media (max-width: 600px)': {
+      gap: '6px',
+    },
+    '@media (max-width: 480px)': {
+      gap: '4px',
     },
   },
   navButton: {
@@ -132,6 +216,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
       transform: 'translateY(-2px)',
       boxShadow: '0 8px 24px rgba(39, 40, 108, 0.4)',
     },
+    '@media (max-width: 1200px)': {
+      padding: '7px 14px',
+      fontSize: '13px',
+    },
   },
   activeNavButton: {
     background: 'linear-gradient(135deg, #27286c 0%, #233f94 100%)',
@@ -146,7 +234,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   dummyDataButton: {
-    // display: 'none', // Hidden by default, can be shown when needed
+    display: 'none', // Hidden by default, can be shown when needed
     background: '#ffc615',
     color: '#27286c',
     '&:hover': {
@@ -163,6 +251,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
       background: 'rgba(39, 40, 108, 0.05)',
       boxShadow: '0 4px 16px rgba(39, 40, 108, 0.12)',
     },
+    '@media (max-width: 1200px)': {
+      padding: '7px 10px',
+    },
+    '@media (max-width: 600px)': {
+      padding: '6px 8px',
+    },
+    '@media (max-width: 480px)': {
+      padding: '5px 6px',
+    },
   },
   avatar: {
     width: '28px',
@@ -171,12 +268,41 @@ const useStyles = makeStylesWithTheme((theme) => ({
     boxShadow: '0 2px 8px rgba(39, 40, 108, 0.2)',
     fontSize: '14px',
     fontWeight: 600,
+    '@media (max-width: 1200px)': {
+      width: '26px',
+      height: '26px',
+      fontSize: '13px',
+    },
+    '@media (max-width: 600px)': {
+      width: '24px',
+      height: '24px',
+      fontSize: '12px',
+    },
+    '@media (max-width: 480px)': {
+      width: '22px',
+      height: '22px',
+      fontSize: '11px',
+    },
+    '@media (max-width: 375px)': {
+      width: '20px',
+      height: '20px',
+      fontSize: '10px',
+    },
   },
   mobileMenuButton: {
     color: '#27286c',
     padding: '8px',
     '&:hover': {
       background: 'rgba(39, 40, 108, 0.05)',
+    },
+    '@media (max-width: 600px)': {
+      padding: '6px',
+    },
+    '@media (max-width: 480px)': {
+      padding: '5px',
+    },
+    '@media (max-width: 375px)': {
+      padding: '4px',
     },
   },
   // Mobile drawer styles
@@ -185,6 +311,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
       width: 280,
       backgroundColor: 'rgba(255, 255, 255, 0.95)',
       backdropFilter: 'blur(20px)',
+      '@media (max-width: 600px)': {
+        width: 260,
+      },
+      '@media (max-width: 480px)': {
+        width: 240,
+      },
+      '@media (max-width: 375px)': {
+        width: '85%',
+      },
     },
   },
   drawerHeader: {
@@ -193,29 +328,80 @@ const useStyles = makeStylesWithTheme((theme) => ({
     justifyContent: 'space-between',
     padding: '16px 20px',
     borderBottom: '1px solid rgba(39, 40, 108, 0.08)',
+    '@media (max-width: 600px)': {
+      padding: '14px 18px',
+    },
+    '@media (max-width: 480px)': {
+      padding: '12px 16px',
+    },
+    '@media (max-width: 375px)': {
+      padding: '10px 14px',
+    },
   },
   drawerLogo: {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
+    '@media (max-width: 600px)': {
+      gap: '10px',
+    },
+    '@media (max-width: 480px)': {
+      gap: '8px',
+    },
   },
   drawerLogoImage: {
     width: '32px',
     height: '32px',
     borderRadius: '8px',
+    '@media (max-width: 600px)': {
+      width: '28px',
+      height: '28px',
+    },
+    '@media (max-width: 480px)': {
+      width: '26px',
+      height: '26px',
+    },
+    '@media (max-width: 375px)': {
+      width: '24px',
+      height: '24px',
+    },
   },
   drawerLogoText: {
     fontSize: '18px',
     fontWeight: 600,
     color: '#27286c',
+    '@media (max-width: 600px)': {
+      fontSize: '16px',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '15px',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '14px',
+    },
   },
   drawerList: {
     padding: '16px 0',
+    '@media (max-width: 600px)': {
+      padding: '14px 0',
+    },
+    '@media (max-width: 480px)': {
+      padding: '12px 0',
+    },
   },
   drawerListItem: {
     padding: '12px 20px',
     '&:hover': {
       backgroundColor: 'rgba(39, 40, 108, 0.05)',
+    },
+    '@media (max-width: 600px)': {
+      padding: '10px 18px',
+    },
+    '@media (max-width: 480px)': {
+      padding: '9px 16px',
+    },
+    '@media (max-width: 375px)': {
+      padding: '8px 14px',
     },
   },
   drawerButton: {
@@ -228,6 +414,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: 'rgba(39, 40, 108, 0.05)',
     },
+    '@media (max-width: 600px)': {
+      padding: '10px 18px',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '9px 16px',
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '8px 14px',
+      fontSize: '0.8rem',
+    },
   },
   drawerActiveButton: {
     backgroundColor: 'rgba(49, 130, 206, 0.1)',
@@ -239,9 +437,18 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       backgroundColor: 'rgba(39, 40, 108, 0.05)',
     },
+    '@media (max-width: 480px)': {
+      padding: '6px',
+    },
+    '@media (max-width: 375px)': {
+      padding: '4px',
+    },
   },
   userInfo: {
     marginLeft: '8px',
+    '@media (max-width: 600px)': {
+      marginLeft: '6px',
+    },
     '@media (max-width: 480px)': {
       display: 'none',
     },
@@ -250,6 +457,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '13px',
     fontWeight: 500,
     color: '#2d3748',
+    '@media (max-width: 1200px)': {
+      fontSize: '12px',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '11px',
+    },
   },
   logoutButton: {
     display: 'none', // Hidden on mobile, shown in desktop
