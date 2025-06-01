@@ -295,10 +295,10 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         {/* Replace old header with new styled header */}
         <Box>
           <Typography variant="h6" className={classes.formSubtitle}>
-            AI Tools & Skills
+            AI Tools & Technologies
           </Typography>
           <Typography variant="subtitle1" className={classes.formDescription}>
-            Showcase your AI expertise
+            Highlight your AI proficiency
           </Typography>
         </Box>
         

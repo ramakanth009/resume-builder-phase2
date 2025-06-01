@@ -52,7 +52,7 @@ const steps = [
   "Projects",
   "Experience",
   "Certifications",
-  "Custom Sections & Terms",
+  "Custom Sections & Final",
 ];
 
 /**

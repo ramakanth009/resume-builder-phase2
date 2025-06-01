@@ -53,10 +53,24 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   formSubtitle: {
-    fontWeight: 500,
-    marginBottom: '0.25rem', // Reduced to bring recommendation button closer
-    marginTop: '1rem',
-    color: '#4a5568',
+    fontSize: '1.5rem',
+    fontWeight: 600,
+    color: '#27286c',
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      width: '40px',
+      height: '2px',
+      background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
+    },
+  },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
   },
   paper: {
     padding: '1.5rem',
@@ -371,9 +385,12 @@ const ProjectsSection = ({ resumeData, setResumeData, targetRole }) => {
 
   return (
     <Box className={classes.form}>
-      <Box className={classes.headerRow}>
+      <Box>
         <Typography variant="h6" className={classes.formSubtitle}>
           Projects
+        </Typography>
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Showcase your best work
         </Typography>
       </Box>
       

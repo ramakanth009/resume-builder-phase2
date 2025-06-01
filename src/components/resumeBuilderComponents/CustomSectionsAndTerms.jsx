@@ -47,13 +47,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
       color: '#14b8a6',
     },
   },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
+  },
   formSubtitle: {
     fontSize: '1.5rem',
     fontWeight: 600,
     color: '#27286c',
-    marginBottom: '1.5rem',
     position: 'relative',
-    paddingBottom: '0.5rem',
     '&::after': {
       content: '""',
       position: 'absolute',
@@ -350,13 +353,14 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
   return (
     <Box className={classes.form}>
       {/* CUSTOM SECTIONS PART */}
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Custom Sections
-      </Typography>
-      
-      <Typography variant="body2" paragraph>
-        Add custom sections to highlight additional skills, achievements, or information relevant to your resume.
-      </Typography>
+      <Box>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Custom Sections
+        </Typography>
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Add sections to highlight your unique strengths.
+        </Typography>
+      </Box>
       
       {/* Add new custom section - better aligned horizontally */}
       <Box className={classes.inputContainer}>
@@ -433,7 +437,8 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
                 className={classes.checkbox}
               />
             }
-            label="I acknowledge that the information provided above is accurate and consent to its use for AI-generated resume creation."
+            label="I consent to AI-enhanced resume generation using my provided information"
+            // label="I acknowledge that the information provided above is accurate and consent to its use for AI-generated resume creation."
             className={classes.checkboxLabel}
           />
         </Box>

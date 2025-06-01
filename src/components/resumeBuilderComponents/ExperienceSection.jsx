@@ -41,9 +41,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '1.5rem',
     fontWeight: 600,
     color: '#27286c',
-    marginBottom: '1.5rem',
     position: 'relative',
-    paddingBottom: '0.5rem',
     '&::after': {
       content: '""',
       position: 'absolute',
@@ -53,6 +51,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
       height: '2px',
       background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
     },
+  },
+  formDescription: {
+    // marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
   },
   paper: {
     padding: '1.5rem',
@@ -95,7 +98,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     gap: '1rem',
-    // marginBottom: '1rem',
+    width: '100%',
+    marginBottom: '1rem',
     '@media (max-width: 600px)': {
       flexDirection: 'column',
       gap: '0.5rem',
@@ -103,6 +107,28 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   datePickerContainer: {
     flex: 1,
+    '& .MuiOutlinedInput-root': {
+      background: 'rgba(0, 0, 0, 0.03)',
+      borderRadius: '16px',
+      width: '100%',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      '&:hover': {
+        borderColor: 'rgba(39, 40, 108, 0.12)',
+      },
+      '&.Mui-focused': {
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderColor: '#14b8a6',
+        boxShadow: '0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)',
+        transform: 'translateY(-2px)',
+      }
+    },
+    '& .MuiInputLabel-root': {
+      color: '#427bbf',
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: '#666',
+      opacity: 0.7
+    }
   }
 }));
 
@@ -244,9 +270,14 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
 
   return (
     <Box className={classes.form}>
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Work Experience
-      </Typography>
+      <Box>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Work Experience
+        </Typography>
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Share your professional journey
+        </Typography>
+      </Box>
       
       {resumeData.work_experience.map((experience, index) => (
         <Paper key={index} className={classes.paper}>

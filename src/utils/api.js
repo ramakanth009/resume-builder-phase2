@@ -1,7 +1,7 @@
 // Base URL for API requests
 // const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
