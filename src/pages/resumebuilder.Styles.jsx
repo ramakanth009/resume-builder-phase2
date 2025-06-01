@@ -25,7 +25,7 @@ container: {
   },
   formColumn: {
     flex: 1,
-    padding: '1rem 2rem',
+    padding: '1rem 1rem',
     maxWidth: '600px',
     '@media (max-width: 768px)': {
       padding: '2rem 1rem',

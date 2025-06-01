@@ -9,7 +9,6 @@ import ExtensionIcon from '@mui/icons-material/Extension';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
-import GigaLogo from '../assets/giga-loogo.svg';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LinkIcon from '@mui/icons-material/Link';
 import CodeIcon from '@mui/icons-material/Code';
@@ -39,25 +38,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
       },
     },
   },
-  logoContainer: {
+  sidebarHeader: {
     padding: (props) => props.isCollapsed ? '1rem 0.5rem' : '1.5rem',
     borderBottom: '1px solid rgba(39, 40, 108, 0.08)',
     height: '80px',
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    justifyContent: (props) => props.isCollapsed ? 'center' : 'space-between',
     position: 'relative',
   },
-  logo: {
-    width: (props) => props.isCollapsed ? '32px' : '40px',
-    height: (props) => props.isCollapsed ? '32px' : '40px',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  logoText: {
+  sidebarTitle: {
     opacity: (props) => props.isCollapsed ? 0 : 1,
     transform: (props) => props.isCollapsed ? 'translateX(-10px)' : 'translateX(0)',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -67,10 +57,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
     whiteSpace: 'nowrap',
   },
   toggleButton: {
-    position: 'absolute',
-    right: (props) => props.isCollapsed ? '50%' : '8px',
-    top: '50%',
-    transform: (props) => props.isCollapsed ? 'translate(50%, -50%)' : 'translateY(-50%)',
+    position: (props) => props.isCollapsed ? 'static' : 'absolute',
+    right: (props) => props.isCollapsed ? 'auto' : '8px',
+    top: (props) => props.isCollapsed ? 'auto' : '50%',
+    transform: (props) => props.isCollapsed ? 'none' : 'translateY(-50%)',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     width: '32px',
     height: '32px',
@@ -219,12 +209,11 @@ const Sidebar = ({ activeStep, steps, onStepClick, onSidebarToggle }) => {
 
   return (
     <Box className={classes.sidebar}>
-      {/* Logo area */}
-      <Box className={classes.logoContainer}>
-        <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
+      {/* Header area - simplified without logo */}
+      <Box className={classes.sidebarHeader}>
         {!isCollapsed && (
-          <Typography className={classes.logoText}>
-            Gigaversity
+          <Typography className={classes.sidebarTitle}>
+            Resume Sections
           </Typography>
         )}
         <IconButton
