@@ -20,11 +20,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
+    '@media (max-width: 1200px)': {
+      gap: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      gap: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      gap: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      gap: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      gap: '0.5rem',
+    },
   },
   textField: {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
-      // border: '1px solid rgba(39, 40, 108, 0.08)',
       borderRadius: '16px',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       backdropFilter: 'blur(10px)',
@@ -42,15 +56,57 @@ const useStyles = makeStylesWithTheme((theme) => ({
       color: '#427bbf',
       fontWeight: 500,
       fontSize: '0.9rem',
+      '@media (max-width: 600px)': {
+        fontSize: '0.85rem',
+      },
+      '@media (max-width: 480px)': {
+        fontSize: '0.8rem',
+      },
+      '@media (max-width: 375px)': {
+        fontSize: '0.75rem',
+      },
     },
     '& .MuiInputLabel-root.Mui-focused': {
       color: '#14b8a6',
+    },
+    '& .MuiOutlinedInput-input': {
+      fontSize: '1rem',
+      '@media (max-width: 600px)': {
+        fontSize: '0.9rem',
+      },
+      '@media (max-width: 480px)': {
+        fontSize: '0.85rem',
+      },
+      '@media (max-width: 375px)': {
+        fontSize: '0.8rem',
+      },
     },
   },
   formDescription: {
     marginBottom: '24px',
     color: '#666',
-    fontSize: '1rem'
+    fontSize: '1rem',
+    '@media (max-width: 1200px)': {
+      marginBottom: '22px',
+      fontSize: '0.95rem',
+    },
+    '@media (max-width: 960px)': {
+      marginBottom: '20px',
+      fontSize: '0.9rem',
+      textAlign: 'center',
+    },
+    '@media (max-width: 600px)': {
+      marginBottom: '18px',
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 480px)': {
+      marginBottom: '16px',
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      marginBottom: '14px',
+      fontSize: '0.75rem',
+    },
   },
   formSubtitle: {
     fontSize: '1.5rem',
@@ -66,6 +122,22 @@ const useStyles = makeStylesWithTheme((theme) => ({
       height: '2px',
       background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
     },
+    '@media (max-width: 1200px)': {
+      fontSize: '1.4rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1.3rem',
+      textAlign: 'center',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '1.2rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1.1rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '1rem',
+    },
   },
   paper: {
     padding: '1.5rem',
@@ -73,6 +145,26 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '8px',
     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
     position: 'relative',
+    '@media (max-width: 1200px)': {
+      padding: '1.3rem',
+      marginBottom: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.2rem',
+      marginBottom: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+      marginBottom: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.8rem',
+      marginBottom: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.7rem',
+      marginBottom: '0.7rem',
+    },
   },
   sectionTitle: {
     fontWeight: 600,
@@ -81,21 +173,86 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    fontSize: '1.1rem',
+    '@media (max-width: 1200px)': {
+      fontSize: '1.05rem',
+      marginBottom: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1rem',
+      marginBottom: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.95rem',
+      marginBottom: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.9rem',
+      marginBottom: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.85rem',
+      marginBottom: '0.5rem',
+    },
   },
   deleteButton: {
     color: '#e53e3e',
     position: 'absolute',
     top: '1rem',
     right: '1rem',
+    '@media (max-width: 1200px)': {
+      top: '0.9rem',
+      right: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      top: '0.8rem',
+      right: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      top: '0.7rem',
+      right: '0.7rem',
+      padding: '4px',
+    },
+    '@media (max-width: 480px)': {
+      top: '0.6rem',
+      right: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      top: '0.5rem',
+      right: '0.5rem',
+    },
   },
   addButton: {
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     borderRadius: '8px',
     textTransform: 'none',
-    height: '56px', // Match input field height
+    height: '56px',
+    fontSize: '1rem',
+    fontWeight: 500,
     '&:hover': {
       backgroundColor: '#bee3f8',
+    },
+    '@media (max-width: 1200px)': {
+      height: '52px',
+      fontSize: '0.95rem',
+    },
+    '@media (max-width: 960px)': {
+      height: '48px',
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      height: '44px',
+      fontSize: '0.85rem',
+      width: '100%',
+    },
+    '@media (max-width: 480px)': {
+      height: '40px',
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      height: '36px',
+      fontSize: '0.75rem',
     },
   },
   chipContainer: {
@@ -103,8 +260,28 @@ const useStyles = makeStylesWithTheme((theme) => ({
     flexWrap: 'wrap',
     gap: '0.75rem',
     marginTop: '1rem',
+    '@media (max-width: 1200px)': {
+      gap: '0.7rem',
+      marginTop: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      gap: '0.65rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      gap: '0.6rem',
+      marginTop: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      gap: '0.5rem',
+      marginTop: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      gap: '0.4rem',
+      marginTop: '0.5rem',
+    },
   },
- chip: {
+  chip: {
     background: '#27286c',
     color: 'white',
     padding: '0.5rem 1rem',
@@ -117,22 +294,102 @@ const useStyles = makeStylesWithTheme((theme) => ({
       transform: 'translateY(-2px)',
       boxShadow: '0 4px 16px rgba(39, 40, 108, 0.3)',
     },
+    '@media (max-width: 1200px)': {
+      fontSize: '0.85rem',
+      padding: '0.45rem 0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+      padding: '0.4rem 0.8rem',
+      '&:hover': {
+        transform: 'translateY(-1px)',
+      },
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.75rem',
+      padding: '0.35rem 0.7rem',
+      '&:hover': {
+        transform: 'none',
+      },
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.7rem',
+      padding: '0.3rem 0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.65rem',
+      padding: '0.25rem 0.5rem',
+    },
   },
   divider: {
     margin: '2rem 0 1.5rem',
+    '@media (max-width: 1200px)': {
+      margin: '1.8rem 0 1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      margin: '1.5rem 0 1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      margin: '1.2rem 0 1rem',
+    },
+    '@media (max-width: 480px)': {
+      margin: '1rem 0 0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      margin: '0.8rem 0 0.7rem',
+    },
   },
   inputContainer: {
     display: 'flex',
     alignItems: 'flex-start',
     gap: '1rem',
     width: '100%',
+    '@media (max-width: 1200px)': {
+      gap: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      gap: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      gap: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      gap: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      gap: '0.5rem',
+    },
   },
   inputField: {
     flex: 1,
+    '@media (max-width: 600px)': {
+      width: '100%',
+    },
   },
   sectionsList: {
     marginTop: '1rem',
     marginBottom: '1rem',
+    '@media (max-width: 1200px)': {
+      marginTop: '0.9rem',
+      marginBottom: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      marginTop: '0.8rem',
+      marginBottom: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      marginTop: '0.7rem',
+      marginBottom: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      marginTop: '0.6rem',
+      marginBottom: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      marginTop: '0.5rem',
+      marginBottom: '0.5rem',
+    },
   },
   termsContainer: {
     marginTop: '1rem',
@@ -140,27 +397,106 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '8px',
     backgroundColor: '#f7fafc',
     border: '1px solid #e2e8f0',
+    '@media (max-width: 1200px)': {
+      padding: '1.3rem',
+      marginTop: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.2rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+      marginTop: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.8rem',
+      marginTop: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.7rem',
+      marginTop: '0.5rem',
+    },
   },
   checkboxContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.75rem',
+    '@media (max-width: 1200px)': {
+      gap: '0.7rem',
+    },
+    '@media (max-width: 960px)': {
+      gap: '0.65rem',
+    },
+    '@media (max-width: 600px)': {
+      gap: '0.6rem',
+    },
+    '@media (max-width: 480px)': {
+      gap: '0.5rem',
+    },
+    '@media (max-width: 375px)': {
+      gap: '0.4rem',
+    },
   },
   checkbox: {
     color: '#3182ce',
     '&.Mui-checked': {
       color: '#3182ce',
     },
+    '@media (max-width: 600px)': {
+      transform: 'scale(0.9)',
+    },
+    '@media (max-width: 480px)': {
+      transform: 'scale(0.8)',
+    },
+    '@media (max-width: 375px)': {
+      transform: 'scale(0.75)',
+    },
   },
   checkboxLabel: {
     fontSize: '0.9rem',
     color: '#4a5568',
+    '@media (max-width: 1200px)': {
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.75rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.7rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.65rem',
+    },
   },
   disclaimer: {
     fontSize: '0.8rem',
     color: '#718096',
     marginTop: '1rem',
     fontStyle: 'italic',
+    '@media (max-width: 1200px)': {
+      fontSize: '0.75rem',
+      marginTop: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.7rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.65rem',
+      marginTop: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.6rem',
+      marginTop: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.55rem',
+      marginTop: '0.5rem',
+    },
   }
 }));
 
@@ -302,6 +638,7 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
           <IconButton
             color="error"
             onClick={() => handleRemoveSection(section)}
+            className={classes.deleteButton}
           >
             <DeleteIcon />
           </IconButton>
@@ -322,7 +659,7 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
         {/* Add new item to this section */}
         <Box className={classes.inputContainer}>
           <TextField
-            className={classes.inputField}
+            className={`${classes.inputField} ${classes.textField}`}
             label={`Add to ${section.replace('_', ' ')}`}
             value={section === selectedSection ? itemText : ''}
             onChange={(e) => {
@@ -365,7 +702,7 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
       {/* Add new custom section - better aligned horizontally */}
       <Box className={classes.inputContainer}>
         <TextField
-          className={classes.inputField}
+          className={`${classes.inputField} ${classes.textField}`}
           label="New Section Name"
           value={sectionName}
           onChange={(e) => setSectionName(e.target.value)}
@@ -438,7 +775,6 @@ const CustomSectionsAndTerms = ({ resumeData, setResumeData, termsAccepted, setT
               />
             }
             label="I consent to AI-enhanced resume generation using my provided information"
-            // label="I acknowledge that the information provided above is accurate and consent to its use for AI-generated resume creation."
             className={classes.checkboxLabel}
           />
         </Box>

@@ -33,6 +33,21 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+    '@media (max-width: 1200px)': {
+      padding: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.5rem',
+    },
   },
   formSubtitle: {
     fontSize: '1.5rem',
@@ -49,11 +64,53 @@ const useStyles = makeStylesWithTheme((theme) => ({
       height: '2px',
       background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
     },
+    '@media (max-width: 1200px)': {
+      fontSize: '1.4rem',
+      marginBottom: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1.3rem',
+      marginBottom: '0.8rem',
+      textAlign: 'center',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '1.2rem',
+      marginBottom: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1.1rem',
+      marginBottom: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '1rem',
+      marginBottom: '0.5rem',
+    },
   },
   formDescription: {
     marginBottom: '24px',
     color: '#666',
-    fontSize: '1rem'
+    fontSize: '1rem',
+    '@media (max-width: 1200px)': {
+      marginBottom: '22px',
+      fontSize: '0.95rem',
+    },
+    '@media (max-width: 960px)': {
+      marginBottom: '20px',
+      fontSize: '0.9rem',
+      textAlign: 'center',
+    },
+    '@media (max-width: 600px)': {
+      marginBottom: '18px',
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 480px)': {
+      marginBottom: '16px',
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      marginBottom: '14px',
+      fontSize: '0.75rem',
+    },
   },
   infoBox: {
     padding: '1rem',
@@ -61,12 +118,55 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '8px',
     marginBottom: '1.5rem',
     border: '1px solid rgba(49, 130, 206, 0.2)',
+    '@media (max-width: 1200px)': {
+      padding: '0.9rem',
+      marginBottom: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '0.8rem',
+      marginBottom: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '0.7rem',
+      marginBottom: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.6rem',
+      marginBottom: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.5rem',
+      marginBottom: '0.7rem',
+    },
   },
   toolsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '1rem',
     marginTop: '1rem',
+    '@media (max-width: 1200px)': {
+      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+      gap: '0.9rem',
+      marginTop: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+      gap: '0.8rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      gridTemplateColumns: '1fr',
+      gap: '0.7rem',
+      marginTop: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      gap: '0.6rem',
+      marginTop: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      gap: '0.5rem',
+      marginTop: '0.5rem',
+    },
   },
   toolCard: {
     transition: 'all 0.2s ease',
@@ -82,6 +182,16 @@ const useStyles = makeStylesWithTheme((theme) => ({
       boxShadow: '0 8px 32px rgba(39, 40, 108, 0.16)',
       border: '1px solid #27286C',
     },
+    '@media (max-width: 960px)': {
+      '&:hover': {
+        transform: 'translateY(-2px)',
+      },
+    },
+    '@media (max-width: 600px)': {
+      '&:hover': {
+        transform: 'none',
+      },
+    },
   },
   selectedCard: {
     borderColor: '#3182ce',
@@ -94,17 +204,68 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    fontSize: '1.1rem',
+    '@media (max-width: 1200px)': {
+      fontSize: '1.05rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '1rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.95rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.85rem',
+    },
   },
   toolDescription: {
     color: '#4a5568',
     fontSize: '0.9rem',
     marginTop: '0.5rem',
+    '@media (max-width: 1200px)': {
+      fontSize: '0.85rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.75rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.7rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.65rem',
+    },
   },
   usageOption: {
     fontSize: '0.85rem',
     color: '#2d3748',
     padding: '0.5rem 0',
     borderBottom: '1px solid #f1f5f9',
+    '@media (max-width: 1200px)': {
+      fontSize: '0.8rem',
+      padding: '0.45rem 0',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.75rem',
+      padding: '0.4rem 0',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.7rem',
+      padding: '0.35rem 0',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.65rem',
+      padding: '0.3rem 0',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.6rem',
+      padding: '0.25rem 0',
+    },
   },
   summaryContainer: {
     padding: '1.5rem',
@@ -112,12 +273,52 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     marginTop: '1.5rem',
+    '@media (max-width: 1200px)': {
+      padding: '1.3rem',
+      marginTop: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.2rem',
+      marginTop: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+      marginTop: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.8rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.7rem',
+      marginTop: '0.7rem',
+    },
   },
   selectionChip: {
     backgroundColor: '#4299e1',
     color: 'white',
     fontWeight: 500,
     margin: '0.25rem',
+    fontSize: '0.875rem',
+    '@media (max-width: 1200px)': {
+      fontSize: '0.85rem',
+      margin: '0.2rem',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '0.75rem',
+      margin: '0.15rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '0.7rem',
+      margin: '0.1rem',
+    },
+    '@media (max-width: 375px)': {
+      fontSize: '0.65rem',
+      margin: '0.08rem',
+    },
   },
   loadingContainer: {
     display: 'flex',
@@ -125,14 +326,48 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     padding: '2rem',
     gap: '1rem',
+    '@media (max-width: 1200px)': {
+      padding: '1.8rem',
+      gap: '0.9rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.5rem',
+      gap: '0.8rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1.2rem',
+      gap: '0.7rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '1rem',
+      gap: '0.6rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.8rem',
+      gap: '0.5rem',
+    },
   },
   accordionDetails: {
     paddingTop: 0,
   },
   cardContent: {
     padding: '1.5rem',
+    '@media (max-width: 1200px)': {
+      padding: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.7rem',
+    },
   },
-  // New styles for the main apply button
   mainApplyButton: {
     backgroundColor: '#3182ce',
     color: 'white',
@@ -147,16 +382,72 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:disabled': {
       backgroundColor: '#a0aec0',
     },
+    '@media (max-width: 1200px)': {
+      padding: '0.7rem 1.8rem',
+      fontSize: '0.95rem',
+      marginTop: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '0.65rem 1.6rem',
+      fontSize: '0.9rem',
+      marginTop: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '0.6rem 1.4rem',
+      fontSize: '0.85rem',
+      marginTop: '1rem',
+      width: '100%',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0.55rem 1.2rem',
+      fontSize: '0.8rem',
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.5rem 1rem',
+      fontSize: '0.75rem',
+      marginTop: '0.7rem',
+    },
   },
   applyButtonContainer: {
     display: 'flex',
     justifyContent: 'center',
     marginTop: '1.5rem',
+    '@media (max-width: 1200px)': {
+      marginTop: '1.3rem',
+    },
+    '@media (max-width: 960px)': {
+      marginTop: '1.2rem',
+    },
+    '@media (max-width: 600px)': {
+      marginTop: '1rem',
+    },
+    '@media (max-width: 480px)': {
+      marginTop: '0.8rem',
+    },
+    '@media (max-width: 375px)': {
+      marginTop: '0.7rem',
+    },
   },
   emptyStateContainer: {
     textAlign: 'center',
     padding: '2rem',
     color: '#718096',
+    '@media (max-width: 1200px)': {
+      padding: '1.8rem',
+    },
+    '@media (max-width: 960px)': {
+      padding: '1.5rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1.2rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '1rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0.8rem',
+    },
   },
 }));
 
