@@ -128,6 +128,14 @@ const styles = StyleSheet.create({
   bulletText: {
     flex: 1,
   },
+  aiSkillChip: {
+  backgroundColor: '#5a67d8',
+  color: 'white',
+  padding: '3 8',
+  borderRadius: 10,
+  fontSize: 9,
+  fontWeight: 'bold',
+},
 });
 
 // Helper component for bullet points
@@ -179,6 +187,36 @@ const CreativePDFTemplate = ({ resumeData }) => {
     
     return [];
   };
+  // Helper function to check if AI Tools data exists
+const hasAIToolsData = () => {
+  return (
+    (resumeData.genai_tools && resumeData.genai_tools.length > 0) ||
+    (resumeData.aiExperience && resumeData.aiExperience.length > 0)
+  );
+};
+
+// Helper function to get AI Tools for display
+const getAITools = () => {
+  // Try genai_tools format first
+  if (resumeData.genai_tools && resumeData.genai_tools.length > 0) {
+    return resumeData.genai_tools.map((tool) => ({
+      name: tool.name || `AI Tool ${tool.tool_id}`,
+      usageCases: tool.usage_descriptions || [],
+      impact: tool.description || "",
+    }));
+  }
+
+  // Fallback to aiExperience format
+  if (resumeData.aiExperience && resumeData.aiExperience.length > 0) {
+    return resumeData.aiExperience.map((aiExp) => ({
+      name: aiExp.toolName || "",
+      usageCases: aiExp.usageCases || [],
+      impact: aiExp.impact || "",
+    }));
+  }
+
+  return [];
+};
 
   return (
     <>
@@ -252,7 +290,47 @@ const CreativePDFTemplate = ({ resumeData }) => {
           </View>
         </View>
       )}
-      
+      {/* AI Tools & Technologies Section */}
+{hasAIToolsData() && (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>AI Tools & Technologies</Text>
+    <View style={styles.skillsContainer}>
+      {getAITools().map((tool, index) => (
+        <Text key={index} style={styles.aiSkillChip}>
+          {tool.name}
+        </Text>
+      ))}
+    </View>
+  </View>
+)}
+
+{/* AI Tools Experience Section */}
+{hasAIToolsData() &&
+  getAITools().some(
+    (tool) => tool.usageCases && tool.usageCases.length > 0
+  ) && (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>AI Tools Experience</Text>
+
+      {getAITools()
+        .filter((tool) => tool.usageCases && tool.usageCases.length > 0)
+        .map((tool, index) => (
+          <View key={index} style={styles.experienceItem}>
+            <Text style={styles.itemTitle}>{tool.name}</Text>
+
+            {tool.impact && (
+              <Text style={styles.itemSubtitle}>{tool.impact}</Text>
+            )}
+
+            <View style={styles.bulletList}>
+              {tool.usageCases.map((useCase, idx) => (
+                <Bullet key={idx}>{useCase}</Bullet>
+              ))}
+            </View>
+          </View>
+        ))}
+    </View>
+  )}
       {/* Work Experience Section */}
       {getWorkExperience().length > 0 && (
         <View style={styles.section}>

@@ -24,6 +24,7 @@ const useClassicStyles = makeStylesWithTheme((theme) => ({
     lineHeight: 1.5,
     maxWidth: '100%',
   },
+  
   resumeContactItem: {
     wordBreak: 'break-word',
     overflowWrap: 'break-word',
@@ -65,6 +66,14 @@ const useClassicStyles = makeStylesWithTheme((theme) => ({
     flexWrap: 'wrap',
     gap: '0.5rem',
     margin: '0.5rem 0',
+  },
+  aiSkillChip: {
+    backgroundColor: '#e6f3ff',
+    color: '#1565c0',
+    padding: '3 6',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
   },
   resumeSkillChip: {
     backgroundColor: '#ebf8ff',

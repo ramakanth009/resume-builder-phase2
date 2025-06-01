@@ -10,6 +10,14 @@ const useProfessionalStyles = makeStylesWithTheme((theme) => ({
     padding: '2rem 1rem',
     borderRadius: '0',
   },
+  aiSkillChip: {
+    backgroundColor: '#e6f3ff',
+    color: '#1565c0',
+    padding: '3 6',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
   resumeName: {
     fontSize: '2.2rem',
     fontWeight: 800,

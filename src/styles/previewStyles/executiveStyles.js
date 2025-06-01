@@ -8,6 +8,14 @@ const useExecutiveStyles = makeStylesWithTheme((theme) => ({
     paddingBottom: '1.5rem',
     borderBottom: '1px solid #e2e8f0',
   },
+  aiSkillChip: {
+    backgroundColor: '#e6f3ff',
+    color: '#1565c0',
+    padding: '3 6',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
   resumeName: {
     fontSize: '2rem',
     fontWeight: 700,

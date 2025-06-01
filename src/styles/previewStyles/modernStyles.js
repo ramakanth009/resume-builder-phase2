@@ -15,6 +15,14 @@ const useModernStyles = makeStylesWithTheme((theme) => ({
     color: '#1a202c',
     textAlign: 'left',
   },
+  aiSkillChip: {
+    backgroundColor: '#e6f3ff',
+    color: '#1565c0',
+    padding: '3 6',
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
   resumeContact: {
     display: 'flex',
     flexWrap: 'wrap',
