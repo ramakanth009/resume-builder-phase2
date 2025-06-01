@@ -103,13 +103,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
     boxShadow: '0 4px 12px rgba(39, 40, 108, 0.3)',
   },
   templateButton: {
-    background: 'linear-gradient(135deg, #27286c, #60cae6)',
+    background: 'linear-gradient(160deg, #27286c,70%, #60cae6)',
     color: 'white',
     '&:hover': {
       boxShadow: '0 8px 24px rgba(39, 40, 108, 0.4)',
     },
   },
   dummyDataButton: {
+    display:"none",
     background: '#ffc615',
     color: '#27286c',
     '&:hover': {

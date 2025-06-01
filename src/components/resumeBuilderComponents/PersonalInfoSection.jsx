@@ -72,7 +72,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '1.5rem',
     fontWeight: 600,
     color: '#27286c',
-    marginBottom: '1.5rem',
     position: 'relative',
     paddingBottom: '0.5rem',
     '&::after': {
@@ -100,6 +99,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
   fieldContainer: {
     flex: 1,
   },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
+  }
 }));
 
 const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
@@ -166,9 +170,14 @@ const PersonalInfoSection = ({ resumeData, setResumeData, onRoleSelect }) => {
 
   return (
     <Box className={classes.form}>
+      <Box>
       <Typography variant="h6" className={classes.formSubtitle}>
         Personal Information
       </Typography>
+      <Typography variant="subtitle1" className={classes.formDescription}>
+        Tell us about yourself to get started
+      </Typography>
+      </Box>
       
       {/* Full Name and Phone side by side */}
       <Box className={classes.fieldRow}>

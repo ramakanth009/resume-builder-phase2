@@ -30,9 +30,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontSize: '1.5rem',
     fontWeight: 600,
     color: '#27286c',
-    marginBottom: '1.5rem',
+    // marginBottom: '1.5rem',
     position: 'relative',
-    paddingBottom: '0.5rem',
+    // paddingBottom: '0.5rem',
     '&::after': {
       content: '""',
       position: 'absolute',
@@ -42,6 +42,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
       height: '2px',
       background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
     },
+  },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
   },
   chipContainer: {
     display: 'flex',
@@ -164,9 +169,14 @@ const SkillsSection = ({ resumeData, setResumeData, targetRole }) => {
 
   return (
     <Box className={classes.form}>
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Skills
-      </Typography>
+      <Box>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Skills & Expertise
+        </Typography>
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Connect your professional profiles
+        </Typography>
+      </Box>
       
       {/* Recommended Skills Section - Now at the top */}
       {targetRole && (

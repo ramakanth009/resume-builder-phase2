@@ -1060,7 +1060,10 @@ const ResumeBuilder = () => {
                 ? "Edit Your Resume"
                 : hasGeneratedResume
                 ? "Edit Your Resume"
-                : "Build Your Resume"}
+                 : "Craft your story"}
+            </Typography>
+            <Typography variant="subtitle1" className={classes.subheading}>
+              Build a resume that opens doors to your future
             </Typography>
 
             {/* Preview notice for tablet and mobile */}
@@ -1127,6 +1130,9 @@ const ResumeBuilder = () => {
             {hasGeneratedResume || isEditingExisting
               ? "Resume Preview"
               : "Live Preview"}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.subheading}>
+            Watch your resume come to life
           </Typography>
 
           <Box className={classes.previewWrapper}>

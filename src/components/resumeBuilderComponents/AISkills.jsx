@@ -34,19 +34,25 @@ const useStyles = makeStylesWithTheme((theme) => ({
     border: '1px solid #e2e8f0',
     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
   },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
-  },
-  headerIcon: {
-    fontSize: '2rem',
-    color: '#3182ce',
-    marginRight: '1rem',
-  },
-  headerText: {
-    color: '#2d3748',
+  formSubtitle: {
+    fontSize: '1.5rem',
     fontWeight: 600,
+    color: '#27286c',
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      width: '40px',
+      height: '2px',
+      background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
+    },
+  },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
   },
   infoBox: {
     padding: '1rem',
@@ -286,11 +292,13 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   return (
     <Box>
       <Paper className={classes.container} elevation={0}>
-        {/* Header */}
-        <Box className={classes.header}>
-          <SmartToyIcon className={classes.headerIcon} />
-          <Typography variant="h5" className={classes.headerText}>
+        {/* Replace old header with new styled header */}
+        <Box>
+          <Typography variant="h6" className={classes.formSubtitle}>
             AI Tools & Skills
+          </Typography>
+          <Typography variant="subtitle1" className={classes.formDescription}>
+            Showcase your AI expertise
           </Typography>
         </Box>
         

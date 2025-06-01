@@ -1,64 +1,70 @@
-import React from 'react';
-import { Box, Typography, TextField, Autocomplete } from '@mui/material';
-import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-import DatePickerField from '../../common/DatePickerField';
+import React from "react";
+import { Box, Typography, TextField, Autocomplete } from "@mui/material";
+import makeStylesWithTheme from "../../styles/makeStylesAdapter";
+import DatePickerField from "../../common/DatePickerField";
 
 const useStyles = makeStylesWithTheme((theme) => ({
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
   },
   textField: {
-    '& .MuiOutlinedInput-root': {
-      background: 'rgba(0, 0, 0, 0.03)',
+    "& .MuiOutlinedInput-root": {
+      background: "rgba(0, 0, 0, 0.03)",
       // border: '1px solid rgba(39, 40, 108, 0.08)',
-      borderRadius: '16px',
-      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-      backdropFilter: 'blur(10px)',
-      '&:hover': {
-        borderColor: 'rgba(39, 40, 108, 0.12)',
+      borderRadius: "16px",
+      transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+      backdropFilter: "blur(10px)",
+      "&:hover": {
+        borderColor: "rgba(39, 40, 108, 0.12)",
       },
-      '&.Mui-focused': {
-        background: 'rgba(0, 0, 0, 0.05)',
-        borderColor: '#14b8a6',
-        boxShadow: '0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)',
-        transform: 'translateY(-2px)',
+      "&.Mui-focused": {
+        background: "rgba(0, 0, 0, 0.05)",
+        borderColor: "#14b8a6",
+        boxShadow:
+          "0 0 0 3px rgba(20, 184, 166, 0.1), 0 4px 16px rgba(39, 40, 108, 0.12)",
+        transform: "translateY(-2px)",
       },
     },
-    '& .MuiInputLabel-root': {
-      color: '#427bbf',
+    "& .MuiInputLabel-root": {
+      color: "#427bbf",
       fontWeight: 500,
-      fontSize: '0.9rem',
+      fontSize: "0.9rem",
     },
-    '& .MuiInputLabel-root.Mui-focused': {
-      color: '#14b8a6',
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#14b8a6",
     },
   },
   formSubtitle: {
-    fontSize: '1.5rem',
+    fontSize: "1.5rem",
     fontWeight: 600,
-    color: '#27286c',
-    marginBottom: '1.5rem',
-    position: 'relative',
-    paddingBottom: '0.5rem',
-    '&::after': {
+    color: "#27286c",
+    // marginBottom: "1.5rem",
+    position: "relative",
+    // paddingBottom: "0.5rem",
+    "&::after": {
       content: '""',
-      position: 'absolute',
+      position: "absolute",
       bottom: 0,
       left: 0,
-      width: '40px',
-      height: '2px',
-      background: 'linear-gradient(90deg, #14b8a6, #a78bfa)',
+      width: "40px",
+      height: "2px",
+      background: "linear-gradient(90deg, #14b8a6, #a78bfa)",
     },
   },
+  formDescription: {
+    marginBottom: '24px',
+    color: '#666',
+    fontSize: '1rem'
+  },
   fieldRow: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1rem',
-    '@media (max-width: 600px)': {
-      flexDirection: 'column',
-      gap: '0.5rem',
+    display: "flex",
+    gap: "1rem",
+    marginBottom: "1rem",
+    "@media (max-width: 600px)": {
+      flexDirection: "column",
+      gap: "0.5rem",
     },
   },
   fieldContainer: {
@@ -113,8 +119,8 @@ const EducationSection = ({ resumeData, setResumeData }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    setResumeData(prev => ({
+
+    setResumeData((prev) => ({
       ...prev,
       education: {
         ...prev.education,
@@ -125,18 +131,18 @@ const EducationSection = ({ resumeData, setResumeData }) => {
 
   // Handle degree change from Autocomplete
   const handleDegreeChange = (event, newValue) => {
-    setResumeData(prev => ({
+    setResumeData((prev) => ({
       ...prev,
       education: {
         ...prev.education,
-        degree: newValue || '',
+        degree: newValue || "",
       },
     }));
   };
 
   // Handle graduation year change from DatePicker
   const handleGraduationYearChange = (value) => {
-    setResumeData(prev => ({
+    setResumeData((prev) => ({
       ...prev,
       education: {
         ...prev.education,
@@ -148,10 +154,14 @@ const EducationSection = ({ resumeData, setResumeData }) => {
 
   return (
     <Box className={classes.form}>
-      <Typography variant="h6" className={classes.formSubtitle}>
-        Education Information
-      </Typography>
-      
+      <Box>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          Education
+        </Typography>
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Connect your professional profiles
+        </Typography>
+      </Box>
       {/* Degree and Specialization side by side */}
       <Box className={classes.fieldRow}>
         <Box className={classes.fieldContainer}>
@@ -189,7 +199,7 @@ const EducationSection = ({ resumeData, setResumeData }) => {
           />
         </Box>
       </Box>
-      
+
       {/* Institution and Graduation Year side by side with different proportions */}
       <Box className={classes.fieldRow}>
         <Box className={classes.institutionContainer}>
@@ -209,9 +219,13 @@ const EducationSection = ({ resumeData, setResumeData }) => {
           {/* Year picker for graduation year */}
           <DatePickerField
             label="Graduation Year"
-            value={resumeData.education.graduation_year || resumeData.education.graduationYear || ''}
+            value={
+              resumeData.education.graduation_year ||
+              resumeData.education.graduationYear ||
+              ""
+            }
             onChange={handleGraduationYearChange}
-            views={['year']} // Only show year picker
+            views={["year"]} // Only show year picker
             required
             helperText="Select graduation year"
             minYear={1950}

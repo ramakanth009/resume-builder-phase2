@@ -18,9 +18,14 @@ container: {
       marginLeft: '0',
     },
   },
-    formColumn: {
+  subheading: {
+    borderBottom: '1px solid #eee',
+    paddingBottom: '0.5rem',
+    marginBottom: '1rem',
+  },
+  formColumn: {
     flex: 1,
-    padding: '3rem 2rem',
+    padding: '1rem 2rem',
     maxWidth: '600px',
     '@media (max-width: 768px)': {
       padding: '2rem 1rem',
@@ -29,7 +34,7 @@ container: {
 
  previewColumn: {
     flex: 1,
-    padding: '3rem 2rem 3rem 1rem',
+    padding: '1rem 2rem 3rem 1rem',
     position: 'sticky',
     top: '100px',
     height: 'calc(100vh - 100px)',
