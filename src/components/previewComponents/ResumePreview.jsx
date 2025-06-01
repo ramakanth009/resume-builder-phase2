@@ -116,7 +116,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
     return userWorkExp || generatedWorkExp;
   };
 
-  // Helper function to check if AI tools data exists
+  // Updated helper function to check if AI tools data exists (both formats)
   const hasAIToolsData = () => {
     return (
       (data.genai_tools && data.genai_tools.length > 0) ||
@@ -124,17 +124,27 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
     );
   };
 
-  // Helper function to check if AI Experience data exists
+  // Updated helper function to check if AI Experience/Usage data exists
   const hasAIExperienceData = () => {
-    return (
-      data.aiExperience &&
+    // Check aiExperience format
+    const hasAiExpData = data.aiExperience &&
       data.aiExperience.length > 0 &&
       data.aiExperience.some(
         (aiExp) =>
           aiExp.toolName &&
           (aiExp.impact || (aiExp.usageCases && aiExp.usageCases.length > 0))
-      )
-    );
+      );
+
+    // Check genai_tools format
+    const hasGenAiData = data.genai_tools &&
+      data.genai_tools.length > 0 &&
+      data.genai_tools.some(
+        (tool) =>
+          tool.name &&
+          (tool.description || (tool.usage_descriptions && tool.usage_descriptions.length > 0))
+      );
+
+    return hasAiExpData || hasGenAiData;
   };
 
   const renderLink = (label, url, type) => {
@@ -338,36 +348,72 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
         </Box>
       )}
 
-      {/* AI Tools Experience Section - NEW SECTION */}
+      {/* AI Tools Experience Section - Shows detailed usage */}
       {hasAIExperienceData() && (
         <Box className={classes.resumeSection}>
           <Typography variant="h6" className={classes.resumeSectionTitle}>
             AI Tools Experience
           </Typography>
           
-          {data.aiExperience.map((aiExp, index) => (
-            <Box key={index} className={classes.resumeItem}>
-              <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                {aiExp.toolName}
-              </Typography>
-              
-              {aiExp.impact && (
-                <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                  {aiExp.impact}
-                </Typography>
-              )}
-              
-              {aiExp.usageCases && aiExp.usageCases.length > 0 && (
-                <Box component="ul" className={classes.resumeBullets}>
-                  {aiExp.usageCases.map((useCase, idx) => (
-                    <li key={idx} className={classes.resumeBullet}>
-                      {useCase}
-                    </li>
-                  ))}
+          {/* Render aiExperience format */}
+          {data.aiExperience && data.aiExperience.length > 0 && 
+           data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0) && (
+            <>
+              {data.aiExperience.map((aiExp, index) => (
+                <Box key={`ai-exp-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {aiExp.toolName}
+                  </Typography>
+                  
+                  {aiExp.impact && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                      {aiExp.impact}
+                    </Typography>
+                  )}
+                  
+                  {aiExp.usageCases && aiExp.usageCases.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {aiExp.usageCases.map((useCase, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>
+                          {useCase}
+                        </li>
+                      ))}
+                    </Box>
+                  )}
                 </Box>
-              )}
-            </Box>
-          ))}
+              ))}
+            </>
+          )}
+          
+          {/* Render genai_tools format */}
+          {data.genai_tools && data.genai_tools.length > 0 && 
+           data.genai_tools.some(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0) && (
+            <>
+              {data.genai_tools.map((tool, index) => (
+                <Box key={`genai-tool-${index}`} className={classes.resumeItem}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle}>
+                    {tool.name}
+                  </Typography>
+                  
+                  {tool.description && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
+                      {tool.description}
+                    </Typography>
+                  )}
+                  
+                  {tool.usage_descriptions && tool.usage_descriptions.length > 0 && (
+                    <Box component="ul" className={classes.resumeBullets}>
+                      {tool.usage_descriptions.map((usage, idx) => (
+                        <li key={idx} className={classes.resumeBullet}>
+                          {usage}
+                        </li>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </>
+          )}
         </Box>
       )}
 
