@@ -227,7 +227,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     boxShadow: '0 4px 12px rgba(39, 40, 108, 0.3)',
   },
   templateButton: {
-    background: 'linear-gradient(160deg, #27286c,70%, #60cae6)',
+    background: '#27286c',
     color: 'white',
     '&:hover': {
       boxShadow: '0 8px 24px rgba(39, 40, 108, 0.4)',
@@ -560,6 +560,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
               
               {currentUser && (
                 <>
+                  {/*
                   <Tooltip title="Create or edit your resume" arrow>
                     <Button 
                       className={`${classes.navButton} ${currentPage === 'resume-builder' ? classes.activeNavButton : ''}`}
@@ -569,6 +570,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                       Create Resume
                     </Button>
                   </Tooltip>
+                  */}
                   
                   {currentPage === 'resume-builder' && (
                     <>

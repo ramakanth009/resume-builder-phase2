@@ -107,10 +107,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   datePickerContainer: {
     flex: 1,
+    width: '100%',
+    minWidth: 0, // Add this to prevent overflow
     '& .MuiOutlinedInput-root': {
       background: 'rgba(0, 0, 0, 0.03)',
       borderRadius: '16px',
-      width: '100%',
       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
         borderColor: 'rgba(39, 40, 108, 0.12)',

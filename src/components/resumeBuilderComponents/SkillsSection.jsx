@@ -54,8 +54,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     gap: '0.75rem',
     marginTop: '1rem',
   },
- chip: {
-    background: 'linear-gradient(135deg, #27286c, #60cae6)',
+  chip: {
+    background: 'rgb(39, 40, 108)',
     color: 'white',
     padding: '0.5rem 1rem',
     borderRadius: '12px',

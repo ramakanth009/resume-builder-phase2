@@ -8,12 +8,13 @@ import makeStylesWithTheme from '../styles/makeStylesAdapter';
 const useStyles = makeStylesWithTheme((theme) => ({
   datePickerContainer: {
     marginBottom: '1rem',
-    width: '100%',
   },
   datePicker: {
+    width: '100%',
     '& .MuiOutlinedInput-root': {
       borderRadius: '8px',
-    },
+      width: '100%'
+    }
   }
 }));
 
