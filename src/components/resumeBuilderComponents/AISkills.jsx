@@ -39,6 +39,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 600,
     color: '#27286c',
     position: 'relative',
+    marginBottom: '1rem',
     '&::after': {
       content: '""',
       position: 'absolute',
@@ -72,11 +73,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     position: 'relative',
-    backgroundColor: '#E9EBED', // Add this line for default background
+    backgroundColor: '#E9EBED',
+    cursor: 'pointer',
     '&:hover': {
       borderColor: '#cbd5e0',
-      // boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-      backgroundColor: '#f8fafc', // Add this line for hover state
+      backgroundColor: '#f8fafc',
       transform: 'translateY(-4px)',
       boxShadow: '0 8px 32px rgba(39, 40, 108, 0.16)',
       border: '1px solid #27286C',
@@ -105,26 +106,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     padding: '0.5rem 0',
     borderBottom: '1px solid #f1f5f9',
   },
-  // New styles for individual tool apply button
-  toolApplyButton: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    backgroundColor: '#3182ce',
-    color: 'white',
-    fontWeight: 600,
-    padding: '0.4rem 0.8rem',
-    borderRadius: '6px',
-    fontSize: '0.85rem',
-    minWidth: 'auto',
-    zIndex: 10,
-    '&:hover': {
-      backgroundColor: '#2b6cb0',
-    },
-    '&:disabled': {
-      backgroundColor: '#a0aec0',
-    },
-  },
   summaryContainer: {
     padding: '1.5rem',
     backgroundColor: '#f7fafc',
@@ -148,17 +129,43 @@ const useStyles = makeStylesWithTheme((theme) => ({
   accordionDetails: {
     paddingTop: 0,
   },
-  // Updated styles - removed the old bottom buttons
   cardContent: {
-    paddingTop: '3rem', // Add space for the top-right button
-  }
+    padding: '1.5rem',
+  },
+  // New styles for the main apply button
+  mainApplyButton: {
+    backgroundColor: '#3182ce',
+    color: 'white',
+    fontWeight: 600,
+    padding: '0.75rem 2rem',
+    borderRadius: '8px',
+    fontSize: '1rem',
+    marginTop: '1.5rem',
+    '&:hover': {
+      backgroundColor: '#2b6cb0',
+    },
+    '&:disabled': {
+      backgroundColor: '#a0aec0',
+    },
+  },
+  applyButtonContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '1.5rem',
+  },
+  emptyStateContainer: {
+    textAlign: 'center',
+    padding: '2rem',
+    color: '#718096',
+  },
 }));
 
 const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
   const classes = useStyles();
   const [selectedTools, setSelectedTools] = useState([]);
   const [toolUsages, setToolUsages] = useState({});
-  const [applyingTool, setApplyingTool] = useState(null);
+  const [expandedAccordions, setExpandedAccordions] = useState({});
+  const [applyingTools, setApplyingTools] = useState(false);
   
   // Fetch GenAI tools
   const { 
@@ -179,16 +186,19 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       setSelectedTools(resumeData.genai_tools);
       // Initialize tool usages from existing data
       const usages = {};
+      const expanded = {};
       resumeData.genai_tools.forEach(tool => {
         if (tool.usage_descriptions) {
           usages[tool.tool_id] = tool.usage_descriptions;
         }
+        expanded[tool.tool_id] = true; // Expand accordions for existing tools
       });
       setToolUsages(usages);
+      setExpandedAccordions(expanded);
     }
   }, [resumeData.genai_tools]);
 
-  // Toggle tool selection
+  // Toggle tool selection and auto-expand accordion
   const handleToggleTool = (tool) => {
     const isSelected = selectedTools.some(t => t.tool_id === tool.id);
     if (isSelected) {
@@ -198,11 +208,9 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         delete newUsages[tool.id];
         return newUsages;
       });
-      
-      // Remove from resume data immediately
-      setResumeData(prev => ({
+      setExpandedAccordions(prev => ({
         ...prev,
-        genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.id)
+        [tool.id]: false
       }));
     } else {
       setSelectedTools(prev => [...prev, { 
@@ -214,7 +222,20 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
         ...prev,
         [tool.id]: []
       }));
+      // Auto-expand accordion when tool is selected
+      setExpandedAccordions(prev => ({
+        ...prev,
+        [tool.id]: true
+      }));
     }
+  };
+
+  // Handle accordion expansion
+  const handleAccordionChange = (toolId) => (event, isExpanded) => {
+    setExpandedAccordions(prev => ({
+      ...prev,
+      [toolId]: isExpanded
+    }));
   };
 
   // Handle usage option selection
@@ -232,37 +253,31 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
     return selectedTools.some(t => t.tool_id === toolId);
   };
 
-  // NEW: Apply individual tool to resume
-  const handleApplyToolToResume = async (toolId) => {
-    setApplyingTool(toolId);
+  // Apply all selected tools to resume
+  const handleApplyAllToolsToResume = async () => {
+    if (selectedTools.length === 0) return;
+    
+    setApplyingTools(true);
     
     try {
-      const tool = selectedTools.find(t => t.tool_id === toolId);
-      if (!tool) return;
-
-      const toolWithUsage = {
+      const toolsWithUsage = selectedTools.map(tool => ({
         ...tool,
-        usage_descriptions: toolUsages[toolId] || []
-      };
+        usage_descriptions: toolUsages[tool.tool_id] || []
+      }));
 
-      // Update resume data with this specific tool
-      setResumeData(prev => {
-        const existingTools = prev.genai_tools || [];
-        const otherTools = existingTools.filter(t => t.tool_id !== toolId);
-        
-        return {
-          ...prev,
-          genai_tools: [...otherTools, toolWithUsage]
-        };
-      });
+      // Update resume data with all selected tools
+      setResumeData(prev => ({
+        ...prev,
+        genai_tools: toolsWithUsage
+      }));
 
       // Also save to backend if we have a target role
       if (targetRole) {
         const usageData = {
-          used_tools: [{
-            tool_id: toolId,
-            usage_descriptions: toolUsages[toolId] || []
-          }],
+          used_tools: selectedTools.map(tool => ({
+            tool_id: tool.tool_id,
+            usage_descriptions: toolUsages[tool.tool_id] || []
+          })),
           not_used_tools: []
         };
         
@@ -275,182 +290,203 @@ const AISkillsSection = ({ resumeData, setResumeData, targetRole }) => {
       }
 
     } catch (error) {
-      console.error('Error adding tool to resume:', error);
+      console.error('Error adding tools to resume:', error);
     } finally {
-      setApplyingTool(null);
+      setApplyingTools(false);
     }
   };
 
-  if (!targetRole) {
-    return (
-      <Alert severity="warning" sx={{ mb: 2 }}>
-        Please specify a target role in the Personal Information section to get AI tool recommendations.
-      </Alert>
-    );
-  }
-
   return (
     <Box>
-      <Paper className={classes.container} elevation={0}>
-        {/* Replace old header with new styled header */}
-        <Box>
-          <Typography variant="h6" className={classes.formSubtitle}>
-            AI Tools & Technologies
-          </Typography>
-          <Typography variant="subtitle1" className={classes.formDescription}>
-            Highlight your AI proficiency
-          </Typography>
-        </Box>
-        
-        {/* Info box */}
-        <Box className={classes.infoBox}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <InfoIcon sx={{ color: '#3182ce', mr: 1 }} />
-            <Typography variant="body1">
-              Select AI tools you've used for <strong>{targetRole}</strong>, describe how you used them, and click "Add" to add them to your resume.
-            </Typography>
-          </Box>
-        </Box>
-        
-        {/* Tools Grid */}
-        {loading ? (
-          <Box className={classes.loadingContainer}>
-            <CircularProgress size={30} />
-            <Typography variant="body1">Loading AI tool recommendations...</Typography>
-          </Box>
-        ) : error ? (
-          <Alert severity="error" sx={{ my: 2 }}>
-            {error}
-          </Alert>
-        ) : genaiTools.length > 0 ? (
-          <Box className={classes.toolsGrid}>
-            {genaiTools.map((tool) => {
-              const isSelected = isToolSelected(tool.id);
-              const hasUsages = (toolUsages[tool.id] || []).length > 0;
-              const isApplying = applyingTool === tool.id;
-              
-              return (
-                <Card 
-                  key={tool.id}
-                  className={`${classes.toolCard} ${isSelected ? classes.selectedCard : ''}`}
-                  elevation={0}
-                >
-                  {/* Apply Button in top-right corner */}
-                  {isSelected && (
-                    <Button
-                      className={classes.toolApplyButton}
-                      onClick={() => handleApplyToolToResume(tool.id)}
-                      disabled={isApplying}
-                      startIcon={isApplying ? <CircularProgress size={14} color="inherit" /> : <AddIcon />}
-                    >
-                      {isApplying ? 'Adding...' : 'Add'}
-                    </Button>
-                  )}
-                  
-                  <CardContent className={classes.cardContent}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSelected}
-                            onChange={() => handleToggleTool(tool)}
-                            color="primary"
-                          />
-                        }
-                        label=""
-                        sx={{ mr: 1 }}
-                      />
-                      <Typography variant="h6" className={classes.toolName} sx={{ flex: 1 }}>
-                        {tool.name}
-                      </Typography>
-                      {isSelected && (
-                        <CheckCircleIcon sx={{ color: '#38a169', ml: 1 }} />
-                      )}
-                    </Box>
-                    
-                    <Typography variant="body2" className={classes.toolDescription}>
-                      {tool.description}
-                    </Typography>
-                    
-                    {isSelected && (
-                      <>
-                        {/* Usage Options */}
-                        {tool.usage_options && tool.usage_options.length > 0 && (
-                          <Accordion sx={{ mt: 2 }} elevation={0}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                              <Typography variant="body2" fontWeight={500}>
-                                How did you use this tool? ({(toolUsages[tool.id] || []).length} selected)
-                              </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails className={classes.accordionDetails}>
-                              {tool.usage_options.map((option, index) => (
-                                <FormControlLabel
-                                  key={index}
-                                  control={
-                                    <Checkbox
-                                      checked={(toolUsages[tool.id] || []).includes(option)}
-                                      onChange={(e) => handleUsageOptionChange(tool.id, option, e.target.checked)}
-                                      size="small"
-                                    />
-                                  }
-                                  label={
-                                    <Typography variant="body2" className={classes.usageOption}>
-                                      {option}
-                                    </Typography>
-                                  }
-                                  sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}
-                                />
-                              ))}
-                            </AccordionDetails>
-                          </Accordion>
-                        )}
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Box>
-        ) : (
-          <Typography variant="body1" align="center" sx={{ py: 4 }}>
-            No AI tool recommendations available for this role.
-          </Typography>
-        )}
-
-        {/* Selected Tools Summary */}
-        <Divider sx={{ my: 3 }} />
-        
-        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <LightbulbIcon sx={{ color: '#3182ce', mr: 1 }} />
-          Applied AI Tools ({(resumeData.genai_tools || []).length})
+      {/* Always visible header */}
+      <Box>
+        <Typography variant="h6" className={classes.formSubtitle}>
+          AI Tools & Technologies
         </Typography>
-        
-        <Box className={classes.summaryContainer}>
-          {(resumeData.genai_tools || []).length > 0 ? (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
-              {(resumeData.genai_tools || []).map((tool) => (
-                <Chip
-                  key={tool.tool_id}
-                  label={`${tool.name} (${(tool.usage_descriptions || []).length} skills)`}
-                  className={classes.selectionChip}
-                  onDelete={() => {
-                    // Remove from resume data
-                    setResumeData(prev => ({
-                      ...prev,
-                      genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.tool_id)
-                    }));
-                    // Also remove from selected tools
-                    setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id));
-                  }}
-                />
-              ))}
+        <Typography variant="subtitle1" className={classes.formDescription}>
+          Highlight your AI proficiency
+        </Typography>
+      </Box>
+
+      <Paper className={classes.container} elevation={0}>
+        {!targetRole ? (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            Please specify a target role in the Personal Information section to get AI tool recommendations.
+          </Alert>
+        ) : (
+          <>
+            {/* Info box */}
+            <Box className={classes.infoBox}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <InfoIcon sx={{ color: '#3182ce', mr: 1 }} />
+                <Typography variant="body1">
+                  Select AI tools you've used for <strong>{targetRole}</strong>, describe how you used them, and click "Apply Selected Tools" to add them to your resume.
+                </Typography>
+              </Box>
             </Box>
-          ) : (
-            <Typography variant="body1" align="center" sx={{ py: 2 }}>
-              No AI tools applied to resume yet. Select tools above and click "Apply" to add them.
+            
+            {/* Tools Grid */}
+            {loading ? (
+              <Box className={classes.loadingContainer}>
+                <CircularProgress size={30} />
+                <Typography variant="body1">Loading AI tool recommendations...</Typography>
+              </Box>
+            ) : error ? (
+              <Alert severity="error" sx={{ my: 2 }}>
+                {error}
+              </Alert>
+            ) : genaiTools.length > 0 ? (
+              <>
+                <Box className={classes.toolsGrid}>
+                  {genaiTools.map((tool) => {
+                    const isSelected = isToolSelected(tool.id);
+                    const isExpanded = expandedAccordions[tool.id] || false;
+                    
+                    return (
+                      <Card 
+                        key={tool.id}
+                        className={`${classes.toolCard} ${isSelected ? classes.selectedCard : ''}`}
+                        elevation={0}
+                        onClick={() => handleToggleTool(tool)}
+                      >
+                        <CardContent className={classes.cardContent}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={isSelected}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleTool(tool);
+                                  }}
+                                  color="primary"
+                                />
+                              }
+                              label=""
+                              sx={{ mr: 1 }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <Typography variant="h6" className={classes.toolName} sx={{ flex: 1 }}>
+                              {tool.name}
+                            </Typography>
+                            {isSelected && (
+                              <CheckCircleIcon sx={{ color: '#38a169', ml: 1 }} />
+                            )}
+                          </Box>
+                          
+                          <Typography variant="body2" className={classes.toolDescription}>
+                            {tool.description}
+                          </Typography>
+                          
+                          {isSelected && (
+                            <>
+                              {/* Usage Options */}
+                              {tool.usage_options && tool.usage_options.length > 0 && (
+                                <Accordion 
+                                  sx={{ mt: 2 }} 
+                                  elevation={0}
+                                  expanded={isExpanded}
+                                  onChange={handleAccordionChange(tool.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                    <Typography variant="body2" fontWeight={500}>
+                                      How did you use this tool? ({(toolUsages[tool.id] || []).length} selected)
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails className={classes.accordionDetails}>
+                                    {tool.usage_options.map((option, index) => (
+                                      <FormControlLabel
+                                        key={index}
+                                        control={
+                                          <Checkbox
+                                            checked={(toolUsages[tool.id] || []).includes(option)}
+                                            onChange={(e) => {
+                                              e.stopPropagation();
+                                              handleUsageOptionChange(tool.id, option, e.target.checked);
+                                            }}
+                                            size="small"
+                                          />
+                                        }
+                                        label={
+                                          <Typography variant="body2" className={classes.usageOption}>
+                                            {option}
+                                          </Typography>
+                                        }
+                                        sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}
+                                        onClick={(e) => e.stopPropagation()}
+                                      />
+                                    ))}
+                                  </AccordionDetails>
+                                </Accordion>
+                              )}
+                            </>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </Box>
+
+                {/* Single Apply Button */}
+                {selectedTools.length > 0 && (
+                  <Box className={classes.applyButtonContainer}>
+                    <Button
+                      className={classes.mainApplyButton}
+                      onClick={handleApplyAllToolsToResume}
+                      disabled={applyingTools}
+                      startIcon={applyingTools ? <CircularProgress size={14} color="inherit" /> : <AddIcon />}
+                      size="large"
+                    >
+                      {applyingTools ? 'Applying Tools...' : `Apply Selected Tools (${selectedTools.length})`}
+                    </Button>
+                  </Box>
+                )}
+              </>
+            ) : (
+              <Box className={classes.emptyStateContainer}>
+                <Typography variant="body1">
+                  No AI tool recommendations available for this role.
+                </Typography>
+              </Box>
+            )}
+
+            {/* Selected Tools Summary */}
+            <Divider sx={{ my: 3 }} />
+            
+            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <LightbulbIcon sx={{ color: '#3182ce', mr: 1 }} />
+              Applied AI Tools ({(resumeData.genai_tools || []).length})
             </Typography>
-          )}
-        </Box>
+            
+            <Box className={classes.summaryContainer}>
+              {(resumeData.genai_tools || []).length > 0 ? (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
+                  {(resumeData.genai_tools || []).map((tool) => (
+                    <Chip
+                      key={tool.tool_id}
+                      label={`${tool.name} (${(tool.usage_descriptions || []).length} skills)`}
+                      className={classes.selectionChip}
+                      onDelete={() => {
+                        // Remove from resume data
+                        setResumeData(prev => ({
+                          ...prev,
+                          genai_tools: prev.genai_tools.filter(t => t.tool_id !== tool.tool_id)
+                        }));
+                        // Also remove from selected tools
+                        setSelectedTools(prev => prev.filter(t => t.tool_id !== tool.tool_id));
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body1" align="center" sx={{ py: 2 }}>
+                  No AI tools applied to resume yet. Select tools above and click "Apply Selected Tools" to add them.
+                </Typography>
+              )}
+            </Box>
+          </>
+        )}
       </Paper>
     </Box>
   );
