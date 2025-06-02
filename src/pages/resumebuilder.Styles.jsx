@@ -24,7 +24,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   mainContentWithSidebar: {
-    marginLeft: '280px',
+    marginLeft: '220px',
     transition: 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     '@media (max-width: 1200px)': {
       marginLeft: '240px',
@@ -51,8 +51,8 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   },
   formColumn: {
     flex: 1,
-    padding: '1rem 1rem',
-    maxWidth: '600px',
+    padding: '0rem 1rem 0rem 0rem',
+    maxWidth: '510px',
     '@media (max-width: 1200px)': {
       padding: '1rem 0.8rem',
       maxWidth: '550px',
@@ -76,11 +76,11 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   },
   previewColumn: {
     flex: 1,
-    padding: '1rem 2rem 3rem 1rem',
+    // padding: '1rem 2rem 3rem 1rem',
     position: 'sticky',
     top: '100px',
-    height: 'calc(100vh - 100px)',
-    overflowY: 'auto',
+    borderRadius: '16px',
+    height: 'calc(120vh - 100px)',
     '@media (max-width: 1200px)': {
       padding: '1rem 1.5rem 3rem 0.8rem',
       top: '90px',
@@ -156,15 +156,14 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   paper: {
-    background: 'rgba(255, 255, 255, 0.8)',
-    backdropFilter: 'blur(20px) saturate(180%)',
+    background: 'transparent',
     borderRadius: '16px',
     padding: '2rem',
     marginBottom: '2rem',
-    boxShadow: '0 4px 16px rgba(39, 40, 108, 0.08)',
+    boxShadow: 'none',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
-      boxShadow: '0 8px 32px rgba(39, 40, 108, 0.12)',
+      boxShadow: '0 4px 6px rgba(39, 40, 108, 0.05)',
     },
     '@media (max-width: 1200px)': {
       padding: '1.8rem',
@@ -591,6 +590,13 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   previewContent: {
     flex: 1,
     overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'rgba(39, 40, 108, 0.2)',
+      borderRadius: '3px',
+    },
   },
   // Mobile preview container - appears below form on mobile/tablet
   mobilePreviewContainer: {
@@ -640,7 +646,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     borderRadius: '8px',
     backgroundColor: '#ffffff',
     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-    overflowX: 'auto',
     '@media (max-width: 600px)': {
       padding: '0.8rem',
     },

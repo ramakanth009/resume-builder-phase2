@@ -15,7 +15,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem',
+    gap: '0.5rem',
     '@media (max-width: 1200px)': {
       gap: '1.8rem',
     },
@@ -131,7 +131,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   fieldRow: {
     display: 'flex',
     gap: '1rem',
-    marginBottom: '1rem',
+    // marginBottom: '1rem',
     '@media (max-width: 960px)': {
       gap: '0.8rem',
       marginBottom: '0.8rem',

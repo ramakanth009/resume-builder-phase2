@@ -8,7 +8,9 @@ import useModernStyles from "../../styles/previewStyles/modernStyles";
 import useCreativeStyles from "../../styles/previewStyles/creativeStyles";
 import useExecutiveStyles from "../../styles/previewStyles/executiveStyles";
 import useProfessionalStyles from "../../styles/previewStyles/professionalStyles";
-
+import useTwoColumnStyles from "../../styles/previewStyles/useTwoColumnStyles";
+import useBlueCorporateStyles from "../../styles/previewStyles/useBlueCorporateStyles";
+import useExecutiveModernStyles from "../../styles/previewStyles/useExecutiveModernStyles";
 // Base styles for all templates with responsive design
 const useBaseStyles = makeStylesWithTheme((theme) => ({
   resumeContainer: {
@@ -75,8 +77,12 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
   const creativeClasses = useCreativeStyles();
   const executiveClasses = useExecutiveStyles();
   const professionalClasses = useProfessionalStyles();
+  // ADD THESE NEW STYLE HOOKS
+  const twoColumnClasses = useTwoColumnStyles();
+  const executiveModernClasses = useExecutiveModernStyles();
+  const blueCorporateClasses = useBlueCorporateStyles();
 
-  // Select the appropriate styles based on template
+  // UPDATED: Select the appropriate styles based on template
   const getTemplateClasses = () => {
     switch (templateId) {
       case "modern":
@@ -87,6 +93,13 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
         return executiveClasses;
       case "professional":
         return professionalClasses;
+      // ADD THESE NEW CASES
+      case "twoColumn":
+        return twoColumnClasses;
+      case "executiveModern":
+        return executiveModernClasses;
+      case "blueCorporate":
+        return blueCorporateClasses;
       case "classic":
       default:
         return classicClasses;

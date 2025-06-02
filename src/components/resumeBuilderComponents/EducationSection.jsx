@@ -7,7 +7,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "1rem",
+    gap: '0.5rem',
   },
   textField: {
     "& .MuiOutlinedInput-root": {
