@@ -2,16 +2,12 @@ import React, { useMemo } from "react";
 import { Box, Typography, Chip, Link, Divider } from "@mui/material";
 import makeStylesWithTheme from "../../styles/makeStylesAdapter";
 
-// Import styles from separate files - ADD MISSING IMPORTS
+// Import styles from separate files
 import useClassicStyles from "../../styles/previewStyles/classicStyles";
 import useModernStyles from "../../styles/previewStyles/modernStyles";
 import useCreativeStyles from "../../styles/previewStyles/creativeStyles";
 import useExecutiveStyles from "../../styles/previewStyles/executiveStyles";
 import useProfessionalStyles from "../../styles/previewStyles/professionalStyles";
-// ADD THESE NEW IMPORTS
-import useTwoColumnStyles from "../../styles/previewStyles/useTwoColumnStyles";
-import useExecutiveModernStyles from "../../styles/previewStyles/useExecutiveModernStyles";
-import useBlueCorporateStyles from "../../styles/previewStyles/useBlueCorporateStyles";
 
 // Base styles for all templates with responsive design
 const useBaseStyles = makeStylesWithTheme((theme) => ({
@@ -79,12 +75,8 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
   const creativeClasses = useCreativeStyles();
   const executiveClasses = useExecutiveStyles();
   const professionalClasses = useProfessionalStyles();
-  // ADD THESE NEW STYLE HOOKS
-  const twoColumnClasses = useTwoColumnStyles();
-  const executiveModernClasses = useExecutiveModernStyles();
-  const blueCorporateClasses = useBlueCorporateStyles();
 
-  // UPDATED: Select the appropriate styles based on template
+  // Select the appropriate styles based on template
   const getTemplateClasses = () => {
     switch (templateId) {
       case "modern":
@@ -95,13 +87,6 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
         return executiveClasses;
       case "professional":
         return professionalClasses;
-      // ADD THESE NEW CASES
-      case "twoColumn":
-        return twoColumnClasses;
-      case "executiveModern":
-        return executiveModernClasses;
-      case "blueCorporate":
-        return blueCorporateClasses;
       case "classic":
       default:
         return classicClasses;
@@ -196,231 +181,6 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
     return hasAiExpWithUsage || hasGenAiWithUsage;
   };
 
-  // ADD SPECIAL HANDLING FOR TWO-COLUMN TEMPLATE
-  if (templateId === "twoColumn") {
-    return (
-      <Box className={baseClasses.resumeContainer}>
-        <Box className={classes.resumeContainer}>
-          {/* Left Column */}
-          <Box className={classes.leftColumn}>
-            {/* Contact Section */}
-            <Box className={classes.resumeSection}>
-              <Typography variant="h6" className={classes.resumeSectionTitle}>
-                Contact
-              </Typography>
-              <Box className={classes.resumeContact}>
-                {data.header.phone && (
-                  <Typography variant="body2" className={classes.resumeContactItem}>
-                    {data.header.phone}
-                  </Typography>
-                )}
-                {data.header.email && (
-                  <Typography variant="body2" className={classes.resumeContactItem}>
-                    {data.header.email}
-                  </Typography>
-                )}
-                {data.header.portfolio && (
-                  <Typography variant="body2" className={classes.resumeContactItem}>
-                    {data.header.portfolio}
-                  </Typography>
-                )}
-                {data.header.linkedin && (
-                  <Typography variant="body2" className={classes.resumeContactItem}>
-                    LinkedIn
-                  </Typography>
-                )}
-                {data.header.github && (
-                  <Typography variant="body2" className={classes.resumeContactItem}>
-                    GitHub
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-
-            {/* Profile/Summary */}
-            {data.summary && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Profile
-                </Typography>
-                <Typography variant="body2" className={classes.resumeSummary}>
-                  {data.summary}
-                </Typography>
-              </Box>
-            )}
-
-            {/* Skills Section */}
-            {data.skills && data.skills.length > 0 && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Skills
-                </Typography>
-                <Box className={classes.resumeSkills}>
-                  {data.skills.filter(skill => skill && skill.trim() !== "").map((skill, index) => (
-                    <Typography key={index} variant="body2" className={classes.resumeSkillChip}>
-                      {skill}
-                    </Typography>
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            {/* AI Tools */}
-            {hasAIToolsData() && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  AI Tools
-                </Typography>
-                <Box className={classes.resumeSkills}>
-                  {data.genai_tools && data.genai_tools.map((tool, index) => (
-                    <Typography key={index} variant="body2" className={classes.aiSkillChip}>
-                      {tool.name || `AI Tool ${tool.tool_id}`}
-                    </Typography>
-                  ))}
-                  {data.aiExperience && !data.genai_tools && data.aiExperience.map((aiExp, index) => (
-                    <Typography key={index} variant="body2" className={classes.aiSkillChip}>
-                      {aiExp.toolName}
-                    </Typography>
-                  ))}
-                </Box>
-              </Box>
-            )}
-
-            {/* Education */}
-            {hasEducationData() && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Education
-                </Typography>
-                {Array.isArray(data.education) ? (
-                  data.education.map((edu, index) => (
-                    <Box key={index} className={classes.resumeEducation}>
-                      <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                        {edu.institution}
-                      </Typography>
-                      <Typography variant="body2" className={classes.resumeDate}>
-                        {edu.graduation_year || edu.graduationYear}
-                      </Typography>
-                      <Typography variant="body2" className={classes.resumeInstitution}>
-                        {edu.degree}{edu.specialization ? ` in ${edu.specialization}` : ""}
-                      </Typography>
-                    </Box>
-                  ))
-                ) : (
-                  <Box className={classes.resumeEducation}>
-                    <Typography variant="subtitle1" className={classes.resumeSubtitle}>
-                      {data.education.institution}
-                    </Typography>
-                    <Typography variant="body2" className={classes.resumeDate}>
-                      {data.education.graduation_year || data.education.graduationYear}
-                    </Typography>
-                    <Typography variant="body2" className={classes.resumeInstitution}>
-                      {data.education.degree}{data.education.specialization ? ` in ${data.education.specialization}` : ""}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            )}
-          </Box>
-
-          {/* Right Column */}
-          <Box className={classes.rightColumn}>
-            {/* Header */}
-            <Box className={classes.resumeHeader}>
-              <Typography variant="h4" className={classes.resumeName}>
-                {data.header.name || "Your Name"}
-              </Typography>
-              {data.target_role && (
-                <Typography variant="body1" className={classes.resumeTitle}>
-                  {data.target_role}
-                </Typography>
-              )}
-            </Box>
-
-            {/* Work Experience */}
-            {hasWorkExperienceData() && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Experience
-                </Typography>
-                {/* Render work experience items here */}
-                {(data.work_experience || data.workExperience || []).map((experience, index) => (
-                  <Box key={index} className={classes.resumeItem}>
-                    <Typography variant="subtitle1" className={classes.resumeItemTitle}>
-                      {experience.position}
-                    </Typography>
-                    <Typography variant="body2" className={classes.resumeItemDuration}>
-                      {experience.duration}
-                    </Typography>
-                    <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                      {experience.company_name || experience.companyName}
-                    </Typography>
-                    {experience.responsibilities && (
-                      <Box component="ul" className={classes.resumeBullets}>
-                        {experience.responsibilities.map((resp, idx) => (
-                          <li key={idx} className={classes.resumeBullet}>
-                            {resp}
-                          </li>
-                        ))}
-                      </Box>
-                    )}
-                  </Box>
-                ))}
-              </Box>
-            )}
-
-            {/* Projects */}
-            {hasProjectsData() && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Projects
-                </Typography>
-                {data.projects.filter(p => p.name && p.name.trim() !== "").map((project, index) => (
-                  <Box key={index} className={classes.resumeItem}>
-                    <Typography variant="subtitle1" className={classes.resumeItemTitle}>
-                      {project.name}
-                    </Typography>
-                    {project.skills_used && (
-                      <Typography variant="body2" className={classes.resumeItemSubtitle}>
-                        Technologies: {project.skills_used}
-                      </Typography>
-                    )}
-                    {project.responsibilities && (
-                      <Box component="ul" className={classes.resumeBullets}>
-                        {project.responsibilities.map((resp, idx) => (
-                          <li key={idx} className={classes.resumeBullet}>
-                            {resp}
-                          </li>
-                        ))}
-                      </Box>
-                    )}
-                  </Box>
-                ))}
-              </Box>
-            )}
-
-            {/* Certifications */}
-            {data.certifications && data.certifications.length > 0 && (
-              <Box className={classes.resumeSection}>
-                <Typography variant="h6" className={classes.resumeSectionTitle}>
-                  Certifications
-                </Typography>
-                <Box component="ul" className={classes.resumeBullets}>
-                  {data.certifications.filter(cert => cert && cert.trim() !== "").map((cert, index) => (
-                    <li key={index} className={classes.resumeBullet}>
-                      {typeof cert === 'string' ? cert : cert.name}
-                    </li>
-                  ))}
-                </Box>
-              </Box>
-            )}
-          </Box>
-        </Box>
-      </Box>
-    );
-  }
-
-  // CONTINUE WITH REGULAR TEMPLATE RENDERING FOR OTHER TEMPLATES
   const renderLink = (label, url, type) => {
     if (!url) return null;
 
@@ -885,6 +645,191 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                 ))}
               </Box>
             )}
+        </Box>
+      )}
+
+      {/* AI Tools Experience Section - FIXED: Only show when there are actual usage details */}
+      {hasAIExperienceData() && (
+        <Box className={classes.resumeSection} sx={{
+          '@media (max-width: 960px)': {
+            marginBottom: '1.5rem',
+          },
+          '@media (max-width: 600px)': {
+            marginBottom: '1.2rem',
+          },
+          '@media (max-width: 480px)': {
+            marginBottom: '1rem',
+          },
+        }}>
+          <Typography variant="h6" className={classes.resumeSectionTitle} sx={{
+            '@media (max-width: 960px)': {
+              fontSize: '1.1rem',
+            },
+            '@media (max-width: 600px)': {
+              fontSize: '1rem',
+            },
+            '@media (max-width: 480px)': {
+              fontSize: '0.95rem',
+            },
+            '@media (max-width: 375px)': {
+              fontSize: '0.9rem',
+            },
+          }}>
+            AI Tools Experience
+          </Typography>
+          
+          {/* Render aiExperience format - only if there are usage cases */}
+          {data.aiExperience && data.aiExperience.length > 0 && 
+           data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0) && (
+            <>
+              {data.aiExperience
+                .filter(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0)
+                .map((aiExp, index) => (
+                <Box key={`ai-exp-${index}`} className={classes.resumeItem} sx={{
+                  '@media (max-width: 960px)': {
+                    marginBottom: '1.2rem',
+                  },
+                  '@media (max-width: 600px)': {
+                    marginBottom: '1rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    marginBottom: '0.8rem',
+                  },
+                }}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle} sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.95rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.9rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.85rem',
+                    },
+                  }}>
+                    {aiExp.toolName}
+                  </Typography>
+                  
+                  {aiExp.impact && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle} sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.8rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.75rem',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.7rem',
+                      },
+                    }}>
+                      {aiExp.impact}
+                    </Typography>
+                  )}
+                  
+                  <Box component="ul" className={classes.resumeBullets} sx={{
+                    '@media (max-width: 600px)': {
+                      paddingLeft: '1rem',
+                      marginTop: '0.4rem',
+                      marginBottom: '0.4rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      paddingLeft: '0.8rem',
+                      marginTop: '0.3rem',
+                      marginBottom: '0.3rem',
+                    },
+                  }}>
+                    {aiExp.usageCases.map((useCase, idx) => (
+                      <li key={idx} className={classes.resumeBullet} style={{
+                        fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                 window.innerWidth <= 480 ? '0.7rem' : 
+                                 window.innerWidth <= 375 ? '0.65rem' : undefined,
+                        marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                      }}>
+                        {useCase}
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+              ))}
+            </>
+          )}
+          
+          {/* Render genai_tools format - only if there are usage descriptions */}
+          {data.genai_tools && data.genai_tools.length > 0 && 
+           data.genai_tools.some(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0) &&
+           (!data.aiExperience || !data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0)) && (
+            <>
+              {data.genai_tools
+                .filter(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0)
+                .map((tool, index) => (
+                <Box key={`genai-tool-${index}`} className={classes.resumeItem} sx={{
+                  '@media (max-width: 960px)': {
+                    marginBottom: '1.2rem',
+                  },
+                  '@media (max-width: 600px)': {
+                    marginBottom: '1rem',
+                  },
+                  '@media (max-width: 480px)': {
+                    marginBottom: '0.8rem',
+                  },
+                }}>
+                  <Typography variant="subtitle1" className={classes.resumeSubtitle} sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.95rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.9rem',
+                    },
+                    '@media (max-width: 375px)': {
+                      fontSize: '0.85rem',
+                    },
+                  }}>
+                    {tool.name}
+                  </Typography>
+                  
+                  {tool.description && (
+                    <Typography variant="body2" className={classes.resumeItemSubtitle} sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: '0.8rem',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.75rem',
+                      },
+                      '@media (max-width: 375px)': {
+                        fontSize: '0.7rem',
+                      },
+                    }}>
+                      {tool.description}
+                    </Typography>
+                  )}
+                  
+                  <Box component="ul" className={classes.resumeBullets} sx={{
+                    '@media (max-width: 600px)': {
+                      paddingLeft: '1rem',
+                      marginTop: '0.4rem',
+                      marginBottom: '0.4rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      paddingLeft: '0.8rem',
+                      marginTop: '0.3rem',
+                      marginBottom: '0.3rem',
+                    },
+                  }}>
+                    {tool.usage_descriptions.map((usage, idx) => (
+                      <li key={idx} className={classes.resumeBullet} style={{
+                        fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                 window.innerWidth <= 480 ? '0.7rem' : 
+                                 window.innerWidth <= 375 ? '0.65rem' : undefined,
+                        marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                      }}>
+                        {usage}
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+              ))}
+            </>
+          )}
         </Box>
       )}
 

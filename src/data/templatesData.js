@@ -47,9 +47,27 @@ const templatesData = [
     previewImage: professionalPreview || fallbackImagePath,
     isDefault: false
   },
-  { id: 'twoColumn', name: 'Two-Column', description: 'Professional two-column layout', isDefault: false },
-  { id: 'executiveModern', name: 'Executive Modern', description: 'Clean timeline-based design', isDefault: false },
-  { id: 'blueCorporate', name: 'Blue Corporate', description: 'Professional blue-themed layout', isDefault: false }
+  {
+    id: 'twoColumn',
+    name: 'Two-Column',
+    description: 'Professional two-column layout with sidebar contact info',
+    previewImage: fallbackImagePath,
+    isDefault: false
+  },
+  {
+    id: 'executiveModern',
+    name: 'Executive Modern',
+    description: 'Clean timeline-based design for senior professionals',
+    previewImage: fallbackImagePath,
+    isDefault: false
+  },
+  {
+    id: 'blueCorporate',
+    name: 'Blue Corporate',
+    description: 'Professional blue-themed corporate layout',
+    previewImage: fallbackImagePath,
+    isDefault: false
+  }
 ];
 
 export default templatesData;
