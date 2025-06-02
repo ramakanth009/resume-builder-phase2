@@ -12,6 +12,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LinkIcon from '@mui/icons-material/Link';
 import CodeIcon from '@mui/icons-material/Code';
+import GavelIcon from '@mui/icons-material/Gavel'; // Added for Terms & Policies
 
 // Update src/common/Sidebar.jsx styles
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -63,9 +64,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   listItem: {
-    padding: '0.75rem 1rem',
+    padding: '0.5rem 1rem', // Reduced vertical padding
     borderRadius: '12px',
-    marginBottom: '0.5rem',
+    marginBottom: '0.25rem', // Reduced gap between items
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     cursor: 'pointer',
     '&:hover': {
@@ -113,7 +114,8 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
     <CodeIcon />,                // Projects
     <WorkIcon />,                // Experience
     <VerifiedIcon />,            // Certifications
-    <SettingsIcon />             // Custom Sections & Terms
+    <SettingsIcon />,            // Custom Sections
+    <GavelIcon />,               // Terms & Policies (changed icon)
   ];
 
   return (

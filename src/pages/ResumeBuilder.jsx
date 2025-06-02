@@ -32,7 +32,8 @@ import SkillsSection from "../components/resumeBuilderComponents/SkillsSection";
 import ProjectsSection from "../components/resumeBuilderComponents/ProjectsSection";
 import ExperienceSection from "../components/resumeBuilderComponents/ExperienceSection";
 import CertificationsSection from "../components/resumeBuilderComponents/CertificationsSection";
-import CustomSectionsAndTerms from "../components/resumeBuilderComponents/CustomSectionsAndTerms";
+import CustomSections from "../components/resumeBuilderComponents/CustomSections";
+import TermsAndPolicies from "../components/resumeBuilderComponents/TermsAndPolicies";
 import ResumePreview from "../components/previewComponents/ResumePreview";
 import TemplateSelector from "../components/previewComponents/TemplateSelector";
 import AISkillRecommendationsSection from "../components/resumeBuilderComponents/AISkills";
@@ -48,11 +49,12 @@ const steps = [
   "Social Links",
   "Education",
   "Skills",
-  "AI Skills", // New step added here
+  "AI Skills",
   "Projects",
   "Experience",
   "Certifications",
-  "Custom Sections & Final",
+  "Custom Sections",
+  "Terms & Policies",
 ];
 
 /**
@@ -445,7 +447,7 @@ const ResumeBuilder = () => {
         message: "Please accept both terms and policies to continue",
         severity: "error",
       });
-      setActiveStep(7); // Switch to Custom Sections & Terms step (now index 7)
+      setActiveStep(steps.length - 1); // Now points to "Terms & Policies"
       return false;
     }
     return true;
@@ -892,9 +894,14 @@ const ResumeBuilder = () => {
         );
       case 8:
         return (
-          <CustomSectionsAndTerms
+          <CustomSections
             resumeData={resumeData}
             setResumeData={setResumeData}
+          />
+        );
+      case 9:
+        return (
+          <TermsAndPolicies
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
           />

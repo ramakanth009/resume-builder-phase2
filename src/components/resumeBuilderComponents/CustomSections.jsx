@@ -7,9 +7,6 @@ import {
   Chip,
   Paper,
   IconButton,
-  Divider,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -322,24 +319,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
       padding: "0.25rem 0.5rem",
     },
   },
-  divider: {
-    margin: "2rem 0 1.5rem",
-    "@media (max-width: 1200px)": {
-      margin: "1.8rem 0 1.3rem",
-    },
-    "@media (max-width: 960px)": {
-      margin: "1.5rem 0 1.2rem",
-    },
-    "@media (max-width: 600px)": {
-      margin: "1.2rem 0 1rem",
-    },
-    "@media (max-width: 480px)": {
-      margin: "1rem 0 0.8rem",
-    },
-    "@media (max-width: 375px)": {
-      margin: "0.8rem 0 0.7rem",
-    },
-  },
   inputContainer: {
     display: "flex",
     alignItems: "flex-start",
@@ -392,116 +371,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
       marginBottom: "0.5rem",
     },
   },
-  termsContainer: {
-    marginTop: "1rem",
-    padding: "1.5rem",
-    borderRadius: "8px",
-    backgroundColor: "#f7fafc",
-    border: "1px solid #e2e8f0",
-    "@media (max-width: 1200px)": {
-      padding: "1.3rem",
-      marginTop: "0.9rem",
-    },
-    "@media (max-width: 960px)": {
-      padding: "1.2rem",
-      marginTop: "0.8rem",
-    },
-    "@media (max-width: 600px)": {
-      padding: "1rem",
-      marginTop: "0.7rem",
-    },
-    "@media (max-width: 480px)": {
-      padding: "0.8rem",
-      marginTop: "0.6rem",
-    },
-    "@media (max-width: 375px)": {
-      padding: "0.7rem",
-      marginTop: "0.5rem",
-    },
-  },
-  checkboxContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.75rem",
-    "@media (max-width: 1200px)": {
-      gap: "0.7rem",
-    },
-    "@media (max-width: 960px)": {
-      gap: "0.65rem",
-    },
-    "@media (max-width: 600px)": {
-      gap: "0.6rem",
-    },
-    "@media (max-width: 480px)": {
-      gap: "0.5rem",
-    },
-    "@media (max-width: 375px)": {
-      gap: "0.4rem",
-    },
-  },
-  checkbox: {
-    color: "#3182ce",
-    "&.Mui-checked": {
-      color: "#3182ce",
-    },
-    "@media (max-width: 600px)": {
-      transform: "scale(0.9)",
-    },
-    "@media (max-width: 480px)": {
-      transform: "scale(0.8)",
-    },
-    "@media (max-width: 375px)": {
-      transform: "scale(0.75)",
-    },
-  },
-  checkboxLabel: {
-    fontSize: "0.9rem",
-    color: "#4a5568",
-    "@media (max-width: 1200px)": {
-      fontSize: "0.85rem",
-    },
-    "@media (max-width: 960px)": {
-      fontSize: "0.8rem",
-    },
-    "@media (max-width: 600px)": {
-      fontSize: "0.75rem",
-    },
-    "@media (max-width: 480px)": {
-      fontSize: "0.7rem",
-    },
-    "@media (max-width: 375px)": {
-      fontSize: "0.65rem",
-    },
-  },
-  disclaimer: {
-    fontSize: "0.8rem",
-    color: "#718096",
-    marginTop: "1rem",
-    fontStyle: "italic",
-    "@media (max-width: 1200px)": {
-      fontSize: "0.75rem",
-      marginTop: "0.9rem",
-    },
-    "@media (max-width: 960px)": {
-      fontSize: "0.7rem",
-      marginTop: "0.8rem",
-    },
-    "@media (max-width: 600px)": {
-      fontSize: "0.65rem",
-      marginTop: "0.7rem",
-    },
-    "@media (max-width: 480px)": {
-      fontSize: "0.6rem",
-      marginTop: "0.6rem",
-    },
-    "@media (max-width: 375px)": {
-      fontSize: "0.55rem",
-      marginTop: "0.5rem",
-    },
-  },
 }));
 
-// Suggested custom section templates
 const suggestedSections = [
   "Languages",
   "Strengths",
@@ -513,12 +384,7 @@ const suggestedSections = [
   "Professional_Affiliations",
 ];
 
-const CustomSectionsAndTerms = ({
-  resumeData,
-  setResumeData,
-  termsAccepted,
-  setTermsAccepted,
-}) => {
+const CustomSections = ({ resumeData, setResumeData }) => {
   const classes = useStyles();
   const [sectionName, setSectionName] = useState("");
   const [itemText, setItemText] = useState("");
@@ -614,15 +480,6 @@ const CustomSectionsAndTerms = ({
       // If already exists, just select it
       setSelectedSection(suggestedSection);
     }
-  };
-
-  // Terms & Policies change handler
-  const handleTermsChange = (event) => {
-    const { name, checked } = event.target;
-    setTermsAccepted((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
   };
 
   // This function renders all created sections
@@ -749,49 +606,8 @@ const CustomSectionsAndTerms = ({
 
       {/* All sections rendered persistently */}
       <Box className={classes.sectionsList}>{renderAllSections()}</Box>
-
-      {/* TERMS & POLICIES PART */}
-      <Divider className={classes.divider} />
-
-      <Box className={classes.termsContainer}>
-        <Typography variant="h6" className={classes.formSubtitle}>
-          Terms & Policies
-        </Typography>
-
-        <Box className={classes.checkboxContainer}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={termsAccepted.updates}
-                onChange={handleTermsChange}
-                name="updates"
-                className={classes.checkbox}
-              />
-            }
-            label="I accept to receive future updates from Gigaversity."
-            className={classes.checkboxLabel}
-          />
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={termsAccepted.dataSharing}
-                onChange={handleTermsChange}
-                name="dataSharing"
-                className={classes.checkbox}
-              />
-            }
-            label="I consent to AI-enhanced resume generation using my provided information"
-            className={classes.checkboxLabel}
-          />
-        </Box>
-
-        <Typography className={classes.disclaimer}>
-          Both checkboxes must be selected to proceed with resume generation.
-        </Typography>
-      </Box>
     </Box>
   );
 };
 
-export default CustomSectionsAndTerms;
+export default CustomSections;
