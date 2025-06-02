@@ -994,17 +994,24 @@ const ResumeBuilder = () => {
             onClick={() => setIsEditMode(true)}
             disabled={isEditMode}
           >
-            Edit Mode
+            Edit Resume
           </Button>
           <Button
             variant="contained"
-            className={`${classes.previewModeButton} ${
+            className={`${classes.updateResumeButton} ${
               !isEditMode ? classes.activeModeButton : ""
             }`}
-            onClick={() => setIsEditMode(false)}
-            disabled={!isEditMode}
+            onClick={handleUpdateResume}
+            disabled={loading}
           >
-            Preview Mode
+            {loading ? (
+              <>
+                Updating...
+                <CircularProgress size={20} className={classes.loader} />
+              </>
+            ) : (
+              "Update Resume"
+            )}
           </Button>
         </Box>
       )}
@@ -1081,7 +1088,7 @@ const ResumeBuilder = () => {
             <Box className={classes.previewNotice}>
               <InfoIcon className={classes.noticeIcon} />
               <Typography variant="body2">
-                To access the Live Preview, please open this site on a desktop.
+                scroll below to access the live preview
               </Typography>
             </Box>
 

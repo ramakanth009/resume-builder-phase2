@@ -74,22 +74,31 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       padding: '0.8rem 0.4rem',
     },
   },
-  previewColumn: {
-    flex: 1,
-    // padding: '1rem 2rem 3rem 1rem',
-    position: 'sticky',
-    top: '100px',
-    borderRadius: '16px',
-    // height: 'calc(120vh - 100px)',
-    '@media (max-width: 1200px)': {
-      padding: '1rem 1.5rem 3rem 0.8rem',
-      top: '90px',
-      height: 'calc(100vh - 90px)',
-    },
-    '@media (max-width: 960px)': {
-      display: 'none', // Hide on tablets and mobile - replaced by mobile preview
-    },
+previewColumn: {
+  flex: 1,
+  position: 'sticky',
+  top: '100px',
+  borderRadius: '16px',
+  '@media (max-width: 1200px)': {
+    padding: '1rem 1.5rem 3rem 0.8rem',
+    top: '90px',
+    height: 'calc(100vh - 90px)',
   },
+  '@media (max-width: 960px)': {
+    // Modified to be visible on tablet
+    position: 'relative',
+    top: 0,
+    height: 'auto',
+    maxHeight: '600px',
+    overflow: 'auto',
+    padding: '1rem',
+    marginTop: '2rem',
+  },
+  '@media (max-width: 600px)': {
+    // Hidden on mobile - will use mobilePreviewContainer instead
+    // display: 'none',
+  },
+},
   previewNotice: {
     display: 'none',
     '@media (max-width: 960px)': {
@@ -335,23 +344,23 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
     },
   },
-  mainContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    '@media (max-width: 960px)': {
-      flexDirection: 'column', // Stack vertically on tablets and mobile
-    },
+mainContainer: {
+  display: 'flex',
+  flexDirection: 'row',
+  '@media (max-width: 960px)': {
+    flexDirection: 'column', // Stack vertically on tablets and mobile
   },
-  columnBox: {
-    flex: 1,
-    width: '50%',
-    '@media (max-width: 1200px)': {
-      width: '50%', // Still side by side on large tablets
-    },
-    '@media (max-width: 960px)': {
-      width: '100%', // Full width when stacked
-    },
+},
+columnBox: {
+  flex: 1,
+  width: '50%',
+  '@media (max-width: 1200px)': {
+    width: '50%', // Still side by side on large tablets
   },
+  '@media (max-width: 960px)': {
+    width: '100%', // Full width when stacked
+  },
+},
   loader: {
     marginLeft: '0.5rem',
     color: 'white',
@@ -368,38 +377,40 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
     },
   },
-  downloadButton: {
-    backgroundColor: '#38a169',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    marginLeft: '1rem',
-    '&:hover': {
-      backgroundColor: '#2f855a',
-    },
-    '@media (max-width: 1200px)': {
-      padding: '0.5rem 1.3rem',
-      fontSize: '0.95rem',
-    },
-    '@media (max-width: 600px)': {
-      padding: '0.5rem 1rem',
-      fontSize: '0.9rem',
-      marginLeft: '0.5rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.4rem 0.8rem',
-      fontSize: '0.85rem',
-      marginLeft: '0.25rem',
-      width: '100%',
-      marginTop: '0.5rem',
-    },
-    '@media (max-width: 375px)': {
-      padding: '0.4rem 0.7rem',
-      fontSize: '0.8rem',
-    },
+downloadButton: {
+  backgroundColor: '#38a169',
+  color: 'white',
+  textTransform: 'none',
+  fontWeight: 600,
+  padding: '0.5rem 1.5rem',
+  borderRadius: '8px',
+  marginLeft: '1rem',
+  '&:hover': {
+    backgroundColor: '#2f855a',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(56, 161, 105, 0.3)',
   },
+  '@media (max-width: 1200px)': {
+    padding: '0.5rem 1.3rem',
+    fontSize: '0.95rem',
+  },
+  '@media (max-width: 600px)': {
+    padding: '0.5rem 1rem',
+    fontSize: '0.9rem',
+    marginLeft: '0.5rem',
+  },
+  '@media (max-width: 480px)': {
+    padding: '0.4rem 0.8rem',
+    fontSize: '0.85rem',
+    marginLeft: '0.25rem',
+    width: '100%',
+    marginTop: '0.5rem',
+  },
+  '@media (max-width: 375px)': {
+    padding: '0.4rem 0.7rem',
+    fontSize: '0.8rem',
+  },
+},
   editButton: {
     backgroundColor: '#805ad5',
     color: 'white',
@@ -460,44 +471,48 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       display: 'none', // Hide on tablets and mobile since preview behavior changes
     },
   },
-  editModeButton: {
-    backgroundColor: '#805ad5',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#6b46c1',
-    },
-    '@media (max-width: 1200px)': {
-      padding: '0.4rem 1.2rem',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 600px)': {
-      padding: '0.4rem 1rem',
-      fontSize: '0.9rem',
-    },
+editModeButton: {
+  backgroundColor: '#805ad5',
+  color: 'white',
+  textTransform: 'none',
+  fontWeight: 600,
+  padding: '0.5rem 1.5rem',
+  borderRadius: '8px',
+  '&:hover': {
+    backgroundColor: '#6b46c1',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(128, 90, 213, 0.3)',
   },
-  previewModeButton: {
-    backgroundColor: '#4299e1',
-    color: 'white',
-    textTransform: 'none',
-    fontWeight: 600,
-    padding: '0.5rem 1.5rem',
-    borderRadius: '8px',
-    '&:hover': {
-      backgroundColor: '#3182ce',
-    },
-    '@media (max-width: 1200px)': {
-      padding: '0.4rem 1.2rem',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 600px)': {
-      padding: '0.4rem 1rem',
-      fontSize: '0.9rem',
-    },
+  '@media (max-width: 1200px)': {
+    padding: '0.4rem 1.2rem',
+    fontSize: '0.9rem',
   },
+  '@media (max-width: 600px)': {
+    padding: '0.4rem 1rem',
+    fontSize: '0.9rem',
+  },
+},
+updateResumeButton: {
+  backgroundColor: '#3182ce',
+  color: 'white',
+  textTransform: 'none',
+  fontWeight: 600,
+  padding: '0.5rem 1.5rem',
+  borderRadius: '8px',
+  '&:hover': {
+    backgroundColor: '#2b6cb0',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(49, 130, 206, 0.3)',
+  },
+  '@media (max-width: 1200px)': {
+    padding: '0.4rem 1.2rem',
+    fontSize: '0.9rem',
+  },
+  '@media (max-width: 600px)': {
+    padding: '0.4rem 1rem',
+    fontSize: '0.9rem',
+  },
+},
   activeModeButton: {
     boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.5)',
   },
@@ -582,64 +597,67 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       justifyContent: 'center',
     },
   },
-  previewWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
+previewWrapper: {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  transition: 'all 0.3s ease',
+},
+previewContent: {
+  flex: 1,
+  overflow: 'auto',
+  transition: 'all 0.3s ease',
+  '&::-webkit-scrollbar': {
+    width: '6px',
   },
-  previewContent: {
-    flex: 1,
-    overflow: 'auto',
-    '&::-webkit-scrollbar': {
-      width: '6px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: 'rgba(39, 40, 108, 0.2)',
-      borderRadius: '3px',
-    },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(39, 40, 108, 0.2)',
+    borderRadius: '3px',
   },
+  '@media (max-width: 960px)': {
+    maxHeight: '600px',
+  },
+},
   // Mobile preview container - appears below form on mobile/tablet
-  mobilePreviewContainer: {
-    display: 'none',
-    '@media (max-width: 960px)': {
-      display: 'block',
-      marginTop: '2rem',
-      order: 2, // Ensures it appears after the form
-    },
-    '@media (max-width: 600px)': {
-      marginTop: '1.5rem',
-    },
-    '@media (max-width: 480px)': {
-      marginTop: '1.2rem',
-    },
-    '@media (max-width: 375px)': {
-      marginTop: '1rem',
-    },
-  },
-  mobilePreviewHeader: {
-    textAlign: 'center',
-    marginBottom: '1rem',
-    padding: '0.75rem',
-    backgroundColor: '#ebf8ff',
+mobilePreviewContainer: {
+  display: 'none',
+  '@media (max-width: 600px)': { // Only show on mobile
+    display: 'block',
+    marginTop: '2rem',
+    padding: '0.5rem',
+    backgroundColor: 'white',
     borderRadius: '8px',
-    color: '#3182ce',
-    fontWeight: 600,
-    '@media (max-width: 600px)': {
-      fontSize: '1rem',
-      padding: '0.6rem',
-      marginBottom: '0.8rem',
-    },
-    '@media (max-width: 480px)': {
-      fontSize: '0.95rem',
-      padding: '0.5rem',
-      marginBottom: '0.7rem',
-    },
-    '@media (max-width: 375px)': {
-      fontSize: '0.9rem',
-      padding: '0.4rem',
-      marginBottom: '0.6rem',
-    },
+    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
   },
+},
+mobilePreviewHeader: {
+  textAlign: 'center',
+  marginBottom: '1rem',
+  padding: '0.75rem',
+  backgroundColor: '#ebf8ff',
+  borderRadius: '8px',
+  color: '#3182ce',
+  fontWeight: 600,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.5rem',
+  '@media (max-width: 600px)': {
+    fontSize: '1rem',
+    padding: '0.6rem',
+    marginBottom: '0.8rem',
+  },
+  '@media (max-width: 480px)': {
+    fontSize: '0.95rem',
+    padding: '0.5rem',
+    marginBottom: '0.7rem',
+  },
+  '@media (max-width: 375px)': {
+    fontSize: '0.9rem',
+    padding: '0.4rem',
+    marginBottom: '0.6rem',
+  },
+},
   mobileResumePreview: {
     padding: '1rem',
     border: '1px solid #e2e8f0',
