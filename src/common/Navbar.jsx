@@ -234,7 +234,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   dummyDataButton: {
-    display: 'none', // Hidden by default, can be shown when needed
+    // display: 'none', // Hidden by default, can be shown when needed
     background: '#ffc615',
     color: '#27286c',
     '&:hover': {

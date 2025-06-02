@@ -4,7 +4,7 @@
 const classicPreview = require('../assets/templates/classic.png');
 const modernPreview = require('../assets/templates/modern.png');
 const creativePreview = require('../assets/templates/creative.png');
-const executivePreview = require('../assets/templates/executive.png'); 
+const executivePreview = require('../assets/templates/executive.png');
 const professionalPreview = require('../assets/templates/professional.png');
 
 // If imports aren't working, provide fallback placeholders
@@ -46,7 +46,10 @@ const templatesData = [
     description: 'A clean, light blue template with modern elegant design',
     previewImage: professionalPreview || fallbackImagePath,
     isDefault: false
-  }
+  },
+  { id: 'twoColumn', name: 'Two-Column', description: 'Professional two-column layout', isDefault: false },
+  { id: 'executiveModern', name: 'Executive Modern', description: 'Clean timeline-based design', isDefault: false },
+  { id: 'blueCorporate', name: 'Blue Corporate', description: 'Professional blue-themed layout', isDefault: false }
 ];
 
 export default templatesData;

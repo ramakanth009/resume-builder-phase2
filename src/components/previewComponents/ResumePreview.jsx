@@ -152,7 +152,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
     return userWorkExp || generatedWorkExp;
   };
 
-  // Updated helper function to check if AI tools data exists (both formats)
+  // FIXED: Check if AI tools data exists (for displaying as chips)
   const hasAIToolsData = () => {
     return (
       (data.genai_tools && data.genai_tools.length > 0) ||
@@ -160,27 +160,25 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
     );
   };
 
-  // Updated helper function to check if AI Experience/Usage data exists
+  // FIXED: Check if AI Experience/Usage data exists (for detailed descriptions)
   const hasAIExperienceData = () => {
-    // Check aiExperience format
-    const hasAiExpData = data.aiExperience &&
+    // Check aiExperience format - only show if there are actual usage cases
+    const hasAiExpWithUsage = data.aiExperience &&
       data.aiExperience.length > 0 &&
       data.aiExperience.some(
         (aiExp) =>
-          aiExp.toolName &&
-          (aiExp.impact || (aiExp.usageCases && aiExp.usageCases.length > 0))
+          aiExp.usageCases && aiExp.usageCases.length > 0
       );
 
-    // Check genai_tools format
-    const hasGenAiData = data.genai_tools &&
+    // Check genai_tools format - only show if there are actual usage descriptions
+    const hasGenAiWithUsage = data.genai_tools &&
       data.genai_tools.length > 0 &&
       data.genai_tools.some(
         (tool) =>
-          tool.name &&
-          (tool.description || (tool.usage_descriptions && tool.usage_descriptions.length > 0))
+          tool.usage_descriptions && tool.usage_descriptions.length > 0
       );
 
-    return hasAiExpData || hasGenAiData;
+    return hasAiExpWithUsage || hasGenAiWithUsage;
   };
 
   const renderLink = (label, url, type) => {
@@ -541,7 +539,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
           </Box>
         )}
 
-      {/* AI Tools & Technologies Section */}
+      {/* AI Tools & Technologies Section - Show tools as chips */}
       {hasAIToolsData() && (
         <Box className={classes.resumeSection} sx={{
           '@media (max-width: 960px)': {
@@ -608,10 +606,10 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
               ))}
             </Box>
           )}
-          {/* Display aiExperience format as chips */}
+          {/* Display aiExperience format as chips (only if no genai_tools) */}
           {data.aiExperience &&
             data.aiExperience.length > 0 &&
-            !data.genai_tools && (
+            (!data.genai_tools || data.genai_tools.length === 0) && (
               <Box className={classes.resumeSkills} sx={{
                 '@media (max-width: 600px)': {
                   gap: '0.4rem',
@@ -650,7 +648,7 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
         </Box>
       )}
 
-      {/* AI Tools Experience Section - Shows detailed usage */}
+      {/* AI Tools Experience Section - FIXED: Only show when there are actual usage details */}
       {hasAIExperienceData() && (
         <Box className={classes.resumeSection} sx={{
           '@media (max-width: 960px)': {
@@ -680,11 +678,13 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
             AI Tools Experience
           </Typography>
           
-          {/* Render aiExperience format */}
+          {/* Render aiExperience format - only if there are usage cases */}
           {data.aiExperience && data.aiExperience.length > 0 && 
            data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0) && (
             <>
-              {data.aiExperience.map((aiExp, index) => (
+              {data.aiExperience
+                .filter(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0)
+                .map((aiExp, index) => (
                 <Box key={`ai-exp-${index}`} className={classes.resumeItem} sx={{
                   '@media (max-width: 960px)': {
                     marginBottom: '1.2rem',
@@ -726,41 +726,42 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     </Typography>
                   )}
                   
-                  {aiExp.usageCases && aiExp.usageCases.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets} sx={{
-                      '@media (max-width: 600px)': {
-                        paddingLeft: '1rem',
-                        marginTop: '0.4rem',
-                        marginBottom: '0.4rem',
-                      },
-                      '@media (max-width: 480px)': {
-                        paddingLeft: '0.8rem',
-                        marginTop: '0.3rem',
-                        marginBottom: '0.3rem',
-                      },
-                    }}>
-                      {aiExp.usageCases.map((useCase, idx) => (
-                        <li key={idx} className={classes.resumeBullet} style={{
-                          fontSize: window.innerWidth <= 600 ? '0.75rem' : 
-                                   window.innerWidth <= 480 ? '0.7rem' : 
-                                   window.innerWidth <= 375 ? '0.65rem' : undefined,
-                          marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
-                        }}>
-                          {useCase}
-                        </li>
-                      ))}
-                    </Box>
-                  )}
+                  <Box component="ul" className={classes.resumeBullets} sx={{
+                    '@media (max-width: 600px)': {
+                      paddingLeft: '1rem',
+                      marginTop: '0.4rem',
+                      marginBottom: '0.4rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      paddingLeft: '0.8rem',
+                      marginTop: '0.3rem',
+                      marginBottom: '0.3rem',
+                    },
+                  }}>
+                    {aiExp.usageCases.map((useCase, idx) => (
+                      <li key={idx} className={classes.resumeBullet} style={{
+                        fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                 window.innerWidth <= 480 ? '0.7rem' : 
+                                 window.innerWidth <= 375 ? '0.65rem' : undefined,
+                        marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                      }}>
+                        {useCase}
+                      </li>
+                    ))}
+                  </Box>
                 </Box>
               ))}
             </>
           )}
           
-          {/* Render genai_tools format */}
+          {/* Render genai_tools format - only if there are usage descriptions */}
           {data.genai_tools && data.genai_tools.length > 0 && 
-           data.genai_tools.some(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0) && (
+           data.genai_tools.some(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0) &&
+           (!data.aiExperience || !data.aiExperience.some(aiExp => aiExp.usageCases && aiExp.usageCases.length > 0)) && (
             <>
-              {data.genai_tools.map((tool, index) => (
+              {data.genai_tools
+                .filter(tool => tool.usage_descriptions && tool.usage_descriptions.length > 0)
+                .map((tool, index) => (
                 <Box key={`genai-tool-${index}`} className={classes.resumeItem} sx={{
                   '@media (max-width: 960px)': {
                     marginBottom: '1.2rem',
@@ -802,31 +803,29 @@ const ResumePreview = ({ userData, generatedData, templateId = "classic" }) => {
                     </Typography>
                   )}
                   
-                  {tool.usage_descriptions && tool.usage_descriptions.length > 0 && (
-                    <Box component="ul" className={classes.resumeBullets} sx={{
-                      '@media (max-width: 600px)': {
-                        paddingLeft: '1rem',
-                        marginTop: '0.4rem',
-                        marginBottom: '0.4rem',
-                      },
-                      '@media (max-width: 480px)': {
-                        paddingLeft: '0.8rem',
-                        marginTop: '0.3rem',
-                        marginBottom: '0.3rem',
-                      },
-                    }}>
-                      {tool.usage_descriptions.map((usage, idx) => (
-                        <li key={idx} className={classes.resumeBullet} style={{
-                          fontSize: window.innerWidth <= 600 ? '0.75rem' : 
-                                   window.innerWidth <= 480 ? '0.7rem' : 
-                                   window.innerWidth <= 375 ? '0.65rem' : undefined,
-                          marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
-                        }}>
-                          {usage}
-                        </li>
-                      ))}
-                    </Box>
-                  )}
+                  <Box component="ul" className={classes.resumeBullets} sx={{
+                    '@media (max-width: 600px)': {
+                      paddingLeft: '1rem',
+                      marginTop: '0.4rem',
+                      marginBottom: '0.4rem',
+                    },
+                    '@media (max-width: 480px)': {
+                      paddingLeft: '0.8rem',
+                      marginTop: '0.3rem',
+                      marginBottom: '0.3rem',
+                    },
+                  }}>
+                    {tool.usage_descriptions.map((usage, idx) => (
+                      <li key={idx} className={classes.resumeBullet} style={{
+                        fontSize: window.innerWidth <= 600 ? '0.75rem' : 
+                                 window.innerWidth <= 480 ? '0.7rem' : 
+                                 window.innerWidth <= 375 ? '0.65rem' : undefined,
+                        marginBottom: window.innerWidth <= 480 ? '0.3rem' : undefined,
+                      }}>
+                        {usage}
+                      </li>
+                    ))}
+                  </Box>
                 </Box>
               ))}
             </>

@@ -4,6 +4,9 @@ import ModernPDFTemplate from './pdf/ModernPDFTemplate';
 import CreativePDFTemplate from './pdf/CreativePDFTemplate';
 import ExecutivePDFTemplate from './pdf/ExecutivePDFTemplate';
 import ProfessionalPDFTemplate from './pdf/ProfessionalPDFTemplate';
+import TwoColumnPDFTemplate from './pdf/TwoColumnPDFTemplate';
+import ExecutiveModernPDFTemplate from './pdf/ExecutiveModernPDFTemplate';
+import BlueCorporatePDFTemplate from './pdf/BlueCorporatePDFTemplate';
 
 // Simplified template registry with only PDF components
 const templateRegistry = {
@@ -21,7 +24,10 @@ const templateRegistry = {
   },
   professional: { 
     PDFComponent: ProfessionalPDFTemplate 
-  }
+  },
+  twoColumn: { PDFComponent: TwoColumnPDFTemplate },
+executiveModern: { PDFComponent: ExecutiveModernPDFTemplate },
+blueCorporate: { PDFComponent: BlueCorporatePDFTemplate }
 };
 
 // Get template styles by ID - now returns an empty object since styles are defined in components
