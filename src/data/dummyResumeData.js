@@ -76,12 +76,12 @@ const dummyResumes = [
       {
         name: "AWS Certified Developer",
         issuer: "Amazon Web Services",
-        url: "aws.amazon.com/certification/certified-developer-associate/"
+        url: "https://aws.amazon.com/certification/certified-developer-associate/"
       },
       {
         name: "MongoDB Database Administrator",
         issuer: "MongoDB University",
-        url: "university.mongodb.com/certification"
+        url: "https://university.mongodb.com/certification"
       }
     ],
     // AI Experience data format

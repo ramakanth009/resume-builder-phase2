@@ -967,12 +967,14 @@ const ResumeBuilder = () => {
         hideLogo={true} // Hide logo in navbar since it's in the sidebar
       />
 
-      {/* Sidebar navigation */}
-      <Sidebar
-        activeStep={activeStep}
-        steps={steps}
-        onStepClick={handleStepClick}
-      />
+      {/* Sidebar navigation - Only show in edit mode */}
+      {isEditMode && (
+        <Sidebar
+          activeStep={activeStep}
+          steps={steps}
+          onStepClick={handleStepClick}
+        />
+      )}
 
       {/* Display resume ID if editing */}
       {isEditingExisting && (
@@ -1049,7 +1051,7 @@ const ResumeBuilder = () => {
                 <CircularProgress size={20} className={classes.loader} />
               </>
             ) : (
-              "Download PDF"
+              "Export PDF"
             )}
           </Button>
         )}
@@ -1057,7 +1059,9 @@ const ResumeBuilder = () => {
 
       {/* Main content area with sidebar margin */}
       <Box
-        className={`${classes.mainContainer} ${classes.mainContentWithSidebar}`}
+        className={`${classes.mainContainer} ${
+          isEditMode ? classes.mainContentWithSidebar : ""
+        }`}
       >
         {/* Form Column - Show in edit mode or when not in mobile preview mode */}
         {(isEditMode || (isMobile && !isMobilePreviewMode)) && (
@@ -1067,7 +1071,7 @@ const ResumeBuilder = () => {
                 ? "Edit Your Resume"
                 : hasGeneratedResume
                 ? "Edit Your Resume"
-                 : "Craft your story"}
+                : "Craft your story"}
             </Typography>
             <Typography variant="subtitle1" className={classes.subheading}>
               Build a resume that opens doors to your future
@@ -1186,7 +1190,7 @@ const ResumeBuilder = () => {
                       <CircularProgress size={20} className={classes.loader} />
                     </>
                   ) : (
-                    "Download PDF"
+                    "Export PDF"
                   )}
                 </Button>
               </Box>

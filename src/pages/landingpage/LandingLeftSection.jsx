@@ -38,13 +38,30 @@ const useStyles = makeStylesWithTheme((theme) => ({
     position: 'relative',
   },
   mainHeadline: {
+    fontSize: '2.5rem',
+    fontWeight: 800,
+    marginBottom: '0.5rem',
+    // lineHeight: 1.1,
+    color: '#fff', // changed from gradient to white
+    '@media (max-width: 960px)': {
+      fontSize: '3rem',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '2.5rem',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '2rem',
+    },
+  },
+  gigaText: {
     fontSize: '3.5rem',
     fontWeight: 800,
-    marginBottom: '1rem',
-    lineHeight: 1.8,
+    lineHeight: 1.4,
+    color: '#fff', // ensure white color
     background: 'linear-gradient(90deg, #ffffff, #ffc615)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
+    display: 'inline-block',
     '@media (max-width: 960px)': {
       fontSize: '3rem',
     },
@@ -57,7 +74,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   tagline: {
     fontSize: '1.5rem',
-    marginBottom: '3rem',
+    marginBottom: '2rem',
     fontWeight: 500,
     lineHeight: 1.4,
     '@media (max-width: 960px)': {
@@ -76,7 +93,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   featuresHeading: {
     fontSize: '1.4rem',
     fontWeight: 600,
-    marginBottom: '1.5rem',
+    marginBottom: '0.5rem',
     '@media (max-width: 960px)': {
       fontSize: '1.3rem',
       marginBottom: '1.2rem',
@@ -93,10 +110,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   featuresGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '1.5rem',
+    gap: '1rem',
     '@media (max-width: 600px)': {
       gridTemplateColumns: '1fr',
-      gap: '1rem',
+      gap: '0.5rem',
     },
   },
   featureItem: {
@@ -107,10 +124,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: '0.8rem',
-    transition: 'all 0.3s ease',
+    transition: 'box-shadow 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.25s cubic-bezier(0.4,0,0.2,1), background 0.3s ease',
+    willChange: 'transform, box-shadow',
     '&:hover': {
       background: 'rgba(255, 255, 255, 0.15)',
-      transform: 'translateY(-5px)',
+      boxShadow: '0 6px 24px 0 rgba(60,60,130,0.10), 0 1.5px 6px 0 rgba(255,198,21,0.10)',
+      transform: 'scale(1.03)',
     },
     '@media (max-width: 960px)': {
       padding: '1rem',
@@ -227,7 +246,11 @@ const LandingLeftSection = () => {
 
       <Fade in timeout={1000}>
         <Box className={classes.contentContainer}>
-          <Typography variant="h1" className={classes.mainHeadline}>
+          {/* Headline split into two lines */}
+          <Typography variant="h1" className={classes.mainHeadline} sx={{ color: '#fff' }}>
+            Launch your career with
+          </Typography>
+          <Typography variant="h1" className={classes.gigaText}>
             Giga Resume Builder
           </Typography>
 
