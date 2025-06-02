@@ -5,7 +5,7 @@ import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   previewContainer: {
-    padding: '2rem',
+    padding: '20rem',
     border: '1px solid #e2e8f0',
     borderRadius: '8px',
     backgroundColor: 'white',
