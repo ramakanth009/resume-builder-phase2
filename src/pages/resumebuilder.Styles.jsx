@@ -80,7 +80,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     position: 'sticky',
     top: '100px',
     borderRadius: '16px',
-    height: 'calc(120vh - 100px)',
+    // height: 'calc(120vh - 100px)',
     '@media (max-width: 1200px)': {
       padding: '1rem 1.5rem 3rem 0.8rem',
       top: '90px',
