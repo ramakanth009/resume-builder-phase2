@@ -1,306 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import {
-//   Box,
-//   Typography,
-//   TextField,
-//   Button,
-//   Snackbar,
-//   CircularProgress,
-//   InputAdornment,
-//   IconButton,
-//   useMediaQuery,
-//   useTheme,
-//   Fade,
-// } from "@mui/material";
-// import Alert from "@mui/material/Alert";
-// import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../contexts/AuthContext";
-// import Visibility from "@mui/icons-material/Visibility";
-// import VisibilityOff from "@mui/icons-material/VisibilityOff";
-// import GigaLogo from "../../assets/giga-loogo.svg";
-// import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-// import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import GetAppIcon from "@mui/icons-material/GetApp";
-// import { useStyles } from "./LandingPage.styles";
-// import LandingLeftSection from './LandingLeftSection';
-
-// const LandingPage = () => {
-//   const classes = useStyles();
-//   const theme = useTheme();
-//   const navigate = useNavigate();
-//   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-//   const { register, loading: authLoading } = useAuth();
-
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//   });
-//   const [errors, setErrors] = useState({});
-//   const [loading, setLoading] = useState(false);
-//   const [snackbar, setSnackbar] = useState({
-//     open: false,
-//     message: "",
-//     severity: "success",
-//   });
-//   const [showPassword, setShowPassword] = useState({
-//     password: false,
-//     confirmPassword: false,
-//   });
-//   const [visibleFeatures, setVisibleFeatures] = useState([]);
-
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       [0, 1, 2, 3].forEach((i) => {
-//         setTimeout(() => setVisibleFeatures((prev) => [...prev, i]), i * 150);
-//       });
-//     }, 500);
-//     return () => clearTimeout(timer);
-//   }, []);
-
-//   const validateForm = () => {
-//     const newErrors = {};
-//     if (!formData.name.trim()) newErrors.name = "Name is required";
-//     if (!formData.email.trim()) {
-//       newErrors.email = "Email is required";
-//     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-//       newErrors.email = "Email is invalid";
-//     }
-//     if (!formData.password) {
-//       newErrors.password = "Password is required";
-//     } else if (formData.password.length < 6) {
-//       newErrors.password = "Password must be at least 6 characters";
-//     }
-//     if (formData.password !== formData.confirmPassword) {
-//       newErrors.confirmPassword = "Passwords do not match";
-//     }
-//     setErrors(newErrors);
-//     return Object.keys(newErrors).length === 0;
-//   };
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((f) => ({ ...f, [name]: value }));
-//     if (errors[name]) {
-//       setErrors((e) => ({ ...e, [name]: null }));
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!validateForm()) return;
-//     setLoading(true);
-//     try {
-//       await register(formData.name, formData.email, formData.password);
-//       setSnackbar({
-//         open: true,
-//         message: "Registration successful!",
-//         severity: "success",
-//       });
-//       setTimeout(() => navigate("/login"), 1000);
-//     } catch (err) {
-//       setSnackbar({
-//         open: true,
-//         message: err.message || "Registration failed.",
-//         severity: "error",
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleTogglePasswordVisibility = (field) => () => {
-//     setShowPassword((s) => ({ ...s, [field]: !s[field] }));
-//   };
-//   const handleCloseSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
-
-//   // Featured stats data
-//   const statsData = [
-//     { number: "71%", description: "More interview callbacks" },
-//     { number: "7.4s", description: "Average review time" },
-//   ];
-
-//   // Feature data with icons
-//   const featureData = [
-//     {
-//       title: "ATS-Optimized",
-//       description: "Pass automated screening systems used by top companies",
-//       icon: <CheckCircleIcon fontSize="small" />,
-//     },
-//     {
-//       title: "Real-Time Preview",
-//       description: "See changes instantly as you type your information",
-//       icon: <VisibilityIcon fontSize="small" />,
-//     },
-//     {
-//       title: "Multiple Templates",
-//       description: "Choose from professional designs for various roles",
-//       icon: <FormatListBulletedIcon fontSize="small" />,
-//     },
-//     {
-//       title: "One-Click Download",
-//       description: "Export your resume as PDF with a single click",
-//       icon: <GetAppIcon fontSize="small" />,
-//     },
-//   ];
-
-//   return (
-//     <Box className={classes.root}>
-//       <LandingLeftSection 
-//         classes={classes}
-//         statsData={statsData}
-//         featureData={featureData}
-//         visibleFeatures={visibleFeatures}
-//       />
-
-//       <Fade in timeout={800}>
-//         <Box className={classes.rightSection}>
-//           <Box className={classes.formContainer}>
-//             <Box className={classes.logoContainer}>
-//               <img src={GigaLogo} alt="Gigaversity" className={classes.logo} />
-//               <Typography className={classes.logoText}>Gigaversity</Typography>
-//             </Box>
-
-//             <Typography className={classes.welcomeText}>Sign Up</Typography>
-//             <Typography className={classes.subtitle}>
-//               Create your account to get started
-//             </Typography>
-
-//             <form className={classes.form} onSubmit={handleSubmit}>
-//               <TextField
-//                 className={classes.textField}
-//                 variant="outlined"
-//                 fullWidth
-//                 label="Full Name"
-//                 name="name"
-//                 value={formData.name}
-//                 onChange={handleChange}
-//                 error={!!errors.name}
-//                 helperText={errors.name}
-//                 placeholder="Enter your name"
-//               />
-//               <TextField
-//                 className={classes.textField}
-//                 variant="outlined"
-//                 fullWidth
-//                 label="Email Address"
-//                 name="email"
-//                 type="email"
-//                 value={formData.email}
-//                 onChange={handleChange}
-//                 error={!!errors.email}
-//                 helperText={errors.email}
-//                 placeholder="Enter your email"
-//               />
-//               <TextField
-//                 className={classes.textField}
-//                 variant="outlined"
-//                 fullWidth
-//                 label="Password"
-//                 name="password"
-//                 type={showPassword.password ? "text" : "password"}
-//                 value={formData.password}
-//                 onChange={handleChange}
-//                 error={!!errors.password}
-//                 helperText={errors.password}
-//                 placeholder="Create a password"
-//                 InputProps={{
-//                   endAdornment: (
-//                     <InputAdornment position="end">
-//                       <IconButton
-//                         onClick={handleTogglePasswordVisibility("password")}
-//                         edge="end"
-//                       >
-//                         {showPassword.password ? <VisibilityOff /> : <Visibility />}
-//                       </IconButton>
-//                     </InputAdornment>
-//                   ),
-//                 }}
-//               />
-//               <TextField
-//                 className={classes.textField}
-//                 variant="outlined"
-//                 fullWidth
-//                 label="Confirm Password"
-//                 name="confirmPassword"
-//                 type={showPassword.confirmPassword ? "text" : "password"}
-//                 value={formData.confirmPassword}
-//                 onChange={handleChange}
-//                 error={!!errors.confirmPassword}
-//                 helperText={errors.confirmPassword}
-//                 placeholder="Confirm your password"
-//                 InputProps={{
-//                   endAdornment: (
-//                     <InputAdornment position="end">
-//                       <IconButton
-//                         onClick={handleTogglePasswordVisibility("confirmPassword")}
-//                         edge="end"
-//                       >
-//                         {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
-//                       </IconButton>
-//                     </InputAdornment>
-//                   ),
-//                 }}
-//               />
-
-//               <Button
-//                 className={classes.button}
-//                 type="submit"
-//                 fullWidth
-//                 disabled={loading || authLoading}
-//               >
-//                 {loading || authLoading ? (
-//                   <>
-//                     Creating Account
-//                     <CircularProgress size={20} className={classes.loader} />
-//                   </>
-//                 ) : (
-//                   "Sign Up"
-//                 )}
-//               </Button>
-
-//               <Typography className={classes.formDivider}>or</Typography>
-
-//               <Box className={classes.loginLink}>
-//                 <Typography className={classes.loginText} variant="body2">
-//                   Already have an account?
-//                 </Typography>
-//                 <Button
-//                   className={classes.loginButton}
-//                   onClick={() => navigate("/login")}
-//                   fullWidth
-//                 >
-//                   Log in
-//                 </Button>
-//               </Box>
-//             </form>
-//           </Box>
-//         </Box>
-//       </Fade>
-
-//       <Snackbar
-//         open={snackbar.open}
-//         autoHideDuration={6000}
-//         onClose={handleCloseSnackbar}
-//         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-//       >
-//         <Alert
-//           onClose={handleCloseSnackbar}
-//           severity={snackbar.severity}
-//           elevation={6}
-//           variant="filled"
-//         >
-//           {snackbar.message}
-//         </Alert>
-//       </Snackbar>
-//     </Box>
-//   );
-// };
-
-// export default LandingPage;
-// src/pages/landingpage/LandingPage.jsx
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -314,7 +11,6 @@ import {
   useMediaQuery,
   useTheme,
   Fade,
-  Divider,
 } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
@@ -328,7 +24,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { useStyles } from "./LandingPage.styles";
 import LandingLeftSection from './LandingLeftSection';
-import GoogleOAuthButton from '../../components/auth/GoogleOAuthButton';
 
 const LandingPage = () => {
   const classes = useStyles();
@@ -473,20 +168,6 @@ const LandingPage = () => {
               Create your account to get started
             </Typography>
 
-            {/* Google OAuth Button */}
-            <GoogleOAuthButton 
-              fullWidth 
-              disabled={loading || authLoading}
-              style={{ marginBottom: '1.5rem' }}
-            />
-
-            {/* Divider */}
-            <Box className={classes.formDivider}>
-              <Divider sx={{ flex: 1 }} />
-              <Typography sx={{ mx: 2, color: '#4a5568' }}>or continue with email</Typography>
-              <Divider sx={{ flex: 1 }} />
-            </Box>
-
             <form className={classes.form} onSubmit={handleSubmit}>
               <TextField
                 className={classes.textField}
@@ -499,7 +180,6 @@ const LandingPage = () => {
                 error={!!errors.name}
                 helperText={errors.name}
                 placeholder="Enter your name"
-                disabled={loading || authLoading}
               />
               <TextField
                 className={classes.textField}
@@ -513,7 +193,6 @@ const LandingPage = () => {
                 error={!!errors.email}
                 helperText={errors.email}
                 placeholder="Enter your email"
-                disabled={loading || authLoading}
               />
               <TextField
                 className={classes.textField}
@@ -527,14 +206,12 @@ const LandingPage = () => {
                 error={!!errors.password}
                 helperText={errors.password}
                 placeholder="Create a password"
-                disabled={loading || authLoading}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         onClick={handleTogglePasswordVisibility("password")}
                         edge="end"
-                        disabled={loading || authLoading}
                       >
                         {showPassword.password ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -554,14 +231,12 @@ const LandingPage = () => {
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
                 placeholder="Confirm your password"
-                disabled={loading || authLoading}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         onClick={handleTogglePasswordVisibility("confirmPassword")}
                         edge="end"
-                        disabled={loading || authLoading}
                       >
                         {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -586,6 +261,8 @@ const LandingPage = () => {
                 )}
               </Button>
 
+              <Typography className={classes.formDivider}>or</Typography>
+
               <Box className={classes.loginLink}>
                 <Typography className={classes.loginText} variant="body2">
                   Already have an account?
@@ -594,7 +271,6 @@ const LandingPage = () => {
                   className={classes.loginButton}
                   onClick={() => navigate("/login")}
                   fullWidth
-                  disabled={loading || authLoading}
                 >
                   Log in
                 </Button>

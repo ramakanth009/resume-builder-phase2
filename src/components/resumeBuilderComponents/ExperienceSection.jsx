@@ -300,7 +300,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
             variant="outlined"
             fullWidth
             className={classes.textField}
-            required
+            
           />
           
           <TextField
@@ -310,7 +310,6 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
             variant="outlined"
             fullWidth
             className={classes.textField}
-            required
           />
           
           {/* Replace duration text field with date pickers */}
@@ -321,7 +320,6 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
                 value={experience.start_date || ''}
                 onChange={(value) => handleDateChange(index, 'start_date', value)}
                 views={['year', 'month']} // Show month and year
-                required
                 helperText="Select start month & year"
               />
             </Box>
@@ -332,7 +330,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
                 value={experience.end_date === 'Present' ? '' : experience.end_date || ''}
                 onChange={(value) => handleDateChange(index, 'end_date', value)}
                 views={['year', 'month']} // Show month and year
-                required={experience.end_date !== 'Present'}
+                // required={experience.end_date !== 'Present'}
                 helperText={experience.end_date === 'Present' ? 'Currently working here' : 'Select end month & year'}
                 disabled={experience.end_date === 'Present'}
               />
@@ -359,7 +357,7 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
             rows={3}
             className={classes.textField}
             placeholder="Describe your work in a 2 - 3 sentences"
-            required
+            
           />
           <Typography className={classes.helperText}>
             Each line will be converted into a bullet point on your resume

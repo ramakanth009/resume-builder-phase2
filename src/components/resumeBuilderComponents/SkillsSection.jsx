@@ -63,6 +63,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     fontWeight: 500,
     boxShadow: '0 2px 8px rgba(39, 40, 108, 0.2)',
     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    '& .MuiChip-deleteIcon': {
+      color: 'white',
+    },
     '&:hover': {
       transform: 'translateY(-2px)',
       boxShadow: '0 4px 16px rgba(39, 40, 108, 0.3)',
