@@ -69,6 +69,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       transform: 'translateY(-2px)',
       boxShadow: '0 4px 16px rgba(39, 40, 108, 0.3)',
+      '& .MuiChip-deleteIcon': {
+        color: 'white',
+      },
     },
   },
   recommendationsContainer: {

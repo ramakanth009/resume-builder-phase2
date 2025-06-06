@@ -216,36 +216,11 @@ const ExperienceSection = ({ resumeData, setResumeData }) => {
   };
 
   const handleRemoveWorkExperience = (index) => {
-    // Don't remove if it's the only experience and it's empty
-    if (resumeData.work_experience.length === 1 && 
-        !resumeData.work_experience[0].position && 
-        !resumeData.work_experience[0].company_name && 
-        !resumeData.work_experience[0].duration && 
-        !resumeData.work_experience[0].description) {
-      return;
-    }
-    
+    const updatedWorkExperience = resumeData.work_experience.filter((_, i) => i !== index);
     setResumeData({
       ...resumeData,
-      work_experience: resumeData.work_experience.filter((_, i) => i !== index),
+      work_experience: updatedWorkExperience,
     });
-    
-    // If we just removed all experiences, add an empty one
-    if (resumeData.work_experience.length === 1) {
-      setResumeData(prev => ({
-        ...prev,
-        work_experience: [{
-          position: '',
-          company_name: '',
-          companyName: '',
-          duration: '',
-          start_date: '',
-          end_date: '',
-          description: '',
-          responsibilities: [],
-        }]
-      }));
-    }
   };
 
   // Handle "Present" toggle for end date

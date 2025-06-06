@@ -131,29 +131,24 @@ const prepareFormDataForApi = (formData) => {
     });
   }
 
-  // Handle GenAI skills - Format properly for API
-  if (
-    apiData.genai_tools &&
-    Array.isArray(apiData.genai_tools) &&
-    apiData.genai_tools.length > 0
-  ) {
-    // Transform genai_tools to the format expected by the API (genai_skills.used_tools)
+  // Handle GenAI skills - Format properly for API and preserve existing data
+  if (apiData.genai_tools && Array.isArray(apiData.genai_tools)) {
+    // Ensure each tool has required fields
+    apiData.genai_tools = apiData.genai_tools.map((tool) => ({
+      tool_id: tool.tool_id,
+      name: tool.name || `Tool ${tool.tool_id}`,
+      description: tool.description || "",
+      usage_descriptions: tool.usage_descriptions || [],
+    }));
+
+    // Also convert to genai_skills format for API compatibility
     apiData.genai_skills = {
       used_tools: apiData.genai_tools.map((tool) => ({
         tool_id: tool.tool_id,
         usage_descriptions: tool.usage_descriptions || [],
       })),
-      not_used_tools: [], // Include empty not_used_tools array as expected by API
+      not_used_tools: [],
     };
-
-    // IMPORTANT: Also convert to aiExperience format for compatibility
-    apiData.aiExperience = apiData.genai_tools.map((tool) => ({
-      toolName: tool.name || `AI Tool ${tool.tool_id}`,
-      usageCases: tool.usage_descriptions || [],
-      impact:
-        tool.description ||
-        `Enhanced productivity using ${tool.name || "AI tools"}`,
-    }));
   }
 
   return apiData;

@@ -1,7 +1,7 @@
 // Base URL for API requests
 // const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 /**
  * Makes authenticated API requests with the JWT token from localStorage
@@ -233,11 +233,20 @@ export const updateResume = async (resumeId, resumeData) => {
                           (proj.description ? proj.description.split('\n').filter(Boolean) : [])
       })),
       certifications: resumeData.certifications,
-      // Include both formats for maximum compatibility
       work_experience: resumeData.work_experience,
       workExperience: workExperience,
       target_role: resumeData.target_role,
-      customSections: resumeData.customSections
+      customSections: resumeData.customSections,
+      // Preserve genai_tools data during updates
+      genai_tools: resumeData.genai_tools || [],
+      // Include genai_skills format for API compatibility
+      genai_skills: {
+        used_tools: (resumeData.genai_tools || []).map(tool => ({
+          tool_id: tool.tool_id,
+          usage_descriptions: tool.usage_descriptions || []
+        })),
+        not_used_tools: []
+      }
     };
 
     // Make PUT request to update the resume
