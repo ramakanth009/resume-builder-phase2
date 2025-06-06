@@ -81,7 +81,7 @@ const ThemedApp = () => {
   if (!appIsReady) {
     return <LoadingComponent />;
   }
-
+  
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={dynamicTheme}>
