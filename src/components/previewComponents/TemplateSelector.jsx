@@ -455,20 +455,20 @@ const TemplateSelector = ({
         </Box>
         
         <Box className={classes.headerActions}>
-          <Button
-            variant="outlined"
-            className={`${classes.actionButton} ${classes.cancelButton}`}
-            onClick={onCancel}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            className={`${classes.actionButton} ${classes.applyButton}`}
-            onClick={onConfirm}
-          >
-            Apply Template
-          </Button>
+           <Button
+                        onClick={onCancel}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={onConfirm}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Apply Template
+                      </Button>
         </Box>
       </Box>
 

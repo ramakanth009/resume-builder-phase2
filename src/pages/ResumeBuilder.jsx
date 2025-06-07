@@ -427,7 +427,7 @@ const ResumeBuilder = () => {
         message: "Please add at least one project",
         severity: "error",
       });
-      setActiveStep(4); // Switch to projects step (now index 4)
+      setActiveStep(5); // Switch to projects step (now index 4)
       return false;
     }
 
