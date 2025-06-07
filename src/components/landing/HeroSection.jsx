@@ -6,7 +6,7 @@ import StartBuildingCard from './StartBuildingCard';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   heroSection: {
-    minHeight: '100vh',
+    minHeight: '105vh',
     display: 'flex',
     alignItems: 'center',
     position: 'relative',

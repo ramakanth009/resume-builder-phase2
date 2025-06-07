@@ -1,93 +1,112 @@
 // src/components/landing/StartBuildingCard.jsx
 import React from 'react';
 import { Typography, Button, Paper, Box } from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+
 
 const useStyles = makeStylesWithTheme((theme) => ({
   demoForm: {
     width: '100%',
-    maxWidth: '400px',
-    padding: '40px',
-    backgroundColor: 'white',
-    borderRadius: '20px',
-    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
+    maxWidth: '440px',
+    padding: '44px',
+    background: 'linear-gradient(135deg, #f8fafc 0%, #e3e9ff 100%)',
+    borderRadius: '24px',
+    boxShadow: '0 20px 60px rgba(42, 43, 106, 0.10)',
+    position: 'relative',
+    overflow: 'hidden',
     '@media (max-width: 960px)': {
       maxWidth: '100%',
-      padding: '30px',
+      padding: '32px',
     },
     '@media (max-width: 600px)': {
-      padding: '25px',
-      borderRadius: '15px',
+      padding: '24px',
+      borderRadius: '16px',
     },
     '@media (max-width: 480px)': {
-      padding: '20px',
+      padding: '16px',
     },
   },
   demoTitle: {
-    fontSize: '1.8rem !important',
-    fontWeight: 'bold !important',
+    fontSize: '2rem !important',
+    fontWeight: '900 !important',
     color: '#2A2B6A !important',
-    marginBottom: '10px !important',
+    marginBottom: '12px !important',
     textAlign: 'center',
+    letterSpacing: '0.5px',
     '@media (max-width: 600px)': {
       fontSize: '1.5rem !important',
     },
     '@media (max-width: 480px)': {
-      fontSize: '1.3rem !important',
+      fontSize: '1.2rem !important',
     },
   },
   demoSubtitle: {
-    fontSize: '1rem !important',
-    color: '#666 !important',
-    marginBottom: '30px !important',
+    fontSize: '1.08rem !important',
+    color: '#4b4b6b !important',
+    marginBottom: '20px !important',
     textAlign: 'center',
+    fontWeight: 500,
     '@media (max-width: 600px)': {
-      fontSize: '0.9rem !important',
-      marginBottom: '25px !important',
+      fontSize: '0.97rem !important',
+      marginBottom: '22px !important',
     },
   },
   demoButton: {
     width: '100%',
-    backgroundColor: '#2A2B6A !important',
+    background: 'linear-gradient(90deg, #2A2B6A 60%, #4e54c8 100%) !important',
     color: 'white !important',
-    padding: '15px !important',
-    fontSize: '1.1rem !important',
+    padding: '16px !important',
+    fontSize: '1.13rem !important',
     fontWeight: 'bold !important',
     borderRadius: '50px !important',
     textTransform: 'none !important',
     marginBottom: '20px !important',
-    transition: 'all 0.3s ease !important',
+    boxShadow: '0 6px 24px rgba(42, 43, 106, 0.13)',
+    transition: 'all 0.3s cubic-bezier(.4,2,.3,1) !important',
     '&:hover': {
-      backgroundColor: '#1a1b4a !important',
-      transform: 'translateY(-2px)',
+      background: 'linear-gradient(90deg, #23245a 60%, #3a3f8f 100%) !important',
+      transform: 'translateY(-2px) scale(1.03)',
+      boxShadow: '0 10px 32px rgba(42, 43, 106, 0.18)',
     },
     '@media (max-width: 600px)': {
       fontSize: '1rem !important',
       padding: '12px !important',
     },
   },
+  demoFeaturesList: {
+    marginTop: '5px',
+    marginBottom: '0',
+    padding: 0,
+    listStyle: 'none',
+  },
   demoFeature: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '15px',
-    fontSize: '0.9rem !important',
-    color: '#666 !important',
+    marginBottom: '18px',
+    fontSize: '1rem !important',
+    color: '#2A2B6A !important',
+    fontWeight: 500,
+    background: 'rgba(255,255,255,0.7)',
+    borderRadius: '12px',
+    padding: '10px 14px',
+    boxShadow: '0 2px 8px rgba(42, 43, 106, 0.04)',
     '@media (max-width: 600px)': {
-      fontSize: '0.85rem !important',
+      fontSize: '0.93rem !important',
       marginBottom: '12px',
+      padding: '8px 10px',
     },
   },
   demoIcon: {
     color: '#FFC614 !important',
-    marginRight: '10px !important',
-    fontSize: '20px !important',
+    marginRight: '14px !important',
+    fontSize: '28px !important',
     '@media (max-width: 600px)': {
-      fontSize: '18px !important',
-      marginRight: '8px !important',
+      fontSize: '22px !important',
+      marginRight: '10px !important',
     },
   },
 }));
@@ -108,23 +127,25 @@ const StartBuildingCard = ({ handleCTAClick }) => {
         variant="contained" 
         className={classes.demoButton}
         onClick={handleCTAClick}
-        startIcon={<PlayArrowIcon />}
+        startIcon={<RocketLaunchIcon />}
       >
-        ✅ Create Resume Now
+        Create Resume Now
       </Button>
       
-      <Box className={classes.demoFeature}>
-        <CheckCircleIcon className={classes.demoIcon} />
-        <span>Free to use, no credit card required</span>
-      </Box>
-      <Box className={classes.demoFeature}>
-        <AutoAwesomeIcon className={classes.demoIcon} />
-        <span>AI-powered suggestions included</span>
-      </Box>
-      <Box className={classes.demoFeature}>
-        <VerifiedUserIcon className={classes.demoIcon} />
-        <span>ATS-friendly templates</span>
-      </Box>
+      <ul className={classes.demoFeaturesList}>
+        <li className={classes.demoFeature}>
+          <CreditScoreIcon className={classes.demoIcon} />
+          <span>Free to use, no credit card required</span>
+        </li>
+        <li className={classes.demoFeature}>
+          <TipsAndUpdatesIcon className={classes.demoIcon} />
+          <span>AI-powered smart suggestions</span>
+        </li>
+        <li className={classes.demoFeature}>
+          <WorkspacePremiumIcon className={classes.demoIcon} />
+          <span>ATS-friendly, premium templates</span>
+        </li>
+      </ul>
     </Paper>
   );
 };
