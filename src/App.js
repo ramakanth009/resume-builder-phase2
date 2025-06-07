@@ -54,7 +54,8 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
 
-  const isAuthPage = ['/login', '/'].includes(currentPath);
+  // Add '/signup' to the list of auth pages where Navbar should not show
+  const isAuthPage = ['/login', '/', '/signup'].includes(currentPath);
   const shouldShowNavbar = currentUser && !isAuthPage;
 
   const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
@@ -96,6 +97,7 @@ const ThemedApp = () => {
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
                     <Route 
                       path="/resume-builder" 
                       element={
