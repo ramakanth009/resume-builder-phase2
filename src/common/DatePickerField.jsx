@@ -41,47 +41,35 @@ const DatePickerField = ({
   maxYear = new Date().getFullYear() + 5 // Allow future dates up to 5 years
 }) => {
   const classes = useStyles();
-  
-  // Convert string value to Date object if exists
-  const [dateValue, setDateValue] = useState(() => {
-    if (!value) return null;
-    
-    // Handle different formats
+
+  // Always derive dateValue from prop
+  let dateValue = null;
+  if (value) {
     if (views.includes('month') && views.includes('year')) {
-      // Format: "May 2020" or "2020-05"
       try {
-        return new Date(value);
+        dateValue = new Date(value);
       } catch (e) {
-        return null;
+        dateValue = null;
       }
     } else if (views.includes('year') && !views.includes('month')) {
-      // Format: "2020"
       try {
-        return new Date(parseInt(value), 0, 1);
+        dateValue = new Date(parseInt(value), 0, 1);
       } catch (e) {
-        return null;
+        dateValue = null;
       }
     }
-    
-    return null;
-  });
+  }
 
   // Handle date change from picker
   const handleDateChange = (newDate) => {
-    setDateValue(newDate);
-    
     if (!newDate) {
       onChange("");
       return;
     }
-    
-    // Format the date based on views
     if (views.includes('year') && !views.includes('month')) {
-      // Year only
       const year = newDate.getFullYear().toString();
       onChange(year);
     } else if (views.includes('month') && views.includes('year')) {
-      // Month and year
       const month = newDate.toLocaleString('default', { month: 'long' });
       const year = newDate.getFullYear();
       onChange(`${month} ${year}`);

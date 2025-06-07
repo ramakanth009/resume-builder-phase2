@@ -130,20 +130,33 @@ export const loginUser = (() => {
 export const generateResume = async (resumeData) => {
   // Format the data for API request - flatten header fields for generate endpoint
   const formattedData = {
-    ...resumeData,
-    // Extract fields from header object if they exist
+  // Only include the fields the backend/AI expects!
     name: resumeData.header?.name,
     email: resumeData.header?.email,
     phone: resumeData.header?.phone,
     github: resumeData.header?.github,
     linkedin: resumeData.header?.linkedin,
     portfolio: resumeData.header?.portfolio,
-    // Extract fields from education object if they exist
     degree: resumeData.education?.degree,
     specialization: resumeData.education?.specialization,
     institution: resumeData.education?.institution,
     graduation_year: resumeData.education?.graduation_year || resumeData.education?.graduationYear,
-  };
+    skills: resumeData.skills,
+    projects: resumeData.projects,
+    certifications: resumeData.certifications,
+    summary: resumeData.summary,
+    work_experience: resumeData.work_experience,
+    target_role: resumeData.target_role,
+    customSections: resumeData.customSections,
+    genai_skills: {
+      used_tools: (resumeData.genai_tools || []).map(tool => ({
+        tool_id: tool.tool_id || tool.toolName || tool.name,
+        usage_descriptions: Array.isArray(tool.usageCases) ? tool.usageCases : []
+      })),
+      not_used_tools: [] // Assuming no tools are not used in this case
+    }
+  // Add any other fields the AI model expects, but nothing extra!
+};
   
   try {
     const response = await apiRequest('/generate_resume', {
@@ -210,6 +223,18 @@ export const updateResume = async (resumeId, resumeData) => {
       responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : 
                       (exp.description ? exp.description.split('\n').filter(Boolean) : [])
     })) || [];
+
+    // Prepare aiExperience from genai_skills.used_tools for UI compatibility
+    const aiExperience =
+      Array.isArray(resumeData.aiExperience)
+        ? resumeData.aiExperience
+        : (resumeData.genai_tools || []).map(tool => ({
+            toolName: tool.toolName || tool.name || tool.tool_id || '',
+            usageCases: Array.isArray(tool.usageCases)
+              ? tool.usageCases
+              : (tool.usage_descriptions || []),
+            impact: tool.impact || tool.description || ''
+          }));
     
     // Format the data for the API - ensure proper structure and fields
     const formattedData = {
@@ -233,20 +258,21 @@ export const updateResume = async (resumeId, resumeData) => {
                           (proj.description ? proj.description.split('\n').filter(Boolean) : [])
       })),
       certifications: resumeData.certifications,
-      work_experience: resumeData.work_experience,
+      // work_experience: resumeData.work_experience,
       workExperience: workExperience,
+      aiExperience: aiExperience,
       target_role: resumeData.target_role,
       customSections: resumeData.customSections,
       // Preserve genai_tools data during updates
       genai_tools: resumeData.genai_tools || [],
       // Include genai_skills format for API compatibility
-      genai_skills: {
-        used_tools: (resumeData.genai_tools || []).map(tool => ({
-          tool_id: tool.tool_id,
-          usage_descriptions: tool.usage_descriptions || []
-        })),
-        not_used_tools: []
-      }
+      // genai_skills: {
+      //   used_tools: (resumeData.genai_tools || []).map(tool => ({
+      //     tool_id: tool.tool_id,
+      //     usage_descriptions: tool.usage_descriptions || []
+      //   })),
+      //   not_used_tools: []
+      // }
     };
 
     // Make PUT request to update the resume
