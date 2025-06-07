@@ -22,8 +22,8 @@ const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
 // Import new password recovery components
-const ForgotPassword = React.lazy(() => import('./components/auth/ForgotPassword'));
-const ResetPassword = React.lazy(() => import('./components/auth/ResetPassword'));
+const ForgotPassword = React.lazy(() => import('./pages/login/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./pages/login/ResetPassword'));
 
 // Loading component with spinner
 const LoadingComponent = () => (
