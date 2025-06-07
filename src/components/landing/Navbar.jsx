@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -101,6 +102,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const Navbar = ({ handleCTAClick }) => {
   const classes = useStyles();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -118,7 +120,12 @@ const Navbar = ({ handleCTAClick }) => {
     <>
       <AppBar className={classes.header}>
         <Toolbar className={classes.toolbar}>
-          <Typography variant="h6" className={classes.logo}>
+          <Typography
+            variant="h6"
+            className={classes.logo}
+            onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }}
+          >
             Gigaversity Resume Builder
           </Typography>
           
@@ -152,7 +159,14 @@ const Navbar = ({ handleCTAClick }) => {
         className={classes.drawer}
       >
         <Box className={classes.drawerHeader}>
-          <Typography className={classes.logo}>
+          <Typography
+            className={classes.logo}
+            onClick={() => {
+              toggleMobileMenu();
+              navigate('/');
+            }}
+            style={{ cursor: 'pointer' }}
+          >
             Gigaversity Resume
           </Typography>
           <IconButton onClick={toggleMobileMenu} sx={{ color: 'white' }}>
@@ -170,7 +184,10 @@ const Navbar = ({ handleCTAClick }) => {
             <Button 
               fullWidth
               variant="contained"
-              onClick={handleCTAClick}
+              onClick={() => {
+                toggleMobileMenu();
+                handleCTAClick();
+              }}
               sx={{
                 backgroundColor: '#FFC614 !important',
                 color: '#2A2B6A !important',

@@ -120,7 +120,7 @@ const Login = () => {
   };
 
   const navigateToRegister = () => {
-    navigate('/');
+    navigate('/signup');
   };
 
   return (

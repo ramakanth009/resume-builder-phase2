@@ -11,6 +11,7 @@ import KeyHighlightsSection from '../../components/landing/KeyHighlightsSection'
 import WhoIsItFor from '../../components/landing/WhoIsItFor';
 import SmartResumeSection from '../../components/landing/SmartResumeSection';
 import Footer from '../../components/landing/Footer';
+import StartBuildingCard from '../../components/landing/StartBuildingCard';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   landingPage: {
@@ -84,7 +85,8 @@ const LandingPage = () => {
   const classes = useStyles();
   
   const handleCTAClick = () => {
-    window.open('http://resume.gigaversity.in/', '_blank');
+    // Use react-router navigation to /signup
+    window.location.href = '/signup';
   };
 
   return (
@@ -104,7 +106,10 @@ const LandingPage = () => {
       
       {/* Features Section */}
       <WhyUseSection />
-      
+
+      {/* Optionally, insert StartBuildingCard here if used */}
+      {/* <StartBuildingCard handleCTAClick={handleCTAClick} /> */}
+
       {/* Highlights Section */}
       <KeyHighlightsSection />
       
