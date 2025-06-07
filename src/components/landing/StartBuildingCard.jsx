@@ -57,7 +57,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   demoButton: {
     width: '100%',
-    background: 'linear-gradient(90deg, #2A2B6A 60%, #4e54c8 100%) !important',
+    // background: 'linear-gradient(90deg, #2A2B6A 60%, #4e54c8 100%) !important',
+    background: '#2A2B6A',
     color: 'white !important',
     padding: '16px !important',
     fontSize: '1.13rem !important',
