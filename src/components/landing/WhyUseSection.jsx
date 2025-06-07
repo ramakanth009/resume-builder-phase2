@@ -171,7 +171,12 @@ const WhyUseSection = () => {
     },
     {
       title: "ATS-Friendly Templates & Formats",
-      description: "Every template is designed by experts with recruiter input, clean and modern with correct resume format for freshers and professionals, tested for compatibility with leading ATS tools. So your resume doesn't get rejected by a bot before a human even sees it.",
+      description: [
+        "Designed by experts with recruiter input",
+        "Clean and modern with a correct resume format for freshers and professionals",
+        "Tested for compatibility with leading ATS tools",
+        "So your resume doesn’t get rejected by a bot before a human even sees it."
+      ],
       examples: ["Recruiter-approved layouts", "ATS compatibility tested", "Professional formatting"],
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     }
@@ -190,9 +195,39 @@ const WhyUseSection = () => {
               <Typography variant="h3" className={classes.featureTitle}>
                 {index + 1}. {feature.title}
               </Typography>
-              <Typography variant="body1" className={classes.featureDescription}>
-                {feature.description}
-              </Typography>
+              {/* Render description as points if it's an array */}
+              {Array.isArray(feature.description) ? (
+                <ul style={{ 
+                  fontSize: '1.1rem', 
+                  color: '#666', 
+                  lineHeight: '1.7', 
+                  marginBottom: 25, 
+                  paddingLeft: 24,
+                  listStyleType: 'disc',
+                  listStylePosition: 'outside',
+                }}>
+                  {feature.description.map((point, i) => (
+                    <li 
+                      key={i} 
+                      style={{ 
+                        marginBottom: 8, 
+                        color: '#666', 
+                        // Use a pseudo-element for dot color if possible, else use marker CSS
+                        // Modern browsers support ::marker
+                        // The following is for inline style; for full support, use CSS below
+                      }}
+                    >
+                      <span style={{
+                        color: '#666',
+                      }}>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Typography variant="body1" className={classes.featureDescription}>
+                  {feature.description}
+                </Typography>
+              )}
               <Box className={classes.exampleChips}>
                 {feature.examples.map((example, idx) => (
                   <Chip 
