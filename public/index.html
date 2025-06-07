@@ -25,6 +25,20 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Resume builder</title>
+    <script>
+      // Redirect /reset-password?token=... to /#/reset-password?token=... for HashRouter
+      (function() {
+        var path = window.location.pathname;
+        var search = window.location.search;
+        if (
+          path === '/reset-password' &&
+          search.startsWith('?token=') &&
+          !window.location.hash.startsWith('#/reset-password')
+        ) {
+          window.location.replace('/#/reset-password' + search);
+        }
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
