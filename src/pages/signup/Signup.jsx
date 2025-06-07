@@ -28,7 +28,7 @@ const SignupPage = () => {
   const classes = useStyles();
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  // const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { register, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({

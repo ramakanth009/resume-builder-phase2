@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect, useMemo } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+// import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -54,7 +55,7 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
 
-  // Add '/signup' to the list of auth pages where Navbar should not show
+  // Add '/signup' to the list of auth pages
   const isAuthPage = ['/login', '/', '/signup'].includes(currentPath);
   const shouldShowNavbar = currentUser && !isAuthPage;
 

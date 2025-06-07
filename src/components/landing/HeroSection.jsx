@@ -19,6 +19,7 @@ import {
   PersonOutline,
   BuildOutlined
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -483,6 +484,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 
 const HeroSection = ({ handleCTAClick }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [typewriterText, setTypewriterText] = useState('');
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -559,7 +561,7 @@ const HeroSection = ({ handleCTAClick }) => {
           <Box className={classes.ctaContainer}>
             <Button
               className={classes.primaryCTA}
-              onClick={handleCTAClick}
+              onClick={() => navigate('/signup')}
               startIcon={<PlayArrowRounded />}
             >
               Create Resume Now

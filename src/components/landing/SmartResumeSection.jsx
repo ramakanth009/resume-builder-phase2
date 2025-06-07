@@ -2,6 +2,7 @@
 import React from 'react';
 import { Box, Typography, Button, Container } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { useNavigate } from 'react-router-dom';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -82,6 +83,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 
 const SmartResumeSection = ({ handleCTAClick }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
     <Box className={classes.finalSection}>
@@ -97,7 +99,7 @@ const SmartResumeSection = ({ handleCTAClick }) => {
         <Button 
           variant="contained" 
           className={classes.finalCTA}
-          onClick={handleCTAClick}
+          onClick={() => navigate('/signup')}
           endIcon={<LaunchIcon />}
         >
           Start Building Your Future Now

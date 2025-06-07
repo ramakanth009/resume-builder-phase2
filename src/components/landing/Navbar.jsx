@@ -137,7 +137,7 @@ const Navbar = ({ handleCTAClick }) => {
             ))}
             <Button 
               className={classes.headerCTA}
-              onClick={handleCTAClick}
+              onClick={() => navigate('/signup')}
             >
               Build Resume
             </Button>
@@ -186,7 +186,7 @@ const Navbar = ({ handleCTAClick }) => {
               variant="contained"
               onClick={() => {
                 toggleMobileMenu();
-                handleCTAClick();
+                navigate('/signup');
               }}
               sx={{
                 backgroundColor: '#FFC614 !important',
