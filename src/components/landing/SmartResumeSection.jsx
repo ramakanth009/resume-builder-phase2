@@ -1,152 +1,110 @@
-// src/components/landing/Footer.jsx
+// src/components/landing/SmartResumeSection.jsx
 import React from 'react';
-import { Box, Typography, Container, Link } from '@mui/material';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
+import { Box, Typography, Button, Container } from '@mui/material';
+import LaunchIcon from '@mui/icons-material/Launch';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
-  footer: {
-    backgroundColor: '#1a1b4a',
-    color: 'white',
-    padding: '60px 0 20px',
+  finalSection: {
+    background: 'linear-gradient(135deg, #101138 0%, #2A2B6A 100%)',
+    padding: '80px 0',
+    position: 'relative',
+    overflow: 'hidden',
+    textAlign: 'center',
     '@media (max-width: 960px)': {
-      padding: '40px 0 15px',
+      padding: '60px 0',
     },
     '@media (max-width: 600px)': {
-      padding: '30px 0 10px',
+      padding: '40px 0',
     },
   },
-  footerContent: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '40px',
-    marginBottom: '40px',
+  finalTitle: {
+    fontSize: '3rem !important',
+    fontWeight: '900 !important',
+    color: 'white !important',
+    marginBottom: '30px !important',
+    position: 'relative',
+    zIndex: 2,
     '@media (max-width: 960px)': {
-      flexDirection: 'column',
-      gap: '30px',
-      marginBottom: '30px',
+      fontSize: '2.5rem !important',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '2rem !important',
+    },
+    '@media (max-width: 480px)': {
+      fontSize: '1.8rem !important',
     },
   },
-  footerSection: {
-    flex: 1,
+  finalDescription: {
+    fontSize: '1.2rem !important',
+    color: 'rgba(255, 255, 255, 0.9) !important',
+    marginBottom: '50px !important',
+    maxWidth: '800px',
+    margin: '0 auto 50px !important',
+    position: 'relative',
+    zIndex: 2,
     '@media (max-width: 960px)': {
-      textAlign: 'center',
+      fontSize: '1.1rem !important',
+      margin: '0 auto 40px !important',
+    },
+    '@media (max-width: 600px)': {
+      fontSize: '1rem !important',
+      margin: '0 auto 30px !important',
     },
   },
-  footerTitle: {
+  finalCTA: {
+    backgroundColor: '#FFC614 !important',
+    color: '#2A2B6A !important',
+    padding: '20px 50px !important',
     fontSize: '1.3rem !important',
     fontWeight: 'bold !important',
-    color: '#FFC614 !important',
-    marginBottom: '20px !important',
-    '@media (max-width: 600px)': {
-      fontSize: '1.2rem !important',
-      marginBottom: '15px !important',
-    },
-  },
-  footerLink: {
-    color: 'rgba(255, 255, 255, 0.8) !important',
-    textDecoration: 'none !important',
-    fontSize: '0.95rem !important',
-    display: 'block',
-    marginBottom: '10px',
-    transition: 'color 0.3s ease',
+    borderRadius: '60px !important',
+    textTransform: 'none !important',
+    boxShadow: '0 15px 40px rgba(255, 198, 20, 0.4) !important',
+    transition: 'all 0.4s ease !important',
+    position: 'relative',
+    zIndex: 2,
     '&:hover': {
-      color: '#FFC614 !important',
+      backgroundColor: '#FFD23F !important',
+      transform: 'translateY(-5px) scale(1.05)',
+      boxShadow: '0 20px 50px rgba(255, 198, 20, 0.6) !important',
     },
-  },
-  socialLinks: {
-    display: 'flex',
-    gap: '15px',
-    marginTop: '20px',
-    '@media (max-width: 960px)': {
-      justifyContent: 'center',
-    },
-  },
-  socialIcon: {
-    color: 'rgba(255, 255, 255, 0.8) !important',
-    fontSize: '1.5rem !important',
-    transition: 'color 0.3s ease',
-    '&:hover': {
-      color: '#FFC614 !important',
-    },
-  },
-  footerBottom: {
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-    paddingTop: '20px',
-    textAlign: 'center',
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: '0.9rem',
     '@media (max-width: 600px)': {
-      paddingTop: '15px',
-      fontSize: '0.85rem',
+      padding: '15px 35px !important',
+      fontSize: '1.1rem !important',
+    },
+    '@media (max-width: 480px)': {
+      padding: '12px 25px !important',
+      fontSize: '1rem !important',
     },
   },
 }));
 
-const Footer = () => {
+const SmartResumeSection = ({ handleCTAClick }) => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.footer}>
+    <Box className={classes.finalSection}>
       <Container maxWidth="lg">
-        <Box className={classes.footerContent}>
-          <Box className={classes.footerSection}>
-            <Typography className={classes.footerTitle}>
-              Gigaversity Resume
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6 }}>
-              Build professional, ATS-friendly resumes with AI assistance. Get noticed by recruiters and land your dream job.
-            </Typography>
-            <Box className={classes.socialLinks}>
-              <FacebookIcon className={classes.socialIcon} />
-              <TwitterIcon className={classes.socialIcon} />
-              <LinkedInIcon className={classes.socialIcon} />
-              <InstagramIcon className={classes.socialIcon} />
-            </Box>
-          </Box>
-          
-          <Box className={classes.footerSection}>
-            <Typography className={classes.footerTitle}>
-              Product
-            </Typography>
-            <Link href="#templates" className={classes.footerLink}>Resume Templates</Link>
-            <Link href="#builder" className={classes.footerLink}>Resume Builder</Link>
-            <Link href="#examples" className={classes.footerLink}>Resume Examples</Link>
-            <Link href="#tips" className={classes.footerLink}>Resume Tips</Link>
-          </Box>
-          
-          <Box className={classes.footerSection}>
-            <Typography className={classes.footerTitle}>
-              Resources
-            </Typography>
-            <Link href="#blog" className={classes.footerLink}>Blog</Link>
-            <Link href="#guides" className={classes.footerLink}>Career Guides</Link>
-            <Link href="#help" className={classes.footerLink}>Help Center</Link>
-            <Link href="#faq" className={classes.footerLink}>FAQ</Link>
-          </Box>
-          
-          <Box className={classes.footerSection}>
-            <Typography className={classes.footerTitle}>
-              Company
-            </Typography>
-            <Link href="#about" className={classes.footerLink}>About Us</Link>
-            <Link href="#contact" className={classes.footerLink}>Contact</Link>
-            <Link href="#privacy" className={classes.footerLink}>Privacy Policy</Link>
-            <Link href="#terms" className={classes.footerLink}>Terms of Service</Link>
-          </Box>
-        </Box>
-        
-        <Box className={classes.footerBottom}>
-          <Typography variant="body2">
-            © 2025 Gigaversity Resume Builder. All rights reserved.
-          </Typography>
-        </Box>
+        <Typography variant="h2" className={classes.finalTitle}>
+          Giga Resume - The smarter way to build resume in <span style={{ color: '#FFC614' }}>2025</span>
+        </Typography>
+        <Typography variant="body1" className={classes.finalDescription}>
+          <strong>Gigaversity Resume Builder</strong> isn't just another <strong>free resume maker</strong> — it's your launchpad to success. 
+          With <strong>Gen AI suggestions</strong>, <strong>project-building guidance</strong>, and <strong>ATS-optimized templates</strong>, 
+          you're not just creating a resume — you're building your future.
+        </Typography>
+        <Button 
+          variant="contained" 
+          className={classes.finalCTA}
+          onClick={handleCTAClick}
+          endIcon={<LaunchIcon />}
+        >
+          Start Building Your Future Now
+        </Button>
       </Container>
     </Box>
   );
 };
 
-export default Footer;
+export default SmartResumeSection;
