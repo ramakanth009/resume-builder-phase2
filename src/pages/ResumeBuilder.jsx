@@ -1200,7 +1200,7 @@ const ResumeBuilder = () => {
           )}
       </Box>
 
-      {/* Template Selection Dialog */}
+      {/* Template Selection Dialog - UPDATED: Pass onConfirm and onCancel props */}
       <Dialog
         open={templateDialogOpen}
         onClose={handleCloseTemplateDialog}
@@ -1208,27 +1208,13 @@ const ResumeBuilder = () => {
         maxWidth="lg"
         className={classes.templateDialog}
       >
-        <DialogContent>
+        <DialogContent sx={{ padding: 0 }}>
           <TemplateSelector
             selectedTemplateId={selectedTemplateId}
             onTemplateSelect={handleTemplateSelect}
+            onConfirm={handleConfirmTemplateSelection}
+            onCancel={handleCloseTemplateDialog}
           />
-          <Box className={classes.templateActionButtons}>
-            <Button
-              onClick={handleCloseTemplateDialog}
-              variant="outlined"
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmTemplateSelection}
-              variant="contained"
-              color="primary"
-            >
-              Apply Template
-            </Button>
-          </Box>
         </DialogContent>
       </Dialog>
 
