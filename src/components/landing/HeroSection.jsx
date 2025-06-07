@@ -106,7 +106,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   subtitle: {
-    fontSize: '1.4rem',
+    fontSize: '1.rem',
     color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: '2rem',
     lineHeight: 1.6,
@@ -538,7 +538,7 @@ const HeroSection = ({ handleCTAClick }) => {
         <Box className={classes.leftSection}>
           <Typography variant="h1" className={classes.mainHeadline}>
             {/* Build Your Path to Your */}
-            Create Resume That Gets You Noticed
+            Create Resume That Gets You Noticed {" "}
             {/* <br /> */}
             <span className={classes.typewriterText}>
               {typewriterText}
@@ -552,6 +552,9 @@ const HeroSection = ({ handleCTAClick }) => {
           <Typography variant="subtitle1" className={classes.subtitle}>
             Whether you're a fresher looking for your first IT job or a professional aiming for a career switch, megaversity’s Resume Builder helps you build a resume that reflects your skills, projects, and growth in a recruiter-approved, ATS-friendly format.
           </Typography>
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            Choose from resume templates for freshers or experienced professionals, format with ease, and highlight your capabilities like never before — all in one free resume maker.
+          </Typography>
 
           <Box className={classes.ctaContainer}>
             <Button
@@ -561,7 +564,7 @@ const HeroSection = ({ handleCTAClick }) => {
             >
               Create Resume Now
             </Button>
-            <Button
+            {/* <Button
               className={classes.secondaryCTA}
               onClick={() => {
                 const element = document.getElementById('features-section');
@@ -569,7 +572,7 @@ const HeroSection = ({ handleCTAClick }) => {
               }}
             >
               See Features
-            </Button>
+            </Button> */}
           </Box>
 
           <Box className={classes.statsContainer}>
