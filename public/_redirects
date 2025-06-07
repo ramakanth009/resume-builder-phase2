@@ -1,0 +1,60 @@
+# For Apache servers (.htaccess in public/build folder)
+# Place the .htaccess file in your build output directory (usually 'build' or 'dist')
+
+# For Nginx servers (add to server config)
+location / {
+  try_files $uri $uri/ /index.html;
+}
+
+# For Express.js servers (server.js)
+const express = require('express');
+const path = require('path');
+const app = express();
+
+// Serve static files from build directory
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.listen(process.env.PORT || 3000);
+
+# For Netlify (_redirects file in public folder)
+/*    /index.html   200
+
+# For Vercel (vercel.json in root)
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+
+# For GitHub Pages (404.html copy of index.html)
+# Copy your index.html as 404.html in public folder
+
+# TROUBLESHOOTING STEPS:
+
+# 1. Check .htaccess location
+# Place .htaccess in the same folder as index.html (build output)
+
+# 2. Verify mod_rewrite is enabled (shared hosting)
+# Contact hosting provider or check cPanel
+
+# 3. Build and deploy check
+npm run build
+# Upload entire 'build' folder contents to server root
+
+# 4. Test .htaccess syntax
+# Remove all content except:
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# 5. Alternative: Use basename in React Router
+# In your App.js, add basename to BrowserRouter:
+<BrowserRouter basename="/public_html/resume.gigaversity.in">
+
+# 6. Check server error logs for specific .htaccess errors
