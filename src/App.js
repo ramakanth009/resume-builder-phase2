@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import './App.css';
-import LandingPage from './pages/landingpage/LandingPage';
+import LandingPage from './pages/signup/Signup';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TemplateProvider } from './contexts/TemplateContext';

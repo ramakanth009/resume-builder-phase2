@@ -220,7 +220,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   }
 }));
 
-const LandingLeftSection = () => {
+const SignupLeftSection = () => {
   const classes = useStyles();
   
   // Features list with corresponding icons
@@ -294,4 +294,4 @@ const LandingLeftSection = () => {
   );
 };
 
-export default LandingLeftSection;
+export default SignupLeftSection;
