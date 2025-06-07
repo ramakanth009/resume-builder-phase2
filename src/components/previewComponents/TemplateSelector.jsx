@@ -9,8 +9,6 @@ import {
   Paper,
   Grow,
   Divider,
-  Container,
-  Button
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -35,104 +33,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
       background: 'radial-gradient(circle at 20% 20%, rgba(39, 40, 108, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.05) 0%, transparent 50%)',
       pointerEvents: 'none',
     }
-  },
-  
-  // Sticky Header
-  stickyHeader: {
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-    background: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(20px) saturate(180%)',
-    borderBottom: '1px solid rgba(39, 40, 108, 0.1)',
-    padding: '1.5rem 2rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0 4px 16px rgba(39, 40, 108, 0.08)',
-    '@media (max-width: 960px)': {
-      padding: '1rem 1.5rem',
-      flexDirection: 'column',
-      gap: '1rem',
-    },
-    '@media (max-width: 600px)': {
-      padding: '1rem',
-    },
-  },
-  
-  headerLeft: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
-  
-  title: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    background: 'linear-gradient(135deg, #27286c 0%, #3182ce 50%, #14b8a6 100%)',
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    letterSpacing: '-0.02em',
-    margin: 0,
-    '@media (max-width: 960px)': {
-      fontSize: '1.5rem',
-      textAlign: 'center',
-    },
-  },
-  
-  subtitle: {
-    fontSize: '1rem',
-    color: '#64748b',
-    fontWeight: 400,
-    margin: 0,
-    '@media (max-width: 960px)': {
-      textAlign: 'center',
-      fontSize: '0.9rem',
-    },
-  },
-  
-  headerActions: {
-    display: 'flex',
-    gap: '1rem',
-    '@media (max-width: 960px)': {
-      width: '100%',
-      justifyContent: 'center',
-    },
-    '@media (max-width: 600px)': {
-      flexDirection: 'column',
-      gap: '0.5rem',
-    },
-  },
-  
-  actionButton: {
-    borderRadius: '12px',
-    padding: '0.75rem 1.5rem',
-    fontWeight: 600,
-    textTransform: 'none',
-    fontSize: '0.95rem',
-    '@media (max-width: 600px)': {
-      width: '100%',
-    },
-  },
-  
-  cancelButton: {
-    color: '#64748b',
-    borderColor: '#e2e8f0',
-    '&:hover': {
-      backgroundColor: '#f1f5f9',
-      borderColor: '#cbd5e0',
-    },
-  },
-  
-  applyButton: {
-    background: 'linear-gradient(135deg, #3182ce 0%, #1e40af 100%)',
-    color: 'white',
-    boxShadow: '0 4px 12px rgba(49, 130, 206, 0.3)',
-    '&:hover': {
-      background: 'linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)',
-      boxShadow: '0 6px 16px rgba(49, 130, 206, 0.4)',
-    },
   },
 
   // Content Area
@@ -198,12 +98,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   
   templateBox: {
-    width: 'calc(33.333% - 1.33rem)',
+    width: 'calc((100% - 4rem) / 3)', // 3 templates per row with 2rem gaps
     '@media (max-width: 1200px)': {
-      width: 'calc(50% - 0.75rem)',
+      width: 'calc((100% - 1.5rem) / 2)', // 2 templates per row with 1.5rem gap
     },
     '@media (max-width: 600px)': {
-      width: '100%',
+      width: '100%', // 1 template per row
     },
   },
   
@@ -414,8 +314,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const TemplateSelector = ({ 
   selectedTemplateId = 'classic', 
   onTemplateSelect,
-  onConfirm,
-  onCancel
 }) => {
   const classes = useStyles();
   const [imageErrors, setImageErrors] = useState({});
@@ -443,35 +341,6 @@ const TemplateSelector = ({
 
   return (
     <Box className={classes.root}>
-      {/* Sticky Header */}
-      <Box className={classes.stickyHeader}>
-        <Box className={classes.headerLeft}>
-          <Typography variant="h3" className={classes.title}>
-            Choose Your Perfect Template
-          </Typography>
-          <Typography variant="h6" className={classes.subtitle}>
-            Select a professionally designed template that represents your style
-          </Typography>
-        </Box>
-        
-        <Box className={classes.headerActions}>
-           <Button
-                        onClick={onCancel}
-                        variant="outlined"
-                        color="primary"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={onConfirm}
-                        variant="contained"
-                        color="primary"
-                      >
-                        Apply Template
-                      </Button>
-        </Box>
-      </Box>
-
       {/* Content */}
       <Box className={classes.content}>
         {/* Info Card */}
