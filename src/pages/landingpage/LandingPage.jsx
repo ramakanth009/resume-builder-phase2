@@ -1,5 +1,6 @@
 // src/pages/landingpage/LandingPage.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
@@ -82,11 +83,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
 }));
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   const classes = useStyles();
   
   const handleCTAClick = () => {
     // Use react-router navigation to /signup
-    window.location.href = '/signup';
+    navigate('/signup');
   };
 
   return (

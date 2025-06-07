@@ -226,7 +226,6 @@ const CertificationsSection = ({ resumeData, setResumeData }) => {
               variant="outlined"
               fullWidth
               className={classes.textField}
-              required
               margin="normal"
             />
             
