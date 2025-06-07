@@ -7,6 +7,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import './App.css';
+
+// Import existing pages and components
 import LandingPage from './pages/landingpage/Landingpage';
 import Signup from './pages/signup/Signup';
 import Navbar from './common/Navbar';
@@ -18,6 +20,10 @@ import { createDynamicTheme } from './theme/dynamicTheme';
 // Lazy load components
 const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
+
+// Import new password recovery components
+const ForgotPassword = React.lazy(() => import('./components/auth/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./components/auth/ResetPassword'));
 
 // Loading component with spinner
 const LoadingComponent = () => (
@@ -54,11 +60,12 @@ const NavbarWrapper = () => {
   const { currentUser } = useAuth();
   const currentPath = location.pathname;
 
-  // Add '/signup' to the list of auth pages
-  const isAuthPage = ['/login', '/', '/signup'].includes(currentPath);
+  // Add password recovery pages to auth pages list
+  const isAuthPage = ['/login', '/', '/signup', '/forgot-password', '/reset-password'].includes(currentPath);
   const shouldShowNavbar = currentUser && !isAuthPage;
 
-  const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
+  const currentPage = shouldShowNavbar ? 
+    location.pathname.split('/')[1] || 'home' : '';
 
   return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
@@ -95,9 +102,16 @@ const ThemedApp = () => {
                 <NavbarWrapper />
                 <Suspense fallback={<LoadingComponent />}>
                   <Routes>
+                    {/* Public routes */}
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+                    
+                    {/* Password recovery routes */}
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    
+                    {/* Protected routes */}
                     <Route 
                       path="/resume-builder" 
                       element={
@@ -114,6 +128,8 @@ const ThemedApp = () => {
                         </ProtectedRoute>
                       } 
                     />
+                    
+                    {/* Catch all route - redirect to home */}
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Suspense>

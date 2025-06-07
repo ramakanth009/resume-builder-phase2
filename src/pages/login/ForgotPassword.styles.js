@@ -13,6 +13,7 @@ const colors = {
   electricBlue: "#4e7ac7",
   accentTeal: "#38b6d2",
   successGreen: "#4caf50",
+  warningOrange: "#ff9800",
 };
 
 export const useStyles = makeStylesWithTheme((theme) => ({
@@ -80,11 +81,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       padding: '0.25rem',
     }
   },
-  formWrapper: {
-    position: 'relative',
-    minHeight: '400px', // Ensure consistent height during transitions
-    overflow: 'hidden',
-  },
   logoContainer: {
     display: "flex",
     alignItems: "center",
@@ -139,42 +135,6 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       borderColor: colors.lightBlue,
     },
   },
-  forgotPasswordContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginTop: '-0.5rem',
-    marginBottom: '0.5rem',
-  },
-  forgotPasswordLink: {
-    color: colors.lightBlue,
-    fontSize: '0.9rem',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    border: 'none',
-    background: 'none',
-    padding: '0.25rem 0',
-    "&:hover": {
-      textDecoration: 'underline',
-      color: colors.accentTeal,
-    },
-    "&:disabled": {
-      color: colors.skyBlue,
-      cursor: 'not-allowed',
-    },
-  },
-  formDivider: {
-    display: "flex",
-    alignItems: "center",
-    margin: "1rem 0",
-    color: colors.midBlue,
-    "&::before, &::after": {
-      content: '""',
-      flex: 1,
-      borderBottom: `1px solid ${colors.skyBlue}`,
-    },
-    "&::before": { marginRight: "0.5rem" },
-    "&::after": { marginLeft: "0.5rem" },
-  },
   button: {
     padding: "0.75rem",
     borderRadius: "8px",
@@ -200,16 +160,33 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
     }
   },
-  signupLink: {
+  loader: {
+    marginLeft: "8px",
+    color: colors.white,
+  },
+  formDivider: {
+    display: "flex",
+    alignItems: "center",
+    margin: "1rem 0",
+    color: colors.midBlue,
+    "&::before, &::after": {
+      content: '""',
+      flex: 1,
+      borderBottom: `1px solid ${colors.skyBlue}`,
+    },
+    "&::before": { marginRight: "0.5rem" },
+    "&::after": { marginLeft: "0.5rem" },
+  },
+  backToLogin: {
     width: '100%',
     marginTop: '0.5rem',
     textAlign: 'center',
   },
-  signupText: {
+  backText: {
     color: colors.midBlue,
     marginBottom: '0.5rem',
   },
-  signupButton: {
+  backButton: {
     padding: '0.75rem',
     borderRadius: '8px',
     fontWeight: 600,
@@ -232,26 +209,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       fontSize: '0.85rem',
     }
   },
-  loader: {
-    marginLeft: "8px",
-    color: colors.white,
-  },
-  
-  // Back button styles
-  backButtonContainer: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: '1rem',
-  },
-  backButton: {
-    color: colors.navyVariant,
-    padding: '0.5rem',
-    "&:hover": {
-      backgroundColor: 'rgba(42, 43, 106, 0.1)',
-    },
-  },
-  
-  // Success state styles for forgot password
+  // Success state styles
   successContainer: {
     textAlign: 'center',
     display: 'flex',
@@ -328,8 +286,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
       textDecoration: 'underline',
     },
   },
-  
-  // Right section styles (same as before)
+  // Right section styles
   rightContentContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -352,7 +309,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   },
   subtitleRight: {
     color: "rgba(255,255,255,0.9)",
-    marginBottom: "0.5rem",
+    marginBottom: "1.5rem",
     textAlign: "center",
     maxWidth: "380px",
     lineHeight: 1.5,
@@ -363,7 +320,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: '1rem',
-    marginTop: '1rem',
+    marginBottom: '1.5rem',
     width: '100%',
     maxWidth: '320px',
   },
@@ -392,8 +349,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     lineHeight: 1.4,
     flex: 1,
   },
-  studentBenefits: {
-    marginTop: '1rem',
+  securityBenefits: {
     width: '100%',
     maxWidth: '350px',
     backgroundColor: 'rgba(255,255,255,0.08)',
@@ -434,39 +390,17 @@ export const useStyles = makeStylesWithTheme((theme) => ({
     border: `1px solid ${colors.accentTeal}`,
     flexShrink: 0,
   },
-  highlightText: {
-    color: colors.goldenYellow,
-  },
-  loginLink: {
-    width: '100%',
-    marginTop: '0.5rem',
-    textAlign: 'center',
-  },
-  loginText: {
-    color: colors.midBlue,
-    marginBottom: '0.5rem',
-  },
-  loginButton: {
-    padding: '0.75rem',
+  securityNote: {
+    marginTop: '1rem',
+    padding: '1rem',
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: '8px',
-    fontWeight: 600,
-    textTransform: 'none',
-    fontSize: '1rem',
-    width: '100%',
-    backgroundColor: colors.white,
-    color: colors.royalBlue,
-    border: `1px solid ${colors.royalBlue}`,
-    "&:hover": {
-      backgroundColor: colors.royalBlue,
-      color: colors.white,
-    },
-    '@media (max-width: 600px)': {
-      padding: '0.6rem',
-      fontSize: '0.9rem',
-    },
-    '@media (max-width: 480px)': {
-      padding: '0.5rem',
-      fontSize: '0.85rem',
-    }
+    border: '1px solid rgba(255,255,255,0.1)',
+  },
+  securityNoteText: {
+    color: colors.white,
+    fontSize: '0.9rem',
+    lineHeight: 1.4,
+    textAlign: 'center',
   },
 }));
