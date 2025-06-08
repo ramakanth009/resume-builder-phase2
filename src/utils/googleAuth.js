@@ -20,7 +20,7 @@ export const checkOAuthStatus = async () => {
  * Redirects user to Google OAuth consent screen
  */
 export const initiateGoogleLogin = () => {
-  const baseUrl = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+  const baseUrl = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
   window.location.href = `${baseUrl}/auth/google/login`;
 };
 

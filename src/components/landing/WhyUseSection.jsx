@@ -154,19 +154,19 @@ const WhyUseSection = () => {
     {
       title: "Gen AI Skill Suggestions—With Real-World Use Cases",
       description: "Stand out with in-demand Gen AI skills. Our AI engine recommends personalized Gen AI tools (like ChatGPT, Midjourney, Figma AI, Claude, Bard, DALL·E, etc.) based on your profile. You can even add how you've used these tools.",
-      examples: ["ChatGPT for content creation", "Midjourney for design concepts", "Claude for code review"],
+      // examples: ["ChatGPT for content creation", "Midjourney for design concepts", "Claude for code review"],
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     },
     {
       title: "Build Projects Straight From Your Resume",
       description: "Gigaversity's resume builder recommends portfolio-ready projects based on your target role—be it full stack development, data science, UI/UX, or product management. With one click, access our GitHub repository filled with real-time projects, step-by-step guides, and code.",
-      examples: ["E-commerce platforms", "Data analytics dashboards", "Mobile app prototypes"],
+      // examples: ["E-commerce platforms", "Data analytics dashboards", "Mobile app prototypes"],
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     },
     {
       title: "Smart Resume Content That Writes Itself",
       description: "Gigaversity's AI Resume Maker helps you write your resume with ease. It suggests role-based summaries, internship descriptions, strong bullet points, and the right keywords. Designed for freshers, the templates are professional and ATS-friendly.",
-      examples: ["Role-based summaries", "Impact-driven bullet points", "Industry keywords"],
+      // examples: ["Role-based summaries", "Impact-driven bullet points", "Industry keywords"],
       image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     },
     {
@@ -177,7 +177,7 @@ const WhyUseSection = () => {
         "Tested for compatibility with leading ATS tools",
         "So your resume doesn’t get rejected by a bot before a human even sees it."
       ],
-      examples: ["Recruiter-approved layouts", "ATS compatibility tested", "Professional formatting"],
+      // examples: ["Recruiter-approved layouts", "ATS compatibility tested", "Professional formatting"],
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     }
   ];
@@ -228,7 +228,7 @@ const WhyUseSection = () => {
                   {feature.description}
                 </Typography>
               )}
-              <Box className={classes.exampleChips}>
+              {/* <Box className={classes.exampleChips}>
                 {feature.examples.map((example, idx) => (
                   <Chip 
                     key={idx}
@@ -236,7 +236,7 @@ const WhyUseSection = () => {
                     className={classes.exampleChip}
                   />
                 ))}
-              </Box>
+              </Box> */}
             </Box>
             <Box className={classes.featureVisual}>
               <img 

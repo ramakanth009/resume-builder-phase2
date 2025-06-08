@@ -229,7 +229,8 @@ const SignupLeftSection = () => {
     { text: "GenAI Recommendations", icon: Psychology },
     { text: "Project Recommendations", icon: Lightbulb },
     { text: "Real-time Preview", icon: Visibility },
-    { text: "Recruiter-approved Templates", icon: WorkspacePremium }
+    { text: "Recruiter-approved Templates", icon: WorkspacePremium },
+    { text: "Build portfolio projects directly", icon: Lightbulb }
   ];
 
   return (

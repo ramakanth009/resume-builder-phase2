@@ -41,7 +41,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   navLinks: {
     display: 'flex',
-    gap: '30px',
+    gap: '20px',
     alignItems: 'center',
     '@media (max-width: 960px)': {
       display: 'none',
@@ -57,15 +57,39 @@ const useStyles = makeStylesWithTheme((theme) => ({
       color: '#FFC614 !important',
     },
   },
-  headerCTA: {
+  headerCTAsignup: {
     backgroundColor: '#FFC614 !important',
     color: '#2A2B6A !important',
     padding: '8px 20px !important',
     borderRadius: '25px !important',
     fontWeight: 'bold !important',
     textTransform: 'none !important',
+    transition: 'all 0.3s ease !important',
     '@media (max-width: 960px)': {
       display: 'none',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+      color: '#FFC614 !important',
+      border: '2px solid #FFC614 !important',
+    },
+  },
+  headerCTAlogin: {
+    backgroundColor: 'transparent !important',
+    color: '#FFC614 !important',
+    padding: '8px 20px !important',
+    borderRadius: '25px !important',
+    fontWeight: 'bold !important',
+    textTransform: 'none !important',
+    border: '2px solid #FFC614 !important',
+    transition: 'all 0.3s ease !important',
+    '@media (max-width: 960px)': {
+      display: 'none',
+    },
+    '&:hover': {
+      backgroundColor: '#FFC614 !important',
+      color: '#2A2B6A !important',
+      border: '2px solid #FFC614 !important',
     },
   },
   mobileMenuButton: {
@@ -110,10 +134,11 @@ const Navbar = ({ handleCTAClick }) => {
 
   const menuItems = [
     { label: 'Home', href: '#home' },
-    { label: 'Features', href: '#features' },
-    { label: 'Templates', href: '#templates' },
+    // { label: 'Features', href: '#features' },
+    // { label: 'Templates', href: '#templates' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
+    // Removed Login from here
   ];
 
   return (
@@ -130,16 +155,33 @@ const Navbar = ({ handleCTAClick }) => {
           </Typography>
           
           <Box className={classes.navLinks}>
-            {menuItems.map((item) => (
-              <Link key={item.label} href={item.href} className={classes.navLink}>
-                {item.label}
-              </Link>
-            ))}
+            {menuItems.map((item) =>
+              item.isRoute ? (
+                <Button
+                  key={item.label}
+                  className={classes.navLink}
+                  onClick={() => navigate(item.href)}
+                  sx={{ background: 'none', minWidth: 0, padding: 0 }}
+                >
+                  {item.label}
+                </Button>
+              ) : (
+                <Link key={item.label} href={item.href} className={classes.navLink}>
+                  {item.label}
+                </Link>
+              )
+            )}
             <Button 
-              className={classes.headerCTA}
+              className={classes.headerCTAsignup}
               onClick={() => navigate('/signup')}
             >
-              Build Resume
+              Sign up
+            </Button>
+            <Button 
+              className={classes.headerCTAlogin}
+              onClick={() => navigate('/login')}
+            >
+              Login
             </Button>
           </Box>
 
@@ -174,11 +216,32 @@ const Navbar = ({ handleCTAClick }) => {
           </IconButton>
         </Box>
         <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.label} className={classes.drawerLink}>
-              <ListItemText primary={item.label} />
-            </ListItem>
-          ))}
+          {menuItems.map((item) =>
+            item.isRoute ? (
+              <ListItem
+                button
+                key={item.label}
+                className={classes.drawerLink}
+                onClick={() => {
+                  toggleMobileMenu();
+                  navigate(item.href);
+                }}
+              >
+                <ListItemText primary={item.label} />
+              </ListItem>
+            ) : (
+              <ListItem
+                button
+                key={item.label}
+                className={classes.drawerLink}
+                component="a"
+                href={item.href}
+                onClick={toggleMobileMenu}
+              >
+                <ListItemText primary={item.label} />
+              </ListItem>
+            )
+          )}
           <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', margin: '10px 0' }} />
           <ListItem>
             <Button 
@@ -193,9 +256,28 @@ const Navbar = ({ handleCTAClick }) => {
                 color: '#2A2B6A !important',
                 fontWeight: 'bold',
                 borderRadius: '25px',
+                mb: 1
               }}
             >
               Build Resume
+            </Button>
+          </ListItem>
+          <ListItem>
+            <Button 
+              fullWidth
+              variant="contained"
+              onClick={() => {
+                toggleMobileMenu();
+                navigate('/login');
+              }}
+              sx={{
+                backgroundColor: '#FFC614 !important',
+                color: '#2A2B6A !important',
+                fontWeight: 'bold',
+                borderRadius: '25px',
+              }}
+            >
+              Login
             </Button>
           </ListItem>
         </List>

@@ -112,7 +112,7 @@ const Footer = () => {
             <Typography className={classes.footerTitle}>
               Product
             </Typography>
-            <Link href="#templates" className={classes.footerLink}>Resume Templates</Link>
+            {/* <Link href="#templates" className={classes.footerLink}>Resume Templates</Link> */}
             <Link href="#builder" className={classes.footerLink}>Resume Builder</Link>
             <Link href="#examples" className={classes.footerLink}>Resume Examples</Link>
             <Link href="#tips" className={classes.footerLink}>Resume Tips</Link>

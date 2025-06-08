@@ -21,6 +21,7 @@ import GigaLogo from "../../assets/giga-loogo.svg";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import GoogleIcon from "@mui/icons-material/Google";
 import { useStyles } from "./Signup.styles";
 import SignupLeftSection from './Signupleft';
 
@@ -29,7 +30,7 @@ const SignupPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   // const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { register, loading: authLoading } = useAuth();
+  const { register, loading: authLoading, loginWithGoogle } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -49,6 +50,7 @@ const SignupPage = () => {
     confirmPassword: false,
   });
   const [visibleFeatures, setVisibleFeatures] = useState([]);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -114,6 +116,23 @@ const SignupPage = () => {
     setShowPassword((s) => ({ ...s, [field]: !s[field] }));
   };
   const handleCloseSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
+
+  // Google OAuth handler
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    setSnackbar({ open: false, message: "", severity: "success" });
+    try {
+      await loginWithGoogle();
+      // Navigation handled by OAuth callback
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message || "Google login failed. Please try again.",
+        severity: "error",
+      });
+      setIsGoogleLoading(false);
+    }
+  };
 
   // Featured stats data
   const statsData = [
@@ -236,6 +255,34 @@ const SignupPage = () => {
               </Button>
 
               <Typography className={classes.formDivider}>or</Typography>
+
+              {/* Google OAuth Button */}
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<GoogleIcon />}
+                onClick={handleGoogleLogin}
+                disabled={loading || authLoading || isGoogleLoading}
+                sx={{
+                  mb: 2,
+                  textTransform: 'none',
+                  borderColor: '#dadce0',
+                  color: '#3c4043',
+                  '&:hover': {
+                    backgroundColor: '#f8f9fa',
+                    borderColor: '#dadce0'
+                  }
+                }}
+              >
+                {isGoogleLoading ? (
+                  <>
+                    Connecting to Google
+                    <CircularProgress size={20} sx={{ ml: 1 }} />
+                  </>
+                ) : (
+                  'Continue with Google'
+                )}
+              </Button>
 
               <Box className={classes.loginLink}>
                 <Typography className={classes.loginText} variant="body2">
