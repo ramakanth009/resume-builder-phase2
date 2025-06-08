@@ -40,6 +40,7 @@ import AISkillRecommendationsSection from "../components/resumeBuilderComponents
 import templatesData from "../data/templatesData";
 import Navbar from "../common/Navbar";
 import Sidebar from "../common/Sidebar";
+import { useResumeBuilderGuard } from '../hooks/useResumeBuilderGuard';
 
 // Import useStyles from updated styles
 import { useStyles } from "./resumebuilder.Styles";
@@ -256,6 +257,7 @@ const ResumeBuilder = () => {
   const { currentUser } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery("(max-width:960px)");
+  const { showConfirmDialog, confirmLogout, cancelLogout } = useResumeBuilderGuard();
 
   // Get resumeId from URL params if editing an existing resume
   const { resumeId } = useParams();
@@ -1384,6 +1386,20 @@ const ResumeBuilder = () => {
           </Button>
           <Button onClick={handleConfirmAction} color="error" autoFocus>
             Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={showConfirmDialog} onClose={cancelLogout} maxWidth="sm" fullWidth>
+        <DialogTitle>Confirm Logout</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to leave? You will be logged out and unsaved changes may be lost.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelLogout}>Stay</Button>
+          <Button onClick={confirmLogout} color="error" variant="contained">
+            Logout & Leave
           </Button>
         </DialogActions>
       </Dialog>
