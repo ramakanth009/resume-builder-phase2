@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import './App.css';
-import ResumeBuilderWithGuard from './pages/ResumeBuilderWithGuard';
+import ResumeBuilderWithGuard from './pages/ResumeBuilderLogoutGuard';
 
 // Import existing pages and components
 import LandingPage from './pages/landingpage/Landingpage';
