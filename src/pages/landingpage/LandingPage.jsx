@@ -9,10 +9,12 @@ import Navbar from '../../components/landing/Navbar';
 import HeroSection from '../../components/landing/HeroSection';
 import WhyUseSection from '../../components/landing/WhyUseSection';
 import KeyHighlightsSection from '../../components/landing/KeyHighlightsSection';
+import ComparisonTableSection from '../../components/landing/ComparisonTableSection';
+import TemplatesGallerySection from '../../components/landing/TemplatesGallerySection';
 import WhoIsItFor from '../../components/landing/WhoIsItFor';
 import SmartResumeSection from '../../components/landing/SmartResumeSection';
 import Footer from '../../components/landing/Footer';
-import StartBuildingCard from '../../components/landing/StartBuildingCard';
+
 
 const useStyles = makeStylesWithTheme((theme) => ({
   landingPage: {
@@ -114,7 +116,12 @@ const LandingPage = () => {
 
       {/* Highlights Section */}
       <KeyHighlightsSection />
-      
+
+      {/* Comparison Table Section */}
+      <ComparisonTableSection />
+      {/* Comparison Table Section */}
+      <TemplatesGallerySection />
+
       {/* Target Audience Section */}
       <WhoIsItFor />
       
