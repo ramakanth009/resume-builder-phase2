@@ -253,6 +253,7 @@
 // };
 
 // export default WhyUseSection;// src/components/landing/WhyUseSection.jsx
+// src/components/landing/WhyUseSection.jsx
 import React, { useState } from 'react';
 import { Box, Typography, Container, Card, CardContent, Chip, IconButton } from '@mui/material';
 import { AutoAwesome, Code, Visibility, ZoomIn } from '@mui/icons-material';
@@ -315,7 +316,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important',
     border: '2px solid #f0f2ff !important',
     boxShadow: '0 8px 30px rgba(42, 43, 106, 0.08) !important',
-    height: '520px !important',
+    height: '480px !important',
+    display: 'flex !important',
+    flexDirection: 'column !important',
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -350,6 +353,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '18px 18px 0 0',
+    flexShrink: 0,
   },
   cardImage: {
     width: '100%',
@@ -387,13 +391,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   cardContent: {
     padding: '28px !important',
-    height: '350px',
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'height 0.3s',
-    '&.expanded': {
-      height: 'auto',
-    },
+    display: 'flex !important',
+    flexDirection: 'column !important',
+    flex: 1,
+    minHeight: 0, // Important for flex children
   },
   numberBadge: {
     position: 'absolute !important',
@@ -425,53 +426,58 @@ const useStyles = makeStylesWithTheme((theme) => ({
     marginBottom: '15px',
     transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     boxShadow: '0 8px 25px rgba(42, 43, 106, 0.2)',
+    flexShrink: 0,
+  },
+  titleContainer: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '16px',
+    marginBottom: '12px',
   },
   cardTitle: {
     fontSize: '1.2rem !important',
     fontWeight: '700 !important',
     color: '#2A2B6A !important',
-    marginBottom: '12px !important',
     lineHeight: '1.3 !important',
-    display: '-webkit-box !important',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    minHeight: '62px',
+    margin: '0 !important',
+    flex: 1,
+  },
+  contentArea: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    minHeight: 0,
   },
   cardDescription: {
     fontSize: '0.9rem !important',
     color: '#666 !important',
     lineHeight: '1.5 !important',
-    marginBottom: '15px !important',
+    marginBottom: '12px !important',
     display: '-webkit-box !important',
-    WebkitLineClamp: 3, // reduced to 1 line
+    WebkitLineClamp: 3, // Show 3 lines when collapsed
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    flex: 1,
-    minHeight: '20px', // further reduced
     transition: 'all 0.3s',
     '&.expanded': {
       display: 'block !important',
       WebkitLineClamp: 'unset',
       overflow: 'visible',
       textOverflow: 'unset',
-      minHeight: 'unset',
       whiteSpace: 'normal',
     },
   },
   expandButton: {
     color: '#2A2B6A',
     fontWeight: 600,
-    fontSize: '0.95rem',
+    fontSize: '0.85rem',
     background: 'none',
     border: 'none',
     cursor: 'pointer',
     padding: 0,
-    marginTop: '-10px',
-    marginBottom: '10px',
+    marginBottom: '12px',
     alignSelf: 'flex-start',
+    flexShrink: 0,
     '&:hover': {
       textDecoration: 'underline',
       color: '#FFC614',
@@ -481,9 +487,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     gap: '6px',
-    marginTop: 'auto',
-    maxHeight: '60px',
-    overflow: 'hidden',
+    // marginTop: 'auto', // Push to bottom
+    paddingTop: '2px',
+    flexShrink: 0,
   },
   tag: {
     background: 'rgba(42, 43, 106, 0.08) !important',
@@ -544,10 +550,7 @@ const WhyUseSection = () => {
       description: "Our resume builder analyzes your job role and recommends relevant Gen AI tools like ChatGPT, Midjourney, Figma AI, Bard, and more. Based on your profile, it automatically generates context on how these tools are commonly used—like automating workflows, enhancing design, or improving productivity so you can showcase practical, real-world impact without writing it from scratch.",
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       icon: <AutoAwesome />,
-      tags: ["AI Tools", 
-        "Real-world", 
-        "Automation", 
-        "Productivity"]
+      tags: ["AI Tools", "Real-world", "Automation", "Productivity"]
     },
     {
       title: "Build Projects Straight From Your Resume", 
@@ -573,7 +576,7 @@ const WhyUseSection = () => {
       
       <Container maxWidth="xl">
         <Typography variant="h2" className={classes.sectionTitle}>
-          Why Use <span>Gigaversity Resume Builder?</span>
+          Why Use <span>Giga Resume Builder?</span>
         </Typography>
         <Box className={classes.cardsContainer}>
           {features.map((feature, index) => {
@@ -599,8 +602,8 @@ const WhyUseSection = () => {
                     </IconButton>
                   </Box>
                 </Box>
-                <CardContent className={`${classes.cardContent}${isExpanded ? ' expanded' : ''}`}>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+                <CardContent className={classes.cardContent}>
+                  <Box className={classes.titleContainer}>
                     <Box className={classes.iconContainer}>
                       {feature.icon}
                     </Box>
@@ -608,31 +611,36 @@ const WhyUseSection = () => {
                       {feature.title}
                     </Typography>
                   </Box>
-                  <Typography
-                    className={`${classes.cardDescription}${isExpanded ? ' expanded' : ''}`}
-                  >
-                    {feature.description}
-                  </Typography>
-                  <button
-                    className={classes.expandButton}
-                    tabIndex={-1}
-                    type="button"
-                    onClick={e => {
-                      e.stopPropagation();
-                      setExpandedCard(isExpanded ? null : index);
-                    }}
-                  >
-                    {isExpanded ? 'Show less' : 'Read more'}
-                  </button>
-                  <Box className={classes.tagContainer}>
-                    {feature.tags.map((tag, tagIndex) => (
-                      <Chip
-                        key={tagIndex}
-                        label={tag}
-                        className={classes.tag}
-                        size="small"
-                      />
-                    ))}
+                  
+                  <Box className={classes.contentArea}>
+                    <Typography
+                      className={`${classes.cardDescription}${isExpanded ? ' expanded' : ''}`}
+                    >
+                      {feature.description}
+                    </Typography>
+                    
+                    <button
+                      className={classes.expandButton}
+                      tabIndex={-1}
+                      type="button"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setExpandedCard(isExpanded ? null : index);
+                      }}
+                    >
+                      {isExpanded ? 'Show less' : 'Read more'}
+                    </button>
+                    
+                    <Box className={classes.tagContainer}>
+                      {feature.tags.map((tag, tagIndex) => (
+                        <Chip
+                          key={tagIndex}
+                          label={tag}
+                          className={classes.tag}
+                          size="small"
+                        />
+                      ))}
+                    </Box>
                   </Box>
                 </CardContent>
               </Card>
