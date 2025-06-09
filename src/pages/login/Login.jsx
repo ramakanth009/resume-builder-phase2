@@ -1079,7 +1079,7 @@ const Login = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} elevation={6} variant="filled">
-          {snackbar.message}
+          {snackbar.message}  
         </Alert>
       </Snackbar>
     </Box>
