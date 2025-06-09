@@ -552,7 +552,7 @@ const HeroSection = ({ handleCTAClick }) => {
             Free for all students, with live preview and AI-powered recommendations.
           </Typography> */}
           <Typography variant="subtitle1" className={classes.subtitle}>
-            Whether you're a fresher looking for your first IT job or a professional aiming for a career switch, megaversity’s Resume Builder helps you build a resume that reflects your skills, projects, and growth in a recruiter-approved, ATS-friendly format.
+            Whether you're a fresher looking for your first IT job or a professional aiming for a career switch, Gigaversity’s Resume Builder helps you build a resume that reflects your skills, projects, and growth in a recruiter-approved, ATS-friendly format.
           </Typography>
           <Typography variant="subtitle1" className={classes.subtitle}>
             Choose from resume templates for freshers or experienced professionals, format with ease, and highlight your capabilities like never before — all in one free resume maker.
