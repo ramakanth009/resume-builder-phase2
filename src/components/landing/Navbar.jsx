@@ -1,4 +1,4 @@
-// src/components/landing/Navbar.jsx
+// src/common/Navbar.jsx
 import React, { useState } from 'react';
 import { 
   AppBar, Toolbar, Typography, Button, IconButton, 
@@ -133,12 +133,10 @@ const Navbar = ({ handleCTAClick }) => {
   };
 
   const menuItems = [
-    { label: 'Home', href: '#home' },
-    // { label: 'Features', href: '#features' },
-    // { label: 'Templates', href: '#templates' },
-    { label: 'About', href: '#about' },
+    { label: 'Home', href: '/', isRoute: true },
+    { label: 'About Us', href: '/about', isRoute: true },
+    // { label: 'FAQ', href: '/faq', isRoute: true },
     { label: 'Contact', href: '#contact' },
-    // Removed Login from here
   ];
 
   return (
@@ -151,7 +149,7 @@ const Navbar = ({ handleCTAClick }) => {
             onClick={() => navigate('/')}
             style={{ cursor: 'pointer' }}
           >
-            Gigaversity Resume Builder
+            Giga Resume Builder
           </Typography>
           
           <Box className={classes.navLinks}>
