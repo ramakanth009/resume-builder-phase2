@@ -10,7 +10,7 @@ import './App.css';
 import ResumeBuilderWithGuard from './pages/ResumeBuilderLogoutGuard';
 
 // Import existing pages and components
-import LandingPage from './pages/landingpage/Landingpage';
+import Landingpage from './pages/landingpage/Landingpage';
 import Signup from './pages/signup/Signup';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -174,7 +174,7 @@ const AppContent = () => {
                     currentUser ? (
                       <Navigate to="/resume-builder" replace />
                     ) : (
-                      <LandingPage />
+                      <Landingpage />
                     )
                   } 
                 />
