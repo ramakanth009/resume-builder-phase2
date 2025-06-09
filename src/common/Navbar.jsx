@@ -215,6 +215,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   userButton: {
+    display: 'flex',
+    alignItems: 'center',
     background: 'rgba(0, 0, 0, 0.03)',
     borderRadius: '12px',
     padding: '8px 12px',
