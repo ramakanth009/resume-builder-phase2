@@ -252,8 +252,7 @@
 //   );
 // };
 
-// export default WhyUseSection;
-// src/components/landing/WhyUseSection.jsx
+// export default WhyUseSection;// src/components/landing/WhyUseSection.jsx
 import React, { useState } from 'react';
 import { Box, Typography, Container, Card, CardContent, Chip, IconButton } from '@mui/material';
 import { AutoAwesome, Code, Visibility, ZoomIn } from '@mui/icons-material';
@@ -316,7 +315,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important',
     border: '2px solid #f0f2ff !important',
     boxShadow: '0 8px 30px rgba(42, 43, 106, 0.08) !important',
-    height: '420px !important',
+    height: '520px !important',
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -339,14 +338,15 @@ const useStyles = makeStylesWithTheme((theme) => ({
         transform: 'rotate(360deg) scale(1.1) !important',
         background: 'linear-gradient(135deg, #FFC614, #2A2B6A) !important',
       },
-      '& $playButton': {
-        opacity: 1,
-        transform: 'scale(1) !important',
-      },
+    },
+    '&.expanded': {
+      height: 'auto !important',
+      zIndex: 10,
+      boxShadow: '0 24px 60px rgba(42, 43, 106, 0.22) !important',
     },
   },
   cardImageContainer: {
-    height: '140px',
+    height: '200px',
     position: 'relative',
     overflow: 'hidden',
     borderRadius: '18px 18px 0 0',
@@ -369,9 +369,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    '$featureCard:hover &': {
-      opacity: 1,
-    },
   },
   playButton: {
     width: '50px',
@@ -383,16 +380,20 @@ const useStyles = makeStylesWithTheme((theme) => ({
     justifyContent: 'center',
     color: '#2A2B6A',
     fontSize: '1.5rem',
-    opacity: 0,
+    opacity: 0, // always hidden
     transform: 'scale(0.5)',
     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     boxShadow: '0 5px 20px rgba(0, 0, 0, 0.2)',
   },
   cardContent: {
-    padding: '20px !important',
-    height: '280px',
+    padding: '28px !important',
+    height: '350px',
     display: 'flex',
     flexDirection: 'column',
+    transition: 'height 0.3s',
+    '&.expanded': {
+      height: 'auto',
+    },
   },
   numberBadge: {
     position: 'absolute !important',
@@ -444,12 +445,37 @@ const useStyles = makeStylesWithTheme((theme) => ({
     lineHeight: '1.5 !important',
     marginBottom: '15px !important',
     display: '-webkit-box !important',
-    WebkitLineClamp: 4,
+    WebkitLineClamp: 3, // reduced to 1 line
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     flex: 1,
-    minHeight: '90px',
+    minHeight: '20px', // further reduced
+    transition: 'all 0.3s',
+    '&.expanded': {
+      display: 'block !important',
+      WebkitLineClamp: 'unset',
+      overflow: 'visible',
+      textOverflow: 'unset',
+      minHeight: 'unset',
+      whiteSpace: 'normal',
+    },
+  },
+  expandButton: {
+    color: '#2A2B6A',
+    fontWeight: 600,
+    fontSize: '0.95rem',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    marginTop: '-10px',
+    marginBottom: '10px',
+    alignSelf: 'flex-start',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: '#FFC614',
+    },
   },
   tagContainer: {
     display: 'flex',
@@ -510,6 +536,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
 const WhyUseSection = () => {
   const classes = useStyles();
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [expandedCard, setExpandedCard] = useState(null);
 
   const features = [
     {
@@ -517,7 +544,10 @@ const WhyUseSection = () => {
       description: "Our resume builder analyzes your job role and recommends relevant Gen AI tools like ChatGPT, Midjourney, Figma AI, Bard, and more. Based on your profile, it automatically generates context on how these tools are commonly used—like automating workflows, enhancing design, or improving productivity so you can showcase practical, real-world impact without writing it from scratch.",
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       icon: <AutoAwesome />,
-      tags: ["AI Tools", "Real-world", "Automation", "Productivity"]
+      tags: ["AI Tools", 
+        "Real-world", 
+        "Automation", 
+        "Productivity"]
     },
     {
       title: "Build Projects Straight From Your Resume", 
@@ -541,62 +571,73 @@ const WhyUseSection = () => {
       <Box className={classes.floatingElement} />
       <Box className={classes.floatingElement} />
       
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Typography variant="h2" className={classes.sectionTitle}>
           Why Use <span>Gigaversity Resume Builder?</span>
         </Typography>
-        
         <Box className={classes.cardsContainer}>
-          {features.map((feature, index) => (
-            <Card 
-              key={index}
-              className={classes.featureCard}
-              onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <Box className={classes.numberBadge}>
-                {index + 1}
-              </Box>
-              
-              <Box className={classes.cardImageContainer}>
-                <img 
-                  src={feature.image} 
-                  alt={feature.title}
-                  className={classes.cardImage}
-                />
-                <Box className={classes.imageOverlay}>
-                  <IconButton className={classes.playButton}>
-                    <ZoomIn />
-                  </IconButton>
+          {features.map((feature, index) => {
+            const isExpanded = expandedCard === index;
+            return (
+              <Card
+                key={index}
+                className={`${classes.featureCard}${isExpanded ? ' expanded' : ''}`}
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => setExpandedCard(isExpanded ? null : index)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Box className={classes.cardImageContainer}>
+                  <img
+                    src={feature.image}
+                    alt={feature.title}
+                    className={classes.cardImage}
+                  />
+                  <Box className={classes.imageOverlay}>
+                    <IconButton className={classes.playButton}>
+                      <ZoomIn />
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-              
-              <CardContent className={classes.cardContent}>
-                <Box className={classes.iconContainer}>
-                  {feature.icon}
-                </Box>
-                
-                <Typography className={classes.cardTitle}>
-                  {feature.title}
-                </Typography>
-                
-                <Typography className={classes.cardDescription}>
-                  {feature.description}
-                </Typography>
-                
-                <Box className={classes.tagContainer}>
-                  {feature.tags.map((tag, tagIndex) => (
-                    <Chip 
-                      key={tagIndex}
-                      label={tag}
-                      className={classes.tag}
-                      size="small"
-                    />
-                  ))}
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
+                <CardContent className={`${classes.cardContent}${isExpanded ? ' expanded' : ''}`}>
+                  <Box style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+                    <Box className={classes.iconContainer}>
+                      {feature.icon}
+                    </Box>
+                    <Typography className={classes.cardTitle}>
+                      {feature.title}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    className={`${classes.cardDescription}${isExpanded ? ' expanded' : ''}`}
+                  >
+                    {feature.description}
+                  </Typography>
+                  <button
+                    className={classes.expandButton}
+                    tabIndex={-1}
+                    type="button"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setExpandedCard(isExpanded ? null : index);
+                    }}
+                  >
+                    {isExpanded ? 'Show less' : 'Read more'}
+                  </button>
+                  <Box className={classes.tagContainer}>
+                    {feature.tags.map((tag, tagIndex) => (
+                      <Chip
+                        key={tagIndex}
+                        label={tag}
+                        className={classes.tag}
+                        size="small"
+                      />
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            );
+          })}
         </Box>
       </Container>
     </Box>
