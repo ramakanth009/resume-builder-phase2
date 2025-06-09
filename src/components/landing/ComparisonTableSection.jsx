@@ -5,72 +5,134 @@ import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
-    padding: '6rem 2rem',
-    background: 'linear-gradient(135deg, #1a1a4a 0%, #2d3748 100%)',
+    padding: '2rem 2rem',
+    background: '#fff',
     position: 'relative',
     overflow: 'hidden',
+    // Add SVG grid background as ::before
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 0,
+      background: `url("data:image/svg+xml,%3Csvg width='800' height='600' viewBox='0 0 800 600' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L100 80L200 40L300 120L400 60L500 140L600 100L700 180L800 120' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 200L100 120L200 180L300 100L400 160L500 80L600 140L700 60L800 100' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 400L100 320L200 380L300 300L400 360L500 280L600 340L700 260L800 300' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 600L100 520L200 580L300 500L400 560L500 480L600 540L700 460L800 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 0L0 200L0 400L0 600' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M100 80L100 120L100 320L100 520' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M200 40L200 180L200 380L200 580' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M300 120L300 100L300 300L300 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M400 60L400 160L400 360L400 560' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M500 140L500 80L500 280L500 480' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M600 100L600 140L600 340L600 540' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M700 180L700 60L700 260L700 460' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M800 120L800 100L800 300L800 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3C/svg%3E") repeat`,
+      backgroundSize: 'cover',
+      pointerEvents: 'none',
+      opacity: 1,
+    },
+    zIndex: 1,
+    '@media (max-width: 1200px)': {
+      padding: '5rem 1.5rem',
+    },
     '@media (max-width: 960px)': {
-      padding: '4rem 1.5rem',
+      padding: '4rem 1rem',
     },
     '@media (max-width: 600px)': {
-      padding: '3rem 1rem',
+      padding: '2.5rem 0.5rem',
+    },
+    '@media (max-width: 480px)': {
+      padding: '1.5rem 0.2rem',
+    },
+    '@media (max-width: 375px)': {
+      padding: '1rem 0.1rem',
     },
   },
   container: {
-    maxWidth: '1000px',
+    maxWidth: '1400px',
+    width: '100%',
     margin: '0 auto',
     position: 'relative',
     zIndex: 2,
-  },
-  title: {
-    fontSize: '2.5rem',
-    fontWeight: 700,
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: '3rem',
+    '@media (max-width: 1200px)': {
+      maxWidth: '1000px',
+    },
     '@media (max-width: 960px)': {
-      fontSize: '2rem',
-      marginBottom: '2rem',
+      maxWidth: '100%',
+      padding: '0 0.5rem',
     },
     '@media (max-width: 600px)': {
-      fontSize: '1.8rem',
+      padding: '0',
+    },
+    '@media (max-width: 480px)': {
+      padding: '0',
+    },
+    '@media (max-width: 375px)': {
+      padding: '0',
+    },
+  },
+  title: {
+    // Match WhyUseSection.jsx sectionTitle styles
+    fontSize: '2.5rem !important',
+    fontWeight: '800 !important',
+    color: '#2A2B6A !important',
+    textAlign: 'center',
+    marginBottom: '10px !important',
+    background: '#fff',
+    borderRadius: '18px',
+    display: 'inline-block',
+    padding: '18px 36px',
+    position: 'relative',
+    zIndex: 2,
+    '& span': {
+      color: '#FFC614 !important',
+    },
+    '@media (max-width: 960px)': {
+      fontSize: '2rem !important',
+      marginBottom: '30px !important',
+      padding: '14px 20px',
+    },
+    '@media (max-width: 600px)': {
+      padding: '10px 8px',
+      borderRadius: '12px',
     },
   },
   tableContainer: {
-    background: 'rgba(255, 255, 255, 0.05)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '16px',
+    background: '#fff',
+    borderRadius: '18px',
     overflow: 'hidden',
     marginBottom: '2rem',
+    boxShadow: '0 6px 32px 0 rgba(0,0,0,0.10)',
+    border: '1px solid #e5e7eb',
+    transition: 'box-shadow 0.2s',
+    '&:hover': {
+      boxShadow: '0 10px 40px 0 rgba(0,0,0,0.13)',
+    },
   },
   tableHead: {
-    background: 'linear-gradient(135deg, rgba(255, 198, 20, 0.1) 0%, rgba(255, 198, 20, 0.05) 100%)',
+    background: 'linear-gradient(90deg, #f9fafb 60%, #ffe082 100%)',
   },
   headerCell: {
-    color: 'white',
+    color: '#1a202c',
     fontWeight: 700,
     fontSize: '1.1rem',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-    padding: '1.5rem 1rem',
+    borderBottom: '2px solid #e5e7eb',
+    padding: '1.25rem 1rem',
+    textAlign: 'left',
+    background: 'transparent',
     '@media (max-width: 600px)': {
-      fontSize: '0.9rem',
+      fontSize: '0.95rem',
       padding: '1rem 0.5rem',
     },
   },
   tableRow: {
     '&:nth-of-type(even)': {
-      background: 'rgba(255, 255, 255, 0.02)',
+      background: '#f7fafc',
     },
     '&:hover': {
-      background: 'rgba(255, 255, 255, 0.05)',
+      background: '#fffde7',
     },
+    transition: 'background 0.2s',
   },
   tableCell: {
-    color: '#e2e8f0',
+    color: '#374151',
     fontSize: '1rem',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-    padding: '1.25rem 1rem',
+    borderBottom: '1px solid #e5e7eb',
+    padding: '1.1rem 1rem',
+    textAlign: 'left',
+    verticalAlign: 'middle',
     '@media (max-width: 600px)': {
       fontSize: '0.85rem',
       padding: '1rem 0.5rem',
@@ -78,10 +140,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
   featureCell: {
     fontWeight: 500,
-    color: 'white',
+    color: '#1a202c',
   },
   iconCell: {
-    textAlign: 'center',
+    textAlign: 'left',
+    minWidth: 180,
   },
   successIcon: {
     color: '#10b981',
@@ -98,9 +161,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
   statusText: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
     gap: '0.5rem',
     fontWeight: 500,
+    fontSize: '1rem',
   },
   successText: {
     color: '#10b981',
@@ -124,30 +187,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   backgroundDecor: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 0,
-    opacity: 0.1,
-  },
-  decorCircle: {
-    position: 'absolute',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, rgba(255, 198, 20, 0.1) 0%, rgba(255, 198, 20, 0.05) 100%)',
-  },
-  circle1: {
-    width: '250px',
-    height: '250px',
-    top: '-50px',
-    left: '-50px',
-  },
-  circle2: {
-    width: '180px',
-    height: '180px',
-    bottom: '-40px',
-    right: '-40px',
+    display: 'none', // Hide old decor circles, background now handled by ::before
   },
 }));
 
@@ -221,23 +261,20 @@ const ComparisonTableSection = () => {
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.backgroundDecor}>
-        <Box className={`${classes.decorCircle} ${classes.circle1}`} />
-        <Box className={`${classes.decorCircle} ${classes.circle2}`} />
-      </Box>
-      
       <Box className={classes.container}>
-        <Typography className={classes.title}>
-          Why Giga Resume Builder Stands Out
-        </Typography>
+        <Box display="flex" justifyContent="center" alignItems="center" width="100%" mb={4}>
+          <Typography className={classes.title}>
+            Why Use <span>Giga Resume Builder?</span>
+          </Typography>
+        </Box>
 
         <TableContainer component={Paper} className={classes.tableContainer}>
           <Table>
             <TableHead className={classes.tableHead}>
               <TableRow>
                 <TableCell className={classes.headerCell}>Feature</TableCell>
-                <TableCell className={classes.headerCell} align="center">Giga Resume Builder</TableCell>
-                <TableCell className={classes.headerCell} align="center">Other Resume Builders</TableCell>
+                <TableCell className={classes.headerCell}>Giga Resume Builder</TableCell>
+                <TableCell className={classes.headerCell}>Other Resume Builders</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -258,11 +295,11 @@ const ComparisonTableSection = () => {
           </Table>
         </TableContainer>
 
-        <Box className={classes.ctaContainer}>
+        {/* <Box className={classes.ctaContainer}>
           <Typography className={classes.ctaText}>
             Access All these features for Free
           </Typography>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

@@ -1,16 +1,29 @@
 import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, CardMedia, Chip } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import makeStylesWithTheme from '../../styles/makeStylesAdapter';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { Pagination } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
+import Template1 from "../../assets/templates/ramakanth_kannuri_page-0001.jpg"
+import Template2 from "../../assets/templates/ramakanth_kannuri_page-0002.jpg"
+import Template3 from "../../assets/templates/ramakanth_kannuri_page-0003.jpg"
+import Template4 from "../../assets/templates/ramakanth_kannuri_page-0004.jpg"
+import Template5 from "../../assets/templates/ramakanth_kannuri_page-0005.jpg"
 
 const useStyles = makeStylesWithTheme((theme) => ({
   root: {
-    padding: '6rem 2rem',
+    padding: '2rem 2rem',
     background: 'linear-gradient(135deg, #0f0f3a 0%, #1a1a4a 100%)',
     position: 'relative',
     overflow: 'hidden',
     '@media (max-width: 960px)': {
       padding: '4rem 1.5rem',
-    },
+    }, 
     '@media (max-width: 600px)': {
       padding: '3rem 1rem',
     },
@@ -51,116 +64,54 @@ const useStyles = makeStylesWithTheme((theme) => ({
       marginBottom: '2rem',
     },
   },
-  templatesGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '2rem',
-    '@media (max-width: 960px)': {
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: '1.5rem',
-    },
-    '@media (max-width: 600px)': {
-      gridTemplateColumns: '1fr',
-      gap: '1rem',
-    },
+  swiperContainer: {
+    width: '100%',
+    padding: '10px 0',
   },
-  templateCard: {
-    background: 'rgba(255, 255, 255, 0.05)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+  templateSlide: {
+    width: '300px',
+    height: '400px',
     borderRadius: '16px',
     overflow: 'hidden',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-    '&:hover': {
-      transform: 'translateY(-8px)',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-      border: '1px solid rgba(255, 198, 20, 0.3)',
-    },
+    transition: 'transform 0.3s ease',
+    
   },
   templateImage: {
-    height: 200,
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontSize: '3rem',
-    fontWeight: 700,
-    position: 'relative',
-  },
-  templateContent: {
-    padding: '1.5rem',
-    background: 'rgba(255, 255, 255, 0.02)',
-  },
-  templateName: {
-    fontSize: '1.3rem',
-    fontWeight: 600,
-    color: 'white',
-    marginBottom: '0.5rem',
-  },
-  templateDescription: {
-    fontSize: '0.95rem',
-    color: '#a0aec0',
-    lineHeight: 1.5,
-  },
-  recommendedBadge: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    color: 'white',
-    fontWeight: 600,
-    fontSize: '0.75rem',
-    zIndex: 10,
-  },
-  backgroundDecor: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
     width: '100%',
     height: '100%',
-    zIndex: 0,
-    opacity: 0.1,
-  },
-  decorCircle: {
-    position: 'absolute',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, rgba(255, 198, 20, 0.1) 0%, rgba(255, 198, 20, 0.05) 100%)',
-  },
-  circle1: {
-    width: '300px',
-    height: '300px',
-    top: '-100px',
-    right: '-100px',
-  },
-  circle2: {
-    width: '200px',
-    height: '200px',
-    bottom: '-50px',
-    left: '-50px',
+    objectFit: 'cover',
+    borderRadius: '16px',
+    border: '2px solid rgba(255, 255, 255, 0.1)',
   },
 }));
 
 const templatesData = [
   {
-    id: 'creative',
-    name: 'Creative Resume Template',
-    description: 'A creative and visually appealing template for creative professionals',
-    isRecommended: false,
+    id: 'template1',
+    image: Template1,
+    name: 'Professional Template'
   },
   {
-    id: 'professional',
-    name: 'Professional Resume Template',
-    description: 'A clean and professional template for business professionals',
-    isRecommended: false,
+    id: 'template2',
+    image: Template2,
+    name: 'Creative Template'
   },
   {
-    id: 'college',
-    name: 'College Resume Template',
-    description: 'Perfect for students and recent graduates',
-    isRecommended: false,
+    id: 'template3',
+    image: Template3,
+    name: 'Modern Template'
   },
+  {
+    id: 'template4',
+    image: Template4,
+    name: 'Modern Template'
+  },
+  {
+    id: 'template5',
+    image: Template5,
+    name: 'Modern Template'
+  },
+  // Add more templates as needed
 ];
 
 const TemplatesGallerySection = () => {
@@ -168,11 +119,6 @@ const TemplatesGallerySection = () => {
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.backgroundDecor}>
-        <Box className={`${classes.decorCircle} ${classes.circle1}`} />
-        <Box className={`${classes.decorCircle} ${classes.circle2}`} />
-      </Box>
-      
       <Box className={classes.container}>
         <Typography className={classes.title}>
           Explore Our Collection of Professional Templates
@@ -182,29 +128,30 @@ const TemplatesGallerySection = () => {
           A wide range of professionally designed, ATS-compatible templates tailored for different roles, industries, and experience levels.
         </Typography>
 
-        <Box className={classes.templatesGrid}>
-          {templatesData.map((template) => (
-            <Card key={template.id} className={classes.templateCard}>
-              <Box className={classes.templateImage}>
-                {template.isRecommended && (
-                  <Chip 
-                    label="Recommended" 
-                    className={classes.recommendedBadge}
-                    size="small"
-                  />
-                )}
-                {template.name.charAt(0)}
-              </Box>
-              <CardContent className={classes.templateContent}>
-                <Typography className={classes.templateName}>
-                  {template.name}
-                </Typography>
-                <Typography className={classes.templateDescription}>
-                  {template.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
+        <Box className={classes.swiperContainer}>
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={30}
+            slidesPerView={'auto'}
+            centeredSlides={true}
+            loop={true}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            // pagination={{ clickable: true }}
+            navigation
+          >
+            {templatesData.map((template) => (
+              <SwiperSlide key={template.id} className={classes.templateSlide}>
+                <img 
+                  src={template.image}
+                  alt={template.name}
+                  className={classes.templateImage}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </Box>
       </Box>
     </Box>

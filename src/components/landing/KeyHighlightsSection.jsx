@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, Container, useTheme, useMediaQuery } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
@@ -13,9 +13,8 @@ import makeStylesWithTheme from '../../styles/makeStylesAdapter';
 const useStyles = makeStylesWithTheme((theme) => ({
   section: {
     padding: '100px 0',
-    backgroundColor: '#0a0a0a',
-    position: 'relative',
-    overflow: 'hidden',
+    // Use the same background as HeroSection.jsx heroContainer:
+    background: 'linear-gradient(135deg, #101138 0%, #2A2B6A 100%)',
     '@media (max-width: 960px)': {
       padding: '80px 0',
     },
@@ -50,16 +49,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   brandHighlight: {
     color: '#ffc614',
     position: 'relative',
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: '-5px',
-      left: '0',
-      width: '100%',
-      height: '3px',
-      backgroundColor: '#ffc614',
-      borderRadius: '2px',
-    },
+    
   },
   subtitle: {
     fontSize: '1.2rem',
@@ -72,83 +62,62 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   highlightsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '30px',
-    maxWidth: '1200px',
+    display: 'flex',
+    overflow: 'hidden',
+    position: 'relative',
+    width: '100vw',
     margin: '0 auto',
-    '@media (max-width: 960px)': {
-      gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-      gap: '25px',
+    padding: '20px 0',
+    marginLeft: 'calc(-50vw + 50%)',
+    marginRight: 'calc(-50vw + 50%)',
+  },
+  slider: {
+    display: 'flex',
+    gap: '40px',
+    animation: '$slide 40s linear infinite', // Slowed down from 20s to 40s
+    '&:hover': {
+      animationPlayState: 'paused',
     },
-    '@media (max-width: 600px)': {
-      gridTemplateColumns: '1fr',
-      gap: '20px',
+  },
+  '@keyframes slide': {
+    '0%': {
+      transform: 'translateX(0)',
+    },
+    '100%': {
+      transform: 'translateX(-50%)', // Changed from -100% to -50% for smoother loop
     },
   },
   highlightCard: {
-    backgroundColor: '#1a1a1a',
+    flex: '0 0 300px',
+    background: 'rgba(255,255,255,0.10)',
     borderRadius: '20px',
     padding: '40px 30px',
     position: 'relative',
-    cursor: 'pointer',
-    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    border: '2px solid transparent',
+    border: '1.5px solid rgba(255,255,255,0.18)',
     overflow: 'hidden',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'linear-gradient(135deg, #ffc614, #ff8c00)',
-      opacity: 0,
-      transition: 'opacity 0.3s ease',
-      zIndex: 1,
-    },
-    '&:hover': {
-      transform: 'translateY(-10px) scale(1.02)',
-      borderColor: '#ffc614',
-      boxShadow: '0 20px 40px rgba(255, 198, 20, 0.2)',
-      '&::before': {
-        opacity: 0.05,
-      },
-      '& $iconContainer': {
-        transform: 'scale(1.1) rotate(5deg)',
-        backgroundColor: '#ffc614',
-        '& svg': {
-          color: '#000000',
-        },
-      },
-      '& $highlightTitle': {
-        color: '#ffc614',
-      },
-      '& $decorativeElement': {
-        transform: 'scale(1.2) rotate(180deg)',
-        opacity: 0.8,
-      },
-    },
+    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)',
+    backdropFilter: 'blur(8px)',
     '@media (max-width: 600px)': {
       padding: '30px 25px',
+      flex: '0 0 250px',
     },
   },
   iconContainer: {
     width: '70px',
     height: '70px',
-    backgroundColor: '#2a2a2a',
+    background: '#fff',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: '25px',
-    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 12px 0 rgba(255, 198, 20, 0.15)',
+    border: '2px solid #ffc614',
     position: 'relative',
     zIndex: 2,
     '& svg': {
       fontSize: '32px',
       color: '#ffc614',
-      transition: 'color 0.3s ease',
     },
     '@media (max-width: 600px)': {
       width: '60px',
@@ -161,11 +130,12 @@ const useStyles = makeStylesWithTheme((theme) => ({
   highlightTitle: {
     fontSize: '1.3rem',
     fontWeight: 700,
-    color: '#ffffff',
+    color: '#fff',
     marginBottom: '0',
     transition: 'color 0.3s ease',
     position: 'relative',
     zIndex: 2,
+    letterSpacing: '0.01em',
     '@media (max-width: 600px)': {
       fontSize: '1.1rem',
     },
@@ -176,24 +146,11 @@ const useStyles = makeStylesWithTheme((theme) => ({
     right: '20px',
     width: '40px',
     height: '40px',
-    backgroundColor: '#ffc614',
-    borderRadius: '50%',
-    opacity: 0.1,
-    transition: 'all 0.4s ease',
+    pointerEvents: 'none',
     zIndex: 1,
   },
   backgroundPattern: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundImage: `
-      radial-gradient(circle at 20% 20%, rgba(255, 198, 20, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(255, 198, 20, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 60%, rgba(255, 198, 20, 0.05) 0%, transparent 50%)
-    `,
-    zIndex: 1,
+    display: 'none',
   },
   statsContainer: {
     display: 'flex',
@@ -232,7 +189,6 @@ const KeyHighlightsSection = () => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [hoveredCard, setHoveredCard] = useState(null);
 
   const highlights = [
     { 
@@ -279,8 +235,6 @@ const KeyHighlightsSection = () => {
 
   return (
     <Box className={classes.section}>
-      <Box className={classes.backgroundPattern} />
-      
       <Container maxWidth="lg" className={classes.container}>
         <Box className={classes.titleSection}>
           <Typography variant="h2" className={classes.mainTitle}>
@@ -293,41 +247,20 @@ const KeyHighlightsSection = () => {
         </Box>
 
         <Box className={classes.highlightsGrid}>
-          {highlights.map((highlight, index) => (
-            <Box
-              key={index}
-              className={classes.highlightCard}
-              onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{
-                animationDelay: `${highlight.delay}s`,
-              }}
-            >
-              <Box className={classes.iconContainer}>
-                {highlight.icon}
+          <Box className={classes.slider}>
+            {[...highlights, ...highlights].map((highlight, index) => (
+              <Box
+                key={index}
+                className={classes.highlightCard}
+              >
+                <Box className={classes.iconContainer}>
+                  {highlight.icon}
+                </Box>
+                <Typography className={classes.highlightTitle}>
+                  {highlight.title}
+                </Typography>
               </Box>
-              
-              <Typography className={classes.highlightTitle}>
-                {highlight.title}
-              </Typography>
-              
-              <Box className={classes.decorativeElement} />
-            </Box>
-          ))}
-        </Box>
-
-        <Box className={classes.statsContainer}>
-          <Box className={classes.statItem}>
-            <Typography variant="h3">10K+</Typography>
-            <Typography>Happy Users</Typography>
-          </Box>
-          <Box className={classes.statItem}>
-            <Typography variant="h3">95%</Typography>
-            <Typography>Success Rate</Typography>
-          </Box>
-          <Box className={classes.statItem}>
-            <Typography variant="h3">24/7</Typography>
-            <Typography>Support</Typography>
+            ))}
           </Box>
         </Box>
       </Container>

@@ -1,258 +1,4 @@
 // // src/components/landing/WhyUseSection.jsx
-// import React from 'react';
-// import { Box, Typography, Container, Chip } from '@mui/material';
-// import makeStylesWithTheme from '../../styles/makeStylesAdapter';
-
-// const useStyles = makeStylesWithTheme((theme) => ({
-//   featuresSection: {
-//     background: 'white',
-//     padding: '80px 0',
-//     position: 'relative',
-//     zIndex: 2,
-//     '&::before': {
-//       content: '""',
-//       position: 'absolute',
-//       top: '-50px',
-//       left: 0,
-//       width: '100%',
-//       height: '100px',
-//       background: 'white',
-//       transform: 'skewY(-2deg)',
-//       zIndex: 1,
-//     },
-//     '@media (max-width: 960px)': {
-//       padding: '60px 0',
-//     },
-//     '@media (max-width: 600px)': {
-//       padding: '40px 0',
-//     },
-//   },
-//   sectionTitle: {
-//     fontSize: '3rem !important',
-//     fontWeight: 'bold !important',
-//     color: '#2A2B6A !important',
-//     textAlign: 'center',
-//     marginBottom: '60px !important',
-//     position: 'relative',
-//     zIndex: 2,
-//     '@media (max-width: 960px)': {
-//       fontSize: '2.5rem !important',
-//       marginBottom: '50px !important',
-//     },
-//     '@media (max-width: 600px)': {
-//       fontSize: '2rem !important',
-//       marginBottom: '40px !important',
-//     },
-//     '@media (max-width: 480px)': {
-//       fontSize: '1.8rem !important',
-//     },
-//   },
-//   featureBox: {
-//     display: 'flex',
-//     alignItems: 'center',
-//     gap: '60px',
-//     marginBottom: '80px',
-//     position: 'relative',
-//     zIndex: 2,
-//     '&:nth-child(even)': {
-//       flexDirection: 'row-reverse',
-//     },
-//     '@media (max-width: 960px)': {
-//       flexDirection: 'column !important',
-//       gap: '40px',
-//       marginBottom: '60px',
-//       textAlign: 'center',
-//     },
-//     '@media (max-width: 600px)': {
-//       gap: '30px',
-//       marginBottom: '40px',
-//     },
-//   },
-//   featureContent: {
-//     flex: 1,
-//     '@media (max-width: 960px)': {
-//       order: 2,
-//     },
-//   },
-//   featureVisual: {
-//     flex: 1,
-//     height: '350px',
-//     borderRadius: '20px',
-//     overflow: 'hidden',
-//     position: 'relative',
-//     boxShadow: '0 15px 40px rgba(0, 0, 0, 0.1)',
-//     '@media (max-width: 960px)': {
-//       order: 1,
-//       height: '280px',
-//       width: '100%',
-//     },
-//     '@media (max-width: 600px)': {
-//       height: '220px',
-//     },
-//   },
-//   featureImage: {
-//     width: '100%',
-//     height: '100%',
-//     objectFit: 'cover',
-//     transition: 'transform 0.3s ease',
-//     '&:hover': {
-//       transform: 'scale(1.05)',
-//     },
-//   },
-//   featureTitle: {
-//     fontSize: '1.8rem !important',
-//     fontWeight: 'bold !important',
-//     color: '#2A2B6A !important',
-//     marginBottom: '20px !important',
-//     '@media (max-width: 960px)': {
-//       fontSize: '1.6rem !important',
-//     },
-//     '@media (max-width: 600px)': {
-//       fontSize: '1.4rem !important',
-//     },
-//     '@media (max-width: 480px)': {
-//       fontSize: '1.3rem !important',
-//     },
-//   },
-//   featureDescription: {
-//     fontSize: '1.1rem !important',
-//     color: '#666 !important',
-//     lineHeight: '1.7 !important',
-//     marginBottom: '25px !important',
-//     '@media (max-width: 960px)': {
-//       fontSize: '1rem !important',
-//     },
-//     '@media (max-width: 600px)': {
-//       fontSize: '0.95rem !important',
-//     },
-//   },
-//   exampleChips: {
-//     display: 'flex',
-//     flexWrap: 'wrap',
-//     gap: '10px',
-//     marginTop: '20px',
-//     '@media (max-width: 600px)': {
-//       gap: '8px',
-//     },
-//   },
-//   exampleChip: {
-//     backgroundColor: 'rgba(42, 43, 106, 0.1) !important',
-//     color: '#2A2B6A !important',
-//     fontWeight: '600 !important',
-//     borderRadius: '20px !important',
-//     fontSize: '0.85rem !important',
-//     '@media (max-width: 600px)': {
-//       fontSize: '0.8rem !important',
-//     },
-//   },
-// }));
-
-// const WhyUseSection = () => {
-//   const classes = useStyles();
-
-//   const features = [
-//     {
-//       title: "Gen AI Skill Suggestions With Real-World Use Cases",
-//       description: "Our resume builder analyzes your job role and recommends relevant Gen AI tools like ChatGPT, Midjourney, Figma AI, Bard, and more. Based on your profile, it automatically generates context on how these tools are commonly used—like automating workflows, enhancing design, or improving productivity so you can showcase practical, real-world impact without writing it from scratch.",
-//       // examples: ["ChatGPT for content creation", "Midjourney for design concepts", "Claude for code review"],
-//       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-//     },
-//     {
-//       title: "Build Projects Straight From Your Resume",
-//       description: " Gigaversity’s resume builder recommends job-specific projects aligned with your target role such as full stack development, data science, UI/UX, or product management. You get direct access to GitHub repositories containing real-time projects with step-by-step instructions and code. This allows you to build relevant projects and showcase practical skills directly from your resume, enhancing your credibility with employers.",
-//       // examples: ["E-commerce platforms", "Data analytics dashboards", "Mobile app prototypes"],
-//       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-//     },
-//     {
-//       title: "Smart Resume Content That Writes Itself",
-//       description: "Easily create a standout resume with AI-powered suggestions tailored to your job role. Get pre-written summaries, impactful bullet points, internship descriptions, and relevant keywords—all optimized for ATS systems. Especially helpful for freshers, the content is structured to highlight your strengths and match recruiter expectations, ensuring better visibility and higher chances of selection.",
-//       // examples: ["Role-based summaries", "Impact-driven bullet points", "Industry keywords"],
-//       image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-//     },
-//     // {
-//     //   title: "ATS-Friendly Templates & Formats",
-//     //   description: [
-//     //     "Designed by experts with recruiter input",
-//     //     "Clean and modern with a correct resume format for freshers and professionals",
-//     //     "Tested for compatibility with leading ATS tools",
-//     //     "So your resume doesn’t get rejected by a bot before a human even sees it."
-//     //   ],
-//     //   // examples: ["Recruiter-approved layouts", "ATS compatibility tested", "Professional formatting"],
-//     //   image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-//     // }
-//   ];
-
-//   return (
-//     <Box className={classes.featuresSection}>
-//       <Container maxWidth="lg">
-//         <Typography variant="h2" className={classes.sectionTitle}>
-//           Why Use <span style={{ color: '#FFC614' }}>Gigaversity Resume Builder?</span>
-//         </Typography>
-        
-//         {features.map((feature, index) => (
-//           <Box key={index} className={classes.featureBox}>
-//             <Box className={classes.featureContent}>
-//               <Typography variant="h3" className={classes.featureTitle}>
-//                 {index + 1}. {feature.title}
-//               </Typography>
-//               {/* Render description as points if it's an array */}
-//               {Array.isArray(feature.description) ? (
-//                 <ul style={{ 
-//                   fontSize: '1.1rem', 
-//                   color: '#666', 
-//                   lineHeight: '1.7', 
-//                   marginBottom: 25, 
-//                   paddingLeft: 24,
-//                   listStyleType: 'disc',
-//                   listStylePosition: 'outside',
-//                 }}>
-//                   {feature.description.map((point, i) => (
-//                     <li 
-//                       key={i} 
-//                       style={{ 
-//                         marginBottom: 8, 
-//                         color: '#666', 
-//                         // Use a pseudo-element for dot color if possible, else use marker CSS
-//                         // Modern browsers support ::marker
-//                         // The following is for inline style; for full support, use CSS below
-//                       }}
-//                     >
-//                       <span style={{
-//                         color: '#666',
-//                       }}>{point}</span>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               ) : (
-//                 <Typography variant="body1" className={classes.featureDescription}>
-//                   {feature.description}
-//                 </Typography>
-//               )}
-//               {/* <Box className={classes.exampleChips}>
-//                 {feature.examples.map((example, idx) => (
-//                   <Chip 
-//                     key={idx}
-//                     label={example}
-//                     className={classes.exampleChip}
-//                   />
-//                 ))}
-//               </Box> */}
-//             </Box>
-//             <Box className={classes.featureVisual}>
-//               <img 
-//                 src={feature.image} 
-//                 alt={feature.title}
-//                 className={classes.featureImage}
-//               />
-//             </Box>
-//           </Box>
-//         ))}
-//       </Container>
-//     </Box>
-//   );
-// };
-
-// export default WhyUseSection;// src/components/landing/WhyUseSection.jsx
 // src/components/landing/WhyUseSection.jsx
 import React, { useState } from 'react';
 import { Box, Typography, Container, Card, CardContent, Chip, IconButton } from '@mui/material';
@@ -268,6 +14,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     minHeight: '100vh',
     display: 'flex',
     alignItems: 'center',
+    zIndex: 1, // Ensure main content is above background
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -275,7 +22,10 @@ const useStyles = makeStylesWithTheme((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%232A2B6A" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat',
+      zIndex: -1, // Move background behind everything
+      background: `url("data:image/svg+xml,%3Csvg width='800' height='600' viewBox='0 0 800 600' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L100 80L200 40L300 120L400 60L500 140L600 100L700 180L800 120' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 200L100 120L200 180L300 100L400 160L500 80L600 140L700 60L800 100' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 400L100 320L200 380L300 300L400 360L500 280L600 340L700 260L800 300' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 600L100 520L200 580L300 500L400 560L500 480L600 540L700 460L800 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M0 0L0 200L0 400L0 600' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M100 80L100 120L100 320L100 520' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M200 40L200 180L200 380L200 580' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M300 120L300 100L300 300L300 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M400 60L400 160L400 360L400 560' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M500 140L500 80L500 280L500 480' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M600 100L600 140L600 340L600 540' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M700 180L700 60L700 260L700 460' stroke='%23F3F3F3' stroke-width='1'/%3E%3Cpath d='M800 120L800 100L800 300L800 500' stroke='%23F3F3F3' stroke-width='1'/%3E%3C/svg%3E") repeat`,
+      backgroundSize: 'cover',
+      pointerEvents: 'none',
     },
   },
   sectionTitle: {
@@ -284,12 +34,24 @@ const useStyles = makeStylesWithTheme((theme) => ({
     color: '#2A2B6A !important',
     textAlign: 'center',
     marginBottom: '40px !important',
+    background: '#fff',
+    borderRadius: '18px',
+
+    display: 'inline-block',
+    padding: '18px 36px',
+    position: 'relative',
+    zIndex: 2,
     '& span': {
       color: '#FFC614 !important',
     },
     '@media (max-width: 960px)': {
       fontSize: '2rem !important',
       marginBottom: '30px !important',
+      padding: '14px 20px',
+    },
+    '@media (max-width: 600px)': {
+      padding: '10px 8px',
+      borderRadius: '12px',
     },
   },
   cardsContainer: {
@@ -575,9 +337,11 @@ const WhyUseSection = () => {
       <Box className={classes.floatingElement} />
       
       <Container maxWidth="xl">
-        <Typography variant="h2" className={classes.sectionTitle}>
-          Why Use <span>Giga Resume Builder?</span>
-        </Typography>
+        <Box display="flex" justifyContent="center" alignItems="center" width="100%" mb={4}>
+          <Typography variant="h2" className={classes.sectionTitle}>
+            Why Use <span>Giga Resume Builder?</span>
+          </Typography>
+        </Box>
         <Box className={classes.cardsContainer}>
           {features.map((feature, index) => {
             const isExpanded = expandedCard === index;
