@@ -153,13 +153,13 @@ const WhyUseSection = () => {
   const features = [
     {
       title: "Gen AI Skill Suggestions With Real-World Use Cases",
-      description: "Our resume builder analyzes your job role and recommends relevant Gen AI tools like ChatGPT, Midjourney, Figma AI, Bard, and more. Based on your profile, it automatically generates context on how these tools are commonly used—like automating workflows, enhancing design, or improving productivity—so you can showcase practical, real-world impact without writing it from scratch.",
+      description: "Our resume builder analyzes your job role and recommends relevant Gen AI tools like ChatGPT, Midjourney, Figma AI, Bard, and more. Based on your profile, it automatically generates context on how these tools are commonly used—like automating workflows, enhancing design, or improving productivity so you can showcase practical, real-world impact without writing it from scratch.",
       // examples: ["ChatGPT for content creation", "Midjourney for design concepts", "Claude for code review"],
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     },
     {
       title: "Build Projects Straight From Your Resume",
-      description: " Gigaversity’s resume builder recommends job-specific projects aligned with your target role—such as full stack development, data science, UI/UX, or product management. You get direct access to GitHub repositories containing real-time projects with step-by-step instructions and code. This allows you to build relevant projects and showcase practical skills directly from your resume, enhancing your credibility with employers.",
+      description: " Gigaversity’s resume builder recommends job-specific projects aligned with your target role such as full stack development, data science, UI/UX, or product management. You get direct access to GitHub repositories containing real-time projects with step-by-step instructions and code. This allows you to build relevant projects and showcase practical skills directly from your resume, enhancing your credibility with employers.",
       // examples: ["E-commerce platforms", "Data analytics dashboards", "Mobile app prototypes"],
       image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     },
