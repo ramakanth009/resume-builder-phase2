@@ -294,25 +294,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Register function that passes through backend errors
-  const register = async (name, email, password) => {
-    setLoading(true);
+// Register function that passes through backend errors
+const register = async (name, email, phone, password) => {
+  setLoading(true);
+  
+  try {
+    const response = await registerUser({ name, email, phone, password });
     
-    try {
-      const response = await registerUser({ name, email, password });
-      
-      if (response.status === 'success') {
-        return response;
-      } else {
-        throw new Error(response.message || 'Registration failed');
-      }
-    } catch (error) {
-      // Pass through the backend error directly
-      throw error;
-    } finally {
-      setLoading(false);
+    if (response.status === 'success') {
+      return response;
+    } else {
+      throw new Error(response.message || 'Registration failed');
     }
-  };
+  } catch (error) {
+    // Pass through the backend error directly
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+};
   
   // Logout function
   const logout = async () => {
