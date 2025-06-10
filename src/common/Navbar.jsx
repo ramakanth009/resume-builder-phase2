@@ -549,7 +549,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         </Button>
                       </Tooltip>
                       
-                      <Tooltip title="Load sample resume data" arrow>
+                      {/* <Tooltip title="Load sample resume data" arrow>
                         <Button
                           className={`${classes.navButton} ${classes.dummyDataButton}`}
                           onClick={onLoadDummyData}
@@ -557,7 +557,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                         >
                           Load Demo Data
                         </Button>
-                      </Tooltip>
+                      </Tooltip> */}
                     </>
                   )}
                 </>
@@ -689,7 +689,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                     </Button>
                   </ListItem>
                   
-                  <ListItem disablePadding>
+                  {/* <ListItem disablePadding>
                     <Button
                       className={classes.drawerButton}
                       onClick={handleLoadDummyData}
@@ -697,7 +697,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                     >
                       Load Demo Data
                     </Button>
-                  </ListItem>
+                  </ListItem> */}
                 </>
               )}
               

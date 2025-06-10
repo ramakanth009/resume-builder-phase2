@@ -22,7 +22,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { generateResume, getResumeById, updateResume } from "../utils/api";
 import { adaptGeneratedResume } from "../utils/resumeAdapter";
 import { generateResumePDF } from "../utils/pdfUtils";
-import { dummyResumes } from "../data/dummyResumeData";
+// import { dummyResumes } from "../data/dummyResumeData";
 
 // Section Components
 import PersonalInfoSection from "../components/resumeBuilderComponents/PersonalInfoSection";
@@ -911,15 +911,15 @@ const ResumeBuilder = () => {
   const hasGeneratedResume = generatedResume !== null;
 
   // Handler for loading dummy data
-  const handleLoadDummyData = () => {
-    const dummyData = dummyResumes[0];
-    setResumeData(dummyData);
-    setSnackbar({
-      open: true,
-      message: "Demo data loaded successfully!",
-      severity: "success",
-    });
-  };
+  // const handleLoadDummyData = () => {
+  //   const dummyData = dummyResumes[0];
+  //   setResumeData(dummyData);
+  //   setSnackbar({
+  //     open: true,
+  //     message: "Demo data loaded successfully!",
+  //     severity: "success",
+  //   });
+  // };
 
   // Render current step content
   const getStepContent = (step) => {
@@ -1055,7 +1055,7 @@ const ResumeBuilder = () => {
       <Navbar
         currentPage="resume-builder"
         onTemplateClick={handleOpenTemplateDialog}
-        onLoadDummyData={handleLoadDummyData}
+        // onLoadDummyData={handleLoadDummyData}
         hideLogo={true} // Hide logo in navbar since it's in the sidebar
       />
 
