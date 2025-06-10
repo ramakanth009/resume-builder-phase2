@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
   CircularProgress,
   Fade,
   IconButton,
@@ -12,40 +12,38 @@ import {
   Alert,
   Link as MuiLink,
   Slide,
-  Divider
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useTheme, useMediaQuery } from '@mui/material';
-import { useAuth } from '../../contexts/AuthContext';
-import { forgotPassword } from '../../utils/api';
-import { useStyles } from './Login.styles';
-import LoginRightSection from './LoginRightSection';
+  Divider,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useTheme, useMediaQuery } from "@mui/material";
+import { useAuth } from "../../contexts/AuthContext";
+import { forgotPassword } from "../../utils/api";
+import { useStyles } from "./Login.styles";
+import LoginRightSection from "./LoginRightSection";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import GoogleIcon from "@mui/icons-material/Google";
-import GigaLogo from '../../assets/giga-loogo.svg';
+import GigaLogo from "../../assets/giga-loogo.svg";
 
 const Login = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { login, loginWithGoogle } = useAuth();
 
-
-  
   // View states
-  const [viewMode, setViewMode] = useState('login'); // 'login' or 'forgot-password'
+  const [viewMode, setViewMode] = useState("login"); // 'login' or 'forgot-password'
 
   // Login form data
   const [loginFormData, setLoginFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   // Forgot password form data
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isEmailSent, setIsEmailSent] = useState(false);
 
   // UI states
@@ -55,10 +53,10 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: '',
-    severity: 'error',
+    message: "",
+    severity: "error",
   });
-  
+
   // Feature items with staggered animation
   const featureItems = [
     "Free for all students",
@@ -75,7 +73,7 @@ const Login = () => {
     const timer = setTimeout(() => {
       featureItems.forEach((_, index) => {
         setTimeout(() => {
-          setVisibleFeatures(prev => [...prev, index]);
+          setVisibleFeatures((prev) => [...prev, index]);
         }, index * 150);
       });
     }, 800);
@@ -95,12 +93,12 @@ const Login = () => {
       ...loginFormData,
       [name]: value,
     });
-    
+
     // Clear errors when user modifies form
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: '',
+        [name]: "",
       });
     }
   };
@@ -109,15 +107,15 @@ const Login = () => {
   const handleForgotPasswordEmailChange = (e) => {
     const value = e.target.value;
     setForgotPasswordEmail(value);
-    
+
     // Clear email error when user modifies input
     if (errors.email) {
       setErrors({
         ...errors,
-        email: '',
+        email: "",
       });
     }
-    
+
     // Reset success state if user modifies email after success
     if (isEmailSent) {
       setIsEmailSent(false);
@@ -127,26 +125,27 @@ const Login = () => {
   // Handle login submission
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    
+
     setIsLoading(true);
     setErrors({});
-    
+
     try {
       const response = await login(loginFormData.email, loginFormData.password);
-      
-      if (response && response.status === 'success') {
-        navigate('/resume-builder');
+
+      if (response && response.status === "success") {
+        navigate("/resume-builder");
       } else {
-        throw new Error(response?.message || 'Login failed. Please try again.');
+        throw new Error(response?.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      const errorMessage = error.message || 'Invalid email or password. Please try again.';
+      const errorMessage =
+        error.message || "Invalid email or password. Please try again.";
       setErrors({ general: errorMessage });
-      
+
       setSnackbar({
         open: true,
         message: errorMessage,
-        severity: 'error',
+        severity: "error",
       });
     } finally {
       setIsLoading(false);
@@ -157,7 +156,7 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     setErrors({});
-    
+
     try {
       await loginWithGoogle();
       // The actual navigation will be handled by the OAuth callback
@@ -165,8 +164,8 @@ const Login = () => {
       setIsGoogleLoading(false);
       setSnackbar({
         open: true,
-        message: error.message || 'Google login failed. Please try again.',
-        severity: 'error',
+        message: error.message || "Google login failed. Please try again.",
+        severity: "error",
       });
     }
   };
@@ -174,41 +173,44 @@ const Login = () => {
   // Handle forgot password submission
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate email format
     if (!forgotPasswordEmail.trim()) {
-      setErrors({ email: 'Email address is required' });
+      setErrors({ email: "Email address is required" });
       return;
     }
-    
+
     if (!validateEmail(forgotPasswordEmail)) {
-      setErrors({ email: 'Please enter a valid email address' });
+      setErrors({ email: "Please enter a valid email address" });
       return;
     }
-    
+
     setIsLoading(true);
     setErrors({});
-    
+
     try {
-      const response = await forgotPassword(forgotPasswordEmail.trim().toLowerCase());
-      
-      if (response && response.status === 'success') {
+      const response = await forgotPassword(
+        forgotPasswordEmail.trim().toLowerCase()
+      );
+
+      if (response && response.status === "success") {
         setIsEmailSent(true);
         setSnackbar({
           open: true,
-          message: 'Password reset instructions sent! Check your email.',
-          severity: 'success',
+          message: "Password reset instructions sent! Check your email.",
+          severity: "success",
         });
       } else {
-        throw new Error(response?.message || 'Failed to send reset email');
+        throw new Error(response?.message || "Failed to send reset email");
       }
     } catch (error) {
-      const errorMessage = error.message || 'Failed to send reset email. Please try again.';
+      const errorMessage =
+        error.message || "Failed to send reset email. Please try again.";
       setErrors({ email: errorMessage });
       setSnackbar({
         open: true,
         message: errorMessage,
-        severity: 'error',
+        severity: "error",
       });
     } finally {
       setIsLoading(false);
@@ -227,43 +229,41 @@ const Login = () => {
   };
 
   const navigateToRegister = () => {
-    navigate('/');
+    navigate("/");
   };
 
   // Switch to forgot password view
   const switchToForgotPassword = () => {
-    setViewMode('forgot-password');
+    setViewMode("forgot-password");
     setErrors({});
     setIsEmailSent(false);
-    setForgotPasswordEmail('');
+    setForgotPasswordEmail("");
   };
 
   // Switch back to login view
   const switchToLogin = () => {
-    setViewMode('login');
+    setViewMode("login");
     setErrors({});
     setIsEmailSent(false);
-    setForgotPasswordEmail('');
+    setForgotPasswordEmail("");
   };
 
   // Handle try different email in forgot password success state
   const handleTryDifferentEmail = () => {
     setIsEmailSent(false);
-    setForgotPasswordEmail('');
+    setForgotPasswordEmail("");
   };
 
   // Render login form
   const renderLoginForm = () => (
-    <Slide direction="right" in={viewMode === 'login'} timeout={300}>
+    <Slide direction="right" in={viewMode === "login"} timeout={300}>
       <Box>
-        <Typography className={classes.welcomeText}>
-          Welcome Back!
-        </Typography>
-        
+        <Typography className={classes.welcomeText}>Welcome Back!</Typography>
+
         <Typography className={classes.subtitle}>
           Log in to continue to your account
         </Typography>
-        
+
         <form className={classes.form} onSubmit={handleLoginSubmit}>
           <TextField
             className={classes.textField}
@@ -278,7 +278,7 @@ const Login = () => {
             placeholder="Enter your email"
             disabled={isLoading || isGoogleLoading}
           />
-          
+
           <TextField
             className={classes.textField}
             variant="outlined"
@@ -305,14 +305,14 @@ const Login = () => {
               ),
             }}
           />
-          
+
           {/* Display login error message */}
           {errors.general && (
             <Typography color="error" variant="body2" sx={{ mt: 1, mb: 1 }}>
               {errors.general}
             </Typography>
           )}
-          
+
           {/* Forgot Password Link */}
           <Box className={classes.forgotPasswordContainer}>
             <MuiLink
@@ -325,7 +325,7 @@ const Login = () => {
               Forgot your password?
             </MuiLink>
           </Box>
-          
+
           <Button
             className={classes.button}
             type="submit"
@@ -339,10 +339,10 @@ const Login = () => {
                 <CircularProgress size={20} className={classes.loader} />
               </>
             ) : (
-              'Log In'
+              "Log In"
             )}
           </Button>
-          
+
           <Typography className={classes.formDivider}>or</Typography>
 
           {/* Google OAuth Button */}
@@ -354,13 +354,13 @@ const Login = () => {
             disabled={isLoading || isGoogleLoading}
             sx={{
               mb: 2,
-              textTransform: 'none',
-              borderColor: '#dadce0',
-              color: '#3c4043',
-              '&:hover': {
-                backgroundColor: '#f8f9fa',
-                borderColor: '#dadce0'
-              }
+              textTransform: "none",
+              borderColor: "#dadce0",
+              color: "#3c4043",
+              "&:hover": {
+                backgroundColor: "#f8f9fa",
+                borderColor: "#dadce0",
+              },
             }}
           >
             {isGoogleLoading ? (
@@ -369,10 +369,10 @@ const Login = () => {
                 <CircularProgress size={20} sx={{ ml: 1 }} />
               </>
             ) : (
-              'Continue with Google'
+              "Continue with Google"
             )}
           </Button>
-          
+
           <Box className={classes.signupLink}>
             <Typography className={classes.signupText} variant="body2">
               Don't have an account?
@@ -393,7 +393,7 @@ const Login = () => {
 
   // Render forgot password form
   const renderForgotPasswordForm = () => (
-    <Slide direction="left" in={viewMode === 'forgot-password'} timeout={300}>
+    <Slide direction="left" in={viewMode === "forgot-password"} timeout={300}>
       <Box>
         {!isEmailSent ? (
           <>
@@ -406,16 +406,20 @@ const Login = () => {
                 <ArrowBackIcon />
               </IconButton>
             </Box>
-            
+
             <Typography className={classes.welcomeText}>
               Forgot Password?
             </Typography>
-            
+
             <Typography className={classes.subtitle}>
-              Enter your email address and we'll send you a link to reset your password
+              Enter your email address and we'll send you a link to reset your
+              password
             </Typography>
-            
-            <form className={classes.form} onSubmit={handleForgotPasswordSubmit}>
+
+            <form
+              className={classes.form}
+              onSubmit={handleForgotPasswordSubmit}
+            >
               <TextField
                 className={classes.textField}
                 variant="outlined"
@@ -431,7 +435,7 @@ const Login = () => {
                 disabled={isLoading}
                 autoFocus
               />
-              
+
               <Button
                 className={classes.button}
                 type="submit"
@@ -445,12 +449,12 @@ const Login = () => {
                     <CircularProgress size={20} className={classes.loader} />
                   </>
                 ) : (
-                  'Send Reset Link'
+                  "Send Reset Link"
                 )}
               </Button>
-              
+
               <Typography className={classes.formDivider}>or</Typography>
-              
+
               <Box className={classes.signupLink}>
                 <Typography className={classes.signupText} variant="body2">
                   Remember your password?
@@ -476,27 +480,26 @@ const Login = () => {
                 <ArrowBackIcon />
               </IconButton>
             </Box>
-            
-            <Typography className={classes.successIcon}>
-              ✉️
-            </Typography>
-            
+
+            <Typography className={classes.successIcon}>✉️</Typography>
+
             <Typography className={classes.successTitle}>
               Check Your Email
             </Typography>
-            
+
             <Typography className={classes.successMessage}>
               We've sent password reset instructions to:
             </Typography>
-            
+
             <Typography className={classes.emailDisplay}>
               {forgotPasswordEmail}
             </Typography>
-            
+
             <Typography className={classes.successSubtext}>
-              If you don't see the email, check your spam folder or try again with a different email address.
+              If you don't see the email, check your spam folder or try again
+              with a different email address.
             </Typography>
-            
+
             <Box className={classes.successActions}>
               <Button
                 className={classes.resendButton}
@@ -506,9 +509,9 @@ const Login = () => {
               >
                 Try Different Email
               </Button>
-              
+
               <Typography className={classes.resendText}>
-                Didn't receive the email? Check your spam folder or{' '}
+                Didn't receive the email? Check your spam folder or{" "}
                 <MuiLink
                   component="button"
                   type="button"
@@ -527,25 +530,6 @@ const Login = () => {
 
   return (
     <Box className={classes.root}>
-      <Fade in={true} timeout={600}>
-        <Box className={classes.leftSection}>
-          <Box className={classes.formContainer}>
-            <Box className={classes.logoContainer}>
-              <img src={GigaLogo} alt="Gigaversity Logo" className={classes.logo} />
-              <Typography className={classes.logoText}>
-                Gigaversity
-              </Typography>
-            </Box>
-            
-            {/* Render different forms based on view mode */}
-            <Box className={classes.formWrapper}>
-              {viewMode === 'login' && renderLoginForm()}
-              {viewMode === 'forgot-password' && renderForgotPasswordForm()}
-            </Box>
-          </Box>
-        </Box>
-      </Fade>
-      
       {!isMobile && (
         <LoginRightSection
           classes={classes}
@@ -553,15 +537,40 @@ const Login = () => {
           visibleFeatures={visibleFeatures}
         />
       )}
-      
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      <Fade in={true} timeout={600}>
+        <Box className={classes.leftSection}>
+          <Box className={classes.formContainer}>
+            <Box className={classes.logoContainer}>
+              <img
+                src={GigaLogo}
+                alt="Gigaversity Logo"
+                className={classes.logo}
+              />
+              <Typography className={classes.logoText}>Gigaversity</Typography>
+            </Box>
+
+            {/* Render different forms based on view mode */}
+            <Box className={classes.formWrapper}>
+              {viewMode === "login" && renderLoginForm()}
+              {viewMode === "forgot-password" && renderForgotPasswordForm()}
+            </Box>
+          </Box>
+        </Box>
+      </Fade>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} elevation={6} variant="filled">
-          {snackbar.message}  
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          elevation={6}
+          variant="filled"
+        >
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Box>
