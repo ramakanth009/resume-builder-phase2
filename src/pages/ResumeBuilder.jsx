@@ -322,14 +322,14 @@ const ResumeBuilder = () => {
 
   // Initialize resumeData with empty structure and fields for both formats
   const [resumeData, setResumeData] = useState({
-  header: {
-    name: currentUser?.name || "",
-    email: currentUser?.email || "",
-    phone: currentUser?.phone || "",  // ← AUTO-LOAD PHONE FROM USER
-    github: "",
-    linkedin: "",
-    portfolio: "",
-  },
+    header: {
+      name: currentUser?.name || "",
+      email: currentUser?.email || "",
+      phone: "",
+      github: "",
+      linkedin: "",
+      portfolio: "",
+    },
     summary: "",
     education: {
       degree: "",
