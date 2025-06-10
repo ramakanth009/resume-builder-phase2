@@ -1,11 +1,11 @@
 // src/data/templatesData.js
 
 // Try to import images with require() to ensure they're properly processed by webpack
-const classicPreview = require('../assets/templates/classic.png');
-const modernPreview = require('../assets/templates/modern.png');
-const creativePreview = require('../assets/templates/creative.png');
-const executivePreview = require('../assets/templates/executive.png');
-const professionalPreview = require('../assets/templates/professional.png');
+const classicPreview = require('../assets/templates/classic.jpg');
+const modernPreview = require('../assets/templates/modern.jpg');
+const creativePreview = require('../assets/templates/creative.jpg');
+const executivePreview = require('../assets/templates/executive.jpg');
+const professionalPreview = require('../assets/templates/professional.jpg');
 
 // If imports aren't working, provide fallback placeholders
 const fallbackImagePath = '/api/placeholder/400/320';
