@@ -258,6 +258,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     flexWrap: "wrap",
     gap: "0.75rem",
     marginBottom: "1rem",
+    '& .MuiChip-deleteIcon': {
+        color: 'white',
+      },
     "@media (max-width: 1200px)": {
       gap: "0.7rem",
       marginTop: "0.9rem",

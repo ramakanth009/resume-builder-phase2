@@ -218,7 +218,7 @@ const EducationSection = ({ resumeData, setResumeData }) => {
         <Box className={classes.yearContainer}>
           {/* Year picker for graduation year */}
           <DatePickerField
-            label="Graduation Year"
+            label="Year"
             value={
               resumeData.education.graduation_year ||
               resumeData.education.graduationYear ||
