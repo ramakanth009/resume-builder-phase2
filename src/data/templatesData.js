@@ -48,8 +48,8 @@ const templatesData = [
     isDefault: false
   },
   {
-    id: 'twoColumn',
-    name: 'Two-Column',
+    id: 'column',
+    name: 'Column',
     description: 'Professional two-column layout with sidebar contact info',
     previewImage: fallbackImagePath,
     isDefault: false

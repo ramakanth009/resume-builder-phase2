@@ -201,7 +201,7 @@ const useBlueCorporateStyles = makeStylesWithTheme((theme) => ({
     },
   },
   contactLink: {
-    color: '#e5e7eb',
+    color: '#1e40af',
     textDecoration: 'none',
     fontWeight: 500,
     '&:hover': {
