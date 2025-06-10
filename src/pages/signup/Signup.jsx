@@ -35,6 +35,7 @@ const SignupPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -69,6 +70,11 @@ const SignupPage = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
     }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phone.replace(/\s/g, ""))) {
+      newErrors.phone = "Please enter a valid phone number";
+    }
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
@@ -94,7 +100,7 @@ const SignupPage = () => {
     if (!validateForm()) return;
     setLoading(true);
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.email, formData.phone, formData.password);
       setSnackbar({
         open: true,
         message: "Registration successful!",
@@ -186,6 +192,19 @@ const SignupPage = () => {
                 error={!!errors.email}
                 helperText={errors.email}
                 placeholder="Enter your email"
+              />
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                fullWidth
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                error={!!errors.phone}
+                helperText={errors.phone}
+                placeholder="Enter your phone number"
               />
               <TextField
                 className={classes.textField}

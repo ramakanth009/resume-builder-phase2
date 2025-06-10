@@ -10,7 +10,7 @@ import './App.css';
 import ResumeBuilderWithGuard from './pages/ResumeBuilderLogoutGuard';
 
 // Import existing pages and components
-import Landingpage from './pages/landingpage/Landingpage';
+// import Landingpage from './pages/landingpage/Landingpage';
 import Signup from './pages/signup/Signup';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -168,7 +168,7 @@ const AppContent = () => {
             <Suspense fallback={<LoadingComponent />}>
               <Routes>
                 {/* Public routes */}
-                <Route 
+                {/* <Route 
                   path="/" 
                   element={
                     currentUser ? (
@@ -177,7 +177,7 @@ const AppContent = () => {
                       <Landingpage />
                     )
                   } 
-                />
+                /> */}
                 
                 <Route 
                   path="/login" 
@@ -191,7 +191,7 @@ const AppContent = () => {
                 />
                 
                 <Route 
-                  path="/signup" 
+                  path="/" 
                   element={
                     currentUser ? (
                       <Navigate to="/resume-builder" replace />
