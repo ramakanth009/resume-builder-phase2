@@ -302,27 +302,18 @@ const register = async (name, email, phone, password) => {
     const response = await registerUser({ name, email, phone, password });
     
     if (response.status === 'success') {
-      // ENSURE USER OBJECT INCLUDES PHONE
-      if (response.user && response.token) {
-        localStorage.setItem('token', response.token);
-        // Make sure user object includes phone
-        const userWithPhone = {
-          ...response.user,
-          phone: response.user.phone || phone  // Fallback to submitted phone
-        };
-        localStorage.setItem('user', JSON.stringify(userWithPhone));
-        setCurrentUser(userWithPhone);
-      }
       return response;
     } else {
       throw new Error(response.message || 'Registration failed');
     }
   } catch (error) {
+    // Pass through the backend error directly
     throw error;
   } finally {
     setLoading(false);
   }
-};  
+};
+  
   // Logout function
   const logout = async () => {
     setLoading(true);
