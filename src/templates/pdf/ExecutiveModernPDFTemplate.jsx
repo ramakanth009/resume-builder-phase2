@@ -258,15 +258,15 @@ const ExecutiveModernPDFTemplate = ({ resumeData }) => {
         )}
         
         <View style={styles.contactGrid}>
-          {resumeData.header.phone && (
-            <Text style={styles.contactItem}>{resumeData.header.phone}</Text>
-          )}
           {resumeData.header.email && (
             <Text style={styles.contactItem}>
               <Link src={`mailto:${resumeData.header.email}`} style={styles.contactLink}>
                 {resumeData.header.email}
               </Link>
             </Text>
+          )}
+          {resumeData.header.phone && (
+            <Text style={styles.contactItem}>{resumeData.header.phone}</Text>
           )}
           {resumeData.header.github && (
             <Text style={styles.contactItem}>

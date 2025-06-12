@@ -202,7 +202,8 @@ const useStyles = makeStylesWithTheme((theme) => ({
     background: '#27286c',
     color: 'white',
     '&:hover': {
-      boxShadow: '0 8px 24px rgba(39, 40, 108, 0.4)',
+      background: '#27286c',
+      boxShadow: '0 8px 24px rgba(39, 40, 108, 0.4) !important',
     },
   },
   dummyDataButton: {

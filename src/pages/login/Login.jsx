@@ -258,9 +258,22 @@ const Login = () => {
   const renderLoginForm = () => (
     <Slide direction="right" in={viewMode === "login"} timeout={300}>
       <Box>
-        <Typography className={classes.welcomeText}>Welcome Back!</Typography>
+        <Typography className={classes.welcomeText} sx={{ 
+          fontSize: "1.5rem", 
+          marginBottom: "0.25rem",
+          "@media (max-width: 600px)": {
+            fontSize: "1.25rem",
+          },
+        }}>Welcome Back!</Typography>
 
-        <Typography className={classes.subtitle}>
+        <Typography className={classes.subtitle} sx={{ 
+          marginBottom: "0.75rem",
+          fontSize: "0.875rem",
+          "@media (max-width: 600px)": {
+            fontSize: "0.8rem",
+            marginBottom: "0.5rem",
+          },
+        }}>
           Log in to continue to your account
         </Typography>
 
@@ -277,6 +290,17 @@ const Login = () => {
             error={!!errors.email || !!errors.general}
             placeholder="Enter your email"
             disabled={isLoading || isGoogleLoading}
+            size="small"
+            sx={{ 
+              marginBottom: "0.5rem",
+              "& .MuiInputBase-root": {
+                height: "40px",
+              },
+              "& .MuiFormHelperText-root": {
+                fontSize: "0.75rem",
+                margin: "2px 0 0 0",
+              },
+            }}
           />
 
           <TextField
@@ -291,6 +315,17 @@ const Login = () => {
             error={!!errors.password || !!errors.general}
             placeholder="Enter your password"
             disabled={isLoading || isGoogleLoading}
+            size="small"
+            sx={{ 
+              marginBottom: "0.5rem",
+              "& .MuiInputBase-root": {
+                height: "40px",
+              },
+              "& .MuiFormHelperText-root": {
+                fontSize: "0.75rem",
+                margin: "2px 0 0 0",
+              },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -298,8 +333,9 @@ const Login = () => {
                     onClick={handleTogglePasswordVisibility}
                     edge="end"
                     disabled={isLoading || isGoogleLoading}
+                    size="small"
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -308,19 +344,20 @@ const Login = () => {
 
           {/* Display login error message */}
           {errors.general && (
-            <Typography color="error" variant="body2" sx={{ mt: 1, mb: 1 }}>
+            <Typography color="error" variant="body2" sx={{ mt: 0.5, mb: 0.5, fontSize: "0.75rem" }}>
               {errors.general}
             </Typography>
           )}
 
           {/* Forgot Password Link */}
-          <Box className={classes.forgotPasswordContainer}>
+          <Box className={classes.forgotPasswordContainer} sx={{ marginBottom: "0.5rem" }}>
             <MuiLink
               component="button"
               type="button"
               onClick={switchToForgotPassword}
               className={classes.forgotPasswordLink}
               disabled={isLoading || isGoogleLoading}
+              sx={{ fontSize: "0.8rem" }}
             >
               Forgot your password?
             </MuiLink>
@@ -332,28 +369,38 @@ const Login = () => {
             fullWidth
             variant="contained"
             disabled={isLoading || isGoogleLoading}
+            sx={{
+              padding: "0.5rem",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+            }}
           >
             {isLoading ? (
               <>
                 Logging In
-                <CircularProgress size={20} className={classes.loader} />
+                <CircularProgress size={16} className={classes.loader} />
               </>
             ) : (
               "Log In"
             )}
           </Button>
 
-          <Typography className={classes.formDivider}>or</Typography>
+          <Typography className={classes.formDivider} sx={{ 
+            margin: "0.5rem 0",
+            fontSize: "0.875rem",
+          }}>or</Typography>
 
           {/* Google OAuth Button */}
           <Button
             fullWidth
             variant="outlined"
-            startIcon={<GoogleIcon />}
+            startIcon={<GoogleIcon fontSize="small" />}
             onClick={handleGoogleLogin}
             disabled={isLoading || isGoogleLoading}
             sx={{
-              mb: 2,
+              mb: 1,
+              padding: "0.5rem",
+              fontSize: "0.875rem",
               textTransform: "none",
               borderColor: "#dadce0",
               color: "#3c4043",
@@ -366,15 +413,18 @@ const Login = () => {
             {isGoogleLoading ? (
               <>
                 Connecting to Google
-                <CircularProgress size={20} sx={{ ml: 1 }} />
+                <CircularProgress size={16} sx={{ ml: 1 }} />
               </>
             ) : (
               "Continue with Google"
             )}
           </Button>
 
-          <Box className={classes.signupLink}>
-            <Typography className={classes.signupText} variant="body2">
+          <Box className={classes.signupLink} sx={{ marginTop: "0.5rem" }}>
+            <Typography className={classes.signupText} variant="body2" sx={{ 
+              fontSize: "0.8rem",
+              marginBottom: "0.25rem",
+            }}>
               Don't have an account?
             </Typography>
             <Button
@@ -382,6 +432,10 @@ const Login = () => {
               onClick={navigateToRegister}
               disabled={isLoading || isGoogleLoading}
               fullWidth
+              sx={{
+                padding: "0.5rem",
+                fontSize: "0.875rem",
+              }}
             >
               Sign up
             </Button>
@@ -397,21 +451,35 @@ const Login = () => {
       <Box>
         {!isEmailSent ? (
           <>
-            <Box className={classes.backButtonContainer}>
+            <Box className={classes.backButtonContainer} sx={{ marginBottom: "0.5rem" }}>
               <IconButton
                 onClick={switchToLogin}
                 className={classes.backButton}
                 disabled={isLoading}
+                size="small"
               >
-                <ArrowBackIcon />
+                <ArrowBackIcon fontSize="small" />
               </IconButton>
             </Box>
 
-            <Typography className={classes.welcomeText}>
+            <Typography className={classes.welcomeText} sx={{ 
+              fontSize: "1.5rem", 
+              marginBottom: "0.25rem",
+              "@media (max-width: 600px)": {
+                fontSize: "1.25rem",
+              },
+            }}>
               Forgot Password?
             </Typography>
 
-            <Typography className={classes.subtitle}>
+            <Typography className={classes.subtitle} sx={{ 
+              marginBottom: "0.75rem",
+              fontSize: "0.875rem",
+              "@media (max-width: 600px)": {
+                fontSize: "0.8rem",
+                marginBottom: "0.5rem",
+              },
+            }}>
               Enter your email address and we'll send you a link to reset your
               password
             </Typography>
@@ -434,6 +502,17 @@ const Login = () => {
                 placeholder="Enter your email address"
                 disabled={isLoading}
                 autoFocus
+                size="small"
+                sx={{ 
+                  marginBottom: "0.75rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
               />
 
               <Button
@@ -442,21 +521,32 @@ const Login = () => {
                 fullWidth
                 variant="contained"
                 disabled={isLoading || !forgotPasswordEmail.trim()}
+                sx={{
+                  padding: "0.5rem",
+                  fontSize: "0.875rem",
+                  marginTop: "0.25rem",
+                }}
               >
                 {isLoading ? (
                   <>
                     Sending Reset Link
-                    <CircularProgress size={20} className={classes.loader} />
+                    <CircularProgress size={16} className={classes.loader} />
                   </>
                 ) : (
                   "Send Reset Link"
                 )}
               </Button>
 
-              <Typography className={classes.formDivider}>or</Typography>
+              <Typography className={classes.formDivider} sx={{ 
+                margin: "0.5rem 0",
+                fontSize: "0.875rem",
+              }}>or</Typography>
 
-              <Box className={classes.signupLink}>
-                <Typography className={classes.signupText} variant="body2">
+              <Box className={classes.signupLink} sx={{ marginTop: "0.5rem" }}>
+                <Typography className={classes.signupText} variant="body2" sx={{ 
+                  fontSize: "0.8rem",
+                  marginBottom: "0.25rem",
+                }}>
                   Remember your password?
                 </Typography>
                 <Button
@@ -464,6 +554,10 @@ const Login = () => {
                   onClick={switchToLogin}
                   disabled={isLoading}
                   fullWidth
+                  sx={{
+                    padding: "0.5rem",
+                    fontSize: "0.875rem",
+                  }}
                 >
                   Back to Login
                 </Button>
@@ -472,30 +566,46 @@ const Login = () => {
           </>
         ) : (
           <Box className={classes.successContainer}>
-            <Box className={classes.backButtonContainer}>
+            <Box className={classes.backButtonContainer} sx={{ marginBottom: "0.5rem" }}>
               <IconButton
                 onClick={switchToLogin}
                 className={classes.backButton}
+                size="small"
               >
-                <ArrowBackIcon />
+                <ArrowBackIcon fontSize="small" />
               </IconButton>
             </Box>
 
-            <Typography className={classes.successIcon}>✉️</Typography>
+            <Typography className={classes.successIcon} sx={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>✉️</Typography>
 
-            <Typography className={classes.successTitle}>
+            <Typography className={classes.successTitle} sx={{ 
+              fontSize: "1.5rem", 
+              marginBottom: "0.5rem",
+              "@media (max-width: 600px)": {
+                fontSize: "1.25rem",
+              },
+            }}>
               Check Your Email
             </Typography>
 
-            <Typography className={classes.successMessage}>
+            <Typography className={classes.successMessage} sx={{ 
+              marginBottom: "0.25rem",
+              fontSize: "0.875rem",
+            }}>
               We've sent password reset instructions to:
             </Typography>
 
-            <Typography className={classes.emailDisplay}>
+            <Typography className={classes.emailDisplay} sx={{ 
+              marginBottom: "0.5rem",
+              fontSize: "0.9rem",
+            }}>
               {forgotPasswordEmail}
             </Typography>
 
-            <Typography className={classes.successSubtext}>
+            <Typography className={classes.successSubtext} sx={{ 
+              marginBottom: "0.75rem",
+              fontSize: "0.8rem",
+            }}>
               If you don't see the email, check your spam folder or try again
               with a different email address.
             </Typography>
@@ -506,17 +616,23 @@ const Login = () => {
                 onClick={handleTryDifferentEmail}
                 variant="outlined"
                 fullWidth
+                sx={{
+                  padding: "0.5rem",
+                  fontSize: "0.875rem",
+                  marginBottom: "0.5rem",
+                }}
               >
                 Try Different Email
               </Button>
 
-              <Typography className={classes.resendText}>
+              <Typography className={classes.resendText} sx={{ fontSize: "0.75rem" }}>
                 Didn't receive the email? Check your spam folder or{" "}
                 <MuiLink
                   component="button"
                   type="button"
                   onClick={handleTryDifferentEmail}
                   className={classes.resendLink}
+                  sx={{ fontSize: "0.75rem" }}
                 >
                   try again
                 </MuiLink>
@@ -538,15 +654,25 @@ const Login = () => {
         />
       )}
       <Fade in={true} timeout={600}>
-        <Box className={classes.leftSection}>
-          <Box className={classes.formContainer}>
-            <Box className={classes.logoContainer}>
+        <Box className={classes.leftSection} sx={{ padding: "0.25rem 0.5rem", overflow: "auto" }}>
+          <Box className={classes.formContainer} sx={{ 
+            maxWidth: "420px", 
+            padding: "0.25rem",
+            "@media (max-width: 600px)": {
+              padding: "0.5rem",
+            },
+            "@media (max-width: 375px)": {
+              padding: "0.25rem",
+            },
+          }}>
+            <Box className={classes.logoContainer} sx={{ marginBottom: "0.75rem" }}>
               <img
                 src={GigaLogo}
                 alt="Gigaversity Logo"
                 className={classes.logo}
+                style={{ width: 32, height: 32 }}
               />
-              <Typography className={classes.logoText}>Gigaversity</Typography>
+              <Typography className={classes.logoText} sx={{ fontSize: "1.25rem" }}>Gigaversity</Typography>
             </Box>
 
             {/* Render different forms based on view mode */}

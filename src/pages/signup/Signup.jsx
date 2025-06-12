@@ -155,15 +155,40 @@ const SignupPage = () => {
       />
 
       <Fade in timeout={800}>
-        <Box className={classes.rightSection}>
-          <Box className={classes.formContainer}>
-            <Box className={classes.logoContainer}>
-              <img src={GigaLogo} alt="Gigaversity" className={classes.logo} />
-              <Typography className={classes.logoText}>Gigaversity</Typography>
+        <Box className={classes.rightSection} sx={{ padding: "0.25rem 0.5rem", overflow: "auto" }}>
+          <Box className={classes.formContainer} sx={{ 
+            maxWidth: "420px", 
+            padding: "0.25rem",
+            "@media (max-width: 600px)": {
+              padding: "0.5rem",
+            },
+            "@media (max-width: 375px)": {
+              padding: "0.25rem",
+            },
+          }}>
+            <Box className={classes.logoContainer} sx={{ marginBottom: "0.75rem" }}>
+              <img src={GigaLogo} alt="Gigaversity" className={classes.logo} style={{ width: 32, height: 32 }} />
+              <Typography className={classes.logoText} sx={{ fontSize: "1.25rem" }}>Gigaversity</Typography>
             </Box>
 
-            <Typography className={classes.welcomeText}>Sign Up</Typography>
-            <Typography className={classes.subtitle}>
+            <Typography className={classes.welcomeText} sx={{ 
+              fontSize: "1.5rem", 
+              marginBottom: "0.25rem",
+              "@media (max-width: 600px)": {
+                fontSize: "1.25rem",
+              },
+              "@media (max-width: 375px)": {
+                fontSize: "1.125rem",
+              },
+            }}>Sign Up</Typography>
+            <Typography className={classes.subtitle} sx={{ 
+              marginBottom: "0.75rem",
+              fontSize: "0.875rem",
+              "@media (max-width: 600px)": {
+                fontSize: "0.8rem",
+                marginBottom: "0.5rem",
+              },
+            }}>
               Create your account to get started
             </Typography>
 
@@ -179,6 +204,17 @@ const SignupPage = () => {
                 error={!!errors.name}
                 helperText={errors.name}
                 placeholder="Enter your name"
+                size="small"
+                sx={{ 
+                  marginBottom: "0.5rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
               />
               <TextField
                 className={classes.textField}
@@ -192,6 +228,17 @@ const SignupPage = () => {
                 error={!!errors.email}
                 helperText={errors.email}
                 placeholder="Enter your email"
+                size="small"
+                sx={{ 
+                  marginBottom: "0.5rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
               />
               <TextField
                 className={classes.textField}
@@ -205,6 +252,17 @@ const SignupPage = () => {
                 error={!!errors.phone}
                 helperText={errors.phone}
                 placeholder="Enter your phone number"
+                size="small"
+                sx={{ 
+                  marginBottom: "0.5rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
               />
               <TextField
                 className={classes.textField}
@@ -218,14 +276,26 @@ const SignupPage = () => {
                 error={!!errors.password}
                 helperText={errors.password}
                 placeholder="Create a password"
+                size="small"
+                sx={{ 
+                  marginBottom: "0.5rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         onClick={handleTogglePasswordVisibility("password")}
                         edge="end"
+                        size="small"
                       >
-                        {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                        {showPassword.password ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -243,14 +313,26 @@ const SignupPage = () => {
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
                 placeholder="Confirm your password"
+                size="small"
+                sx={{ 
+                  marginBottom: "0.75rem",
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    fontSize: "0.75rem",
+                    margin: "2px 0 0 0",
+                  },
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         onClick={handleTogglePasswordVisibility("confirmPassword")}
                         edge="end"
+                        size="small"
                       >
-                        {showPassword.confirmPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword.confirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -262,28 +344,38 @@ const SignupPage = () => {
                 type="submit"
                 fullWidth
                 disabled={loading || authLoading}
+                sx={{
+                  padding: "0.5rem",
+                  fontSize: "0.875rem",
+                  marginTop: "0.25rem",
+                }}
               >
                 {loading || authLoading ? (
                   <>
                     Creating Account
-                    <CircularProgress size={20} className={classes.loader} />
+                    <CircularProgress size={16} className={classes.loader} />
                   </>
                 ) : (
                   "Sign Up"
                 )}
               </Button>
 
-              <Typography className={classes.formDivider}>or</Typography>
+              <Typography className={classes.formDivider} sx={{ 
+                margin: "0.5rem 0",
+                fontSize: "0.875rem",
+              }}>or</Typography>
 
               {/* Google OAuth Button */}
               <Button
                 fullWidth
                 variant="outlined"
-                startIcon={<GoogleIcon />}
+                startIcon={<GoogleIcon fontSize="small" />}
                 onClick={handleGoogleLogin}
                 disabled={loading || authLoading || isGoogleLoading}
                 sx={{
-                  mb: 2,
+                  mb: 1,
+                  padding: "0.5rem",
+                  fontSize: "0.875rem",
                   textTransform: 'none',
                   borderColor: '#dadce0',
                   color: '#3c4043',
@@ -296,21 +388,28 @@ const SignupPage = () => {
                 {isGoogleLoading ? (
                   <>
                     Connecting to Google
-                    <CircularProgress size={20} sx={{ ml: 1 }} />
+                    <CircularProgress size={16} sx={{ ml: 1 }} />
                   </>
                 ) : (
                   'Continue with Google'
                 )}
               </Button>
 
-              <Box className={classes.loginLink}>
-                <Typography className={classes.loginText} variant="body2">
+              <Box className={classes.loginLink} sx={{ marginTop: "0.5rem" }}>
+                <Typography className={classes.loginText} variant="body2" sx={{ 
+                  fontSize: "0.8rem",
+                  marginBottom: "0.25rem",
+                }}>
                   Already have an account?
                 </Typography>
                 <Button
                   className={classes.loginButton}
                   onClick={() => navigate("/login")}
                   fullWidth
+                  sx={{
+                    padding: "0.5rem",
+                    fontSize: "0.875rem",
+                  }}
                 >
                   Log in
                 </Button>
