@@ -144,19 +144,17 @@ const NavbarWrapper = () => {
 
 // Main App component wrapped with providers
 const AppContent = () => {
-  const { font } = useFont();
+  const { selectedFont } = useFont(); // Fixed: was 'font', now 'selectedFont'
   const { currentUser } = useAuth();
   
   // Create dynamic theme based on font selection
-  const theme = useMemo(() => createDynamicTheme(font), [font]);
+  const theme = useMemo(() => createDynamicTheme(selectedFont), [selectedFont]); // Fixed: was 'font', now 'selectedFont'
 
   // Get basename from environment for production deployment
   const basename = process.env.PUBLIC_URL || '';
 
-  useEffect(() => {
-    // Apply font class to body for global font changes
-    document.body.className = font || 'font-inter';
-  }, [font]);
+  // Removed the unnecessary useEffect that was applying font classes
+  // FontContext already handles applying fonts via inline styles
 
   return (
     <ErrorBoundary>
