@@ -657,5 +657,9 @@ export default {
   // OAuth functions
   initiateGoogleLogin,
   handleOAuthCallback,
-  checkOAuthStatus
+  checkOAuthStatus,
+  // Phone Collection functions - ADD THESE
+  checkPhonePopupNeeded,
+  addPhoneNumber,
+  skipPhonePopup
 };

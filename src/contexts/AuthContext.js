@@ -371,6 +371,7 @@
 
 // export default AuthContext;
 import React, { createContext, useState, useContext, useEffect } from 'react';
+// import { loginUser, registerUser, logoutUser, initiateGoogleLogin, handleOAuthCallback, checkPhonePopupNeeded } from '../utils/api';
 import { loginUser, registerUser, logoutUser, initiateGoogleLogin, handleOAuthCallback, checkPhonePopupNeeded } from '../utils/api';
 
 // Create the authentication context

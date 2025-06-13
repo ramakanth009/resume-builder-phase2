@@ -7,7 +7,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import './App.css';
-// import LandingPage from './pages/landingpage/Landingpage';
 import Signup from './pages/signup/Signup';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -20,14 +19,9 @@ import PhoneCollectionPopup from './components/PhoneCollectionPopup';
 const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
 
-// Loading component with spinner
+// Loading component
 const LoadingComponent = () => (
-  <Box 
-    display="flex" 
-    justifyContent="center" 
-    alignItems="center" 
-    minHeight="100vh"
-  >
+  <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
     <CircularProgress />
   </Box>
 );
@@ -37,34 +31,25 @@ const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return <LoadingComponent />;
-  }
-
+  if (loading) return <LoadingComponent />;
   if (!currentUser) {
     sessionStorage.setItem('redirectUrl', location.pathname);
     return <Navigate to="/login" replace />;
   }
-
   return children;
 };
 
-// NavbarWrapper to conditionally render navbar
+// NavbarWrapper
 const NavbarWrapper = () => {
   const location = useLocation();
   const { currentUser } = useAuth();
-  const currentPath = location.pathname;
-
-  // Add '/signup' to the list of auth pages
-  const isAuthPage = ['/login', '/', '/signup'].includes(currentPath);
+  const isAuthPage = ['/login', '/', '/signup'].includes(location.pathname);
   const shouldShowNavbar = currentUser && !isAuthPage;
-
   const currentPage = shouldShowNavbar ? location.pathname.split('/')[1] || 'home' : '';
-
   return shouldShowNavbar ? <Navbar currentPage={currentPage} /> : null;
 };
 
-// Phone Popup Manager Component
+// Phone Popup Manager - ADD THIS COMPONENT
 const PhonePopupManager = () => {
   const { phonePopupState, closePhonePopup } = useAuth();
 
@@ -81,22 +66,14 @@ const PhonePopupManager = () => {
 const ThemedApp = () => {
   const [appIsReady, setAppIsReady] = useState(false);
   const { selectedFont } = useFont();
-
-  const dynamicTheme = useMemo(() => 
-    createDynamicTheme(selectedFont),
-    [selectedFont]
-  );
+  const dynamicTheme = useMemo(() => createDynamicTheme(selectedFont), [selectedFont]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAppIsReady(true);
-    }, 100);
+    const timer = setTimeout(() => setAppIsReady(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  if (!appIsReady) {
-    return <LoadingComponent />;
-  }
+  if (!appIsReady) return <LoadingComponent />;
   
   return (
     <StyledEngineProvider injectFirst>
@@ -109,29 +86,20 @@ const ThemedApp = () => {
                 <NavbarWrapper />
                 <Suspense fallback={<LoadingComponent />}>
                   <Routes>
-                    {/* <Route path="/" element={<LandingPage />} /> */}
                     <Route path="/" element={<Signup />} />
                     <Route path="/login" element={<Login />} />
                     <Route 
                       path="/resume-builder" 
-                      element={
-                        <ProtectedRoute>
-                          <ResumeBuilder />
-                        </ProtectedRoute>
-                      } 
+                      element={<ProtectedRoute><ResumeBuilder /></ProtectedRoute>} 
                     />
                     <Route 
                       path="/resume-builder/edit/:resumeId" 
-                      element={
-                        <ProtectedRoute>
-                          <ResumeBuilder />
-                        </ProtectedRoute>
-                      } 
+                      element={<ProtectedRoute><ResumeBuilder /></ProtectedRoute>} 
                     />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Suspense>
-                {/* Phone Collection Popup - Only shows when needed */}
+                {/* ADD THIS: Phone Collection Popup */}
                 <PhonePopupManager />
               </Router>
             </TemplateProvider>
@@ -142,7 +110,6 @@ const ThemedApp = () => {
   );
 };
 
-// Main App component
 function App() {
   return (
     <FontProvider>
