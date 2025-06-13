@@ -578,6 +578,61 @@ export const saveGenAIToolUsage = async (role, usageData) => {
     throw error; // Pass through backend error
   }
 };
+// Add these new phone collection API functions to your existing src/utils/api.js file
+
+// =============================================================================
+// PHONE COLLECTION ENDPOINTS (Add to existing api.js)
+// =============================================================================
+
+/**
+ * Check if user needs phone collection popup
+ * @returns {Promise} API response with show_popup boolean and user_name
+ */
+export const checkPhonePopupNeeded = async () => {
+  try {
+    return await apiRequest('/user/phone-popup-check', {
+      method: 'GET',
+    });
+  } catch (error) {
+    console.error('Check phone popup failed:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add phone number to user profile
+ * @param {string} phone - Phone number to add
+ * @returns {Promise} API response with success status
+ */
+export const addPhoneNumber = async (phone) => {
+  try {
+    return await apiRequest('/user/add-phone-simple', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phone }),
+    });
+  } catch (error) {
+    console.error('Add phone number failed:', error);
+    throw error;
+  }
+};
+
+/**
+ * Log that user skipped phone collection popup
+ * @returns {Promise} API response with success status
+ */
+export const skipPhonePopup = async () => {
+  try {
+    return await apiRequest('/user/skip-phone-popup', {
+      method: 'POST',
+    });
+  } catch (error) {
+    console.error('Skip phone popup failed:', error);
+    throw error;
+  }
+};
 
 // Update the default export to include the new functions
 export default {
