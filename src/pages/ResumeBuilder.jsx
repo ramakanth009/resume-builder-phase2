@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -20,7 +19,7 @@ import Alert from "@mui/material/Alert";
 import InfoIcon from "@mui/icons-material/Info";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { generateResume, getResumeById, updateResume } from "../utils/api";
+import { generateResume, getResumeById, updateResume, checkPhonePopupNeeded, addPhoneNumber, skipPhonePopup } from "../utils/api";
 import { adaptGeneratedResume } from "../utils/resumeAdapter";
 import { generateResumePDF } from "../utils/pdfUtils";
 
@@ -38,6 +37,7 @@ import ResumePreview from "../components/previewComponents/ResumePreview";
 import TemplateSelector from "../components/previewComponents/TemplateSelector";
 import AISkillRecommendationsSection from "../components/resumeBuilderComponents/AISkills";
 import TemplateRepositoryWarningPopup from "../components/resumeBuilderComponents/TemplateRepositoryWarningPopup";
+import PhoneCollectionPopup from "../components/PhoneCollectionPopup";
 import templatesData from "../data/templatesData";
 import Navbar from "../common/Navbar";
 import Sidebar from "../common/Sidebar";
@@ -255,7 +255,7 @@ const ResumeBuilder = () => {
   const dialogClasses = useDialogStyles();
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser } = useAuth();
+  const { currentUser, updateUserData } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery("(max-width:960px)");
   const { showConfirmDialog, confirmLogout, cancelLogout } = useResumeBuilderGuard();
@@ -292,6 +292,13 @@ const ResumeBuilder = () => {
   const [loadingError, setLoadingError] = useState(null);
   const [targetRole, setTargetRole] = useState("");
   const [templateWarningOpen, setTemplateWarningOpen] = useState(false);
+
+  // Phone collection popup state (NEW)
+  const [phonePopup, setPhonePopup] = useState({
+    open: false,
+    userName: '',
+    loading: false
+  });
 
   // Template selection states
   const [selectedTemplateId, setSelectedTemplateId] = useState(
@@ -383,6 +390,77 @@ const ResumeBuilder = () => {
       setTargetRole(resumeData.target_role);
     }
   }, [resumeData.target_role, targetRole]);
+
+  // Check for phone collection popup (NEW)
+  useEffect(() => {
+    const checkPhoneCollection = async () => {
+      try {
+        // Only check if user is logged in and component is mounted
+        if (currentUser && currentUser.id) {
+          setPhonePopup(prev => ({ ...prev, loading: true }));
+          
+          const response = await checkPhonePopupNeeded();
+          
+          if (response.status === 'success' && response.show_popup) {
+            setPhonePopup({
+              open: true,
+              userName: response.user_name || currentUser.name,
+              loading: false
+            });
+          } else {
+            setPhonePopup(prev => ({ ...prev, loading: false }));
+          }
+        }
+      } catch (error) {
+        console.error('Error checking phone popup status:', error);
+        setPhonePopup(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    // Check for phone popup after a short delay to ensure component is fully loaded
+    const timer = setTimeout(() => {
+      checkPhoneCollection();
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [currentUser]); // Only depend on currentUser
+
+  // Phone collection handlers (NEW)
+  const handlePhoneAdded = async (phoneNumber) => {
+    try {
+      await addPhoneNumber(phoneNumber);
+      
+      // Update current user data using the new method
+      if (updateUserData) {
+        updateUserData({ phone: phoneNumber });
+      } else {
+        // Fallback to direct localStorage update
+        if (currentUser) {
+          const updatedUser = { ...currentUser, phone: phoneNumber };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+      }
+      
+      return Promise.resolve();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handlePhoneSkipped = async () => {
+    try {
+      await skipPhonePopup();
+      return Promise.resolve();
+    } catch (error) {
+      // Don't throw error for skip action - just log it
+      console.error('Error logging skip action:', error);
+      return Promise.resolve();
+    }
+  };
+
+  const handlePhonePopupClose = () => {
+    setPhonePopup(prev => ({ ...prev, open: false }));
+  };
 
   // Fetch resume data if in edit mode
   useEffect(() => {
@@ -1377,6 +1455,15 @@ const ResumeBuilder = () => {
       <TemplateRepositoryWarningPopup
         open={templateWarningOpen}
         onClose={handleCloseTemplateWarning}
+      />
+
+      {/* Phone Collection Popup (NEW) */}
+      <PhoneCollectionPopup
+        open={phonePopup.open}
+        onClose={handlePhonePopupClose}
+        userName={phonePopup.userName}
+        onPhoneAdded={handlePhoneAdded}
+        onSkipped={handlePhoneSkipped}
       />
 
       {/* Snackbar for notifications */}

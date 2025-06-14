@@ -157,68 +157,48 @@ export const loginUser = (() => {
  */
 export const logoutUser = async () => {
   try {
-    // Call the backend logout API to blacklist the token
-    await apiRequest('/auth/logout', {
+    // Make logout request to server to invalidate token
+    const response = await apiRequest('/auth/logout', {
       method: 'POST',
     });
-    
-    // Clear localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    return { status: 'success', message: 'Logged out successfully' };
+    return response;
   } catch (error) {
-    // Still clear localStorage even if there's an error with the API call
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    throw error; // Pass through backend error
+    // Even if server logout fails, we still want to clear local data
+    logError('Logout error:', error);
+    throw error;
   }
 };
 
 // =============================================================================
-// GOOGLE OAUTH ENDPOINTS
+// OAUTH ENDPOINTS  
 // =============================================================================
 
 /**
  * Initiate Google OAuth login
- * Redirects to backend's Google OAuth endpoint
+ * @returns {Promise} - OAuth initiation response with redirect URL
  */
-export const initiateGoogleLogin = () => {
-  const googleAuthUrl = `${BASE_URL}/auth/google/login`;
-  window.location.href = googleAuthUrl;
+export const initiateGoogleLogin = async () => {
+  try {
+    const response = await apiRequest('/auth/google/login');
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to initiate Google login');
+  }
 };
 
 /**
- * Handle OAuth callback authentication
- * This function processes the OAuth callback data and authenticates the user
+ * Handle OAuth callback from Google
+ * @param {Object} callbackData - OAuth callback data (code, state, etc.)
+ * @returns {Promise} - OAuth authentication response
  */
 export const handleOAuthCallback = async (callbackData) => {
   try {
-    // Validate callback data
-    if (!callbackData.token || !callbackData.user_id) {
-      throw new Error('Invalid OAuth callback data');
-    }
-
-    // Prepare user data from callback
-    const userData = {
-      id: callbackData.user_id,
-      name: callbackData.user_name || 'User',
-      email: callbackData.user_email || '',
-      oauth_provider: callbackData.oauth_provider || 'google',
-      login_method: callbackData.login_method || 'oauth'
-    };
-
-    // Return formatted response similar to regular login
-    return {
-      status: 'success',
-      message: 'OAuth login successful',
-      token: callbackData.token,
-      user: userData,
-      oauth: true
-    };
+    const response = await apiRequest('/auth/google/callback', {
+      method: 'POST',
+      body: callbackData,
+    });
+    return response;
   } catch (error) {
-    console.error('OAuth callback handling failed:', error);
     throw new Error(error.message || 'OAuth authentication failed');
   }
 };
@@ -228,6 +208,110 @@ export const handleOAuthCallback = async (callbackData) => {
  */
 export const checkOAuthStatus = async () => {
   return apiRequest('/auth/oauth/status');
+};
+
+// =============================================================================
+// PHONE COLLECTION ENDPOINTS (NEW)
+// =============================================================================
+
+/**
+ * Check if user needs to see phone collection popup
+ * @returns {Promise<Object>} Response with show_popup boolean and user_name
+ */
+export const checkPhonePopupNeeded = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/phone-popup-check`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to check phone popup status');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error checking phone popup status:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add phone number to user profile
+ * @param {string} phoneNumber - The phone number to add
+ * @returns {Promise<Object>} Response with success status
+ */
+export const addPhoneNumber = async (phoneNumber) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/add-phone-simple`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        phone: phoneNumber
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to add phone number');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error adding phone number:', error);
+    throw error;
+  }
+};
+
+/**
+ * Log that user skipped the phone collection popup
+ * @returns {Promise<Object>} Response with success status
+ */
+export const skipPhonePopup = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/skip-phone-popup`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to log skip action');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error logging skip action:', error);
+    throw error;
+  }
 };
 
 // =============================================================================
@@ -318,76 +402,83 @@ export const validatePassword = (password) => {
 export const generateResume = async (resumeData) => {
   // Format the data for API request - flatten header fields for generate endpoint
   const formattedData = {
-  // Only include the fields the backend/AI expects!
-    name: resumeData.header?.name,
-    email: resumeData.header?.email,
-    phone: resumeData.header?.phone,
-    github: resumeData.header?.github,
-    linkedin: resumeData.header?.linkedin,
-    portfolio: resumeData.header?.portfolio,
-    degree: resumeData.education?.degree,
-    specialization: resumeData.education?.specialization,
-    institution: resumeData.education?.institution,
-    graduation_year: resumeData.education?.graduation_year || resumeData.education?.graduationYear,
-    skills: resumeData.skills,
-    projects: resumeData.projects,
-    certifications: resumeData.certifications,
-    summary: resumeData.summary,
-    work_experience: resumeData.work_experience,
-    target_role: resumeData.target_role,
-    customSections: resumeData.customSections,
-    genai_skills: {
-      used_tools: (resumeData.genai_tools || []).map(tool => ({
-        tool_id: tool.tool_id || tool.toolName || tool.name,
-        usage_descriptions: Array.isArray(tool.usageCases) ? 
-          tool.usageCases : 
-          (tool.usage_descriptions || [])
-      })),
-      not_used_tools: [] // Assuming no tools are not used in this case
-    }
-  // Add any other fields the AI model expects, but nothing extra!
-};
-  
+    // Only include the fields the backend/AI expects
+    name: resumeData.header?.name || resumeData.name || '',
+    email: resumeData.header?.email || resumeData.email || '',
+    phone: resumeData.header?.phone || resumeData.phone || '',
+    github: resumeData.header?.github || resumeData.github || '',
+    linkedin: resumeData.header?.linkedin || resumeData.linkedin || '',
+    portfolio: resumeData.header?.portfolio || resumeData.portfolio || '',
+    summary: resumeData.summary || '',
+    target_role: resumeData.target_role || resumeData.targetRole || '',
+    
+    // Education - handle both formats
+    education: {
+      degree: resumeData.education?.degree || '',
+      specialization: resumeData.education?.specialization || '',
+      institution: resumeData.education?.institution || '',
+      graduation_year: resumeData.education?.graduation_year || resumeData.education?.graduationYear || '',
+    },
+    
+    // Skills - ensure it's an array
+    skills: Array.isArray(resumeData.skills) ? resumeData.skills.filter(skill => skill?.trim()) : [],
+    
+    // Projects - handle both formats
+    projects: Array.isArray(resumeData.projects) ? resumeData.projects.map(project => ({
+      name: project.name || '',
+      skills_used: project.skills_used || project.skillsUsed || project.technologies?.join(', ') || '',
+      description: project.description || '',
+      link: project.link || project.projectLink || '',
+    })) : [],
+    
+    // Work experience - handle both formats
+    work_experience: Array.isArray(resumeData.work_experience) ? resumeData.work_experience.map(exp => ({
+      position: exp.position || exp.jobTitle || '',
+      company_name: exp.company_name || exp.companyName || exp.company || '',
+      duration: exp.duration || '',
+      description: exp.description || '',
+      responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : []
+    })) : [],
+    
+    // Certifications - ensure it's an array
+    certifications: Array.isArray(resumeData.certifications) ? resumeData.certifications.filter(cert => cert?.trim()) : [],
+    
+    // GenAI tools - ensure it's an array
+    genai_tools: Array.isArray(resumeData.genai_tools) ? resumeData.genai_tools : []
+  };
+
   try {
-    log('Sending formatted data to generate resume:', formattedData);
-    const response = await apiRequest('/generate_resume', {
+    const response = await apiRequest('/generate-resume', {
       method: 'POST',
       body: formattedData,
     });
     return response;
   } catch (error) {
-    logError('Generate resume error:', error);
     throw error; // Pass through backend error
   }
 };
 
 /**
  * Get all resumes for the current user
- * @returns {Promise} - List of resumes
+ * @returns {Promise} - List of user resumes
  */
 export const getUserResumes = async () => {
   try {
-    return await apiRequest('/user/resumes');
+    const response = await apiRequest('/resumes');
+    return response;
   } catch (error) {
     throw error; // Pass through backend error
   }
 };
 
 /**
- * Get a specific resume by ID for editing
- * @param {number} resumeId - Resume ID
+ * Get a specific resume by ID
+ * @param {string|number} resumeId - Resume ID
  * @returns {Promise} - Resume data
  */
 export const getResumeById = async (resumeId) => {
   try {
-    // Specifically call the edit endpoint
-    const response = await apiRequest(`/resumes/${resumeId}`, {
-      method: 'GET',
-      headers: {
-        'X-Action': 'edit' // Add header to indicate edit action
-      }
-    });
-
+    const response = await apiRequest(`/resumes/${resumeId}`);
     return response;
   } catch (error) {
     throw error; // Pass through backend error
@@ -395,84 +486,72 @@ export const getResumeById = async (resumeId) => {
 };
 
 /**
- * Update an existing resume by ID
- * @param {number} resumeId - Resume ID to update
+ * Update an existing resume
+ * @param {string|number} resumeId - Resume ID
  * @param {Object} resumeData - Updated resume data
- * @returns {Promise} - Updated resume response
+ * @returns {Promise} - Update response
  */
 export const updateResume = async (resumeId, resumeData) => {
-  try {
-    // Ensure resumeId is provided
-    if (!resumeId) {
-      throw new Error('Resume ID is required');
-    }
-
-    // Prepare workExperience from work_experience for update format compatibility
-    const workExperience = resumeData.work_experience?.map(exp => ({
-      position: exp.position || '',
-      companyName: exp.company_name || exp.companyName || '',
-      duration: exp.duration || '',
-      responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : 
-                      (exp.description ? exp.description.split('\n').filter(Boolean) : [])
-    })) || [];
-
-    // Prepare aiExperience from genai_skills.used_tools for UI compatibility
-    const aiExperience =
-      Array.isArray(resumeData.aiExperience)
-        ? resumeData.aiExperience
-        : (resumeData.genai_tools || []).map(tool => ({
-            toolName: tool.toolName || tool.name || tool.tool_id || '',
-            usageCases: Array.isArray(tool.usageCases)
-              ? tool.usageCases
-              : (tool.usage_descriptions || []),
-            impact: tool.impact || tool.description || ''
-          }));
+  // Format the data for update endpoint - keep nested structure
+  const formattedData = {
+    // Header information
+    header: {
+      name: resumeData.header?.name || resumeData.name || '',
+      email: resumeData.header?.email || resumeData.email || '',
+      phone: resumeData.header?.phone || resumeData.phone || '',
+      github: resumeData.header?.github || resumeData.github || '',
+      linkedin: resumeData.header?.linkedin || resumeData.linkedin || '',
+      portfolio: resumeData.header?.portfolio || resumeData.portfolio || '',
+    },
     
-    // Format the data for the API - ensure proper structure and fields
-    const formattedData = {
-      header: {
-        name: resumeData.header.name,
-        email: resumeData.header.email,
-        phone: resumeData.header.phone,
-        github: resumeData.header.github,
-        linkedin: resumeData.header.linkedin,
-        portfolio: resumeData.header.portfolio
-      },
-      summary: resumeData.summary,
-      education: {
-        ...resumeData.education,
-        graduationYear: resumeData.education.graduation_year || resumeData.education.graduationYear
-      },
-      skills: resumeData.skills,
-      projects: resumeData.projects.map(proj => ({
-        ...proj,
-        responsibilities: Array.isArray(proj.responsibilities) ? proj.responsibilities :
-                          (proj.description ? proj.description.split('\n').filter(Boolean) : [])
-      })),
-      certifications: resumeData.certifications,
-      // work_experience: resumeData.work_experience,
-      workExperience: workExperience,
-      aiExperience: aiExperience,
-      target_role: resumeData.target_role,
-      customSections: resumeData.customSections,
-      // Preserve genai_tools data during updates
-      genai_tools: resumeData.genai_tools || [],
-      // Include genai_skills format for API compatibility
-      // genai_skills: {
-      //   used_tools: (resumeData.genai_tools || []).map(tool => ({
-      //     tool_id: tool.tool_id,
-      //     usage_descriptions: tool.usage_descriptions || []
-      //   })),
-      //   not_used_tools: []
-      // }
-    };
+    summary: resumeData.summary || '',
+    target_role: resumeData.target_role || resumeData.targetRole || '',
+    
+    // Education
+    education: {
+      degree: resumeData.education?.degree || '',
+      specialization: resumeData.education?.specialization || '',
+      institution: resumeData.education?.institution || '',
+      graduationYear: resumeData.education?.graduationYear || resumeData.education?.graduation_year || '',
+    },
+    
+    // Skills
+    skills: Array.isArray(resumeData.skills) ? resumeData.skills.filter(skill => skill?.trim()) : [],
+    
+    // Projects
+    projects: Array.isArray(resumeData.projects) ? resumeData.projects.map(project => ({
+      name: project.name || '',
+      technologies: Array.isArray(project.technologies) ? project.technologies : 
+                   (project.skills_used ? project.skills_used.split(',').map(s => s.trim()) : []),
+      description: project.description || '',
+      responsibilities: Array.isArray(project.responsibilities) ? project.responsibilities : [],
+      link: project.link || project.projectLink || '',
+    })) : [],
+    
+    // Work experience
+    work_experience: Array.isArray(resumeData.work_experience) ? resumeData.work_experience.map(exp => ({
+      jobTitle: exp.jobTitle || exp.position || '',
+      companyName: exp.companyName || exp.company_name || exp.company || '',
+      duration: exp.duration || '',
+      description: exp.description || '',
+      responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : []
+    })) : [],
+    
+    // Certifications
+    certifications: Array.isArray(resumeData.certifications) ? resumeData.certifications.filter(cert => cert?.trim()) : [],
+    
+    // Custom sections
+    customSections: resumeData.customSections || {},
+    
+    // GenAI tools
+    genai_tools: Array.isArray(resumeData.genai_tools) ? resumeData.genai_tools : []
+  };
 
-    // Make PUT request to update the resume
+  try {
     const response = await apiRequest(`/resumes/${resumeId}`, {
       method: 'PUT',
       body: formattedData,
     });
-
     return response;
   } catch (error) {
     throw error; // Pass through backend error
@@ -480,15 +559,16 @@ export const updateResume = async (resumeId, resumeData) => {
 };
 
 /**
- * Delete a resume by ID
- * @param {number} resumeId - Resume ID
+ * Delete a resume
+ * @param {string|number} resumeId - Resume ID
  * @returns {Promise} - Delete response
  */
 export const deleteResume = async (resumeId) => {
   try {
-    return await apiRequest(`/resumes/${resumeId}`, {
+    const response = await apiRequest(`/resumes/${resumeId}`, {
       method: 'DELETE',
     });
+    return response;
   } catch (error) {
     throw error; // Pass through backend error
   }
@@ -579,7 +659,7 @@ export const saveGenAIToolUsage = async (role, usageData) => {
   }
 };
 
-// Update the default export to include the new functions
+// Update the default export to include all functions including new phone collection functions
 export default {
   apiRequest,
   registerUser,
@@ -602,5 +682,9 @@ export default {
   // OAuth functions
   initiateGoogleLogin,
   handleOAuthCallback,
-  checkOAuthStatus
+  checkOAuthStatus,
+  // Phone collection functions (NEW)
+  checkPhonePopupNeeded,
+  addPhoneNumber,
+  skipPhonePopup
 };
