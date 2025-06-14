@@ -1,12 +1,168 @@
+// import React, { createContext, useState, useContext, useEffect } from 'react';
+// import { loginUser, registerUser, logoutUser } from '../utils/api';
+
+// // Create the authentication context
+// const AuthContext = createContext(null);
+
+// // AuthProvider component to wrap the app and provide auth state
+// export const AuthProvider = ({ children }) => {
+//   const [currentUser, setCurrentUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+  
+//   // Check for existing user session on app load
+//   useEffect(() => {
+//     const checkAuthStatus = async () => {
+//       try {
+//         const token = localStorage.getItem('token');
+//         const userData = localStorage.getItem('user');
+        
+//         if (token && userData) {
+//           try {
+//             // Parse user data
+//             const user = JSON.parse(userData);
+            
+//             // Optional: Verify token expiration if using JWT
+//             const isTokenValid = verifyTokenExpiration(token);
+            
+//             if (user && user.id && isTokenValid) {
+//               setCurrentUser(user);
+//             } else {
+//               // Invalid user data or expired token
+//               localStorage.removeItem('token');
+//               localStorage.removeItem('user');
+//             }
+//           } catch (err) {
+//             // If user data is invalid, clear localStorage
+//             localStorage.removeItem('token');
+//             localStorage.removeItem('user');
+//           }
+//         }
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+    
+//     checkAuthStatus();
+//   }, []);
+  
+//   // Function to check if JWT token is expired
+//   const verifyTokenExpiration = (token) => {
+//     try {
+//       // For JWT: Split the token to get payload part
+//       const payload = token.split('.')[1];
+//       // Decode base64
+//       const decodedPayload = atob(payload);
+//       const tokenData = JSON.parse(decodedPayload);
+      
+//       // Check if token has expired
+//       const currentTime = Math.floor(Date.now() / 1000);
+//       return tokenData.exp > currentTime;
+//     } catch (error) {
+//       return false; // If we can't verify, consider invalid
+//     }
+//   };
+  
+//   // Login function that passes through backend errors
+//   const login = async (email, password) => {
+//     setLoading(true);
+    
+//     try {
+//       const response = await loginUser({ email, password });
+      
+//       if (response.status === 'success' && response.token) {
+//         // Store token and user data in localStorage
+//         localStorage.setItem('token', response.token);
+//         localStorage.setItem('user', JSON.stringify(response.user));
+        
+//         // Update current user state
+//         setCurrentUser(response.user);
+//         return response;
+//       } else {
+//         throw new Error(response.message || 'Login failed');
+//       }
+//     } catch (error) {
+//       // Pass through the backend error directly
+//       throw error;
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+  
+//   // Register function that passes through backend errors
+//   const register = async (name, email, password) => {
+//     setLoading(true);
+    
+//     try {
+//       const response = await registerUser({ name, email, password });
+      
+//       if (response.status === 'success') {
+//         return response;
+//       } else {
+//         throw new Error(response.message || 'Registration failed');
+//       }
+//     } catch (error) {
+//       // Pass through the backend error directly
+//       throw error;
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+  
+//   // Logout function
+//   const logout = async () => {
+//     setLoading(true);
+    
+//     try {
+//       // Call the logoutUser function to make API request
+//       await logoutUser();
+      
+//       // Always clear local storage and state, even if API call fails
+//       localStorage.removeItem('token');
+//       localStorage.removeItem('user');
+//       setCurrentUser(null);
+      
+//       return { status: 'success', message: 'Logged out successfully' };
+//     } catch (error) {
+//       // Still clear localStorage even if there's an error with the API call
+//       localStorage.removeItem('token');
+//       localStorage.removeItem('user');
+//       setCurrentUser(null);
+      
+//       // Pass through the backend error
+//       return { status: 'success', message: 'Logged out locally' };
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+  
+//   // Value to be provided by the context
+//   const value = {
+//     currentUser,
+//     loading,
+//     login,
+//     register,
+//     logout
+//   };
+  
+//   return (
+//     <AuthContext.Provider value={value}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// // Custom hook to use the auth context
+// export const useAuth = () => {
+//   const context = useContext(AuthContext);
+//   if (context === null) {
+//     throw new Error('useAuth must be used within an AuthProvider');
+//   }
+//   return context;
+// };
+
+// export default AuthContext;
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { 
-  loginUser, 
-  registerUser, 
-  logoutUser, 
-  initiateGoogleLogin, 
-  handleOAuthCallback, 
-  checkPhonePopupNeeded 
-} from '../utils/api';
+import { loginUser, registerUser, logoutUser, initiateGoogleLogin, handleOAuthCallback } from '../utils/api';
 
 // Create the authentication context
 const AuthContext = createContext(null);
@@ -15,11 +171,6 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [phonePopupState, setPhonePopupState] = useState({
-    show: false,
-    userName: '',
-    checked: false,
-  });
   
   // Check for existing user session on app load
   useEffect(() => {
@@ -38,8 +189,6 @@ export const AuthProvider = ({ children }) => {
             
             if (user && user.id && isTokenValid) {
               setCurrentUser(user);
-              // Check phone popup after setting user
-              await checkAndShowPhonePopup();
             } else {
               // Invalid user data or expired token
               localStorage.removeItem('token');
@@ -76,42 +225,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Function to check if phone popup should be shown
-  const checkAndShowPhonePopup = async () => {
-    // Don't check if already checked in this session
-    if (phonePopupState.checked) return;
-    
-    try {
-      // Call API to check if user needs phone popup
-      const response = await checkPhonePopupNeeded();
-      
-      if (response.status === 'success') {
-        // Update phone popup state based on API response
-        setPhonePopupState({
-          show: response.show_popup || false,
-          userName: response.user_name || '',
-          checked: true
-        });
-      }
-    } catch (error) {
-      console.error('Error checking phone popup:', error);
-    }
-  };
-
-  // Function to close the phone popup
-  const closePhonePopup = (success = false) => {
-    setPhonePopupState(prev => ({
-      ...prev,
-      show: false
-    }));
-    
-    // If phone was successfully added, update user data
-    if (success && currentUser) {
-      // You could update the phone number in the user object if needed
-      // This would be useful if you display the phone elsewhere in the app
-    }
-  };
-  
   // Regular email/password login function
   const login = async (email, password) => {
     setLoading(true);
@@ -126,10 +239,6 @@ export const AuthProvider = ({ children }) => {
         
         // Update current user state
         setCurrentUser(response.user);
-        
-        // Reset phone popup state for new login
-        setPhonePopupState({ show: false, userName: '', checked: false });
-        
         return response;
       } else {
         throw new Error(response.message || 'Login failed');
@@ -173,15 +282,6 @@ export const AuthProvider = ({ children }) => {
         
         // Update current user state
         setCurrentUser(response.user);
-        
-        // Reset and check phone popup for OAuth users
-        setPhonePopupState({ show: false, userName: '', checked: false });
-        
-        // Check phone popup after OAuth login
-        setTimeout(async () => {
-          await checkAndShowPhonePopup();
-        }, 1000); // Small delay to ensure UI is ready
-        
         return response;
       } else {
         throw new Error(response.message || 'OAuth login failed');
@@ -195,11 +295,11 @@ export const AuthProvider = ({ children }) => {
   };
   
   // Register function that passes through backend errors
-  const register = async (name, email, phone, password) => {
+  const register = async (name, email, password) => {
     setLoading(true);
     
     try {
-      const response = await registerUser({ name, email, phone, password });
+      const response = await registerUser({ name, email, password });
       
       if (response.status === 'success') {
         return response;
@@ -227,16 +327,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('user');
       setCurrentUser(null);
       
-      // Reset phone popup state
-      setPhonePopupState({ show: false, userName: '', checked: false });
-      
       return { status: 'success', message: 'Logged out successfully' };
     } catch (error) {
       // Still clear localStorage even if there's an error with the API call
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setCurrentUser(null);
-      setPhonePopupState({ show: false, userName: '', checked: false });
       
       // Pass through the backend error
       return { status: 'success', message: 'Logged out locally' };
@@ -254,10 +350,7 @@ export const AuthProvider = ({ children }) => {
     handleOAuthLogin,
     register,
     logout,
-    setCurrentUser, // Expose setCurrentUser for OAuth callback
-    phonePopupState,
-    closePhonePopup,
-    checkAndShowPhonePopup,
+    setCurrentUser // Expose setCurrentUser for OAuth callback
   };
   
   return (
