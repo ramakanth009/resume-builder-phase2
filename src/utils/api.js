@@ -1,7 +1,7 @@
 // Base URL for API requests - Updated for production deployment
 // const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
-// const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+// const BASE_URL = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
 
 // Production console log control
 const isDevelopment = process.env.NODE_ENV === 'development';
