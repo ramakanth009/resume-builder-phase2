@@ -189,39 +189,7 @@ export const initiateGoogleLogin = () => {
   window.location.href = googleAuthUrl;
 };
 
-/**
- * Handle OAuth callback authentication
- * This function processes the OAuth callback data and authenticates the user
- */
-export const handleOAuthCallback = async (callbackData) => {
-  try {
-    // Validate callback data
-    if (!callbackData.token || !callbackData.user_id) {
-      throw new Error('Invalid OAuth callback data');
-    }
 
-    // Prepare user data from callback
-    const userData = {
-      id: callbackData.user_id,
-      name: callbackData.user_name || 'User',
-      email: callbackData.user_email || '',
-      oauth_provider: callbackData.oauth_provider || 'google',
-      login_method: callbackData.login_method || 'oauth'
-    };
-
-    // Return formatted response similar to regular login
-    return {
-      status: 'success',
-      message: 'OAuth login successful',
-      token: callbackData.token,
-      user: userData,
-      oauth: true
-    };
-  } catch (error) {
-    console.error('OAuth callback handling failed:', error);
-    throw new Error(error.message || 'OAuth authentication failed');
-  }
-};
 
 /**
  * Check OAuth configuration status
@@ -578,6 +546,110 @@ export const saveGenAIToolUsage = async (role, usageData) => {
     throw error; // Pass through backend error
   }
 };
+// =============================================================================
+// PHONE COLLECTION ENDPOINTS (NEW)
+// =============================================================================
+
+/**
+ * Check if user needs to see phone collection popup
+ * @returns {Promise<Object>} Response with show_popup boolean and user_name
+ */
+export const checkPhonePopupNeeded = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/phone-popup-check`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to check phone popup status');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error checking phone popup status:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add phone number to user profile
+ * @param {string} phoneNumber - The phone number to add
+ * @returns {Promise<Object>} Response with success status
+ */
+export const addPhoneNumber = async (phoneNumber) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/add-phone-simple`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        phone: phoneNumber
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to add phone number');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error adding phone number:', error);
+    throw error;
+  }
+};
+
+/**
+ * Log that user skipped the phone collection popup
+ * @returns {Promise<Object>} Response with success status
+ */
+export const skipPhonePopup = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/user/skip-phone-popup`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to log skip action');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error logging skip action:', error);
+    throw error;
+  }
+};
+
 
 // Update the default export to include the new functions
 export default {
@@ -601,6 +673,9 @@ export default {
   saveGenAIToolUsage,
   // OAuth functions
   initiateGoogleLogin,
-  handleOAuthCallback,
-  checkOAuthStatus
+  // handleOAuthCallback,
+  checkOAuthStatus,
+  checkPhonePopupNeeded,
+  addPhoneNumber,
+  skipPhonePopup
 };

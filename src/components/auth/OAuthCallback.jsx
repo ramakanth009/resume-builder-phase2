@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, Typography, Alert } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
-import { handleOAuthCallback } from '../../utils/api';
 
 /**
  * OAuth Callback Component
@@ -38,26 +37,32 @@ const OAuthCallback = () => {
           throw new Error('Invalid OAuth callback: Missing required parameters');
         }
 
-        // Process the OAuth callback
-        const response = await handleOAuthCallback(oauthData);
+        // Use the URL parameters directly, no API call needed
+        localStorage.setItem('token', oauthData.token);
+        localStorage.setItem('user', JSON.stringify({
+          id: oauthData.user_id,
+          name: oauthData.user_name,
+          email: oauthData.user_email,
+          provider: oauthData.oauth_provider,
+          login_method: oauthData.login_method,
+          timestamp: oauthData.timestamp
+        }));
+
+        setCurrentUser({
+          id: oauthData.user_id,
+          name: oauthData.user_name,
+          email: oauthData.user_email,
+          provider: oauthData.oauth_provider,
+          login_method: oauthData.login_method,
+          timestamp: oauthData.timestamp
+        });
+
+        // Get redirect URL from session storage or default to resume builder
+        const redirectUrl = sessionStorage.getItem('redirectUrl') || '/resume-builder';
+        sessionStorage.removeItem('redirectUrl');
         
-        if (response.status === 'success') {
-          // Store authentication data
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.user));
-          
-          // Update auth context
-          setCurrentUser(response.user);
-          
-          // Get redirect URL from session storage or default to resume builder
-          const redirectUrl = sessionStorage.getItem('redirectUrl') || '/resume-builder';
-          sessionStorage.removeItem('redirectUrl');
-          
-          // Navigate to the intended destination
-          navigate(redirectUrl, { replace: true });
-        } else {
-          throw new Error(response.message || 'OAuth authentication failed');
-        }
+        // Navigate to the intended destination
+        navigate(redirectUrl, { replace: true });
       } catch (error) {
         console.error('OAuth callback processing failed:', error);
         setError(error.message || 'Authentication failed. Please try again.');

@@ -278,6 +278,41 @@ const Login = () => {
         </Typography>
 
         <form className={classes.form} onSubmit={handleLoginSubmit}>
+          {/* Google OAuth Button - Moved to top */}
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<GoogleIcon fontSize="small" />}
+            onClick={handleGoogleLogin}
+            disabled={isLoading || isGoogleLoading}
+            sx={{
+              mb: 1,
+              padding: "0.5rem",
+              fontSize: "0.875rem",
+              textTransform: "none",
+              borderColor: "#dadce0",
+              color: "#3c4043",
+              "&:hover": {
+                backgroundColor: "#f8f9fa",
+                borderColor: "#dadce0",
+              },
+            }}
+          >
+            {isGoogleLoading ? (
+              <>
+                Connecting to Google
+                <CircularProgress size={16} sx={{ ml: 1 }} />
+              </>
+            ) : (
+              "Continue with Google"
+            )}
+          </Button>
+
+          <Typography className={classes.formDivider} sx={{ 
+            margin: "0.5rem 0",
+            fontSize: "0.875rem",
+          }}>or</Typography>
+
           <TextField
             className={classes.textField}
             variant="outlined"
@@ -382,41 +417,6 @@ const Login = () => {
               </>
             ) : (
               "Log In"
-            )}
-          </Button>
-
-          <Typography className={classes.formDivider} sx={{ 
-            margin: "0.5rem 0",
-            fontSize: "0.875rem",
-          }}>or</Typography>
-
-          {/* Google OAuth Button */}
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<GoogleIcon fontSize="small" />}
-            onClick={handleGoogleLogin}
-            disabled={isLoading || isGoogleLoading}
-            sx={{
-              mb: 1,
-              padding: "0.5rem",
-              fontSize: "0.875rem",
-              textTransform: "none",
-              borderColor: "#dadce0",
-              color: "#3c4043",
-              "&:hover": {
-                backgroundColor: "#f8f9fa",
-                borderColor: "#dadce0",
-              },
-            }}
-          >
-            {isGoogleLoading ? (
-              <>
-                Connecting to Google
-                <CircularProgress size={16} sx={{ ml: 1 }} />
-              </>
-            ) : (
-              "Continue with Google"
             )}
           </Button>
 

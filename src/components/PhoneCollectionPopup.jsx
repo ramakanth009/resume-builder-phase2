@@ -7,13 +7,16 @@ import {
   Button,
   Typography,
   Box,
-  IconButton,
   Snackbar,
   Alert,
   CircularProgress,
-  InputAdornment
+  InputAdornment,
+  Tooltip
 } from '@mui/material';
-import { Close as CloseIcon, Phone as PhoneIcon } from '@mui/icons-material';
+import { Phone as PhoneIcon } from '@mui/icons-material';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,13 +42,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     color: '#1a1a1a',
     margin: 0
-  },
-  closeButton: {
-    padding: '4px',
-    color: '#666',
-    '&:hover': {
-      backgroundColor: 'rgba(0,0,0,0.04)',
-    }
   },
   content: {
     padding: '16px 24px 24px 24px',
@@ -74,30 +70,48 @@ const useStyles = makeStyles((theme) => ({
   },
   addButton: {
     flex: 1,
-    borderRadius: '8px',
+    borderRadius: '16px',
     textTransform: 'none',
     fontWeight: 600,
-    padding: '10px 16px',
-    backgroundColor: '#4285f4',
+    background: 'linear-gradient(135deg, #27286c 0%, #233f94 100%)',
+    color: '#fff',
+    boxShadow: '0 4px 12px rgba(39, 40, 108, 0.3)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    animation: '$pulse 1.5s infinite',
     '&:hover': {
-      backgroundColor: '#3367d6',
+      transform: 'translateY(-3px)',
+      boxShadow: '0 12px 40px rgba(39, 40, 108, 0.4)',
+      background: 'linear-gradient(135deg, #233f94 0%, #27286c 100%)',
     },
     '&:disabled': {
-      backgroundColor: '#e0e0e0',
-      color: '#9e9e9e'
+      background: '#a0aec0 !important',
+      color: 'white !important',
+      boxShadow: 'none',
+      cursor: 'not-allowed',
     }
   },
   skipButton: {
     flex: 1,
-    borderRadius: '8px',
+    borderRadius: '16px',
     textTransform: 'none',
     fontWeight: 500,
-    padding: '10px 16px',
-    color: '#666',
-    borderColor: '#ddd',
+    color: '#a0aec0',
+    background: 'rgba(0, 0, 0, 0.01)',
+    fontSize: '1rem',
+    border: 'none',
+    opacity: 0.7,
+    filter: 'grayscale(0.5)',
+    transition: 'all 0.2s',
+    margin:"1px",
     '&:hover': {
-      borderColor: '#bbb',
-      backgroundColor: '#f5f5f5'
+      background: 'none !important',
+      color: '#233f94',
+      border:"none !important",
+    },
+    '&:disabled': {
+      color: '#e0e0e0 !important',
+      background: '#f5f5f5 !important',
+      cursor: 'not-allowed',
     }
   },
   phoneIcon: {
@@ -107,6 +121,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: '8px'
+  },
+  blurOverlay: {
+    position: 'fixed',
+    zIndex: 1300,
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    background: 'rgba(255,255,255,0.4)',
+    backdropFilter: 'blur(6px)',
+    WebkitBackdropFilter: 'blur(6px)',
+    pointerEvents: 'auto'
+  },
+  '@keyframes pulse': {
+    '0%': { boxShadow: '0 0 0 0 rgba(39,40,108,0.2)' },
+    '70%': { boxShadow: '0 0 0 10px rgba(39,40,108,0)' },
+    '100%': { boxShadow: '0 0 0 0 rgba(39,40,108,0)' },
   }
 }));
 
@@ -169,7 +200,7 @@ const PhoneCollectionPopup = ({
     }
 
     if (!validatePhone(phone.trim())) {
-      setError('Please enter a valid phone number (e.g., +1234567890, 1234567890)');
+      setError('Please enter a valid phone number (e.g., +91 9876543210)');
       return;
     }
 
@@ -241,9 +272,16 @@ const PhoneCollectionPopup = ({
 
   return (
     <>
+      {open && (
+        <div className={classes.blurOverlay} />
+      )}
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick' && !loading) {
+            handleClose();
+          }
+        }}
         className={classes.dialog}
         disableEscapeKeyDown={loading}
         aria-labelledby="phone-collection-title"
@@ -251,17 +289,9 @@ const PhoneCollectionPopup = ({
       >
         <DialogTitle className={classes.header} id="phone-collection-title">
           <Typography className={classes.title}>
+            <RocketLaunchIcon style={{ verticalAlign: 'middle', marginRight: 6, color: '#233f94' }} fontSize="medium" />
             Complete Your Profile
           </Typography>
-          <IconButton 
-            onClick={handleClose} 
-            className={classes.closeButton}
-            disabled={loading}
-            size="small"
-            aria-label="Close dialog"
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
         </DialogTitle>
         
         <DialogContent className={classes.content}>
@@ -269,7 +299,10 @@ const PhoneCollectionPopup = ({
             className={classes.description}
             id="phone-collection-description"
           >
-            Hi {userName}! To help us serve you better, please add your phone number to your profile.
+            Hi {userName}! <b>Unlock the full experience</b> by adding your phone number.<br />
+            {/* <AutoAwesomeIcon style={{ verticalAlign: 'middle', color: '#fbc02d', marginRight: 4 }} fontSize="small" />
+            Get instant updates, recover your account easily, and enjoy a more secure, personalized journey.<br /> */}
+            <span style={{ color: '#233f94', fontWeight: 500 }}>We’ll never spam or share your number.</span>
           </Typography>
           
           <TextField
@@ -279,7 +312,7 @@ const PhoneCollectionPopup = ({
             onChange={handlePhoneChange}
             onKeyPress={handleKeyPress}
             error={!!error}
-            helperText={error || 'Enter your phone number (e.g., +1234567890)'}
+            helperText={error || 'Enter your phone number (e.g., +91 9876543210)'}
             placeholder="Enter your phone number"
             disabled={loading}
             className={classes.phoneField}
@@ -313,16 +346,25 @@ const PhoneCollectionPopup = ({
               )}
             </Button>
             
-            <Button
-              variant="outlined"
-              onClick={handleSkip}
-              disabled={loading}
-              className={classes.skipButton}
-              aria-label="Skip adding phone number"
-            >
-              Skip for Now
-            </Button>
+            <Tooltip title="We recommend adding your phone for a better experience!" arrow placement="top">
+              <span>
+                <Button
+                  variant="outlined"
+                  onClick={handleSkip}
+                  disabled={loading}
+                  className={classes.skipButton}
+                  aria-label="Skip adding phone number"
+                  tabIndex={0}
+                >
+                  Skip for Now
+                </Button>
+              </span>
+            </Tooltip>
           </Box>
+          <Typography variant="caption" align="center" style={{ color: '#b0b0b0', marginTop: 4 }}>
+            <LightbulbIcon style={{ verticalAlign: 'middle', marginRight: 4, color: '#fbc02d' }} fontSize="small" />
+            Adding your phone helps us keep your account safe!
+          </Typography>
         </DialogContent>
       </Dialog>
 

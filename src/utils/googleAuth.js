@@ -21,6 +21,8 @@ export const checkOAuthStatus = async () => {
  */
 export const initiateGoogleLogin = () => {
   const baseUrl = process.env.REACT_APP_API_URL || 'https://airesume.gigaversity.in';
+    // const baseUrl = process.env.REACT_APP_API_URL || 'https://gigaresume.onrender.com';
+  
   window.location.href = `${baseUrl}/auth/google/login`;
 };
 
@@ -29,6 +31,7 @@ export const initiateGoogleLogin = () => {
  * @param {URLSearchParams} urlParams - URL search parameters
  * @returns {Object|null} - Auth data or null if invalid
  */
+
 export const handleOAuthCallback = (urlParams) => {
   const token = urlParams.get('token');
   const userId = urlParams.get('user_id');
