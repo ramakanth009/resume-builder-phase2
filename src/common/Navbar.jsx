@@ -23,7 +23,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import FontSwitcher from '../components/FontSwitcher';
+// import FontSwitcher from '../components/FontSwitcher';
 import GigaLogo from '../assets/giga-loogo.svg';
 
 const useStyles = makeStylesWithTheme((theme) => ({
@@ -534,7 +534,7 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
             
             {/* Desktop Navigation */}
             <Box className={classes.navButtons}>
-              <FontSwitcher />
+              {/* <FontSwitcher /> */}
               
               {currentUser && (
                 <>
@@ -609,7 +609,23 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
 
             {/* Mobile Navigation */}
             <Box className={classes.mobileNavButtons}>
-              {!isTablet && <FontSwitcher />}
+              {currentUser && currentPage === 'resume-builder' && (
+                <Button
+                  className={`${classes.navButton} ${classes.templateButton}`}
+                  onClick={onTemplateClick}
+                  startIcon={<TemplateIcon />}
+                  sx={{
+                    padding: '6px 12px',
+                    fontSize: '13px',
+                    '@media (max-width: 480px)': {
+                      padding: '5px 10px',
+                      fontSize: '12px',
+                    }
+                  }}
+                >
+                  Templates
+                </Button>
+              )}
               
               {currentUser ? (
                 <>
@@ -617,11 +633,6 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
                     <Avatar className={classes.avatar}>
                       {getInitial()}
                     </Avatar>
-                    <Box className={classes.userInfo}>
-                      <Typography className={classes.userName}>
-                        {currentUser.name.split(' ')[0]}
-                      </Typography>
-                    </Box>
                   </Box>
                   
                   <IconButton
@@ -670,37 +681,18 @@ const Navbar = ({ currentPage, onTemplateClick, onLoadDummyData }) => {
         </Box>
 
         <List className={classes.drawerList}>
-          {isTablet && (
-            <ListItem className={classes.drawerListItem}>
-              <FontSwitcher />
-            </ListItem>
-          )}
-          
           {currentUser ? (
             <>
-              {currentPage === 'resume-builder' && (
-                <>
-                  <ListItem disablePadding>
-                    <Button
-                      className={classes.drawerButton}
-                      onClick={handleTemplateClick}
-                      startIcon={<TemplateIcon />}
-                    >
-                      Choose Template
-                    </Button>
-                  </ListItem>
-                  
-                  {/* <ListItem disablePadding>
-                    <Button
-                      className={classes.drawerButton}
-                      onClick={handleLoadDummyData}
-                      startIcon={<DataIcon />}
-                    >
-                      Load Demo Data
-                    </Button>
-                  </ListItem> */}
-                </>
-              )}
+              <ListItem disablePadding>
+                <Box className={classes.drawerButton} sx={{ justifyContent: 'flex-start' }}>
+                  <Avatar className={classes.avatar} sx={{ mr: 1 }}>
+                    {getInitial()}
+                  </Avatar>
+                  <Typography>
+                    {currentUser.name}
+                  </Typography>
+                </Box>
+              </ListItem>
               
               <Divider sx={{ my: 1 }} />
               

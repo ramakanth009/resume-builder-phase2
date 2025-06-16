@@ -39,7 +39,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
      display: "flex",
      flexDirection: "column",
      alignItems: "stretch",
-     justifyContent: "flex-start",
+     justifyContent: "center",
      padding: "0.5rem 1rem",
      "@media (max-width: 960px)": {
        flex: "1 1 100%",
@@ -94,6 +94,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
    },
    form: {
      display: "flex",
+     gap:"0.5rem",
      flexDirection: "column",
    },
    textField: {

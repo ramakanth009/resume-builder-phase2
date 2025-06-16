@@ -19,7 +19,7 @@ import { useTheme, useMediaQuery } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import { forgotPassword } from "../../utils/api";
 import { useStyles } from "./Login.styles";
-import LoginRightSection from "./LoginRightSection";
+import LoginRightSection from "./LoginLeftSection";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -263,7 +263,7 @@ const Login = () => {
           "@media (max-width: 600px)": {
             fontSize: "1.25rem",
           },
-        }}>Welcome Back!</Typography>
+        }}>Welcome Back User!</Typography>
 
         <Typography className={classes.subtitle} sx={{ 
           marginBottom: "0.75rem",
@@ -291,28 +291,48 @@ const Login = () => {
                backgroundColor: "#4285F4",
                color: "#ffffff",
                boxShadow: "0 1px 2px rgba(0,0,0,0.24)",
-              //  border:"1px solid #000000",
-
-              "&:hover": {
-               backgroundColor: "#357ae8",
-              },
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              // position: "relative"
+               position: 'relative',
+               overflow: 'hidden',
+               "&:hover": {
+                backgroundColor: "#357ae8",
+               },
+               display: "flex",
+               justifyContent: "center",
+               alignItems: "center",
+               "&::before": {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: '-100%',
+                width: '20%',
+                height: '100%',
+                background: 'rgba(255,255,255,0.4)',
+                transform: 'skewX(-30deg)',
+                animation: 'blockMove 3s infinite',
+               },
+               "@keyframes blockMove": {
+                "0%": { 
+                  left: '-100%',
+                  opacity: 0
+                },
+                "50%": {
+                  opacity: 0.7
+                },
+                "100%": { 
+                  left: '100%',
+                  opacity: 0
+                }
+               }
             }}
           >
             <Box 
               sx={{ 
-                // position: "absolute",
-                    // left: "1px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     bgcolor: "white",
                     borderRadius: "2px",
                     padding: "4px",
-                    // marginRight: "1px",
               }}
             >
               <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -322,7 +342,7 @@ const Login = () => {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
             </Box>
-            <Box sx={{ ml: 1 }}>
+            <Box sx={{ ml: 2.5 }}>
               {isGoogleLoading ? (
                 <>
                   Connecting to Google
@@ -672,17 +692,19 @@ const Login = () => {
 
   return (
     <Box className={classes.root}>
-      {!isMobile && (
-        <LoginRightSection
-          classes={classes}
-          featureItems={featureItems}
-          visibleFeatures={visibleFeatures}
-        />
-      )}
-      <Fade in={true} timeout={600}>
-        <Box className={classes.leftSection} sx={{ padding: "0.25rem 0.5rem", overflow: "auto" }}>
-          <Box className={classes.formContainer} sx={{ 
-            maxWidth: "420px", 
+      <LoginRightSection
+        classes={classes}
+        featureItems={featureItems}
+        visibleFeatures={visibleFeatures}
+      />
+
+      <Fade in timeout={800}>
+        <Box className={classes.leftSection} sx={{ 
+          padding: "0.25rem 0.5rem", 
+          overflow: "auto"
+        }}>
+          <Box className={classes.formContainer} sx={{
+            maxWidth: "420px",
             padding: "0.25rem",
             "@media (max-width: 600px)": {
               padding: "0.5rem",

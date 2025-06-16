@@ -240,28 +240,48 @@ const Signup = () => {
                   backgroundColor: "#4285F4",
                   color: "#ffffff",
                   boxShadow: "0 1px 2px rgba(0,0,0,0.24)",
-                  // border:"1px solid #000000",
-
+                  position: 'relative',
+                  overflow: 'hidden',
                   "&:hover": {
                     backgroundColor: "#357ae8",
                   },
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  // position: "relative"
+                  "&::before": {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: '-100%',
+                    width: '20%',
+                    height: '100%',
+                    background: 'rgba(255,255,255,0.4)',
+                    transform: 'skewX(-30deg)',
+                    animation: 'blockMove 3s infinite',
+                  },
+                  "@keyframes blockMove": {
+                    "0%": { 
+                      left: '-100%',
+                      opacity: 0
+                    },
+                    "50%": {
+                      opacity: 0.7
+                    },
+                    "100%": { 
+                      left: '100%',
+                      opacity: 0
+                    }
+                  }
                 }}
               >
                 <Box
                   sx={{
-                    // position: "absolute",
-                    // left: "1px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     bgcolor: "white",
                     borderRadius: "2px",
                     padding: "4px",
-                    // marginRight: "2px",
                   }}
                 >
                   <svg
@@ -288,7 +308,7 @@ const Signup = () => {
                     />
                   </svg>
                 </Box>
-                <Box sx={{ ml: 1 }}>
+                <Box sx={{ ml: 2.5}}>
                   {isGoogleLoading ? (
                     <>
                       Connecting to Google
