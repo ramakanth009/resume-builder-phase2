@@ -86,7 +86,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
    },
    subtitle: {
      color: colors.midBlue,
-     marginBottom: "1.5rem",
+     marginBottom: "0.8rem",
      "@media (max-width: 600px)": {
        fontSize: "0.9rem",
        marginBottom: "1rem",
@@ -114,7 +114,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
    formDivider: {
      display: "flex",
      alignItems: "center",
-     margin: "1rem 0",
+     margin: "0.5rem 0",
      color: colors.midBlue,
      "&::before, &::after": {
        content: '""',

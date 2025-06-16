@@ -55,9 +55,9 @@ const useStyles = makeStylesWithTheme((theme) => ({
     },
   },
   processContainer: {
-    marginTop: '2rem',
+    marginTop: '1rem',
     display: 'grid',
-    gap: '1.5rem',
+    gap: '0.5rem',
     '@media (max-width: 1200px)': {
       gap: '1.2rem',
     },
@@ -68,7 +68,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   processStep: {
     background: 'rgba(255, 255, 255, 0.1)',
     backdropFilter: 'blur(10px)',
-    padding: '1.2rem',
+    padding: '0.5rem',
     borderRadius: '12px',
     display: 'flex',
     alignItems: 'center',
@@ -76,7 +76,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     transition: 'all 0.3s ease',
     '&:hover': {
       background: 'rgba(255, 255, 255, 0.15)',
-      transform: 'translateX(10px)',
+      // transform: 'translateX(10px)',
       boxShadow: '0 6px 24px 0 rgba(60,60,130,0.10), 0 1.5px 6px 0 rgba(255,198,21,0.10)',
     },
     '@media (max-width: 1200px)': {
@@ -94,7 +94,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    fontSize: '1.1rem',
+    fontSize: '1.4rem',
     '@media (max-width: 1200px)': {
       width: '32px',
       height: '32px',
@@ -140,7 +140,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     transition: 'all 0.3s ease',
     '&:hover': {
       background: 'rgba(255, 255, 255, 0.15)',
-      transform: 'translateX(5px)',
+      // transform: 'translateX(5px)',
     },
     '@media (max-width: 1200px)': {
       padding: '0.7rem 0.9rem',

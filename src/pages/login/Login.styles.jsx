@@ -114,7 +114,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   },
   subtitle: {
     color: colors.midBlue,
-    marginBottom: "1.5rem",
+    marginBottom: "0.8rem",
     lineHeight: 1.5,
   },
   form: {
@@ -165,7 +165,7 @@ export const useStyles = makeStylesWithTheme((theme) => ({
   formDivider: {
     display: "flex",
     alignItems: "center",
-    margin: "1rem 0",
+    margin: "0.5rem 0",
     color: colors.midBlue,
     "&::before, &::after": {
       content: '""',

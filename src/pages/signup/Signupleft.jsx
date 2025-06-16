@@ -110,7 +110,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   featuresGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '1rem',
+    gap: '0.5rem',
     '@media (max-width: 600px)': {
       gridTemplateColumns: '1fr',
       gap: '0.5rem',
@@ -119,7 +119,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
   featureItem: {
     background: 'rgba(255, 255, 255, 0.1)',
     backdropFilter: 'blur(10px)',
-    padding: '1.2rem',
+    padding: '1rem',
     borderRadius: '12px',
     display: 'flex',
     alignItems: 'center',
@@ -129,7 +129,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '&:hover': {
       background: 'rgba(255, 255, 255, 0.15)',
       boxShadow: '0 6px 24px 0 rgba(60,60,130,0.10), 0 1.5px 6px 0 rgba(255,198,21,0.10)',
-      transform: 'scale(1.03)',
+      // transform: 'scale(1.03)',
     },
     '@media (max-width: 960px)': {
       padding: '1rem',

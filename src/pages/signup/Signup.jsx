@@ -214,7 +214,7 @@ const Signup = () => {
             <Typography
               className={classes.subtitle}
               sx={{
-                marginBottom: "0.75rem",
+                marginBottom: "0.75rem ",
                 fontSize: "0.875rem",
                 "@media (max-width: 600px)": {
                   fontSize: "0.8rem",
