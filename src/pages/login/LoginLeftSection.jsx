@@ -113,6 +113,14 @@ const useStyles = makeStylesWithTheme((theme) => ({
       marginTop: '2rem',
     },
   },
+  benefitsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '1rem',
+    '@media (max-width: 1200px)': {
+      gap: '0.8rem',
+    },
+  },
   benefitsTitle: {
     fontSize: '1.4rem',
     fontWeight: 600,
@@ -126,7 +134,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: '0.8rem',
-    marginTop: '0.8rem',
     background: 'rgba(255, 255, 255, 0.1)',
     padding: '0.8rem 1rem',
     borderRadius: '8px',
@@ -138,7 +145,6 @@ const useStyles = makeStylesWithTheme((theme) => ({
     '@media (max-width: 1200px)': {
       padding: '0.7rem 0.9rem',
       gap: '0.6rem',
-      marginTop: '0.6rem',
     },
   },
   featureIcon: {
@@ -231,14 +237,16 @@ const LoginLeftSection = ({ featureItems }) => {
             <Typography variant="h6" className={classes.benefitsTitle}>
               <span className={classes.highlight}>Student Benefits:</span>
             </Typography>
-            {featureItems.map((text, i) => (
-              <Fade in timeout={1200 + i * 200} key={i}>
-                <Box className={classes.featureItem}>
-                  <CheckCircle className={classes.featureIcon} />
-                  <Typography variant="body1" className={classes.featureText}>{text}</Typography>
-                </Box>
-              </Fade>
-            ))}
+            <Box className={classes.benefitsGrid}>
+              {featureItems.map((text, i) => (
+                <Fade in timeout={1200 + i * 200} key={i}>
+                  <Box className={classes.featureItem}>
+                    <CheckCircle className={classes.featureIcon} />
+                    <Typography variant="body1" className={classes.featureText}>{text}</Typography>
+                  </Box>
+                </Fade>
+              ))}
+            </Box>
           </Box>
         </Box>
       </Fade>
