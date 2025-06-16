@@ -237,13 +237,13 @@ const Signup = () => {
                   padding: "0.5rem",
                   fontSize: "0.975rem",
                   textTransform: "none",
-                  backgroundColor: "#ffffff",
-                  color: "#000000",
+                  backgroundColor: "#4285F4",
+                  color: "#ffffff",
                   boxShadow: "0 1px 2px rgba(0,0,0,0.24)",
-                  border:"1px solid #000000",
+                  // border:"1px solid #000000",
 
                   "&:hover": {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "#357ae8",
                   },
                   display: "flex",
                   justifyContent: "center",
@@ -258,10 +258,10 @@ const Signup = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    // bgcolor: "white",
+                    bgcolor: "white",
                     borderRadius: "2px",
-                    // padding: "6px",
-                    marginRight: "2px",
+                    padding: "4px",
+                    // marginRight: "2px",
                   }}
                 >
                   <svg
@@ -288,7 +288,7 @@ const Signup = () => {
                     />
                   </svg>
                 </Box>
-                <Box sx={{ ml: 4 }}>
+                <Box sx={{ ml: 1 }}>
                   {isGoogleLoading ? (
                     <>
                       Connecting to Google
