@@ -39,7 +39,7 @@ const LoginRightSection = ({ classes, featureItems, visibleFeatures }) => (
       <Box className={classes.rightContentContainer}>
         <Fade in={true} timeout={1000}>
           <Typography variant="h4" className={classes.welcomeRight}>
-            Resume <span className={classes.highlightText}>Builder</span>
+             Resume <span className={classes.highlightText}>Builder</span>
           </Typography>
         </Fade>
         
