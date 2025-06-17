@@ -94,7 +94,7 @@ const useStyles = makeStylesWithTheme((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    fontSize: '1.4rem',
+    fontSize: '1rem',
     '@media (max-width: 1200px)': {
       width: '32px',
       height: '32px',
