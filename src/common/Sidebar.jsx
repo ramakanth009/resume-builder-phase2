@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import makeStylesWithTheme from '../styles/makeStylesAdapter';
 
@@ -101,8 +102,38 @@ const useStyles = makeStylesWithTheme((theme) => ({
   },
 }));
 
+// Section slug mapping for URL routing
+const SECTION_SLUGS = {
+  'personal-info': 0,
+  'social-links': 1,
+  'education': 2,
+  'skills': 3,
+  'ai-skills': 4,
+  'projects': 5,
+  'experience': 6,
+  'certifications': 7,
+  'custom-sections': 8,
+  // 'terms-policies': 9,
+};
+
+const SLUG_TO_SECTION = {
+  0: 'personal-info',
+  1: 'social-links',
+  2: 'education',
+  3: 'skills',
+  4: 'ai-skills',
+  5: 'projects',
+  6: 'experience',
+  7: 'certifications',
+  8: 'custom-sections',
+  // 9: 'terms-policies',
+};
+
 const Sidebar = ({ activeStep, steps, onStepClick }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const { resumeId, section } = useParams();
+  const location = useLocation();
 
   // Icon mapping for steps
   const stepIcons = [
@@ -118,6 +149,32 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
     <GavelIcon />,               // Terms & Policies (changed icon)
   ];
 
+  // Handle section navigation
+  const handleSectionClick = (stepIndex) => {
+    const newSection = SLUG_TO_SECTION[stepIndex];
+    if (newSection) {
+      const basePath = resumeId 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${newSection}`);
+    }
+    
+    // Also call the original onStepClick if provided (for backward compatibility)
+    if (onStepClick) {
+      onStepClick(stepIndex);
+    }
+  };
+
+  // Get current active step from URL
+  const getCurrentActiveStep = () => {
+    if (!section || !(section in SECTION_SLUGS)) {
+      return 0; // Default to first section
+    }
+    return SECTION_SLUGS[section];
+  };
+
+  const currentActiveStep = getCurrentActiveStep();
+
   return (
     <Box className={classes.sidebar}>
       {/* Header area */}
@@ -132,12 +189,12 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
         {steps.map((label, index) => (
           <ListItem
             key={label}
-            className={`${classes.listItem} ${activeStep === index ? classes.activeListItem : ''}`}
-            onClick={() => onStepClick(index)}
+            className={`${classes.listItem} ${currentActiveStep === index ? classes.activeListItem : ''}`}
+            onClick={() => handleSectionClick(index)}
             button
             disableRipple
           >
-            <ListItemIcon className={`${classes.listItemIcon} ${activeStep === index ? classes.activeIcon : ''}`}>
+            <ListItemIcon className={`${classes.listItemIcon} ${currentActiveStep === index ? classes.activeIcon : ''}`}>
               {stepIcons[index]}
             </ListItemIcon>
             
@@ -146,8 +203,8 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
               primaryTypographyProps={{ 
                 className: classes.itemText,
                 style: { 
-                  color: activeStep === index ? '#3182ce' : '#2d3748',
-                  fontWeight: activeStep === index ? 600 : 500,
+                  color: currentActiveStep === index ? '#3182ce' : '#2d3748',
+                  fontWeight: currentActiveStep === index ? 600 : 500,
                 } 
               }}
             />

@@ -153,6 +153,33 @@ const steps = [
   // "Terms & Policies",
 ];
 
+// Section slug mapping for URL routing
+const SECTION_SLUGS = {
+  'personal-info': 0,
+  'social-links': 1,
+  'education': 2,
+  'skills': 3,
+  'ai-skills': 4,
+  'projects': 5,
+  'experience': 6,
+  'certifications': 7,
+  'custom-sections': 8,
+  // 'terms-policies': 9,
+};
+
+const SLUG_TO_SECTION = {
+  0: 'personal-info',
+  1: 'social-links',
+  2: 'education',
+  3: 'skills',
+  4: 'ai-skills',
+  5: 'projects',
+  6: 'experience',
+  7: 'certifications',
+  8: 'custom-sections',
+  // 9: 'terms-policies',
+};
+
 /**
  * Prepares form data for API submission by ensuring all required fields are present
  * in both generate and update formats
@@ -260,14 +287,22 @@ const ResumeBuilder = () => {
   const isMobile = useMediaQuery("(max-width:960px)");
   const { showConfirmDialog, confirmLogout, cancelLogout } = useResumeBuilderGuard();
 
-  // Get resumeId from URL params if editing an existing resume
-  const { resumeId } = useParams();
+  // Get URL parameters
+  const { resumeId, section } = useParams();
 
   // Determine if we're in edit mode based on URL param
   const isEditingExisting = Boolean(resumeId);
 
+  // Get current active step from URL section parameter
+  const getCurrentStep = () => {
+    if (!section || !(section in SECTION_SLUGS)) {
+      return 0; // Default to first section
+    }
+    return SECTION_SLUGS[section];
+  };
+
   // State Declarations
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(getCurrentStep());
   const [loading, setLoading] = useState(false);
   const [loadingResume, setLoadingResume] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
@@ -381,6 +416,23 @@ const ResumeBuilder = () => {
     genai_tools: [], // ← ADD THIS LINE
     customSections: {},
   });
+
+  // Update activeStep when URL section changes
+  useEffect(() => {
+    const newStep = getCurrentStep();
+    setActiveStep(newStep);
+  }, [section]);
+
+  // Navigation handler for section changes
+  const handleStepClick = (step) => {
+    const newSection = SLUG_TO_SECTION[step];
+    if (newSection) {
+      const basePath = isEditingExisting 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${newSection}`);
+    }
+  };
 
   // Validation functions
   const validatePersonalInfo = () => {
@@ -649,22 +701,33 @@ const ResumeBuilder = () => {
       return;
     }
     
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // Navigate to next section
+    const nextStep = activeStep + 1;
+    if (nextStep < steps.length) {
+      const nextSection = SLUG_TO_SECTION[nextStep];
+      if (nextSection) {
+        const basePath = isEditingExisting 
+          ? `/resume-builder/edit/${resumeId}` 
+          : '/resume-builder';
+        navigate(`${basePath}/${nextSection}`);
+      }
+    }
   };
 
   const handleBack = () => {
     // Clear validation errors when going back
     setValidationErrors({});
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  // Handler for clicking on step labels
-  const handleStepClick = (stepIndex) => {
-    // Only allow step navigation if in edit mode
-    if (isEditMode) {
-      // Clear validation errors when navigating
-      setValidationErrors({});
-      setActiveStep(stepIndex);
+    
+    // Navigate to previous section
+    const prevStep = activeStep - 1;
+    if (prevStep >= 0) {
+      const prevSection = SLUG_TO_SECTION[prevStep];
+      if (prevSection) {
+        const basePath = isEditingExisting 
+          ? `/resume-builder/edit/${resumeId}` 
+          : '/resume-builder';
+        navigate(`${basePath}/${prevSection}`);
+      }
     }
   };
 
@@ -711,7 +774,11 @@ const ResumeBuilder = () => {
         message: "Please fill in all personal information fields",
         severity: "error",
       });
-      setActiveStep(0); // Switch to personal info step
+      const personalInfoSection = SLUG_TO_SECTION[0];
+      const basePath = isEditingExisting 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${personalInfoSection}`);
       return false;
     }
 
@@ -721,7 +788,11 @@ const ResumeBuilder = () => {
         message: "Please fill in education information",
         severity: "error",
       });
-      setActiveStep(2); // Switch to education step (now index 2)
+      const educationSection = SLUG_TO_SECTION[2];
+      const basePath = isEditingExisting 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${educationSection}`);
       return false;
     }
 
@@ -731,7 +802,11 @@ const ResumeBuilder = () => {
         message: "Please add at least one skill",
         severity: "error",
       });
-      setActiveStep(3); // Switch to skills step (now index 3)
+      const skillsSection = SLUG_TO_SECTION[3];
+      const basePath = isEditingExisting 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${skillsSection}`);
       return false;
     }
 
@@ -741,7 +816,11 @@ const ResumeBuilder = () => {
         message: "Please add at least one project",
         severity: "error",
       });
-      setActiveStep(5); // Switch to projects step (now index 5)
+      const projectsSection = SLUG_TO_SECTION[5];
+      const basePath = isEditingExisting 
+        ? `/resume-builder/edit/${resumeId}` 
+        : '/resume-builder';
+      navigate(`${basePath}/${projectsSection}`);
       return false;
     }
 
@@ -756,7 +835,11 @@ const ResumeBuilder = () => {
   //       message: "Please accept both terms and policies to continue",
   //       severity: "error",
   //     });
-  //     setActiveStep(steps.length - 1); // Now points to "Terms & Policies"
+  //     const termsSection = SLUG_TO_SECTION[9];
+  //     const basePath = isEditingExisting 
+  //       ? `/resume-builder/edit/${resumeId}` 
+  //       : '/resume-builder';
+  //     navigate(`${basePath}/${termsSection}`);
   //     return false;
   //   }
   //   return true;
@@ -1009,6 +1092,12 @@ const ResumeBuilder = () => {
       // For mobile, show the preview
       if (isMobile) {
         setIsMobilePreviewMode(true);
+      }
+
+      // Navigate to edit mode if not already there
+      if (!isEditingExisting) {
+        const currentSection = SLUG_TO_SECTION[activeStep] || 'personal-info';
+        navigate(`/resume-builder/edit/${response.resume_id}/${currentSection}`, { replace: true });
       }
     } catch (error) {
       console.error("Error generating resume:", error);

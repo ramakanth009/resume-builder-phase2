@@ -231,9 +231,18 @@ const AppContent = () => {
                   element={<OAuthCallback />} 
                 />
 
-                {/* Protected routes */}
+                {/* Protected resume builder routes with section support */}
                 <Route 
                   path="/resume-builder" 
+                  element={
+                    <ProtectedRoute>
+                      <Navigate to="/resume-builder/personal-info" replace />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                <Route 
+                  path="/resume-builder/:section" 
                   element={
                     <ProtectedRoute>
                       <ResumeBuilder />
@@ -243,6 +252,15 @@ const AppContent = () => {
 
                 <Route 
                   path="/resume-builder/edit/:resumeId" 
+                  element={
+                    <ProtectedRoute>
+                      <Navigate to="/resume-builder/edit/:resumeId/personal-info" replace />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                <Route 
+                  path="/resume-builder/edit/:resumeId/:section" 
                   element={
                     <ProtectedRoute>
                       <ResumeBuilder />
@@ -261,14 +279,6 @@ const AppContent = () => {
                     )
                   } 
                 />
-                <Route 
-  path="/resume-builder" 
-  element={
-    <ProtectedRoute>
-      <ResumeBuilderWithGuard />
-    </ProtectedRoute>
-  } 
-/>
               </Routes>
             </Suspense>
           </Router>
