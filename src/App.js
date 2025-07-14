@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect, useMemo } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 // import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -143,6 +143,18 @@ const NavbarWrapper = () => {
   ) : null;
 };
 
+// Resume edit redirect component to handle resumeId parameter properly
+const ResumeEditRedirect = () => {
+  const { resumeId } = useParams();
+  return <Navigate to={`/resume-builder/edit/${resumeId}/personal-info`} replace />;
+};
+
+// Resume generated redirect component to handle first-time generation
+const ResumeGeneratedRedirect = () => {
+  const { resumeId } = useParams();
+  return <Navigate to={`/resume-builder/generated/${resumeId}/personal-info`} replace />;
+};
+
 // Main App component wrapped with providers
 const AppContent = () => {
   const { font } = useFont();
@@ -231,7 +243,7 @@ const AppContent = () => {
                   element={<OAuthCallback />} 
                 />
 
-                {/* Protected resume builder routes with section support */}
+                {/* Resume builder routes with proper mode distinction */}
                 <Route 
                   path="/resume-builder" 
                   element={
@@ -250,11 +262,31 @@ const AppContent = () => {
                   } 
                 />
 
+                {/* Generated resume routes (first-time view after generation) */}
+                <Route 
+                  path="/resume-builder/generated/:resumeId" 
+                  element={
+                    <ProtectedRoute>
+                      <ResumeGeneratedRedirect />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                <Route 
+                  path="/resume-builder/generated/:resumeId/:section" 
+                  element={
+                    <ProtectedRoute>
+                      <ResumeBuilder />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                {/* Edit resume routes (explicit edit mode) */}
                 <Route 
                   path="/resume-builder/edit/:resumeId" 
                   element={
                     <ProtectedRoute>
-                      <Navigate to="/resume-builder/edit/:resumeId/personal-info" replace />
+                      <ResumeEditRedirect />
                     </ProtectedRoute>
                   } 
                 />

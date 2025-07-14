@@ -153,9 +153,15 @@ const Sidebar = ({ activeStep, steps, onStepClick }) => {
   const handleSectionClick = (stepIndex) => {
     const newSection = SLUG_TO_SECTION[stepIndex];
     if (newSection) {
-      const basePath = resumeId 
-        ? `/resume-builder/edit/${resumeId}` 
-        : '/resume-builder';
+      // Determine the correct base path based on current URL
+      let basePath;
+      if (location.pathname.includes('/edit/')) {
+        basePath = `/resume-builder/edit/${resumeId}`;
+      } else if (location.pathname.includes('/generated/')) {
+        basePath = `/resume-builder/generated/${resumeId}`;
+      } else {
+        basePath = '/resume-builder';
+      }
       navigate(`${basePath}/${newSection}`);
     }
     
