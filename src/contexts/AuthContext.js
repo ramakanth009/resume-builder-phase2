@@ -106,11 +106,11 @@ export const AuthProvider = ({ children }) => {
   };
   
   // Register function that passes through backend errors
-  const register = async (name, email, password, phone) => {
+  const register = async (name, email, phone, password) => {
     setLoading(true);
     
     try {
-      const response = await registerUser({ name, email, password, phone });
+      const response = await registerUser({ name, email, phone, password });
       
       if (response.status === 'success') {
         return response;
