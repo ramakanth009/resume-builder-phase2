@@ -1664,7 +1664,7 @@ const steps = [
   "Experience",
   "Certifications",
   "Custom Sections",
-  "Terms & Policies",
+  // "Terms & Policies",
 ];
 
 /**
@@ -1788,10 +1788,12 @@ const ResumeBuilder = () => {
   const [generatedResume, setGeneratedResume] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState({
-    updates: false,
-    dataSharing: false,
-  });
+
+  ////terms and policies state
+  // const [termsAccepted, setTermsAccepted] = useState({
+  //   updates: false,
+  //   dataSharing: false,
+  // });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -1977,11 +1979,11 @@ const ResumeBuilder = () => {
       case 5: // Projects
         stepErrors = validateProjects();
         break;
-      case 9: // Terms & Policies
-        if (!termsAccepted.updates || !termsAccepted.dataSharing) {
-          stepErrors['terms'] = 'Please accept both terms and policies to continue';
-        }
-        break;
+      // case 9: // Terms & Policies
+      //   if (!termsAccepted.updates || !termsAccepted.dataSharing) {
+      //     stepErrors['terms'] = 'Please accept both terms and policies to continue';
+      //   }
+      // break;
       default:
         break;
     }
@@ -2103,10 +2105,10 @@ const ResumeBuilder = () => {
             setResumeData(updatedFormData);
 
             // Set terms as accepted since we're editing an existing resume
-            setTermsAccepted({
-              updates: true,
-              dataSharing: true,
-            });
+            // setTermsAccepted({
+            //   updates: true,
+            //   dataSharing: true,
+            // });
 
             setSnackbar({
               open: true,
@@ -2261,18 +2263,18 @@ const ResumeBuilder = () => {
   };
 
   // Validate terms acceptance
-  const validateTermsAcceptance = () => {
-    if (!termsAccepted.updates || !termsAccepted.dataSharing) {
-      setSnackbar({
-        open: true,
-        message: "Please accept both terms and policies to continue",
-        severity: "error",
-      });
-      setActiveStep(steps.length - 1); // Now points to "Terms & Policies"
-      return false;
-    }
-    return true;
-  };
+  // const validateTermsAcceptance = () => {
+  //   if (!termsAccepted.updates || !termsAccepted.dataSharing) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: "Please accept both terms and policies to continue",
+  //       severity: "error",
+  //     });
+  //     setActiveStep(steps.length - 1); // Now points to "Terms & Policies"
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   // Update the mapGeneratedDataToFormFields function to handle aiExperience
 
@@ -2466,10 +2468,10 @@ const ResumeBuilder = () => {
       return;
     }
 
-    // Validate terms acceptance
-    if (!validateTermsAcceptance()) {
-      return;
-    }
+    // // Validate terms acceptance
+    // if (!validateTermsAcceptance()) {
+    //   return;
+    // }
 
     setLoading(true);
 
@@ -2633,8 +2635,8 @@ const ResumeBuilder = () => {
     });
   };
 
-  // Check if both terms are accepted
-  const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
+  // // Check if both terms are accepted
+  // const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
 
   // Determine if the resume has been generated at least once
   const hasGeneratedResume = generatedResume !== null;
@@ -2719,13 +2721,13 @@ const ResumeBuilder = () => {
             setResumeData={setResumeData}
           />
         );
-      case 9:
-        return (
-          <TermsAndPolicies
-            termsAccepted={termsAccepted}
-            setTermsAccepted={setTermsAccepted}
-          />
-        );
+      // case 9:
+      //   return (
+      //     <TermsAndPolicies
+      //       termsAccepted={termsAccepted}
+      //       setTermsAccepted={setTermsAccepted}
+      //     />
+      //   );
       default:
         return "Unknown step";
     }
