@@ -19,6 +19,7 @@ import { createDynamicTheme } from './theme/dynamicTheme';
 // Lazy load components
 const Login = React.lazy(() => import('./pages/login/Login'));
 const ResumeBuilder = React.lazy(() => import('./pages/ResumeBuilder'));
+const GeneratedResume = React.lazy(() => import('./pages/GeneratedResume'));
 
 // Import password recovery components
 const ForgotPassword = React.lazy(() => import('./pages/login/ForgotPassword'));
@@ -151,6 +152,17 @@ const ResumeEditRedirect = () => {
   return <Navigate to={`/resume-builder/edit/${resumeId}/personal-info`} replace />;
 };
 
+// Resume view redirect component to handle resumeId parameter properly
+const ResumeViewRedirect = () => {
+  const { resumeId } = useParams();
+  
+  if (!resumeId) {
+    return <Navigate to="/resume-builder" replace />;
+  }
+  
+  return <Navigate to={`/resume-builder/view/${resumeId}/personal-info`} replace />;
+};
+
 // Resume generated redirect component to handle first-time generation
 const ResumeGeneratedRedirect = () => {
   const { resumeId } = useParams();
@@ -259,6 +271,25 @@ const AppContent = () => {
                   } 
                 />
 
+                {/* View resume routes (for viewing completed resumes) */}
+                <Route 
+                  path="/resume-builder/view/:resumeId" 
+                  element={
+                    <ProtectedRoute>
+                      <ResumeViewRedirect />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                <Route 
+                  path="/resume-builder/view/:resumeId/:section" 
+                  element={
+                    <ProtectedRoute>
+                      <GeneratedResume />
+                    </ProtectedRoute>
+                  } 
+                />
+
                 {/* Generated resume routes (first-time view after generation) */}
                 <Route 
                   path="/resume-builder/generated/:resumeId" 
@@ -273,7 +304,7 @@ const AppContent = () => {
                   path="/resume-builder/generated/:resumeId/:section" 
                   element={
                     <ProtectedRoute>
-                      <ResumeBuilder />
+                      <GeneratedResume />
                     </ProtectedRoute>
                   } 
                 />
