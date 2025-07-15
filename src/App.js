@@ -171,7 +171,7 @@ const ResumeGeneratedRedirect = () => {
     return <Navigate to="/resume-builder" replace />;
   }
   
-  return <Navigate to={`/resume-builder/generated/${resumeId}/personal-info`} replace />;
+  return <Navigate to={`/resume-builder/generated/${resumeId}`} replace />;
 };
 
 // Main App component wrapped with providers
