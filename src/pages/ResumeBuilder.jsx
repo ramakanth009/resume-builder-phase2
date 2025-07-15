@@ -32,7 +32,6 @@ import ProjectsSection from "../components/resumeBuilderComponents/ProjectsSecti
 import ExperienceSection from "../components/resumeBuilderComponents/ExperienceSection";
 import CertificationsSection from "../components/resumeBuilderComponents/CertificationsSection";
 import CustomSections from "../components/resumeBuilderComponents/CustomSections";
-// import TermsAndPolicies from "../components/resumeBuilderComponents/TermsAndPolicies";
 import ResumePreview from "../components/previewComponents/ResumePreview";
 import TemplateSelector from "../components/previewComponents/TemplateSelector";
 import AISkillRecommendationsSection from "../components/resumeBuilderComponents/AISkills";
@@ -150,7 +149,6 @@ const steps = [
   "Experience",
   "Certifications",
   "Custom Sections",
-  // "Terms & Policies",
 ];
 
 // Section slug mapping for URL routing
@@ -164,7 +162,6 @@ const SECTION_SLUGS = {
   'experience': 6,
   'certifications': 7,
   'custom-sections': 8,
-  // 'terms-policies': 9,
 };
 
 const SLUG_TO_SECTION = {
@@ -177,7 +174,6 @@ const SLUG_TO_SECTION = {
   6: 'experience',
   7: 'certifications',
   8: 'custom-sections',
-  // 9: 'terms-policies',
 };
 
 /**
@@ -312,11 +308,6 @@ const ResumeBuilder = () => {
   const [isEditMode, setIsEditMode] = useState(true);
   const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false);
 
-  ////terms and policies state
-  // const [termsAccepted, setTermsAccepted] = useState({
-  //   updates: false,
-  //   dataSharing: false,
-  // });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -335,7 +326,7 @@ const ResumeBuilder = () => {
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState({});
 
-  // Phone collection popup state (NEW)
+  // Phone collection popup state
   const [phonePopup, setPhonePopup] = useState({
     open: false,
     userName: '',
@@ -387,7 +378,6 @@ const ResumeBuilder = () => {
       specialization: "",
       institution: "",
       graduation_year: "",
-      // Also include graduationYear for update format compatibility
       graduationYear: "",
     },
     skills: [""],
@@ -396,7 +386,6 @@ const ResumeBuilder = () => {
         name: "",
         skills_used: "",
         description: "",
-        // Add fields for update format
         responsibilities: [],
         link: "",
         technologies: [],
@@ -407,7 +396,6 @@ const ResumeBuilder = () => {
       {
         position: "",
         company_name: "",
-        // Add field for update format
         companyName: "",
         duration: "",
         description: "",
@@ -415,7 +403,7 @@ const ResumeBuilder = () => {
       },
     ],
     target_role: "",
-    genai_tools: [], // ← ADD THIS LINE
+    genai_tools: [],
     customSections: {},
   });
 
@@ -524,11 +512,6 @@ const ResumeBuilder = () => {
       case 5: // Projects
         stepErrors = validateProjects();
         break;
-      // case 9: // Terms & Policies
-      //   if (!termsAccepted.updates || !termsAccepted.dataSharing) {
-      //     stepErrors['terms'] = 'Please accept both terms and policies to continue';
-      //   }
-      // break;
       default:
         break;
     }
@@ -555,11 +538,10 @@ const ResumeBuilder = () => {
     }
   }, [resumeData.target_role, targetRole]);
 
-  // Check for phone collection popup (NEW)
+  // Check for phone collection popup
   useEffect(() => {
     const checkPhoneCollection = async () => {
       try {
-        // Only check if user is logged in and component is mounted
         if (currentUser && currentUser.id) {
           setPhonePopup(prev => ({ ...prev, loading: true }));
           
@@ -581,24 +563,21 @@ const ResumeBuilder = () => {
       }
     };
 
-    // Check for phone popup after a short delay to ensure component is fully loaded
     const timer = setTimeout(() => {
       checkPhoneCollection();
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [currentUser]); // Only depend on currentUser
+  }, [currentUser]);
 
-  // Phone collection handlers (NEW)
+  // Phone collection handlers
   const handlePhoneAdded = async (phoneNumber) => {
     try {
       await addPhoneNumber(phoneNumber);
       
-      // Update current user data using the new method
       if (updateUserData) {
         updateUserData({ phone: phoneNumber });
       } else {
-        // Fallback to direct localStorage update
         if (currentUser) {
           const updatedUser = { ...currentUser, phone: phoneNumber };
           localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -616,7 +595,6 @@ const ResumeBuilder = () => {
       await skipPhonePopup();
       return Promise.resolve();
     } catch (error) {
-      // Don't throw error for skip action - just log it
       console.error('Error logging skip action:', error);
       return Promise.resolve();
     }
@@ -626,34 +604,38 @@ const ResumeBuilder = () => {
     setPhonePopup(prev => ({ ...prev, open: false }));
   };
 
-  // Fetch resume data if in edit mode
+  // Fetch resume data if in edit mode - FIXED VERSION
   useEffect(() => {
     if (isEditingExisting && resumeId) {
+      console.log('🔍 Edit mode detected, resumeId:', resumeId);
+      
+      // Skip fetching if we already have generated resume data
+      if (generatedResume && generatedResume.id === resumeId) {
+        console.log('✅ Resume data already available, skipping fetch');
+        return;
+      }
+      
       const fetchResumeData = async () => {
         setLoadingResume(true);
         setLoadingError(null);
 
         try {
+          console.log('📡 Calling getResumeById with ID:', resumeId);
           const response = await getResumeById(resumeId);
+          console.log('✅ getResumeById response:', response);
 
           if (response && response.status === "success") {
-            // Set the resume data from API response
-            // Pass the resumeId to ensure it's stored in the adapted resume
-            const adaptedResume = adaptGeneratedResume(
-              response.resume,
-              resumeId
-            );
+            console.log('✅ Resume data found:', response.resume);
+            
+            const adaptedResume = adaptGeneratedResume(response.resume, resumeId);
+            console.log('✅ Adapted resume:', adaptedResume);
+            
             setGeneratedResume(adaptedResume);
 
-            // Map the data to form fields
             const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+            console.log('✅ Updated form data:', updatedFormData);
+            
             setResumeData(updatedFormData);
-
-            // Set terms as accepted since we're editing an existing resume
-            // setTermsAccepted({
-            //   updates: true,
-            //   dataSharing: true,
-            // });
 
             setSnackbar({
               open: true,
@@ -661,13 +643,38 @@ const ResumeBuilder = () => {
               severity: "success",
             });
           } else {
+            console.error('❌ Invalid response format:', response);
             throw new Error(response?.message || "Failed to load resume");
           }
         } catch (error) {
-          console.error("Error fetching resume:", error);
-          setLoadingError(
-            error.message || "Unable to load the resume. Please try again."
-          );
+          console.error("❌ Error fetching resume:", error);
+          
+          // If fetch fails but we have some data, use it
+          if (generatedResume) {
+            console.log('⚠️ Using existing generated resume data due to fetch error');
+            setSnackbar({
+              open: true,
+              message: "Using cached resume data",
+              severity: "warning",
+            });
+            return;
+          }
+          
+          // Enhanced error handling
+          if (error.message.includes('404')) {
+            setLoadingError(`Resume with ID ${resumeId} not found. It may have been deleted.`);
+          } else if (error.message.includes('401') || error.message.includes('403')) {
+            setLoadingError("You don't have permission to access this resume.");
+          } else if (error.message.includes('Network error') || error.message.includes('fetch')) {
+            setLoadingError("Network error. Backend endpoint may not exist. Using generated data instead.");
+            
+            if (generatedResume) {
+              setLoadingError(null);
+              return;
+            }
+          } else {
+            setLoadingError(error.message || "Unable to load the resume. Please try again.");
+          }
 
           setSnackbar({
             open: true,
@@ -680,15 +687,15 @@ const ResumeBuilder = () => {
       };
 
       fetchResumeData();
+    } else {
+      console.log('🔍 Not in edit mode or no resumeId:', { isEditingExisting, resumeId });
     }
-  }, [resumeId, isEditingExisting]);
+  }, [resumeId, isEditingExisting, generatedResume]);
 
   // Navigation Handlers
   const handleNext = () => {
-    // Clear previous validation errors
     setValidationErrors({});
     
-    // Special validation for Projects step (check for Gigaversity links)
     if (activeStep === 5) {
       const hasGigaversityLink = resumeData.projects.some(
         project => project.link && project.link.includes('github.com/Ed-Gigaversity')
@@ -700,7 +707,6 @@ const ResumeBuilder = () => {
       }
     }
     
-    // Validate current step
     const stepErrors = validateStep(activeStep);
     
     if (Object.keys(stepErrors).length > 0) {
@@ -708,7 +714,6 @@ const ResumeBuilder = () => {
       return;
     }
     
-    // Navigate to next section
     const nextStep = activeStep + 1;
     if (nextStep < steps.length) {
       const nextSection = SLUG_TO_SECTION[nextStep];
@@ -727,10 +732,8 @@ const ResumeBuilder = () => {
   };
 
   const handleBack = () => {
-    // Clear validation errors when going back
     setValidationErrors({});
     
-    // Navigate to previous section
     const prevStep = activeStep - 1;
     if (prevStep >= 0) {
       const prevSection = SLUG_TO_SECTION[prevStep];
@@ -752,11 +755,10 @@ const ResumeBuilder = () => {
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
     if (isMobile && !isEditMode) {
-      setIsMobilePreviewMode(false); // Return to edit mode on mobile
+      setIsMobilePreviewMode(false);
     }
   };
 
-  // New handler for mobile preview mode toggle
   const toggleMobilePreviewMode = () => {
     setIsMobilePreviewMode(!isMobilePreviewMode);
   };
@@ -780,7 +782,6 @@ const ResumeBuilder = () => {
 
   // Form Validation
   const validateResumeData = () => {
-    // Helper function to build proper navigation path
     const buildNavPath = (sectionStep) => {
       const section = SLUG_TO_SECTION[sectionStep];
       let basePath;
@@ -794,7 +795,6 @@ const ResumeBuilder = () => {
       return `${basePath}/${section}`;
     };
 
-    // Basic validation for required fields
     if (
       !resumeData.header.name ||
       !resumeData.header.email ||
@@ -805,7 +805,7 @@ const ResumeBuilder = () => {
         message: "Please fill in all personal information fields",
         severity: "error",
       });
-      navigate(buildNavPath(0)); // Personal Info
+      navigate(buildNavPath(0));
       return false;
     }
 
@@ -815,7 +815,7 @@ const ResumeBuilder = () => {
         message: "Please fill in education information",
         severity: "error",
       });
-      navigate(buildNavPath(2)); // Education
+      navigate(buildNavPath(2));
       return false;
     }
 
@@ -825,7 +825,7 @@ const ResumeBuilder = () => {
         message: "Please add at least one skill",
         severity: "error",
       });
-      navigate(buildNavPath(3)); // Skills
+      navigate(buildNavPath(3));
       return false;
     }
 
@@ -835,53 +835,28 @@ const ResumeBuilder = () => {
         message: "Please add at least one project",
         severity: "error",
       });
-      navigate(buildNavPath(5)); // Projects
+      navigate(buildNavPath(5));
       return false;
     }
 
     return true;
   };
 
-  // Validate terms acceptance
-  // const validateTermsAcceptance = () => {
-  //   if (!termsAccepted.updates || !termsAccepted.dataSharing) {
-  //     setSnackbar({
-  //       open: true,
-  //       message: "Please accept both terms and policies to continue",
-  //       severity: "error",
-  //     });
-  //     const termsSection = SLUG_TO_SECTION[9];
-  //     const basePath = isEditingExisting 
-  //       ? `/resume-builder/edit/${resumeId}` 
-  //       : '/resume-builder';
-  //     navigate(`${basePath}/${termsSection}`);
-  //     return false;
-  //   }
-  //   return true;
-  // };
-
-  // Update the mapGeneratedDataToFormFields function to handle aiExperience
-
   const mapGeneratedDataToFormFields = (generatedData) => {
-    // Create a deep copy to avoid mutating the original data
     const formData = JSON.parse(JSON.stringify(resumeData));
 
-    // Map header information
     if (generatedData.header) {
       formData.header = { ...generatedData.header };
     }
 
-    // Map target role
     if (generatedData.target_role) {
       formData.target_role = generatedData.target_role;
     }
 
-    // Map summary
     if (generatedData.summary) {
       formData.summary = generatedData.summary;
     }
 
-    // Map education (handle both object and array formats)
     if (generatedData.education) {
       if (
         Array.isArray(generatedData.education) &&
@@ -912,12 +887,10 @@ const ResumeBuilder = () => {
       }
     }
 
-    // Map skills
     if (generatedData.skills && Array.isArray(generatedData.skills)) {
       formData.skills = [...generatedData.skills];
     }
 
-    // Map certifications
     if (
       generatedData.certifications &&
       Array.isArray(generatedData.certifications)
@@ -925,14 +898,12 @@ const ResumeBuilder = () => {
       formData.certifications = [...generatedData.certifications];
     }
 
-    // Map AI Experience Data - Priority mapping for AI skills/tools
-    // First try aiExperience, then fallback to genai_tools
+    // Map AI Experience Data
     if (
       generatedData.aiExperience &&
       Array.isArray(generatedData.aiExperience) &&
       generatedData.aiExperience.length > 0
     ) {
-      // Convert aiExperience to genai_tools format for our form
       formData.genai_tools = generatedData.aiExperience.map((aiExp) => ({
         tool_id: aiExp.toolName
           ? aiExp.toolName.toLowerCase().replace(/\s+/g, "_")
@@ -946,7 +917,6 @@ const ResumeBuilder = () => {
       Array.isArray(generatedData.genai_tools) &&
       generatedData.genai_tools.length > 0
     ) {
-      // Direct mapping if genai_tools is provided
       formData.genai_tools = [...generatedData.genai_tools];
     }
 
@@ -1037,7 +1007,6 @@ const ResumeBuilder = () => {
       });
     }
 
-    // Map custom sections
     if (generatedData.customSections) {
       formData.customSections = { ...generatedData.customSections };
     }
@@ -1045,27 +1014,19 @@ const ResumeBuilder = () => {
     return formData;
   };
 
-  // API Handlers
+  // FIXED handleGenerateResume function
   const handleGenerateResume = async () => {
-    // Validate form data first
     if (!validateResumeData()) {
       return;
     }
 
-    // // Validate terms acceptance
-    // if (!validateTermsAcceptance()) {
-    //   return;
-    // }
-
     setLoading(true);
 
     try {
-      // Prepare form data for API with proper field mapping
       const apiReadyData = prepareFormDataForApi(resumeData);
 
       console.log('Sending data to API:', apiReadyData);
 
-      // Call the generate resume API
       const response = await generateResume(apiReadyData);
 
       console.log('API Response received:', response);
@@ -1074,9 +1035,7 @@ const ResumeBuilder = () => {
       let resumeIdFromResponse = null;
       let resumeDataFromResponse = null;
 
-      // Check various possible response structures
       if (response) {
-        // Try different possible ID locations
         resumeIdFromResponse = response.id || 
                               response.resume_id || 
                               response.resumeId ||
@@ -1085,7 +1044,6 @@ const ResumeBuilder = () => {
                               response.resume?.id ||
                               response.resume?.resume_id;
 
-        // Try different possible resume data locations
         resumeDataFromResponse = response.resume || 
                                 response.data?.resume || 
                                 response.data || 
@@ -1095,7 +1053,6 @@ const ResumeBuilder = () => {
         console.log('Extracted resumeData:', resumeDataFromResponse);
       }
 
-      // Validate we have the necessary data
       if (!resumeIdFromResponse) {
         console.error('No resume ID found in response:', response);
         throw new Error('No resume ID returned from server. Please try again.');
@@ -1112,7 +1069,6 @@ const ResumeBuilder = () => {
         severity: "success",
       });
 
-      // Transform the generated resume data to match frontend structure
       const adaptedResume = adaptGeneratedResume(resumeDataFromResponse, resumeIdFromResponse);
 
       console.log('Adapted resume:', adaptedResume);
@@ -1124,7 +1080,6 @@ const ResumeBuilder = () => {
         resumeData.genai_tools &&
         resumeData.genai_tools.length > 0
       ) {
-        // Convert frontend genai_tools to aiExperience format
         adaptedResume.aiExperience = resumeData.genai_tools.map((tool) => ({
           toolName: tool.name,
           usageCases: tool.usage_descriptions || [],
@@ -1132,37 +1087,36 @@ const ResumeBuilder = () => {
             tool.description || `Enhanced productivity using ${tool.name}`,
         }));
 
-        // Also preserve genai_tools format
         adaptedResume.genai_tools = resumeData.genai_tools;
       }
 
-      // Store the adapted resume data
       setGeneratedResume(adaptedResume);
 
-      // Also update the form data with generated content
       const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
       setResumeData(updatedFormData);
 
-      // Switch to preview mode to show the generated resume
       setIsEditMode(false);
 
-      // For mobile, show the preview
       if (isMobile) {
         setIsMobilePreviewMode(true);
       }
 
-      // Navigate to edit mode with the correct resume ID
-      if (!isEditingExisting) {
-        const currentSection = SLUG_TO_SECTION[activeStep] || 'personal-info';
-        const targetUrl = `/resume-builder/edit/${resumeIdFromResponse}/${currentSection}`;
-        
-        console.log('Navigating to:', targetUrl);
-        navigate(targetUrl, { replace: true });
-      }
+      // FIXED: Don't navigate to edit mode - stay in current view with generated data
+      console.log('Resume generated successfully, staying in current view');
+
+      // Update URL to reflect the resume ID without triggering edit mode
+      const currentSection = SLUG_TO_SECTION[activeStep] || 'personal-info';
+      
+      // Use replace to update URL without causing a re-fetch
+      window.history.replaceState(
+        null, 
+        '', 
+        `/resume-builder/view/${resumeIdFromResponse}/${currentSection}`
+      );
+
     } catch (error) {
       console.error("Error generating resume:", error);
       
-      // Enhanced error messaging
       let errorMessage = "An error occurred generating your resume. Please try again.";
       
       if (error.message.includes('Network error')) {
@@ -1185,15 +1139,12 @@ const ResumeBuilder = () => {
 
   // Handle updating the resume after editing
   const handleUpdateResume = async () => {
-    // Validate form data first
     if (!validateResumeData()) {
       return;
     }
 
-    // Get resumeId from either URL params or generated resume
     const idToUpdate = resumeId || generatedResume?.id;
 
-    // Ensure we have a resumeId when updating
     if (!idToUpdate) {
       setSnackbar({
         open: true,
@@ -1206,29 +1157,23 @@ const ResumeBuilder = () => {
     setLoading(true);
 
     try {
-      // Prepare form data for API with proper field mapping
       const apiReadyData = prepareFormDataForApi(resumeData);
 
-      // Call the update API with the correct ID
       const response = await updateResume(idToUpdate, apiReadyData);
 
-      // Handle successful update
       setSnackbar({
         open: true,
         message: "Resume updated successfully!",
         severity: "success",
       });
 
-      // Update generated resume state but NOT the form data
       if (response.resume) {
         const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
         setGeneratedResume(adaptedResume);
       }
 
-      // Switch to preview mode
       setIsEditMode(false);
 
-      // For mobile, show the preview
       if (isMobile) {
         setIsMobilePreviewMode(true);
       }
@@ -1253,7 +1198,6 @@ const ResumeBuilder = () => {
       const userName = dataToUse?.header?.name || "resume";
       const fileName = userName.toLowerCase().replace(/\s+/g, "_");
 
-      // Pass the correct data and template ID
       await generateResumePDF(dataToUse, selectedTemplateId, fileName);
 
       setSnackbar({
@@ -1280,13 +1224,7 @@ const ResumeBuilder = () => {
     });
   };
 
-  // // Check if both terms are accepted
-  // const areTermsAccepted = termsAccepted.updates && termsAccepted.dataSharing;
-
-  // Determine if the resume has been generated at least once
   const hasGeneratedResume = generatedResume !== null;
-
-  // Remove this line - we don't want to disable the button
 
   // Render current step content
   const getStepContent = (step) => {
@@ -1366,19 +1304,12 @@ const ResumeBuilder = () => {
             setResumeData={setResumeData}
           />
         );
-      // case 9:
-      //   return (
-      //     <TermsAndPolicies
-      //       termsAccepted={termsAccepted}
-      //       setTermsAccepted={setTermsAccepted}
-      //     />
-      //   );
       default:
         return "Unknown step";
     }
   };
 
-  // If the resume is still loading, show a loading indicator
+  // Loading states
   if (loadingResume) {
     return (
       <Container className={classes.root} maxWidth="xl">
@@ -1398,7 +1329,6 @@ const ResumeBuilder = () => {
     );
   }
 
-  // If there was an error loading the resume, show an error message
   if (loadingError) {
     return (
       <Container className={classes.root} maxWidth="xl">
@@ -1426,14 +1356,12 @@ const ResumeBuilder = () => {
 
   return (
     <Container className={classes.root} maxWidth="xl">
-      {/* Navbar with template button handler */}
       <Navbar
         currentPage="resume-builder"
         onTemplateClick={handleOpenTemplateDialog}
-        hideLogo={true} // Hide logo in navbar since it's in the sidebar
+        hideLogo={true}
       />
 
-      {/* Sidebar navigation - Only show in edit mode */}
       {isEditMode && (
         <Sidebar
           activeStep={activeStep}
@@ -1442,14 +1370,12 @@ const ResumeBuilder = () => {
         />
       )}
 
-      {/* Display resume ID if editing */}
       {isEditingExisting && (
         <Typography className={classes.resumeIdText}>
           Resume ID: {resumeId}
         </Typography>
       )}
 
-      {/* Toggle buttons for edit/preview mode (only show if resume has been generated) */}
       {(hasGeneratedResume || isEditingExisting) && (
         <Box className={classes.viewModeToggle}>
           <Button
@@ -1482,7 +1408,6 @@ const ResumeBuilder = () => {
         </Box>
       )}
 
-      {/* Mobile view toggle buttons - only shown when a resume has been generated */}
       {(hasGeneratedResume || isEditingExisting) && isMobile && (
         <Box className={classes.mobileViewToggle}>
           <Button
@@ -1508,9 +1433,7 @@ const ResumeBuilder = () => {
         </Box>
       )}
 
-      {/* Action buttons */}
       <Box className={classes.actionButtons}>
-        {/* Download PDF button - always visible when a resume exists */}
         {(hasGeneratedResume || isEditingExisting) && (
           <Button
             variant="contained"
@@ -1530,13 +1453,11 @@ const ResumeBuilder = () => {
         )}
       </Box>
 
-      {/* Main content area with sidebar margin */}
       <Box
         className={`${classes.mainContainer} ${
           isEditMode ? classes.mainContentWithSidebar : ""
         }`}
       >
-        {/* Form Column - Show in edit mode or when not in mobile preview mode */}
         {(isEditMode || (isMobile && !isMobilePreviewMode)) && (
           <Box className={`${classes.columnBox} ${classes.formColumn}`}>
             <Typography variant="h5" className={classes.sectionHeader}>
@@ -1550,7 +1471,6 @@ const ResumeBuilder = () => {
               Build a resume that opens doors to your future
             </Typography>
 
-            {/* Preview notice for tablet and mobile */}
             <Box className={classes.previewNotice}>
               <InfoIcon className={classes.noticeIcon} />
               <Typography variant="body2">
@@ -1558,11 +1478,9 @@ const ResumeBuilder = () => {
               </Typography>
             </Box>
 
-            {/* Current Step Content */}
             <Paper className={classes.paper} elevation={0} id="current-step-content">
               {getStepContent(activeStep)}
 
-              {/* Navigation Buttons */}
               <Box className={classes.navigationButtons}>
                 <Button
                   disabled={activeStep === 0}
@@ -1604,7 +1522,6 @@ const ResumeBuilder = () => {
           </Box>
         )}
 
-        {/* Preview Column - Hidden on tablet/mobile */}
         <Box className={`${classes.columnBox} ${classes.previewColumn}`}>
           <Typography variant="h5" className={classes.sectionHeader}>
             {hasGeneratedResume || isEditingExisting
@@ -1616,7 +1533,6 @@ const ResumeBuilder = () => {
           </Typography>
 
           <Box className={classes.previewWrapper}>
-            {/* Preview Content */}
             <Box className={classes.previewContent}>
               <ResumePreview
                 userData={resumeData}
@@ -1627,7 +1543,6 @@ const ResumeBuilder = () => {
           </Box>
         </Box>
 
-        {/* Mobile Preview - Only shown on mobile when in preview mode and a resume exists */}
         {isMobile &&
           isMobilePreviewMode &&
           (hasGeneratedResume || isEditingExisting) && (
@@ -1644,7 +1559,6 @@ const ResumeBuilder = () => {
                 />
               </Box>
 
-              {/* Download button for mobile preview */}
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                 <Button
                   variant="contained"
@@ -1667,7 +1581,6 @@ const ResumeBuilder = () => {
           )}
       </Box>
 
-      {/* Template Selection Dialog with Sticky Header */}
       <Dialog
         open={templateDialogOpen}
         onClose={handleCloseTemplateDialog}
@@ -1683,7 +1596,6 @@ const ResumeBuilder = () => {
           }
         }}
       >
-        {/* Sticky Dialog Header */}
         <Box className={dialogClasses.stickyDialogTitle}>
           <Box className={dialogClasses.headerLeft}>
             <Typography variant="h3" className={dialogClasses.dialogTitle}>
@@ -1712,7 +1624,6 @@ const ResumeBuilder = () => {
           </Box>
         </Box>
 
-        {/* Scrollable Dialog Content */}
         <DialogContent sx={{ 
           padding: 0, 
           flex: 1, 
@@ -1732,13 +1643,11 @@ const ResumeBuilder = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Template Repository Warning Popup */}
       <TemplateRepositoryWarningPopup
         open={templateWarningOpen}
         onClose={handleCloseTemplateWarning}
       />
 
-      {/* Phone Collection Popup (NEW) */}
       <PhoneCollectionPopup
         open={phonePopup.open}
         onClose={handlePhonePopupClose}
@@ -1747,7 +1656,6 @@ const ResumeBuilder = () => {
         onSkipped={handlePhoneSkipped}
       />
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -1759,7 +1667,6 @@ const ResumeBuilder = () => {
         </Alert>
       </Snackbar>
 
-      {/* Confirmation Dialog */}
       <Dialog open={confirmDialog.open} onClose={handleCloseConfirmDialog}>
         <DialogTitle>{confirmDialog.title}</DialogTitle>
         <DialogContent>
@@ -1774,6 +1681,7 @@ const ResumeBuilder = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      
       <Dialog open={showConfirmDialog} onClose={cancelLogout} maxWidth="sm" fullWidth>
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
