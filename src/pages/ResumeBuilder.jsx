@@ -1063,8 +1063,48 @@ const ResumeBuilder = () => {
       // Prepare form data for API with proper field mapping
       const apiReadyData = prepareFormDataForApi(resumeData);
 
+      console.log('Sending data to API:', apiReadyData);
+
       // Call the generate resume API
       const response = await generateResume(apiReadyData);
+
+      console.log('API Response received:', response);
+
+      // Enhanced response validation and ID extraction
+      let resumeIdFromResponse = null;
+      let resumeDataFromResponse = null;
+
+      // Check various possible response structures
+      if (response) {
+        // Try different possible ID locations
+        resumeIdFromResponse = response.id || 
+                              response.resume_id || 
+                              response.resumeId ||
+                              response.data?.id ||
+                              response.data?.resume_id ||
+                              response.resume?.id ||
+                              response.resume?.resume_id;
+
+        // Try different possible resume data locations
+        resumeDataFromResponse = response.resume || 
+                                response.data?.resume || 
+                                response.data || 
+                                response;
+
+        console.log('Extracted resumeId:', resumeIdFromResponse);
+        console.log('Extracted resumeData:', resumeDataFromResponse);
+      }
+
+      // Validate we have the necessary data
+      if (!resumeIdFromResponse) {
+        console.error('No resume ID found in response:', response);
+        throw new Error('No resume ID returned from server. Please try again.');
+      }
+
+      if (!resumeDataFromResponse) {
+        console.error('No resume data found in response:', response);
+        throw new Error('No resume data returned from server. Please try again.');
+      }
 
       setSnackbar({
         open: true,
@@ -1073,7 +1113,9 @@ const ResumeBuilder = () => {
       });
 
       // Transform the generated resume data to match frontend structure
-      const adaptedResume = adaptGeneratedResume(response.resume, response.id);
+      const adaptedResume = adaptGeneratedResume(resumeDataFromResponse, resumeIdFromResponse);
+
+      console.log('Adapted resume:', adaptedResume);
 
       // WORKAROUND: If backend returns empty aiExperience, preserve frontend genai_tools
       if (
@@ -1109,18 +1151,31 @@ const ResumeBuilder = () => {
         setIsMobilePreviewMode(true);
       }
 
-      // Navigate to edit mode if not already there
+      // Navigate to edit mode with the correct resume ID
       if (!isEditingExisting) {
         const currentSection = SLUG_TO_SECTION[activeStep] || 'personal-info';
-        navigate(`/resume-builder/edit/${response.resume_id}/${currentSection}`, { replace: true });
+        const targetUrl = `/resume-builder/edit/${resumeIdFromResponse}/${currentSection}`;
+        
+        console.log('Navigating to:', targetUrl);
+        navigate(targetUrl, { replace: true });
       }
     } catch (error) {
       console.error("Error generating resume:", error);
+      
+      // Enhanced error messaging
+      let errorMessage = "An error occurred generating your resume. Please try again.";
+      
+      if (error.message.includes('Network error')) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else if (error.message.includes('resume ID')) {
+        errorMessage = "Server error: No resume ID received. Please try again.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setSnackbar({
         open: true,
-        message:
-          error.message ||
-          "An error occurred generating your resume. Please try again.",
+        message: errorMessage,
         severity: "error",
       });
     } finally {

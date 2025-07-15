@@ -1,6 +1,5 @@
 import React, { Suspense, useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
-// import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -8,10 +7,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import './App.css';
-import ResumeBuilderWithGuard from './pages/ResumeBuilderLogoutGuard';
 
 // Import existing pages and components
-// import Landingpage from './pages/landingpage/Landingpage';
 import Signup from './pages/signup/Signup';
 import Navbar from './common/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -146,12 +143,22 @@ const NavbarWrapper = () => {
 // Resume edit redirect component to handle resumeId parameter properly
 const ResumeEditRedirect = () => {
   const { resumeId } = useParams();
+  
+  if (!resumeId) {
+    return <Navigate to="/resume-builder" replace />;
+  }
+  
   return <Navigate to={`/resume-builder/edit/${resumeId}/personal-info`} replace />;
 };
 
 // Resume generated redirect component to handle first-time generation
 const ResumeGeneratedRedirect = () => {
   const { resumeId } = useParams();
+  
+  if (!resumeId) {
+    return <Navigate to="/resume-builder" replace />;
+  }
+  
   return <Navigate to={`/resume-builder/generated/${resumeId}/personal-info`} replace />;
 };
 
@@ -180,18 +187,7 @@ const AppContent = () => {
             <NavbarWrapper />
             <Suspense fallback={<LoadingComponent />}>
               <Routes>
-                {/* Public routes */}
-                {/* <Route 
-                  path="/" 
-                  element={
-                    currentUser ? (
-                      <Navigate to="/resume-builder" replace />
-                    ) : (
-                      <Landingpage />
-                    )
-                  } 
-                /> */}
-                
+                {/* Authentication routes */}
                 <Route 
                   path="/login" 
                   element={
@@ -243,7 +239,7 @@ const AppContent = () => {
                   element={<OAuthCallback />} 
                 />
 
-                {/* Resume builder routes with proper mode distinction */}
+                {/* Resume builder base route - redirect to personal-info section */}
                 <Route 
                   path="/resume-builder" 
                   element={
@@ -253,6 +249,7 @@ const AppContent = () => {
                   } 
                 />
 
+                {/* Resume builder with sections (new resume creation) */}
                 <Route 
                   path="/resume-builder/:section" 
                   element={
