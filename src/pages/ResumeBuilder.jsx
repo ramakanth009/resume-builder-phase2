@@ -21,6 +21,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { generateResume, getResumeById, updateResume, checkPhonePopupNeeded, addPhoneNumber, skipPhonePopup } from "../utils/api";
 import { adaptGeneratedResume } from "../utils/resumeAdapter";
+import { generateResumePDF } from "../utils/pdfUtils";
 
 // Section Components
 import PersonalInfoSection from "../components/resumeBuilderComponents/PersonalInfoSection";
@@ -32,6 +33,7 @@ import ExperienceSection from "../components/resumeBuilderComponents/ExperienceS
 import CertificationsSection from "../components/resumeBuilderComponents/CertificationsSection";
 import CustomSections from "../components/resumeBuilderComponents/CustomSections";
 import ResumePreview from "../components/previewComponents/ResumePreview";
+import TemplateSelector from "../components/previewComponents/TemplateSelector";
 import AISkillRecommendationsSection from "../components/resumeBuilderComponents/AISkills";
 import TemplateRepositoryWarningPopup from "../components/resumeBuilderComponents/TemplateRepositoryWarningPopup";
 import PhoneCollectionPopup from "../components/PhoneCollectionPopup";
@@ -42,6 +44,100 @@ import { useResumeBuilderGuard } from '../hooks/useResumeBuilderGuard';
 
 // Import useStyles from updated styles
 import { useStyles } from "./resumebuilder.Styles";
+import makeStylesWithTheme from '../styles/makeStylesAdapter';
+
+// Additional styles for the dialog header
+const useDialogStyles = makeStylesWithTheme((theme) => ({
+  stickyDialogTitle: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 1300,
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    borderBottom: '1px solid rgba(39, 40, 108, 0.1)',
+    padding: '1.5rem 2rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxShadow: '0 4px 16px rgba(39, 40, 108, 0.08)',
+    '@media (max-width: 960px)': {
+      padding: '1rem 1.5rem',
+      flexDirection: 'column',
+      gap: '1rem',
+    },
+    '@media (max-width: 600px)': {
+      padding: '1rem',
+    },
+  },
+  headerLeft: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  dialogTitle: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    background: 'linear-gradient(135deg, #27286c 0%, #3182ce 50%, #14b8a6 100%)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    letterSpacing: '-0.02em',
+    margin: 0,
+    '@media (max-width: 960px)': {
+      fontSize: '1.5rem',
+      textAlign: 'center',
+    },
+  },
+  dialogSubtitle: {
+    fontSize: '1rem',
+    color: '#64748b',
+    fontWeight: 400,
+    margin: 0,
+    '@media (max-width: 960px)': {
+      textAlign: 'center',
+      fontSize: '0.9rem',
+    },
+  },
+  headerActions: {
+    display: 'flex',
+    gap: '1rem',
+    '@media (max-width: 960px)': {
+      width: '100%',
+      justifyContent: 'center',
+    },
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      gap: '0.5rem',
+    },
+  },
+  actionButton: {
+    borderRadius: '12px',
+    padding: '0.75rem 1.5rem',
+    fontWeight: 600,
+    textTransform: 'none',
+    fontSize: '0.95rem',
+    '@media (max-width: 600px)': {
+      width: '100%',
+    },
+  },
+  cancelButton: {
+    color: '#64748b',
+    borderColor: '#e2e8f0',
+    '&:hover': {
+      backgroundColor: '#f1f5f9',
+      borderColor: '#cbd5e0',
+    },
+  },
+  applyButton: {
+    background: 'linear-gradient(135deg, #3182ce 0%, #1e40af 100%)',
+    color: 'white',
+    boxShadow: '0 4px 12px rgba(49, 130, 206, 0.3)',
+    '&:hover': {
+      background: 'linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)',
+      boxShadow: '0 6px 16px rgba(49, 130, 206, 0.4)',
+    },
+  },
+}));
 
 const steps = [
   "Personal Info",
@@ -83,8 +179,11 @@ const SLUG_TO_SECTION = {
 /**
  * Prepares form data for API submission by ensuring all required fields are present
  * in both generate and update formats
+ * @param {Object} formData - The current resume form data
+ * @returns {Object} - Properly formatted data for API
  */
 const prepareFormDataForApi = (formData) => {
+  // Create a deep copy of the data to avoid mutations
   const apiData = JSON.parse(JSON.stringify(formData));
 
   // Handle education fields - ensure both formats are present
@@ -102,6 +201,7 @@ const prepareFormDataForApi = (formData) => {
   // Handle work experience - ensure both formats are available
   if (apiData.work_experience && Array.isArray(apiData.work_experience)) {
     apiData.work_experience = apiData.work_experience.map((exp) => {
+      // Ensure all required fields exist in both formats
       return {
         ...exp,
         company_name: exp.company_name || exp.companyName || "",
@@ -112,6 +212,7 @@ const prepareFormDataForApi = (formData) => {
       };
     });
 
+    // Also map to workExperience for update format
     apiData.workExperience = apiData.work_experience.map((exp) => ({
       position: exp.position || "",
       companyName: exp.companyName || exp.company_name || "",
@@ -125,6 +226,7 @@ const prepareFormDataForApi = (formData) => {
   // Handle projects - ensure both formats are available
   if (apiData.projects && Array.isArray(apiData.projects)) {
     apiData.projects = apiData.projects.map((proj) => {
+      // Create technologies array from skills_used if not present
       const technologies =
         proj.technologies && proj.technologies.length
           ? proj.technologies
@@ -132,6 +234,7 @@ const prepareFormDataForApi = (formData) => {
           ? proj.skills_used.split(",").map((s) => s.trim())
           : [];
 
+      // Create responsibilities array from description if not present
       const responsibilities =
         proj.responsibilities && proj.responsibilities.length
           ? proj.responsibilities
@@ -149,6 +252,7 @@ const prepareFormDataForApi = (formData) => {
 
   // Handle GenAI skills - Format properly for API and preserve existing data
   if (apiData.genai_tools && Array.isArray(apiData.genai_tools)) {
+    // Ensure each tool has required fields
     apiData.genai_tools = apiData.genai_tools.map((tool) => ({
       tool_id: tool.tool_id,
       name: tool.name || `Tool ${tool.tool_id}`,
@@ -156,6 +260,7 @@ const prepareFormDataForApi = (formData) => {
       usage_descriptions: tool.usage_descriptions || [],
     }));
 
+    // Also convert to genai_skills format for API compatibility
     apiData.genai_skills = {
       used_tools: apiData.genai_tools.map((tool) => ({
         tool_id: tool.tool_id,
@@ -168,222 +273,9 @@ const prepareFormDataForApi = (formData) => {
   return apiData;
 };
 
-const mapGeneratedDataToFormFields = (generatedData) => {
-  const formData = {
-    header: {
-      name: "",
-      email: "",
-      phone: "",
-      github: "",
-      linkedin: "",
-      portfolio: "",
-    },
-    summary: "",
-    education: {
-      degree: "",
-      specialization: "",
-      institution: "",
-      graduation_year: "",
-      graduationYear: "",
-    },
-    skills: [""],
-    projects: [
-      {
-        name: "",
-        skills_used: "",
-        description: "",
-        responsibilities: [],
-        link: "",
-        technologies: [],
-      },
-    ],
-    certifications: [""],
-    work_experience: [
-      {
-        position: "",
-        company_name: "",
-        companyName: "",
-        duration: "",
-        description: "",
-        responsibilities: [],
-      },
-    ],
-    target_role: "",
-    genai_tools: [],
-    customSections: {},
-  };
-
-  if (generatedData.header) {
-    formData.header = { ...generatedData.header };
-  }
-
-  if (generatedData.target_role) {
-    formData.target_role = generatedData.target_role;
-  }
-
-  if (generatedData.summary) {
-    formData.summary = generatedData.summary;
-  }
-
-  if (generatedData.education) {
-    if (
-      Array.isArray(generatedData.education) &&
-      generatedData.education.length > 0
-    ) {
-      const edu = generatedData.education[0];
-      formData.education = {
-        degree: edu.degree || "",
-        specialization: edu.specialization || "",
-        institution: edu.institution || "",
-        graduation_year: edu.graduationYear || edu.graduation_year || "",
-        graduationYear: edu.graduationYear || edu.graduation_year || "",
-      };
-    } else if (typeof generatedData.education === "object") {
-      formData.education = {
-        degree: generatedData.education.degree || "",
-        specialization: generatedData.education.specialization || "",
-        institution: generatedData.education.institution || "",
-        graduation_year:
-          generatedData.education.graduationYear ||
-          generatedData.education.graduation_year ||
-          "",
-        graduationYear:
-          generatedData.education.graduationYear ||
-          generatedData.education.graduation_year ||
-          "",
-      };
-    }
-  }
-
-  if (generatedData.skills && Array.isArray(generatedData.skills)) {
-    formData.skills = [...generatedData.skills];
-  }
-
-  if (
-    generatedData.certifications &&
-    Array.isArray(generatedData.certifications)
-  ) {
-    formData.certifications = [...generatedData.certifications];
-  }
-
-  // Map AI Experience Data
-  if (
-    generatedData.aiExperience &&
-    Array.isArray(generatedData.aiExperience) &&
-    generatedData.aiExperience.length > 0
-  ) {
-    formData.genai_tools = generatedData.aiExperience.map((aiExp) => ({
-      tool_id: aiExp.toolName
-        ? aiExp.toolName.toLowerCase().replace(/\s+/g, "_")
-        : `tool_${Math.random().toString(36).substr(2, 5)}`,
-      name: aiExp.toolName || "",
-      description: aiExp.impact || "",
-      usage_descriptions: aiExp.usageCases || [],
-    }));
-  } else if (
-    generatedData.genai_tools &&
-    Array.isArray(generatedData.genai_tools) &&
-    generatedData.genai_tools.length > 0
-  ) {
-    formData.genai_tools = [...generatedData.genai_tools];
-  }
-
-  // Map projects field
-  if (
-    generatedData.projects &&
-    Array.isArray(generatedData.projects) &&
-    generatedData.projects.length > 0
-  ) {
-    formData.projects = generatedData.projects.map((project) => {
-      let description = "";
-      if (
-        project.responsibilities &&
-        Array.isArray(project.responsibilities)
-      ) {
-        description = project.responsibilities.join("\n");
-      } else if (project.description) {
-        description = project.description;
-      }
-
-      let skills = "";
-      if (project.skills_used) {
-        skills = project.skills_used;
-      } else if (project.technologies) {
-        skills = Array.isArray(project.technologies)
-          ? project.technologies.join(", ")
-          : project.technologies;
-      }
-
-      return {
-        name: project.name || "",
-        skills_used: skills,
-        description: description,
-        responsibilities: Array.isArray(project.responsibilities)
-          ? [...project.responsibilities]
-          : [],
-        technologies: Array.isArray(project.technologies)
-          ? [...project.technologies]
-          : skills
-          ? skills.split(",").map((s) => s.trim())
-          : [],
-        link: project.link || "",
-      };
-    });
-  } else {
-    formData.projects = [];
-  }
-
-  // Map work experience
-  if (
-    generatedData.work_experience &&
-    Array.isArray(generatedData.work_experience) &&
-    generatedData.work_experience.length > 0
-  ) {
-    formData.work_experience = generatedData.work_experience.map((exp) => ({
-      position: exp.position || "",
-      company_name: exp.company_name || "",
-      companyName: exp.companyName || exp.company_name || "",
-      duration: exp.duration || "",
-      description:
-        exp.description ||
-        (exp.responsibilities ? exp.responsibilities.join("\n") : ""),
-      responsibilities: exp.responsibilities || [],
-    }));
-  } else if (
-    generatedData.workExperience &&
-    Array.isArray(generatedData.workExperience) &&
-    generatedData.workExperience.length > 0
-  ) {
-    formData.work_experience = generatedData.workExperience.map((exp) => {
-      let description = exp.description || "";
-      if (
-        !description &&
-        exp.responsibilities &&
-        Array.isArray(exp.responsibilities)
-      ) {
-        description = exp.responsibilities.join("\n");
-      }
-
-      return {
-        position: exp.position || "",
-        company_name: exp.companyName || "",
-        companyName: exp.companyName || "",
-        duration: exp.duration || "",
-        description: description,
-        responsibilities: exp.responsibilities || [],
-      };
-    });
-  }
-
-  if (generatedData.customSections) {
-    formData.customSections = { ...generatedData.customSections };
-  }
-
-  return formData;
-};
-
 const ResumeBuilder = () => {
   const classes = useStyles();
+  const dialogClasses = useDialogStyles();
   const navigate = useNavigate();
   const { currentUser, updateUserData } = useAuth();
   const theme = useTheme();
@@ -396,6 +288,7 @@ const ResumeBuilder = () => {
 
   // Determine current mode based on URL path
   const isEditingExisting = location.pathname.includes('/edit/');
+  const isViewingGenerated = location.pathname.includes('/generated/');
   const isCreatingNew = !resumeId;
 
   // Get current active step from URL section parameter
@@ -410,7 +303,10 @@ const ResumeBuilder = () => {
   const [activeStep, setActiveStep] = useState(getCurrentStep());
   const [loading, setLoading] = useState(false);
   const [loadingResume, setLoadingResume] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [generatedResume, setGeneratedResume] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(true);
+  const [isMobilePreviewMode, setIsMobilePreviewMode] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -441,6 +337,30 @@ const ResumeBuilder = () => {
   const [selectedTemplateId, setSelectedTemplateId] = useState(
     templatesData.find((t) => t.isDefault)?.id || "classic"
   );
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+
+  // Handler to open template dialog (to be passed to Navbar)
+  const handleOpenTemplateDialog = () => {
+    setTemplateDialogOpen(true);
+  };
+
+  // Template dialog handlers
+  const handleCloseTemplateDialog = () => {
+    setTemplateDialogOpen(false);
+  };
+
+  const handleTemplateSelect = (templateId) => {
+    setSelectedTemplateId(templateId);
+  };
+
+  const handleConfirmTemplateSelection = () => {
+    setTemplateDialogOpen(false);
+    setSnackbar({
+      open: true,
+      message: "Template updated successfully",
+      severity: "success",
+    });
+  };
 
   // Initialize resumeData with empty structure and fields for both formats
   const [resumeData, setResumeData] = useState({
@@ -500,6 +420,8 @@ const ResumeBuilder = () => {
       let basePath;
       if (isEditingExisting) {
         basePath = `/resume-builder/edit/${resumeId}`;
+      } else if (isViewingGenerated) {
+        basePath = `/resume-builder/generated/${resumeId}`;
       } else {
         basePath = '/resume-builder';
       }
@@ -682,21 +604,37 @@ const ResumeBuilder = () => {
     setPhonePopup(prev => ({ ...prev, open: false }));
   };
 
-  // Fetch resume data if in edit mode
+  // Fetch resume data if in edit mode - FIXED VERSION
   useEffect(() => {
     if (isEditingExisting && resumeId) {
+      console.log('🔍 Edit mode detected, resumeId:', resumeId);
+      
+      // Skip fetching if we already have generated resume data
+      if (generatedResume && generatedResume.id === resumeId) {
+        console.log('✅ Resume data already available, skipping fetch');
+        return;
+      }
+      
       const fetchResumeData = async () => {
         setLoadingResume(true);
         setLoadingError(null);
 
         try {
+          console.log('📡 Calling getResumeById with ID:', resumeId);
           const response = await getResumeById(resumeId);
+          console.log('✅ getResumeById response:', response);
 
           if (response && response.status === "success") {
+            console.log('✅ Resume data found:', response.resume);
+            
             const adaptedResume = adaptGeneratedResume(response.resume, resumeId);
+            console.log('✅ Adapted resume:', adaptedResume);
+            
             setGeneratedResume(adaptedResume);
 
             const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+            console.log('✅ Updated form data:', updatedFormData);
+            
             setResumeData(updatedFormData);
 
             setSnackbar({
@@ -705,17 +643,35 @@ const ResumeBuilder = () => {
               severity: "success",
             });
           } else {
+            console.error('❌ Invalid response format:', response);
             throw new Error(response?.message || "Failed to load resume");
           }
         } catch (error) {
-          console.error("Error fetching resume:", error);
+          console.error("❌ Error fetching resume:", error);
           
+          // If fetch fails but we have some data, use it
+          if (generatedResume) {
+            console.log('⚠️ Using existing generated resume data due to fetch error');
+            setSnackbar({
+              open: true,
+              message: "Using cached resume data",
+              severity: "warning",
+            });
+            return;
+          }
+          
+          // Enhanced error handling
           if (error.message.includes('404')) {
             setLoadingError(`Resume with ID ${resumeId} not found. It may have been deleted.`);
           } else if (error.message.includes('401') || error.message.includes('403')) {
             setLoadingError("You don't have permission to access this resume.");
           } else if (error.message.includes('Network error') || error.message.includes('fetch')) {
-            setLoadingError("Network error. Backend endpoint may not exist.");
+            setLoadingError("Network error. Backend endpoint may not exist. Using generated data instead.");
+            
+            if (generatedResume) {
+              setLoadingError(null);
+              return;
+            }
           } else {
             setLoadingError(error.message || "Unable to load the resume. Please try again.");
           }
@@ -731,8 +687,10 @@ const ResumeBuilder = () => {
       };
 
       fetchResumeData();
+    } else {
+      console.log('🔍 Not in edit mode or no resumeId:', { isEditingExisting, resumeId });
     }
-  }, [resumeId, isEditingExisting]);
+  }, [resumeId, isEditingExisting, generatedResume]);
 
   // Navigation Handlers
   const handleNext = () => {
@@ -763,6 +721,8 @@ const ResumeBuilder = () => {
         let basePath;
         if (isEditingExisting) {
           basePath = `/resume-builder/edit/${resumeId}`;
+        } else if (isViewingGenerated) {
+          basePath = `/resume-builder/generated/${resumeId}`;
         } else {
           basePath = '/resume-builder';
         }
@@ -781,12 +741,26 @@ const ResumeBuilder = () => {
         let basePath;
         if (isEditingExisting) {
           basePath = `/resume-builder/edit/${resumeId}`;
+        } else if (isViewingGenerated) {
+          basePath = `/resume-builder/generated/${resumeId}`;
         } else {
           basePath = '/resume-builder';
         }
         navigate(`${basePath}/${prevSection}`);
       }
     }
+  };
+
+  // Toggle between edit mode and preview mode
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+    if (isMobile && !isEditMode) {
+      setIsMobilePreviewMode(false);
+    }
+  };
+
+  const toggleMobilePreviewMode = () => {
+    setIsMobilePreviewMode(!isMobilePreviewMode);
   };
 
   // Confirmation dialog handlers
@@ -813,6 +787,8 @@ const ResumeBuilder = () => {
       let basePath;
       if (isEditingExisting) {
         basePath = `/resume-builder/edit/${resumeId}`;
+      } else if (isViewingGenerated) {
+        basePath = `/resume-builder/generated/${resumeId}`;
       } else {
         basePath = '/resume-builder';
       }
@@ -866,7 +842,179 @@ const ResumeBuilder = () => {
     return true;
   };
 
-  // Generate resume handler
+  const mapGeneratedDataToFormFields = (generatedData) => {
+    const formData = JSON.parse(JSON.stringify(resumeData));
+
+    if (generatedData.header) {
+      formData.header = { ...generatedData.header };
+    }
+
+    if (generatedData.target_role) {
+      formData.target_role = generatedData.target_role;
+    }
+
+    if (generatedData.summary) {
+      formData.summary = generatedData.summary;
+    }
+
+    if (generatedData.education) {
+      if (
+        Array.isArray(generatedData.education) &&
+        generatedData.education.length > 0
+      ) {
+        const edu = generatedData.education[0];
+        formData.education = {
+          degree: edu.degree || "",
+          specialization: edu.specialization || "",
+          institution: edu.institution || "",
+          graduation_year: edu.graduationYear || edu.graduation_year || "",
+          graduationYear: edu.graduationYear || edu.graduation_year || "",
+        };
+      } else if (typeof generatedData.education === "object") {
+        formData.education = {
+          degree: generatedData.education.degree || "",
+          specialization: generatedData.education.specialization || "",
+          institution: generatedData.education.institution || "",
+          graduation_year:
+            generatedData.education.graduationYear ||
+            generatedData.education.graduation_year ||
+            "",
+          graduationYear:
+            generatedData.education.graduationYear ||
+            generatedData.education.graduation_year ||
+            "",
+        };
+      }
+    }
+
+    if (generatedData.skills && Array.isArray(generatedData.skills)) {
+      formData.skills = [...generatedData.skills];
+    }
+
+    if (
+      generatedData.certifications &&
+      Array.isArray(generatedData.certifications)
+    ) {
+      formData.certifications = [...generatedData.certifications];
+    }
+
+    // Map AI Experience Data
+    if (
+      generatedData.aiExperience &&
+      Array.isArray(generatedData.aiExperience) &&
+      generatedData.aiExperience.length > 0
+    ) {
+      formData.genai_tools = generatedData.aiExperience.map((aiExp) => ({
+        tool_id: aiExp.toolName
+          ? aiExp.toolName.toLowerCase().replace(/\s+/g, "_")
+          : `tool_${Math.random().toString(36).substr(2, 5)}`,
+        name: aiExp.toolName || "",
+        description: aiExp.impact || "",
+        usage_descriptions: aiExp.usageCases || [],
+      }));
+    } else if (
+      generatedData.genai_tools &&
+      Array.isArray(generatedData.genai_tools) &&
+      generatedData.genai_tools.length > 0
+    ) {
+      formData.genai_tools = [...generatedData.genai_tools];
+    }
+
+    // Map projects field
+    if (
+      generatedData.projects &&
+      Array.isArray(generatedData.projects) &&
+      generatedData.projects.length > 0
+    ) {
+      formData.projects = generatedData.projects.map((project) => {
+        let description = "";
+        if (
+          project.responsibilities &&
+          Array.isArray(project.responsibilities)
+        ) {
+          description = project.responsibilities.join("\n");
+        } else if (project.description) {
+          description = project.description;
+        }
+
+        let skills = "";
+        if (project.skills_used) {
+          skills = project.skills_used;
+        } else if (project.technologies) {
+          skills = Array.isArray(project.technologies)
+            ? project.technologies.join(", ")
+            : project.technologies;
+        }
+
+        return {
+          name: project.name || "",
+          skills_used: skills,
+          description: description,
+          responsibilities: Array.isArray(project.responsibilities)
+            ? [...project.responsibilities]
+            : [],
+          technologies: Array.isArray(project.technologies)
+            ? [...project.technologies]
+            : skills
+            ? skills.split(",").map((s) => s.trim())
+            : [],
+          link: project.link || "",
+        };
+      });
+    } else {
+      formData.projects = [];
+    }
+
+    // Map work experience
+    if (
+      generatedData.work_experience &&
+      Array.isArray(generatedData.work_experience) &&
+      generatedData.work_experience.length > 0
+    ) {
+      formData.work_experience = generatedData.work_experience.map((exp) => ({
+        position: exp.position || "",
+        company_name: exp.company_name || "",
+        companyName: exp.companyName || exp.company_name || "",
+        duration: exp.duration || "",
+        description:
+          exp.description ||
+          (exp.responsibilities ? exp.responsibilities.join("\n") : ""),
+        responsibilities: exp.responsibilities || [],
+      }));
+    } else if (
+      generatedData.workExperience &&
+      Array.isArray(generatedData.workExperience) &&
+      generatedData.workExperience.length > 0
+    ) {
+      formData.work_experience = generatedData.workExperience.map((exp) => {
+        let description = exp.description || "";
+        if (
+          !description &&
+          exp.responsibilities &&
+          Array.isArray(exp.responsibilities)
+        ) {
+          description = exp.responsibilities.join("\n");
+        }
+
+        return {
+          position: exp.position || "",
+          company_name: exp.companyName || "",
+          companyName: exp.companyName || "",
+          duration: exp.duration || "",
+          description: description,
+          responsibilities: exp.responsibilities || [],
+        };
+      });
+    }
+
+    if (generatedData.customSections) {
+      formData.customSections = { ...generatedData.customSections };
+    }
+
+    return formData;
+  };
+
+  // FIXED handleGenerateResume function
   const handleGenerateResume = async () => {
     if (!validateResumeData()) {
       return;
@@ -876,8 +1024,14 @@ const ResumeBuilder = () => {
 
     try {
       const apiReadyData = prepareFormDataForApi(resumeData);
+
+      console.log('Sending data to API:', apiReadyData);
+
       const response = await generateResume(apiReadyData);
 
+      console.log('API Response received:', response);
+
+      // Enhanced response validation and ID extraction
       let resumeIdFromResponse = null;
       let resumeDataFromResponse = null;
 
@@ -894,13 +1048,18 @@ const ResumeBuilder = () => {
                                 response.data?.resume || 
                                 response.data || 
                                 response;
+
+        console.log('Extracted resumeId:', resumeIdFromResponse);
+        console.log('Extracted resumeData:', resumeDataFromResponse);
       }
 
       if (!resumeIdFromResponse) {
+        console.error('No resume ID found in response:', response);
         throw new Error('No resume ID returned from server. Please try again.');
       }
 
       if (!resumeDataFromResponse) {
+        console.error('No resume data found in response:', response);
         throw new Error('No resume data returned from server. Please try again.');
       }
 
@@ -911,6 +1070,8 @@ const ResumeBuilder = () => {
       });
 
       const adaptedResume = adaptGeneratedResume(resumeDataFromResponse, resumeIdFromResponse);
+
+      console.log('Adapted resume:', adaptedResume);
 
       // WORKAROUND: If backend returns empty aiExperience, preserve frontend genai_tools
       if (
@@ -929,8 +1090,29 @@ const ResumeBuilder = () => {
         adaptedResume.genai_tools = resumeData.genai_tools;
       }
 
-      // Navigate to generated resume view
-      navigate(`/resume-builder/view/${resumeIdFromResponse}/personal-info`);
+      setGeneratedResume(adaptedResume);
+
+      const updatedFormData = mapGeneratedDataToFormFields(adaptedResume);
+      setResumeData(updatedFormData);
+
+      setIsEditMode(false);
+
+      if (isMobile) {
+        setIsMobilePreviewMode(true);
+      }
+
+      // FIXED: Don't navigate to edit mode - stay in current view with generated data
+      console.log('Resume generated successfully, staying in current view');
+
+      // Update URL to reflect the resume ID without triggering edit mode
+      const currentSection = SLUG_TO_SECTION[activeStep] || 'personal-info';
+      
+      // Use replace to update URL without causing a re-fetch
+      window.history.replaceState(
+        null, 
+        '', 
+        `/resume-builder/view/${resumeIdFromResponse}/${currentSection}`
+      );
 
     } catch (error) {
       console.error("Error generating resume:", error);
@@ -976,6 +1158,7 @@ const ResumeBuilder = () => {
 
     try {
       const apiReadyData = prepareFormDataForApi(resumeData);
+
       const response = await updateResume(idToUpdate, apiReadyData);
 
       setSnackbar({
@@ -984,9 +1167,16 @@ const ResumeBuilder = () => {
         severity: "success",
       });
 
-      // Navigate to view mode
-      navigate(`/resume-builder/view/${idToUpdate}/personal-info`);
+      if (response.resume) {
+        const adaptedResume = adaptGeneratedResume(response.resume, idToUpdate);
+        setGeneratedResume(adaptedResume);
+      }
 
+      setIsEditMode(false);
+
+      if (isMobile) {
+        setIsMobilePreviewMode(true);
+      }
     } catch (error) {
       console.error("Error updating resume:", error);
       setSnackbar({
@@ -999,12 +1189,42 @@ const ResumeBuilder = () => {
     }
   };
 
+  // Handle downloading the resume as PDF
+  const handleDownloadResume = async () => {
+    try {
+      setDownloadingPdf(true);
+
+      const dataToUse = generatedResume || resumeData;
+      const userName = dataToUse?.header?.name || "resume";
+      const fileName = userName.toLowerCase().replace(/\s+/g, "_");
+
+      await generateResumePDF(dataToUse, selectedTemplateId, fileName);
+
+      setSnackbar({
+        open: true,
+        message: "Resume downloaded successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error downloading resume:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to download resume. Please try again.",
+        severity: "error",
+      });
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbar({
       ...snackbar,
       open: false,
     });
   };
+
+  const hasGeneratedResume = generatedResume !== null;
 
   // Render current step content
   const getStepContent = (step) => {
@@ -1138,14 +1358,17 @@ const ResumeBuilder = () => {
     <Container className={classes.root} maxWidth="xl">
       <Navbar
         currentPage="resume-builder"
+        onTemplateClick={handleOpenTemplateDialog}
         hideLogo={true}
       />
 
-      <Sidebar
-        activeStep={activeStep}
-        steps={steps}
-        onStepClick={handleStepClick}
-      />
+      {isEditMode && (
+        <Sidebar
+          activeStep={activeStep}
+          steps={steps}
+          onStepClick={handleStepClick}
+        />
+      )}
 
       {isEditingExisting && (
         <Typography className={classes.resumeIdText}>
@@ -1153,66 +1376,157 @@ const ResumeBuilder = () => {
         </Typography>
       )}
 
-      <Box className={`${classes.mainContainer} ${classes.mainContentWithSidebar}`}>
-        <Box className={`${classes.columnBox} ${classes.formColumn}`}>
-          <Typography variant="h5" className={classes.sectionHeader}>
-            {isEditingExisting ? "Edit Your Resume" : "Craft your story"}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subheading}>
-            Build a resume that opens doors to your future
-          </Typography>
-
-          <Box className={classes.previewNotice}>
-            <InfoIcon className={classes.noticeIcon} />
-            <Typography variant="body2">
-              scroll below to access the live preview
-            </Typography>
-          </Box>
-
-          <Paper className={classes.paper} elevation={0} id="current-step-content">
-            {getStepContent(activeStep)}
-
-            <Box className={classes.navigationButtons}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                variant="outlined"
-                className={classes.buttonBack}
-              >
-                Back
-              </Button>
-
-              <Button
-                variant="contained"
-                onClick={
-                  activeStep === steps.length - 1
-                    ? isEditingExisting
-                      ? handleUpdateResume
-                      : handleGenerateResume
-                    : handleNext
-                }
-                className={`${classes.buttonNext} ${
-                  loading ? classes.disabledButton : ""
-                }`}
-                disabled={loading}
-                fullWidth={isMobile}
-              >
-                {activeStep === steps.length - 1
-                  ? isEditingExisting
-                    ? "Save Changes"
-                    : "Generate Resume"
-                  : "Next"}
-                {loading && activeStep === steps.length - 1 && (
-                  <CircularProgress size={20} className={classes.loader} />
-                )}
-              </Button>
-            </Box>
-          </Paper>
+      {(hasGeneratedResume || isEditingExisting) && (
+        <Box className={classes.viewModeToggle}>
+          <Button
+            variant="contained"
+            className={`${classes.editModeButton} ${
+              isEditMode ? classes.activeModeButton : ""
+            }`}
+            onClick={() => setIsEditMode(true)}
+            disabled={isEditMode}
+          >
+            Edit Resume
+          </Button>
+          <Button
+            variant="contained"
+            className={`${classes.updateResumeButton} ${
+              !isEditMode ? classes.activeModeButton : ""
+            }`}
+            onClick={handleUpdateResume}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                Updating...
+                <CircularProgress size={20} className={classes.loader} />
+              </>
+            ) : (
+              "Update Resume"
+            )}
+          </Button>
         </Box>
+      )}
+
+      {(hasGeneratedResume || isEditingExisting) && isMobile && (
+        <Box className={classes.mobileViewToggle}>
+          <Button
+            variant="contained"
+            className={`${classes.editModeButton} ${
+              !isMobilePreviewMode ? classes.activeModeButton : ""
+            }`}
+            onClick={() => setIsMobilePreviewMode(false)}
+            disabled={!isMobilePreviewMode}
+          >
+            Edit Mode
+          </Button>
+          <Button
+            variant="contained"
+            className={`${classes.previewModeButton} ${
+              isMobilePreviewMode ? classes.activeModeButton : ""
+            }`}
+            onClick={() => setIsMobilePreviewMode(true)}
+            disabled={isMobilePreviewMode}
+          >
+            View Resume
+          </Button>
+        </Box>
+      )}
+
+      <Box className={classes.actionButtons}>
+        {(hasGeneratedResume || isEditingExisting) && (
+          <Button
+            variant="contained"
+            className={classes.downloadButton}
+            onClick={handleDownloadResume}
+            disabled={downloadingPdf}
+          >
+            {downloadingPdf ? (
+              <>
+                Generating PDF
+                <CircularProgress size={20} className={classes.loader} />
+              </>
+            ) : (
+              "Export PDF"
+            )}
+          </Button>
+        )}
+      </Box>
+
+      <Box
+        className={`${classes.mainContainer} ${
+          isEditMode ? classes.mainContentWithSidebar : ""
+        }`}
+      >
+        {(isEditMode || (isMobile && !isMobilePreviewMode)) && (
+          <Box className={`${classes.columnBox} ${classes.formColumn}`}>
+            <Typography variant="h5" className={classes.sectionHeader}>
+              {isEditingExisting
+                ? "Edit Your Resume"
+                : hasGeneratedResume
+                ? "Edit Your Resume"
+                : "Craft your story"}
+            </Typography>
+            <Typography variant="subtitle1" className={classes.subheading}>
+              Build a resume that opens doors to your future
+            </Typography>
+
+            <Box className={classes.previewNotice}>
+              <InfoIcon className={classes.noticeIcon} />
+              <Typography variant="body2">
+                scroll below to access the live preview
+              </Typography>
+            </Box>
+
+            <Paper className={classes.paper} elevation={0} id="current-step-content">
+              {getStepContent(activeStep)}
+
+              <Box className={classes.navigationButtons}>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  variant="outlined"
+                  className={classes.buttonBack}
+                >
+                  Back
+                </Button>
+
+                <Button
+                  variant="contained"
+                  onClick={
+                    activeStep === steps.length - 1
+                      ? isEditingExisting || hasGeneratedResume
+                        ? handleUpdateResume
+                        : handleGenerateResume
+                      : handleNext
+                  }
+                  className={`${classes.buttonNext} ${
+                    loading ? classes.disabledButton : ""
+                  }`}
+                  disabled={loading}
+                  fullWidth={isMobile}
+                >
+                  {activeStep === steps.length - 1
+                    ? isEditingExisting
+                      ? "Save Changes"
+                      : hasGeneratedResume
+                      ? "Update Resume"
+                      : "Generate Resume"
+                    : "Next"}
+                  {loading && activeStep === steps.length - 1 && (
+                    <CircularProgress size={20} className={classes.loader} />
+                  )}
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
+        )}
 
         <Box className={`${classes.columnBox} ${classes.previewColumn}`}>
           <Typography variant="h5" className={classes.sectionHeader}>
-            Live Preview
+            {hasGeneratedResume || isEditingExisting
+              ? "Resume Preview"
+              : "Live Preview"}
           </Typography>
           <Typography variant="subtitle1" className={classes.subheading}>
             Watch your resume come to life
@@ -1228,7 +1542,106 @@ const ResumeBuilder = () => {
             </Box>
           </Box>
         </Box>
+
+        {isMobile &&
+          isMobilePreviewMode &&
+          (hasGeneratedResume || isEditingExisting) && (
+            <Box className={classes.mobilePreviewContainer}>
+              <Typography variant="h6" className={classes.mobilePreviewHeader}>
+                Your Generated Resume
+              </Typography>
+
+              <Box className={classes.mobileResumePreview}>
+                <ResumePreview
+                  userData={resumeData}
+                  generatedData={generatedResume}
+                  templateId={selectedTemplateId}
+                />
+              </Box>
+
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <Button
+                  variant="contained"
+                  className={classes.downloadButton}
+                  onClick={handleDownloadResume}
+                  disabled={downloadingPdf}
+                  fullWidth
+                >
+                  {downloadingPdf ? (
+                    <>
+                      Generating PDF
+                      <CircularProgress size={20} className={classes.loader} />
+                    </>
+                  ) : (
+                    "Export PDF"
+                  )}
+                </Button>
+              </Box>
+            </Box>
+          )}
       </Box>
+
+      <Dialog
+        open={templateDialogOpen}
+        onClose={handleCloseTemplateDialog}
+        fullWidth
+        maxWidth="lg"
+        className={classes.templateDialog}
+        PaperProps={{
+          sx: {
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+          }
+        }}
+      >
+        <Box className={dialogClasses.stickyDialogTitle}>
+          <Box className={dialogClasses.headerLeft}>
+            <Typography variant="h3" className={dialogClasses.dialogTitle}>
+              Choose Your Perfect Template
+            </Typography>
+            <Typography variant="h6" className={dialogClasses.dialogSubtitle}>
+              Select a professionally designed template that represents your style
+            </Typography>
+          </Box>
+          
+          <Box className={dialogClasses.headerActions}>
+            <Button
+              onClick={handleCloseTemplateDialog}
+              variant="outlined"
+              className={`${dialogClasses.actionButton} ${dialogClasses.cancelButton}`}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmTemplateSelection}
+              variant="contained"
+              className={`${dialogClasses.actionButton} ${dialogClasses.applyButton}`}
+            >
+              Apply Template
+            </Button>
+          </Box>
+        </Box>
+
+        <DialogContent sx={{ 
+          padding: 0, 
+          flex: 1, 
+          overflow: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'rgba(39, 40, 108, 0.2)',
+            borderRadius: '4px',
+          },
+        }}>
+          <TemplateSelector
+            selectedTemplateId={selectedTemplateId}
+            onTemplateSelect={handleTemplateSelect}
+          />
+        </DialogContent>
+      </Dialog>
 
       <TemplateRepositoryWarningPopup
         open={templateWarningOpen}
